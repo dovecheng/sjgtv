@@ -1,0 +1,157 @@
+{
+    // 使用 IntelliSense 了解相关属性。
+    // 悬停以查看现有属性的描述。
+    // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        // ========== base 模块 ==========
+        {
+            "name": "base: gen_export",
+            "type": "dart",
+            "request": "launch",
+            "program": "${workspaceFolder}/base/tool/gen_export.dart",
+            "cwd": "${workspaceFolder}/base",
+            "console": "debugConsole"
+        },
+        {
+            "name": "base: gen_l10n_mixin",
+            "type": "dart",
+            "request": "launch",
+            "program": "${workspaceFolder}/base/tool/gen_l10n_mixin.dart",
+            "cwd": "${workspaceFolder}/base",
+            "console": "debugConsole"
+        },
+        {
+            "name": "base: gen_l10n_xlsx",
+            "type": "dart",
+            "request": "launch",
+            "program": "${workspaceFolder}/base/tool/gen_l10n_xlsx.dart",
+            "cwd": "${workspaceFolder}/base",
+            "console": "debugConsole"
+        },
+        {
+            "name": "base: scan_fragment_file",
+            "type": "dart",
+            "request": "launch",
+            "program": "${workspaceFolder}/base/tool/scan_fragment_file.dart",
+            "cwd": "${workspaceFolder}/base",
+            "console": "debugConsole"
+        },
+        {
+            "name": "base: scan_no_l10n_page",
+            "type": "dart",
+            "request": "launch",
+            "program": "${workspaceFolder}/base/tool/scan_no_l10n_page.dart",
+            "cwd": "${workspaceFolder}/base",
+            "console": "debugConsole"
+        },
+        {
+            "name": "base: scan_todo",
+            "type": "dart",
+            "request": "launch",
+            "program": "${workspaceFolder}/base/tool/scan_todo.dart",
+            "cwd": "${workspaceFolder}/base",
+            "console": "debugConsole"
+        },
+        {
+            "name": "base: scan_top_level",
+            "type": "dart",
+            "request": "launch",
+            "program": "${workspaceFolder}/base/tool/scan_top_level.dart",
+            "cwd": "${workspaceFolder}/base",
+            "console": "debugConsole"
+        },
+        // ========== app 模块 ==========
+        {
+            "name": "app (debug mode)",
+            "cwd": "${workspaceFolder}/app",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "app (debug mode, noDebug)",
+            "cwd": "${workspaceFolder}/app",
+            "request": "launch",
+            "type": "dart",
+            "noDebug": true
+        },
+        {
+            "name": "app (profile mode)",
+            "cwd": "${workspaceFolder}/app",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "app (profile mode, noDebug)",
+            "cwd": "${workspaceFolder}/app",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile",
+            "noDebug": true
+        },
+        {
+            "name": "app (release mode)",
+            "cwd": "${workspaceFolder}/app",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "app (release mode, noDebug)",
+            "cwd": "${workspaceFolder}/app",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release",
+            "noDebug": true
+        },
+        {
+            "name": "app: gen_l10n_mixin",
+            "type": "dart",
+            "request": "launch",
+            "program": "${workspaceFolder}/app/tool/gen_l10n_mixin.dart",
+            "cwd": "${workspaceFolder}/app",
+            "console": "debugConsole"
+        },
+        {
+            "name": "app: gen_l10n_xlsx",
+            "type": "dart",
+            "request": "launch",
+            "program": "${workspaceFolder}/app/tool/gen_l10n_xlsx.dart",
+            "cwd": "${workspaceFolder}/app",
+            "console": "debugConsole"
+        },
+        {
+            "name": "app: scan_fragment_file",
+            "type": "dart",
+            "request": "launch",
+            "program": "${workspaceFolder}/app/tool/scan_fragment_file.dart",
+            "cwd": "${workspaceFolder}/app",
+            "console": "debugConsole"
+        },
+        {
+            "name": "app: scan_no_l10n_page",
+            "type": "dart",
+            "request": "launch",
+            "program": "${workspaceFolder}/app/tool/scan_no_l10n_page.dart",
+            "cwd": "${workspaceFolder}/app",
+            "console": "debugConsole"
+        },
+        {
+            "name": "app: scan_todo",
+            "type": "dart",
+            "request": "launch",
+            "program": "${workspaceFolder}/app/tool/scan_todo.dart",
+            "cwd": "${workspaceFolder}/app",
+            "console": "debugConsole"
+        },
+        {
+            "name": "app: scan_top_level",
+            "type": "dart",
+            "request": "launch",
+            "program": "${workspaceFolder}/app/tool/scan_top_level.dart",
+            "cwd": "${workspaceFolder}/app",
+            "console": "debugConsole"
+        }
+    ]
+}

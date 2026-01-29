@@ -1,0 +1,687 @@
+{
+    // 使用 VS Code 任务一键运行脚本。可在“终端 -> 运行任务”中选择。
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "script: flutter pub get",
+            "command": "/bin/bash",
+            "args": [
+                "-lc",
+                "chmod +x '${workspaceFolder}/script/flutter pub get.sh'; /bin/bash '${workspaceFolder}/script/flutter pub get.sh'"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/script"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "script: flutter upgrade",
+            "command": "/bin/bash",
+            "args": [
+                "-lc",
+                "chmod +x '${workspaceFolder}/script/flutter upgrade.sh'; /bin/bash '${workspaceFolder}/script/flutter upgrade.sh'"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/script"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "script: flutter pub upgrade",
+            "command": "/bin/bash",
+            "args": [
+                "-lc",
+                "chmod +x '${workspaceFolder}/script/flutter pub upgrade.sh'; /bin/bash '${workspaceFolder}/script/flutter pub upgrade.sh'"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/script"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "script: flutter pub outdated",
+            "command": "/bin/bash",
+            "args": [
+                "-lc",
+                "chmod +x '${workspaceFolder}/script/flutter pub outdated.sh'; /bin/bash '${workspaceFolder}/script/flutter pub outdated.sh'"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/script"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "script: flutter clean",
+            "command": "/bin/bash",
+            "args": [
+                "-lc",
+                "chmod +x '${workspaceFolder}/script/flutter clean.sh'; /bin/bash '${workspaceFolder}/script/flutter clean.sh'"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/script"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "script: dart run build_runner build",
+            "command": "/bin/bash",
+            "args": [
+                "-lc",
+                "chmod +x '${workspaceFolder}/script/dart run build_runner build.sh'; /bin/bash '${workspaceFolder}/script/dart run build_runner build.sh'"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/script"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "base/script: flutter widget-preview start",
+            "command": "/bin/bash",
+            "args": [
+                "-lc",
+                "chmod +x '${workspaceFolder}/base/script/flutter widget-preview start.sh'; /bin/bash '${workspaceFolder}/base/script/flutter widget-preview start.sh'"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/base/script"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "base/script: flutter pub upgrade",
+            "command": "/bin/bash",
+            "args": [
+                "-lc",
+                "chmod +x '${workspaceFolder}/base/script/flutter pub upgrade.sh'; /bin/bash '${workspaceFolder}/base/script/flutter pub upgrade.sh'"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/base/script"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "base/script: flutter pub outdated",
+            "command": "/bin/bash",
+            "args": [
+                "-lc",
+                "chmod +x '${workspaceFolder}/base/script/flutter pub outdated.sh'; /bin/bash '${workspaceFolder}/base/script/flutter pub outdated.sh'"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/base/script"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "base/script: flutter pub get",
+            "command": "/bin/bash",
+            "args": [
+                "-lc",
+                "chmod +x '${workspaceFolder}/base/script/flutter pub get.sh'; /bin/bash '${workspaceFolder}/base/script/flutter pub get.sh'"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/base/script"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "base/script: flutter clean",
+            "command": "/bin/bash",
+            "args": [
+                "-lc",
+                "chmod +x '${workspaceFolder}/base/script/flutter clean.sh'; /bin/bash '${workspaceFolder}/base/script/flutter clean.sh'"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/base/script"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "base/script: dart run build_runner watch",
+            "command": "/bin/bash",
+            "args": [
+                "-lc",
+                "chmod +x '${workspaceFolder}/base/script/dart run build_runner watch.sh'; /bin/bash '${workspaceFolder}/base/script/dart run build_runner watch.sh'"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/base/script"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "base/script: dart run build_runner build",
+            "command": "/bin/bash",
+            "args": [
+                "-lc",
+                "chmod +x '${workspaceFolder}/base/script/dart run build_runner build.sh'; /bin/bash '${workspaceFolder}/base/script/dart run build_runner build.sh'"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/base/script"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "base/script: dart fix--dry-run",
+            "command": "/bin/bash",
+            "args": [
+                "-lc",
+                "chmod +x '${workspaceFolder}/base/script/dart fix--dry-run.sh'; /bin/bash '${workspaceFolder}/base/script/dart fix--dry-run.sh'"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/base/script"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "app/script: flutter widget-preview start",
+            "command": "/bin/bash",
+            "args": [
+                "-lc",
+                "chmod +x '${workspaceFolder}/app/script/flutter widget-preview start.sh'; /bin/bash '${workspaceFolder}/app/script/flutter widget-preview start.sh'"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/app/script"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "app/script: flutter pub upgrade",
+            "command": "/bin/bash",
+            "args": [
+                "-lc",
+                "chmod +x '${workspaceFolder}/app/script/flutter pub upgrade.sh'; /bin/bash '${workspaceFolder}/app/script/flutter pub upgrade.sh'"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/app/script"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "app/script: flutter pub outdated",
+            "command": "/bin/bash",
+            "args": [
+                "-lc",
+                "chmod +x '${workspaceFolder}/app/script/flutter pub outdated.sh'; /bin/bash '${workspaceFolder}/app/script/flutter pub outdated.sh'"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/app/script"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "app/script: flutter pub get",
+            "command": "/bin/bash",
+            "args": [
+                "-lc",
+                "chmod +x '${workspaceFolder}/app/script/flutter pub get.sh'; /bin/bash '${workspaceFolder}/app/script/flutter pub get.sh'"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/app/script"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "app/script: flutter clean",
+            "command": "/bin/bash",
+            "args": [
+                "-lc",
+                "chmod +x '${workspaceFolder}/app/script/flutter clean.sh'; /bin/bash '${workspaceFolder}/app/script/flutter clean.sh'"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/app/script"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "app/script: dart run build_runner watch",
+            "command": "/bin/bash",
+            "args": [
+                "-lc",
+                "chmod +x '${workspaceFolder}/app/script/dart run build_runner watch.sh'; /bin/bash '${workspaceFolder}/app/script/dart run build_runner watch.sh'"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/app/script"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "app/script: dart run build_runner build",
+            "command": "/bin/bash",
+            "args": [
+                "-lc",
+                "chmod +x '${workspaceFolder}/app/script/dart run build_runner build.sh'; /bin/bash '${workspaceFolder}/app/script/dart run build_runner build.sh'"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/app/script"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "app/script: dart fix--dry-run",
+            "command": "/bin/bash",
+            "args": [
+                "-lc",
+                "chmod +x '${workspaceFolder}/app/script/dart fix--dry-run.sh'; /bin/bash '${workspaceFolder}/app/script/dart fix--dry-run.sh'"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/app/script"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "app/script: flutter run --debug",
+            "command": "/bin/bash",
+            "args": ["-lc", "chmod +x '${workspaceFolder}/app/script/flutter run --debug.sh'; /bin/bash '${workspaceFolder}/app/script/flutter run --debug.sh'"],
+            "options": { "cwd": "${workspaceFolder}/app/script" },
+            "presentation": { "reveal": "always", "panel": "dedicated", "clear": true },
+            "problemMatcher": []
+        },
+        {
+            "label": "app/script: flutter run --profile",
+            "command": "/bin/bash",
+            "args": ["-lc", "chmod +x '${workspaceFolder}/app/script/flutter run --profile.sh'; /bin/bash '${workspaceFolder}/app/script/flutter run --profile.sh'"],
+            "options": { "cwd": "${workspaceFolder}/app/script" },
+            "presentation": { "reveal": "always", "panel": "dedicated", "clear": true },
+            "problemMatcher": []
+        },
+        {
+            "label": "app/script: flutter run --release",
+            "command": "/bin/bash",
+            "args": ["-lc", "chmod +x '${workspaceFolder}/app/script/flutter run --release.sh'; /bin/bash '${workspaceFolder}/app/script/flutter run --release.sh'"],
+            "options": { "cwd": "${workspaceFolder}/app/script" },
+            "presentation": { "reveal": "always", "panel": "dedicated", "clear": true },
+            "problemMatcher": []
+        },
+        {
+            "label": "app/script: flutter build apk --debug",
+            "command": "/bin/bash",
+            "args": ["-lc", "chmod +x '${workspaceFolder}/app/script/flutter build apk --debug.sh'; /bin/bash '${workspaceFolder}/app/script/flutter build apk --debug.sh'"],
+            "options": { "cwd": "${workspaceFolder}/app/script" },
+            "presentation": { "reveal": "always", "panel": "dedicated", "clear": true },
+            "problemMatcher": []
+        },
+        {
+            "label": "app/script: flutter build apk --profile",
+            "command": "/bin/bash",
+            "args": ["-lc", "chmod +x '${workspaceFolder}/app/script/flutter build apk --profile.sh'; /bin/bash '${workspaceFolder}/app/script/flutter build apk --profile.sh'"],
+            "options": { "cwd": "${workspaceFolder}/app/script" },
+            "presentation": { "reveal": "always", "panel": "dedicated", "clear": true },
+            "problemMatcher": []
+        },
+        {
+            "label": "app/script: flutter build apk --release",
+            "command": "/bin/bash",
+            "args": ["-lc", "chmod +x '${workspaceFolder}/app/script/flutter build apk --release.sh'; /bin/bash '${workspaceFolder}/app/script/flutter build apk --release.sh'"],
+            "options": { "cwd": "${workspaceFolder}/app/script" },
+            "presentation": { "reveal": "always", "panel": "dedicated", "clear": true },
+            "problemMatcher": []
+        },
+        {
+            "label": "app/script: flutter build appbundle --debug",
+            "command": "/bin/bash",
+            "args": ["-lc", "chmod +x '${workspaceFolder}/app/script/flutter build appbundle --debug.sh'; /bin/bash '${workspaceFolder}/app/script/flutter build appbundle --debug.sh'"],
+            "options": { "cwd": "${workspaceFolder}/app/script" },
+            "presentation": { "reveal": "always", "panel": "dedicated", "clear": true },
+            "problemMatcher": []
+        },
+        {
+            "label": "app/script: flutter build appbundle --profile",
+            "command": "/bin/bash",
+            "args": ["-lc", "chmod +x '${workspaceFolder}/app/script/flutter build appbundle --profile.sh'; /bin/bash '${workspaceFolder}/app/script/flutter build appbundle --profile.sh'"],
+            "options": { "cwd": "${workspaceFolder}/app/script" },
+            "presentation": { "reveal": "always", "panel": "dedicated", "clear": true },
+            "problemMatcher": []
+        },
+        {
+            "label": "app/script: flutter build appbundle --release",
+            "command": "/bin/bash",
+            "args": ["-lc", "chmod +x '${workspaceFolder}/app/script/flutter build appbundle --release.sh'; /bin/bash '${workspaceFolder}/app/script/flutter build appbundle --release.sh'"],
+            "options": { "cwd": "${workspaceFolder}/app/script" },
+            "presentation": { "reveal": "always", "panel": "dedicated", "clear": true },
+            "problemMatcher": []
+        },
+        {
+            "label": "app/script: flutter build ipa --debug",
+            "command": "/bin/bash",
+            "args": ["-lc", "chmod +x '${workspaceFolder}/app/script/flutter build ipa --debug.sh'; /bin/bash '${workspaceFolder}/app/script/flutter build ipa --debug.sh'"],
+            "options": { "cwd": "${workspaceFolder}/app/script" },
+            "presentation": { "reveal": "always", "panel": "dedicated", "clear": true },
+            "problemMatcher": []
+        },
+        {
+            "label": "app/script: flutter build ipa --profile",
+            "command": "/bin/bash",
+            "args": ["-lc", "chmod +x '${workspaceFolder}/app/script/flutter build ipa --profile.sh'; /bin/bash '${workspaceFolder}/app/script/flutter build ipa --profile.sh'"],
+            "options": { "cwd": "${workspaceFolder}/app/script" },
+            "presentation": { "reveal": "always", "panel": "dedicated", "clear": true },
+            "problemMatcher": []
+        },
+        {
+            "label": "app/script: flutter build ipa --release",
+            "command": "/bin/bash",
+            "args": ["-lc", "chmod +x '${workspaceFolder}/app/script/flutter build ipa --release.sh'; /bin/bash '${workspaceFolder}/app/script/flutter build ipa --release.sh'"],
+            "options": { "cwd": "${workspaceFolder}/app/script" },
+            "presentation": { "reveal": "always", "panel": "dedicated", "clear": true },
+            "problemMatcher": []
+        },
+        {
+            "label": "app/script: flutter build web",
+            "command": "/bin/bash",
+            "args": ["-lc", "chmod +x '${workspaceFolder}/app/script/flutter build web.sh'; /bin/bash '${workspaceFolder}/app/script/flutter build web.sh'"],
+            "options": { "cwd": "${workspaceFolder}/app/script" },
+            "presentation": { "reveal": "always", "panel": "dedicated", "clear": true },
+            "problemMatcher": []
+        },
+        {
+            "label": "app/script: ios pod install",
+            "command": "/bin/bash",
+            "args": ["-lc", "chmod +x '${workspaceFolder}/app/script/ios pod install.sh'; /bin/bash '${workspaceFolder}/app/script/ios pod install.sh'"],
+            "options": { "cwd": "${workspaceFolder}/app/script" },
+            "presentation": { "reveal": "always", "panel": "dedicated", "clear": true },
+            "problemMatcher": []
+        },
+        {
+            "label": "app/script: macos pod install",
+            "command": "/bin/bash",
+            "args": ["-lc", "chmod +x '${workspaceFolder}/app/script/macos pod install.sh'; /bin/bash '${workspaceFolder}/app/script/macos pod install.sh'"],
+            "options": { "cwd": "${workspaceFolder}/app/script" },
+            "presentation": { "reveal": "always", "panel": "dedicated", "clear": true },
+            "problemMatcher": []
+        },
+        {
+            "label": "git: submodule push to dev",
+            "command": "git",
+            "args": [
+                "submodule",
+                "foreach",
+                "git push origin HEAD:dev"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "git: submodule fetch dev",
+            "command": "git",
+            "args": [
+                "submodule",
+                "foreach",
+                "git fetch origin dev"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "git: submodule merge dev",
+            "command": "git",
+            "args": [
+                "submodule",
+                "foreach",
+                "git merge origin/dev"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "git: submodule sync dev",
+            "command": "git",
+            "args": [
+                "submodule",
+                "foreach",
+                "git fetch origin dev && git merge origin/dev && git push origin HEAD:dev"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "adb: devices",
+            "command": "/bin/bash",
+            "args": [
+                "-lc",
+                "source ~/.bashrc && adb devices"
+            ],
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "adb: connect 192.168.3.169",
+            "command": "/bin/bash",
+            "args": [
+                "-lc",
+                "source ~/.bashrc && adb connect 192.168.3.169"
+            ],
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "adb: disconnect 192.168.3.169",
+            "command": "/bin/bash",
+            "args": [
+                "-lc",
+                "source ~/.bashrc && adb disconnect 192.168.3.169"
+            ],
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "adb: connect localhost:5555",
+            "command": "/bin/bash",
+            "args": [
+                "-lc",
+                "source ~/.bashrc && adb connect localhost:5555"
+            ],
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "adb: disconnect localhost:5555",
+            "command": "/bin/bash",
+            "args": [
+                "-lc",
+                "source ~/.bashrc && adb disconnect localhost:5555"
+            ],
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "adb: connect localhost:15555",
+            "command": "/bin/bash",
+            "args": [
+                "-lc",
+                "source ~/.bashrc && adb connect localhost:15555"
+            ],
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "adb: disconnect localhost:15555",
+            "command": "/bin/bash",
+            "args": [
+                "-lc",
+                "source ~/.bashrc && adb disconnect localhost:15555"
+            ],
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "python3: -m http server 8023",
+            "command": "/bin/bash",
+            "args": [
+                "-lc",
+                "source ~/.bashrc && pids=$(lsof -ti:8023 || true); if [ -n \"$pids\" ]; then kill -9 $pids; fi; python3 -m http.server 8023"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            },
+            "problemMatcher": []
+        }
+    ]
+}

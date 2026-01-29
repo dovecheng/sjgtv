@@ -1,0 +1,51 @@
+{
+    "cSpell.words": [
+        "appbundle",
+        "Artboard",
+        "Azblob",
+        "bssid",
+        "checkedlist",
+        "dchs",
+        "dovecheng",
+        "geolocator",
+        "jvmargs",
+        "kaifa",
+        "Loggable",
+        "microlearning",
+        "pdfx",
+        "pointycastle",
+        "posthog",
+        "println",
+        "pubspec",
+        "recase",
+        "reorderables",
+        "riverpod",
+        "syncfusion",
+        "xlider"
+    ],
+    "files.eol": "\n",
+    "files.insertFinalNewline": true,
+    "files.trimTrailingWhitespace": true,
+    "files.exclude": {
+        "**/.DS_Store": true
+    },
+    "todo-tree.general.tags": [
+        "BUG",
+        "HACK",
+        "FIXME",
+        "TODO",
+        "XXX",
+        "[ ]",
+        "[x]",
+        "MARK"
+    ],
+    // Git 配置：像 IntelliJ IDEA 一样直接提交变更，不使用暂存区
+    // 启用智能提交：当没有手动暂存文件时，自动暂存所有变更并提交
+    "git.enableSmartCommit": true,
+    "todo-tree.tree.showBadges": true,
+    "todo-tree.tree.showCountsInTree": true,
+    "todo-tree.tree.disableCompactFolders": false,
+    "commentTranslate.browse.mode": "inplace",
+    "commentTranslate.targetLanguage": "zh-CN",
+    "commentTranslate.source": "Bing"
+}
