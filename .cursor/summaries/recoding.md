@@ -7,6 +7,7 @@
 - API 层拟用 Retrofit 方式重构
 - 项目名 / 包名改为 sjgtv、com.sjg.tv（Android、iOS、macOS、Windows、Web）；集成 flutter_launcher_icons、删除 app/linux；README 按依赖更新技术栈并新增「开发中、未发布」说明
 - 精简 base 中许多用不到的模块（尚未精简完）；下一步继续精简 base，完成后进行 app 模块重构
+- 讨论 SSH 远程 + Cursor、Cursor CLI：本机关机则断连，无法继续干活；计划在服务器 macOS 上跑 Cursor、拉项目，用该环境推进 recoding（本机关机不影响）
 
 **完成项**
 - [api] 新建 `lib/src/api/mixin/cancel_token_mixin.dart`，内容与原文件一致
@@ -34,6 +35,7 @@
 
 阶段二补充：base 精简
 - [ ] 继续精简 base 中用不到的模块
+- [ ] 在服务器 macOS 上拉取项目、配置 Cursor，用该环境推进 recoding（本机关机不影响；Agent 需人工逐步驱动，不会自动跑完）
 
 阶段三：应用代码迁移与 app 重构
 - [ ] 从 DTV 项目复制应用代码到 app 模块
@@ -88,6 +90,7 @@
 - 修改：`script/*.sh`（与 root 同风格，仅遍历 base；增 `check_super_calls.py`、`resize_images.py`，删 dart fix/watch/widget-preview）、`.vscode/tasks.json`（script + base/script + git/adb/python3）、`.vscode/launch.json`（仅保留 base 的 tool 运行配置）
 - 本次：`README.md`；`app/pubspec.yaml`、`app/assets/icon/`、`app/script/dart run flutter_launcher_icons.sh`、`app/README.md`；`app/android/`、`app/ios/`、`app/macos/`、`app/windows/`、`app/web/` 等平台配置（包名、应用名）；删除 `app/linux/`；`app/.metadata`
 - base 精简：`base/` 下部分模块/目录（具体视精简进度而定）
+- 本次：无代码变更，仅讨论 SSH/CLI、macOS Cursor 计划
 
 ## 历史
 
@@ -127,3 +130,8 @@
 ### 2026-01-30 08:35（base 精简与下一步）
 - 精简 base 中许多用不到的模块（进行中，未精简完）
 - 下一步：继续精简 base → 完成后进行 app 模块重构；已加入阶段二补充、阶段三待办
+
+### 2026-01-30 08:51（SSH/CLI、macOS Cursor 计划）
+- 讨论：SSH 远程 + Cursor、Cursor CLI 均依赖本机；本机关机则断连，Cursor 不继续干活
+- 计划：在服务器 macOS 上跑 Cursor、拉项目，用该环境推进 recoding；本机关机不影响那边 Cursor，但 Agent 不会自动按 recoding 一直跑，需人工逐步驱动
+- 待办：在服务器 macOS 上拉取项目、配置 Cursor，用该环境推进 recoding
