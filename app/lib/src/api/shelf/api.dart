@@ -86,7 +86,7 @@ Future<HttpServer> startServer({int port = 8023}) async {
 }
 
 /// 数据存储类（Hive）
-class SourceStorage {
+abstract final class SourceStorage {
   static const String _boxName = 'sources';
   static const String _proxyBoxName = 'proxies';
   static const String _tagBoxName = 'tags';

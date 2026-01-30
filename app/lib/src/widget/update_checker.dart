@@ -19,7 +19,7 @@ import 'package:url_launcher/url_launcher.dart';
 /// - 显示更新对话框（含更新说明）
 /// - 支持自动下载 APK 并安装（Android）
 /// - 支持手动跳转到 GitHub 下载页
-class AppUpdater {
+abstract final class AppUpdater {
   static final Log _log = Log('AppUpdater');
   static final Dio _dio = Dio();
   static const String _githubReleasesUrl =

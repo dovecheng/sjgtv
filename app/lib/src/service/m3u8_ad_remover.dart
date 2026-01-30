@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 /// 通过分析 HLS 播放列表中片段 URL 的相似度，识别并移除广告片段。
 /// 原理：正片片段的 URL 通常具有相似的命名规则（如递增序号），
 /// 而广告片段的 URL 来自不同的 CDN，命名规则不同，相似度低。
-class M3U8AdRemover {
+abstract final class M3U8AdRemover {
   static final Log _log = Log('M3U8AdRemover');
 
   /// 处理 M3U8 播放列表，移除广告片段
