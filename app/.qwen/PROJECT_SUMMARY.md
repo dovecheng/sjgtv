@@ -4,7 +4,7 @@
 Analyze the LibreTV project (a Flutter-based video aggregation app) and plan a migration to a new project with Riverpod for state management, potentially replacing Hive database with a more modern solution, and integrating a custom logging system.
 
 ## Key Knowledge
-- **Project Name**: LibreTV (libretv_app)
+- **Project Name**: sjgtv（原 LibreTV/libretv_app）
 - **Core Functionality**: Video aggregation search, video playback, source management, tag management, proxy management, ad filtering, TV-optimized UI
 - **Current API Address**: `http://localhost:8023` with endpoints `/api/sources`, `/api/proxies`, `/api/tags`, `/api/search`
 - **Current Dependencies**: Uses `dio`, `provider`, `hive`, `cached_network_image`, `media_kit`, `shelf`, etc.
@@ -25,7 +25,7 @@ Analyze the LibreTV project (a Flutter-based video aggregation app) and plan a m
 - Created sample Riverpod providers for Source and Proxy management (`source_provider.dart`, `proxy_provider.dart`)
 - Recognized that current project has limited Provider usage, mostly direct Hive operations
 - Acknowledged that Isar is no longer maintained and doesn't support Web, considering Drift as alternative
-- Created new Flutter project structure (libretv_new)
+- Created new Flutter project structure (sjgtv)
 - Added Riverpod, Hive and Logger dependencies to the new project
 - Implemented complete Riverpod integration in the new project
 - Decided to continue using Hive as the database solution for now
