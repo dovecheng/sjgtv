@@ -33,10 +33,17 @@ class AppUpdater {
 
       final Response<dynamic> response = await _dio.get<dynamic>(_githubReleasesUrl);
       final dynamic latestRelease = response.data;
+
+      // 检查响应是否有效
+      if (latestRelease == null || latestRelease['tag_name'] == null) {
+        debugPrint('检查更新: 无有效的发布版本');
+        return;
+      }
+
       final String latestVersion = latestRelease['tag_name'].replaceAll('v', '');
       final String releaseUrl = latestRelease['html_url'];
       final String? releaseNotes = latestRelease['body'];
-      final String? apkUrl = _findApkDownloadUrl(latestRelease['assets']);
+      final String? apkUrl = _findApkDownloadUrl(latestRelease['assets'] ?? []);
 
       if (_compareVersions(currentVersion, latestVersion) < 0 &&
           context.mounted) {
@@ -48,13 +55,15 @@ class AppUpdater {
           apkUrl: apkUrl,
         );
       }
+    } on DioException catch (e) {
+      // 404 表示没有发布版本，静默处理
+      if (e.response?.statusCode == 404) {
+        debugPrint('检查更新: 仓库暂无发布版本');
+        return;
+      }
+      debugPrint('检查更新失败: $e');
     } catch (e) {
       debugPrint('检查更新失败: $e');
-      if (context.mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('检查更新失败: ${e.toString()}')));
-      }
     }
   }
 
