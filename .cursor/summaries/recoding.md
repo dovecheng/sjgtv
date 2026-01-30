@@ -5,6 +5,8 @@
 - 新思路：采用模块化方案，循序渐进开发
 - 执行模块化重构：删除 Flutter 工程、建 base/app、迁移 root/base 与配置、对齐 script/tasks/launch（仅 base）
 - API 层拟用 Retrofit 方式重构
+- 项目名 / 包名改为 sjgtv、com.sjg.tv（Android、iOS、macOS、Windows、Web）；集成 flutter_launcher_icons、删除 app/linux；README 按依赖更新技术栈并新增「开发中、未发布」说明
+- 精简 base 中许多用不到的模块（尚未精简完）；下一步继续精简 base，完成后进行 app 模块重构
 
 **完成项**
 - [api] 新建 `lib/src/api/mixin/cancel_token_mixin.dart`，内容与原文件一致
@@ -12,6 +14,11 @@
 - [base] 从 `lib/base.dart` 中移除 `export 'mixin.dart';`
 - [清理] 删除 `lib/mixin.dart`、`lib/src/mixin/cancel_token_mixin.dart` 及空目录 `lib/src/mixin/`
 - Linter 检查通过，无错误
+- [app] 项目名 libretv_app → sjgtv；Android 包名、iOS/macOS bundle id → com.sjg.tv；Windows/Web 应用名与身份更新；Dart 导入改为 `package:sjgtv`
+- [app] 集成 flutter_launcher_icons（依赖、配置、`assets/icon/icon.png`、脚本），重新生成各平台应用图标
+- [app] 删除 `app/linux` 及 `.metadata` 中 linux 平台
+- [doc] README.md：技术栈按 base/app 依赖更新，SDK ≥3.10，新增「开发中、未发布」说明
+- [base] 精简部分用不到的模块（进行中，未完成）
 
 **未完成的计划（模块化重构）**
 
@@ -25,9 +32,13 @@
 - [x] 复制配置文件（`.cursor`, `.vscode`, `.qwen`, `.gemini`）到 base 模块
 - [x] 检查并修复 base 模块的依赖错误
 
-阶段三：应用代码迁移
+阶段二补充：base 精简
+- [ ] 继续精简 base 中用不到的模块
+
+阶段三：应用代码迁移与 app 重构
 - [ ] 从 DTV 项目复制应用代码到 app 模块
 - [ ] 逐步集成 base 模块与 app 模块
+- [ ] app 模块重构（base 精简完成后进行）
 - [ ] 每步检查并修复错误
 
 阶段四：核心功能实现
@@ -58,6 +69,8 @@
 - 删除：`lib/`、`android/`、`ios/`、`linux/`、`macos/`、`web/`、`windows/`、`test/`、`tool/`、`pubspec.yaml` 等 Flutter 工程；保留 `script/`、`.qwen/`、`.vscode/`、`.gemini/`、`.cursor/`
 - 新建：`base/`（含 root/base 内容 + root 配置）、`app/`（空）
 - 修改：`script/*.sh`（与 root 同风格，仅遍历 base；增 `check_super_calls.py`、`resize_images.py`，删 dart fix/watch/widget-preview）、`.vscode/tasks.json`（script + base/script + git/adb/python3）、`.vscode/launch.json`（仅保留 base 的 tool 运行配置）
+- 本次：`README.md`；`app/pubspec.yaml`、`app/assets/icon/`、`app/script/dart run flutter_launcher_icons.sh`、`app/README.md`；`app/android/`、`app/ios/`、`app/macos/`、`app/windows/`、`app/web/` 等平台配置（包名、应用名）；删除 `app/linux/`；`app/.metadata`
+- base 精简：`base/` 下部分模块/目录（具体视精简进度而定）
 
 ## 历史
 
@@ -85,5 +98,15 @@
 ### 2026-01-30 (补充计划)
 - 补充：API 层拟用 Retrofit 方式重构，已加入阶段四待办
 
-### 2026-01-30 16:00
+### 2026-01-30（补充）
 - 补充：上一次开发的摘要为 `.qwen/DAILY_WORK_LOG.md`（仅引用路径）
+
+### 2026-01-30 08:30（项目名、图标、Linux、README）
+- 项目名 libretv_app → sjgtv；Android 包名、iOS/macOS bundle id → com.sjg.tv；Windows/Web 应用名与身份更新；Dart 导入 `package:sjgtv`
+- 集成 flutter_launcher_icons（依赖、配置、assets/icon、脚本），重新生成各平台应用图标
+- 删除 app/linux 及 .metadata 中 linux 平台
+- README.md：技术栈按 base/app 依赖更新，SDK ≥3.10，新增「开发中、未发布」说明
+
+### 2026-01-30 08:35（base 精简与下一步）
+- 精简 base 中许多用不到的模块（进行中，未精简完）
+- 下一步：继续精简 base → 完成后进行 app 模块重构；已加入阶段二补充、阶段三待办
