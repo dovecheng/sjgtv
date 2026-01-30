@@ -42,9 +42,11 @@ final class SjgtvRunner extends AppRunner {
     // 加载初始配置
     await _ConfigLoader().loadInitialConfig();
 
-    // 启动 shelf 本地 API 服务
-    server = await startServer();
-    log.d(() => 'shelf 本地服务已启动: http://localhost:8023');
+    // 启动 shelf 本地 API 服务（不阻塞）
+    startServer().then((HttpServer s) {
+      server = s;
+      log.d(() => 'shelf 本地服务已启动: http://localhost:8023');
+    });
   }
 
   /// 初始化 Hive 存储
