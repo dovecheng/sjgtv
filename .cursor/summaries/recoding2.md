@@ -94,3 +94,52 @@ app/lib/src/
 
 - 旧摘要：`.cursor/summaries/recoding1.md`（含完整历史记录）
 - 测试入口：`flutter run -t test/api_server_test.dart`（shelf 服务测试）
+
+---
+
+## 历史
+
+### 2026-01-30（接入 AppRunner 架构与项目结构重构）
+
+**接入 base AppRunner 架构**
+- 创建 `SjgtvRunner` 继承 base 的 `AppRunner`
+- 创建 `JsonAdapterImpl` 注册实体类 fromJson（Source, Proxy, Tag）
+- 重构 `main.dart` 为一行启动代码：`SjgtvRunner().launchApp()`
+- SjgtvRunner 整合初始化逻辑：Hive 初始化、配置加载、shelf 服务启动、主题配置
+
+**API 层重构**
+- 创建 `ApiClient`（Retrofit 声明）和 `ApiService`（服务层封装）
+- 迁移页面使用 ApiService（category_page, search_page）
+- 删除 api.dart 中重复的 Source/Proxy/Tag 类，改用 models/ 目录
+- 修改 shelf 服务响应格式为统一的 `{ code, data, msg }`
+
+**代码分离**
+- 把测试 main() 和 MyApp 移到 `test/api_server_test.dart`
+- 分离 `Movie` 类到 `models/movie.dart`
+- 分离 `FocusableMovieCard` 到 `widgets/focusable_movie_card.dart`
+- 分离 6 个 Intent 类到 `widgets/player_intents.dart`
+
+**项目结构重构（按 base 风格）**
+- 旧结构：`services/`, `widgets/`, `models/`（扁平）
+- 新结构（按功能模块组织）：
+  - `api/` - API 相关（client/, service/, shelf/）
+  - `app/` - 应用启动（provider/, sjgtv_runner.dart）
+  - `model/` - 数据模型
+  - `page/` - 页面（home/, player/, search/）
+  - `service/` - 通用服务
+  - `widget/` - 通用组件
+- 更新所有 import 路径
+- 重新运行 build_runner 生成代码
+
+**涉及/修改的文件**
+- 新增：`app/lib/src/api/`（client/, service/, shelf/）
+- 新增：`app/lib/src/app/`（provider/, sjgtv_runner.dart）
+- 新增：`app/lib/src/model/`（movie.dart）
+- 新增：`app/lib/src/page/`（home/, player/, search/）
+- 新增：`app/lib/src/service/`（m3u8_ad_remover.dart）
+- 新增：`app/lib/src/widget/`（focusable_movie_card.dart, update_checker.dart）
+- 新增：`app/test/api_server_test.dart`
+- 修改：`app/lib/main.dart`（精简为一行）
+- 删除：`app/lib/src/services/`、`app/lib/src/widgets/`、`app/lib/src/models/`（内容已迁移）
+
+**提交**：`b92d51e` - refactor: 接入 AppRunner 架构并重构项目结构
