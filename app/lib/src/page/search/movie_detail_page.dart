@@ -3,6 +3,14 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/services.dart';
 import 'package:sjgtv/src/page/player/full_screen_player_page.dart';
 
+/// 电影详情页
+///
+/// 功能：
+/// - 显示电影海报、标题、年份、类型、主演、导演
+/// - 显示剧情简介
+/// - 解析播放地址并显示选集列表
+/// - 支持 TV 遥控器导航（上下切换区域、左右切换选集）
+/// - 点击选集跳转到全屏播放器
 class MovieDetailPage extends StatefulWidget {
   final dynamic movie;
 

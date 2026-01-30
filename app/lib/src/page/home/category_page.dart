@@ -11,6 +11,14 @@ import 'package:sjgtv/src/model/tag.dart';
 import 'package:sjgtv/src/page/search/search_page.dart';
 import 'package:sjgtv/src/widget/focusable_movie_card.dart';
 
+/// 电影首页（分类浏览）
+///
+/// 功能：
+/// - 从本地 shelf 服务获取标签列表作为分类 Tab
+/// - 从豆瓣 API 获取对应分类的电影列表
+/// - 支持 TV 遥控器导航（Tab 切换、电影卡片聚焦）
+/// - 支持下拉刷新和滚动加载更多
+/// - 显示二维码供手机端管理数据源
 class MovieHomePage extends StatefulWidget {
   const MovieHomePage({super.key});
 

@@ -10,7 +10,9 @@ import 'package:sjgtv/src/page/player/player_intents.dart';
 import 'package:sjgtv/src/service/m3u8_ad_remover.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
+/// Duration 扩展：clamp 方法
 extension DurationClamp on Duration {
+  /// 将 Duration 限制在 [min, max] 范围内
   Duration clamp(Duration min, Duration max) {
     if (this < min) return min;
     if (this > max) return max;
@@ -18,6 +20,17 @@ extension DurationClamp on Duration {
   }
 }
 
+/// 全屏视频播放器页面
+///
+/// 功能：
+/// - 使用 MediaKit 播放 M3U8/MP4 等格式视频
+/// - 自动处理 M3U8 广告片段（通过 [M3U8AdRemover]）
+/// - TV 遥控器控制：左右快进快退、上下切换集数、确认键播放暂停
+/// - 长按方向键加速快进/快退
+/// - 音量控制和静音
+/// - 自动播放下一集
+/// - 记录每集播放进度
+/// - 屏幕常亮
 class FullScreenPlayerPage extends StatefulWidget {
   final dynamic movie;
   final List<Map<String, String>> episodes;

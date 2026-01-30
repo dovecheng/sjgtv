@@ -9,6 +9,14 @@ import 'package:open_file/open_file.dart';
 import 'package:android_intent_plus/android_intent.dart';
 import 'package:android_intent_plus/flag.dart';
 
+/// 应用更新检查器
+///
+/// 功能：
+/// - 从 GitHub Releases 检查最新版本
+/// - 比较当前版本与最新版本
+/// - 显示更新对话框（含更新说明）
+/// - 支持自动下载 APK 并安装（Android）
+/// - 支持手动跳转到 GitHub 下载页
 class AppUpdater {
   static final Dio _dio = Dio();
   static const String _githubReleasesUrl =

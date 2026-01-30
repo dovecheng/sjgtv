@@ -6,6 +6,12 @@ import 'package:flutter/services.dart';
 import 'package:sjgtv/src/api/service/api_service.dart';
 import 'movie_detail_page.dart';
 
+/// 电影搜索页
+///
+/// 功能：
+/// - 通过本地 shelf 服务搜索电影（聚合多个数据源）
+/// - TV 遥控器友好的搜索框和结果列表
+/// - 点击电影卡片跳转到详情页
 class SearchPage extends StatefulWidget {
   final String? initialQuery;
 
