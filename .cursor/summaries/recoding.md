@@ -168,3 +168,6 @@
 ### 2026-01-30 16:41（wrap-up 补充与执行收尾）
 - wrap-up.md 补充：若没有文件修改则不执行收尾流程
 - 执行收尾：dart analyze（base、app）通过，无优化，更新摘要后提交并推送
+
+### 2026-01-30 16:45（收尾 subagent 改名为 check）
+- wrap-up → checkpoint → check；保留 `.cursor/agents/check.md`，删除 wrap-up.md、checkpoint.md；名称越短越好
