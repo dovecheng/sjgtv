@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:base/log.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:media_kit/media_kit.dart';
@@ -9,6 +10,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sjgtv/src/page/player/player_intents.dart';
 import 'package:sjgtv/src/service/m3u8_ad_remover.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
+
+final Log _log = Log('FullScreenPlayer');
 
 /// Duration 扩展：clamp 方法
 extension DurationClamp on Duration {
@@ -113,7 +116,7 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
     try {
       enable ? await WakelockPlus.enable() : await WakelockPlus.disable();
     } catch (e) {
-      debugPrint('Wakelock控制失败: $e');
+      _log.e(() => 'Wakelock控制失败', e);
     }
   }
 
@@ -213,7 +216,7 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
       await preloadPlayer.seek(Duration.zero);
       await preloadPlayer.dispose();
     } catch (e) {
-      debugPrint('预加载下一集失败: $e');
+      _log.e(() => '预加载下一集失败', e);
     }
   }
 
@@ -283,7 +286,7 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
           _isBuffering.value = false;
         });
       }
-      debugPrint('初始化播放器错误: $e');
+      _log.e(() => '初始化播放器错误', e);
     }
   }
 
@@ -869,10 +872,10 @@ Future<String> _processM3u8Url(String url) async {
       throw Exception('Invalid M3U8: Missing #EXTM3U');
     }
 
-    debugPrint('Cleaned M3U8 saved to: ${file.path}');
+    _log.d(() => 'Cleaned M3U8 saved to: ${file.path}');
     return file.uri.toString();
   } catch (e) {
-    debugPrint('M3U8处理失败，使用原始URL: $e');
+    _log.e(() => 'M3U8处理失败，使用原始URL', e);
     return url;
   }
 }

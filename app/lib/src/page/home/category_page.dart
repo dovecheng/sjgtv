@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:base/api.dart';
+import 'package:base/log.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,6 +11,8 @@ import 'package:sjgtv/src/model/movie.dart';
 import 'package:sjgtv/src/model/tag.dart';
 import 'package:sjgtv/src/page/search/search_page.dart';
 import 'package:sjgtv/src/widget/focusable_movie_card.dart';
+
+final Log _log = Log('MovieHomePage');
 
 /// 电影首页（分类浏览）
 ///
@@ -95,13 +98,13 @@ class _MovieHomePageState extends State<MovieHomePage> {
           }
         });
       } else {
-        debugPrint('获取标签失败: ${result.message}');
+        _log.e(() => '获取标签失败: ${result.message}');
         setState(() {
           _tabs = ['获取标签失败'];
         });
       }
     } catch (e) {
-      debugPrint('获取标签失败: $e');
+      _log.e(() => '获取标签失败', e);
       setState(() {
         _tabs = ['获取标签失败'];
       });
@@ -158,7 +161,7 @@ class _MovieHomePageState extends State<MovieHomePage> {
         });
       }
     } catch (e) {
-      debugPrint('获取电影失败: $e');
+      _log.e(() => '获取电影失败', e);
       setState(() => _hasMore = false);
     } finally {
       setState(() {
@@ -210,7 +213,7 @@ class _MovieHomePageState extends State<MovieHomePage> {
       }
       return '127.0.0.1';
     } catch (e) {
-      debugPrint('获取IP失败: $e');
+      _log.e(() => '获取IP失败', e);
       return '127.0.0.1';
     }
   }

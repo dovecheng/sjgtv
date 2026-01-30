@@ -1,13 +1,15 @@
-import 'package:package_info_plus/package_info_plus.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'dart:io';
-import 'package:open_file/open_file.dart';
+
 import 'package:android_intent_plus/android_intent.dart';
 import 'package:android_intent_plus/flag.dart';
+import 'package:base/log.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+import 'package:open_file/open_file.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 /// 应用更新检查器
 ///
@@ -18,6 +20,7 @@ import 'package:android_intent_plus/flag.dart';
 /// - 支持自动下载 APK 并安装（Android）
 /// - 支持手动跳转到 GitHub 下载页
 class AppUpdater {
+  static final Log _log = Log('AppUpdater');
   static final Dio _dio = Dio();
   static const String _githubReleasesUrl =
       'https://api.github.com/repos/dovecheng/sjgtv/releases/latest';
@@ -36,7 +39,7 @@ class AppUpdater {
 
       // 检查响应是否有效
       if (latestRelease == null || latestRelease['tag_name'] == null) {
-        debugPrint('检查更新: 无有效的发布版本');
+        _log.d(() => '检查更新: 无有效的发布版本');
         return;
       }
 
@@ -58,12 +61,12 @@ class AppUpdater {
     } on DioException catch (e) {
       // 404 表示没有发布版本，静默处理
       if (e.response?.statusCode == 404) {
-        debugPrint('检查更新: 仓库暂无发布版本');
+        _log.d(() => '检查更新: 仓库暂无发布版本');
         return;
       }
-      debugPrint('检查更新失败: $e');
+      _log.e(() => '检查更新失败', e);
     } catch (e) {
-      debugPrint('检查更新失败: $e');
+      _log.e(() => '检查更新失败', e);
     }
   }
 
@@ -225,7 +228,7 @@ class AppUpdater {
         await _installApk(savePath);
       }
     } catch (e) {
-      debugPrint('下载失败: $e');
+      _log.e(() => '下载失败', e);
       setState(() {
         _isDownloading = false;
       });
@@ -251,7 +254,7 @@ class AppUpdater {
           await intent.launch();
         }
       } catch (e) {
-        debugPrint('安装失败: $e');
+        _log.e(() => '安装失败', e);
         // 如果使用intent失败，尝试使用open_file
         await OpenFile.open(apkPath);
       }
