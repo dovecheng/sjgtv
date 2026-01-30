@@ -43,15 +43,15 @@ class _MovieHomePageState extends State<MovieHomePage> {
   }
 
   void _onScroll() {
-    final position = _scrollController.position;
-    final maxScroll = position.maxScrollExtent;
-    final currentScroll = position.pixels;
+    final ScrollPosition position = _scrollController.position;
+    final double maxScroll = position.maxScrollExtent;
+    final double currentScroll = position.pixels;
 
     // Use a small epsilon value (1.0) to account for floating-point precision
     // Also add a debounce to prevent rapid successive calls
 
     if (currentScroll >= maxScroll - 1.0 && _hasMore && !_isLoading) {
-      final now = DateTime.now();
+      final DateTime now = DateTime.now();
       if (_lastLoadMoreTime == null ||
           now.difference(_lastLoadMoreTime!) > Duration(milliseconds: 100)) {
         _lastLoadMoreTime = now;
@@ -71,7 +71,7 @@ class _MovieHomePageState extends State<MovieHomePage> {
 
   Future<void> _fetchTags() async {
     try {
-      final response = await _dio.get(
+      final Response<dynamic> response = await _dio.get<dynamic>(
         'http://localhost:8023/api/tags',
         options: Options(headers: {'Content-Type': 'application/json'}),
       );
@@ -101,10 +101,10 @@ class _MovieHomePageState extends State<MovieHomePage> {
     try {
       setState(() => loadMore ? _isRefreshing = true : _isLoading = true);
 
-      final currentPage = loadMore ? (_currentPageByTag[tag] ?? 0) : 0;
-      final startIndex = currentPage * _moviesPerPage;
+      final int currentPage = loadMore ? (_currentPageByTag[tag] ?? 0) : 0;
+      final int startIndex = currentPage * _moviesPerPage;
 
-      final response = await _dio.get(
+      final Response<dynamic> response = await _dio.get<dynamic>(
         'https://movie.douban.com/j/search_subjects',
         queryParameters: {
           'type': 'movie',
@@ -171,7 +171,7 @@ class _MovieHomePageState extends State<MovieHomePage> {
 
   int _extractYearFromTitle(String title) {
     try {
-      final match = RegExp(r'$(\d{4})$').firstMatch(title);
+      final RegExpMatch? match = RegExp(r'$(\d{4})$').firstMatch(title);
       if (match != null) {
         return int.parse(match.group(1)!);
       }
@@ -185,7 +185,7 @@ class _MovieHomePageState extends State<MovieHomePage> {
 
   Future<String> _getLocalIp() async {
     try {
-      final interfaces = await NetworkInterface.list();
+      final List<NetworkInterface> interfaces = await NetworkInterface.list();
       for (var interface in interfaces) {
         for (var addr in interface.addresses) {
           if (!addr.isLoopback && addr.type == InternetAddressType.IPv4) {
@@ -201,8 +201,8 @@ class _MovieHomePageState extends State<MovieHomePage> {
   }
 
   Future<void> _showQRCodeDialog() async {
-    final ip = await _getLocalIp();
-    final url = 'http://$ip:8023';
+    final String ip = await _getLocalIp();
+    final String url = 'http://$ip:8023';
 
     if (!mounted) return;
 
@@ -292,7 +292,7 @@ class _MovieHomePageState extends State<MovieHomePage> {
               },
               child: Builder(
                 builder: (context) {
-                  final isFocused = Focus.of(context).hasFocus;
+                  final bool isFocused = Focus.of(context).hasFocus;
                   return AnimatedContainer(
                     duration: Duration(milliseconds: 200),
                     padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),

@@ -20,15 +20,15 @@ class AppUpdater {
 
   static Future<void> checkForUpdate(BuildContext context) async {
     try {
-      final packageInfo = await PackageInfo.fromPlatform();
-      final currentVersion = packageInfo.version;
+      final PackageInfo packageInfo = await PackageInfo.fromPlatform();
+      final String currentVersion = packageInfo.version;
 
-      final response = await _dio.get(_githubReleasesUrl);
-      final latestRelease = response.data;
-      final latestVersion = latestRelease['tag_name'].replaceAll('v', '');
-      final releaseUrl = latestRelease['html_url'];
-      final releaseNotes = latestRelease['body'];
-      final apkUrl = _findApkDownloadUrl(latestRelease['assets']);
+      final Response<dynamic> response = await _dio.get<dynamic>(_githubReleasesUrl);
+      final dynamic latestRelease = response.data;
+      final String latestVersion = latestRelease['tag_name'].replaceAll('v', '');
+      final String releaseUrl = latestRelease['html_url'];
+      final String? releaseNotes = latestRelease['body'];
+      final String? apkUrl = _findApkDownloadUrl(latestRelease['assets']);
 
       if (_compareVersions(currentVersion, latestVersion) < 0 &&
           context.mounted) {
@@ -36,7 +36,7 @@ class AppUpdater {
           context,
           releaseUrl,
           latestVersion,
-          releaseNotes,
+          releaseNotes ?? '',
           apkUrl: apkUrl,
         );
       }
@@ -51,7 +51,7 @@ class AppUpdater {
   }
 
   static String? _findApkDownloadUrl(List<dynamic> assets) {
-    for (final asset in assets) {
+    for (final dynamic asset in assets) {
       if (asset['name'].toString().endsWith('.apk')) {
         return asset['browser_download_url'];
       }
@@ -60,12 +60,12 @@ class AppUpdater {
   }
 
   static int _compareVersions(String current, String latest) {
-    final currentParts = current.split('.').map(int.parse).toList();
-    final latestParts = latest.split('.').map(int.parse).toList();
+    final List<int> currentParts = current.split('.').map(int.parse).toList();
+    final List<int> latestParts = latest.split('.').map(int.parse).toList();
 
     for (var i = 0; i < 3; i++) {
-      final currentPart = i < currentParts.length ? currentParts[i] : 0;
-      final latestPart = i < latestParts.length ? latestParts[i] : 0;
+      final int currentPart = i < currentParts.length ? currentParts[i] : 0;
+      final int latestPart = i < latestParts.length ? latestParts[i] : 0;
 
       if (currentPart < latestPart) return -1;
       if (currentPart > latestPart) return 1;
@@ -155,7 +155,7 @@ class AppUpdater {
   ) async {
     try {
       // 请求存储权限
-      final status = await Permission.storage.request();
+      final PermissionStatus status = await Permission.storage.request();
       if (!status.isGranted) {
         if (context.mounted) {
           ScaffoldMessenger.of(
@@ -178,8 +178,8 @@ class AppUpdater {
       });
 
       _cancelToken = CancelToken();
-      final dir = await getTemporaryDirectory();
-      final savePath =
+      final Directory dir = await getTemporaryDirectory();
+      final String savePath =
           '${dir.path}/update_${DateTime.now().millisecondsSinceEpoch}.apk';
 
       await _dio.download(
@@ -225,7 +225,7 @@ class AppUpdater {
     if (await File(apkPath).exists()) {
       try {
         if (Platform.isAndroid) {
-          final intent = AndroidIntent(
+          final AndroidIntent intent = AndroidIntent(
             action: 'action_view',
             type: 'application/vnd.android.package-archive',
             data: Uri.file(apkPath).toString(), // 使用 Uri.file 替代 Uri.fromFile

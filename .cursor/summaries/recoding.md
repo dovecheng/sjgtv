@@ -190,3 +190,11 @@
 
 ### 2026-01-30 17:05（next 执行：提交摘要变更）
 - 提交阶段三更新（复制已完成、下一步 app 重构）至 recoding.md
+
+### 2026-01-30 17:06（app 重构方向分析：状态管理 vs API）
+- **现状**：状态管理 = 全用 StatefulWidget + setState，pubspec 有 provider/flutter_riverpod 但未用；API = Dio 分散在各处（main、category_page、search_page 等）+ shelf 本地服务（api.dart 里 /api/sources|proxies|tags）+ Hive 直读。
+- **建议**：**先 API、后状态管理**。先统一 API 层（Dio + shelf → 一层 API 服务/Retrofit），页面只调 API；再上 Riverpod 时只换数据源，避免先上状态管理时数据来源仍分散。
+
+### 2026-01-30 17:37（Retrofit API 声明、final 显式类型、next 收尾）
+- app 接入 Retrofit：新增 retrofit/json_annotation 依赖，dev 新增 retrofit_generator、json_serializable；新建 `app/lib/services/api_client.dart` 声明本地 shelf 接口（sources/proxies/tags/search），生成 `api_client.g.dart`（生成器对 Map 转换有误已手动修正）
+- final 变量显式声明类型：app/lib（main、api、m3u8_ad_remover、各 widget）、base/lib/src/l10n/provider/l10n_translation_provider.dart、.vscode/dart.code-snippets 中 final 均补全类型；full_screen_player 漏网两处与片段中 key/controller 已补

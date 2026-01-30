@@ -188,11 +188,11 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
   void _preloadNextEpisode() async {
     if (_currentEpisodeIndex >= widget.episodes.length - 1) return;
 
-    final nextUrl = widget.episodes[_currentEpisodeIndex + 1]['url'];
+    final String? nextUrl = widget.episodes[_currentEpisodeIndex + 1]['url'];
     if (nextUrl == null || nextUrl.isEmpty) return;
 
     try {
-      final preloadPlayer = Player();
+      final Player preloadPlayer = Player();
       await preloadPlayer.open(Media(nextUrl));
       await preloadPlayer.pause();
       await preloadPlayer.setVolume(0);
@@ -237,7 +237,7 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
 
     _episodeProgress[_currentEpisodeIndex] = _player.state.position;
 
-    final url = widget.episodes[index]['url'];
+    final String? url = widget.episodes[index]['url'];
     if (url == null || url.isEmpty) {
       setState(() {
         _errorMessage = '无效的视频URL';
@@ -331,7 +331,7 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
   }
 
   void _updateSeekPosition(Duration step) {
-    final newPosition = (_player.state.position + step).clamp(
+    final Duration newPosition = (_player.state.position + step).clamp(
       Duration.zero,
       _player.state.duration,
     );
@@ -349,7 +349,7 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
     _currentSeekSpeed = _seekStep;
 
     if (step != Duration.zero) {
-      final newPosition = (_player.state.position + step).clamp(
+      final Duration newPosition = (_player.state.position + step).clamp(
         Duration.zero,
         _player.state.duration,
       );
@@ -389,7 +389,7 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
   }
 
   KeyEventResult _handleKeyDown(KeyDownEvent event) {
-    final now = DateTime.now();
+    final DateTime now = DateTime.now();
     if (_lastKeyEventTime != null &&
         now.difference(_lastKeyEventTime!) < Duration(milliseconds: 100)) {
       return KeyEventResult.handled;
@@ -424,17 +424,17 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
         _stopSeek(Duration.zero);
         return KeyEventResult.handled;
       case LogicalKeyboardKey.audioVolumeUp:
-        final newVolume = (_volume + 5).clamp(0.0, 100.0);
+        final double newVolume = (_volume + 5).clamp(0.0, 100.0);
         _player.setVolume(newVolume);
         _displayVolumeHUD(newVolume);
         return KeyEventResult.handled;
       case LogicalKeyboardKey.audioVolumeDown:
-        final newVolume = (_volume - 5).clamp(0.0, 100.0);
+        final double newVolume = (_volume - 5).clamp(0.0, 100.0);
         _player.setVolume(newVolume);
         _displayVolumeHUD(newVolume);
         return KeyEventResult.handled;
       case LogicalKeyboardKey.audioVolumeMute:
-        final newVolume = _volume > 0 ? 0.0 : 100.0;
+        final double newVolume = _volume > 0 ? 0.0 : 100.0;
         _player.setVolume(newVolume);
         _displayVolumeHUD(newVolume);
         return KeyEventResult.handled;
@@ -453,9 +453,9 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
 
   String _formatDuration(Duration duration) {
     String twoDigits(int n) => n.toString().padLeft(2, '0');
-    final hours = duration.inHours;
-    final minutes = duration.inMinutes.remainder(60);
-    final seconds = duration.inSeconds.remainder(60);
+    final int hours = duration.inHours;
+    final int minutes = duration.inMinutes.remainder(60);
+    final int seconds = duration.inSeconds.remainder(60);
 
     return hours > 0
         ? '${twoDigits(hours)}:${twoDigits(minutes)}:${twoDigits(seconds)}'
@@ -643,8 +643,8 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
               child: StreamBuilder<Duration>(
                 stream: _player.stream.position,
                 builder: (context, snapshot) {
-                  final position = snapshot.data ?? Duration.zero;
-                  final duration = _player.state.duration;
+                  final Duration position = snapshot.data ?? Duration.zero;
+                  final Duration duration = _player.state.duration;
                   return LinearProgressIndicator(
                     value: duration.inMilliseconds > 0
                         ? position.inMilliseconds / duration.inMilliseconds
@@ -711,7 +711,7 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
                           size: 24,
                         ),
                         onPressed: () {
-                          final newVolume = _volume > 0 ? 0.0 : 50.0;
+                          final double newVolume = _volume > 0 ? 0.0 : 50.0;
                           _player.setVolume(newVolume);
                           _displayVolumeHUD(newVolume);
                         },
@@ -844,9 +844,9 @@ Future<String> _processM3u8Url(String url) async {
   if (!url.toLowerCase().endsWith('.m3u8')) return url;
 
   try {
-    final cleanM3u8 = await M3U8AdRemover.fixAdM3u8Ai(url);
-    final dir = await getTemporaryDirectory();
-    final file = File(
+    final String cleanM3u8 = await M3U8AdRemover.fixAdM3u8Ai(url);
+    final Directory dir = await getTemporaryDirectory();
+    final File file = File(
       '${dir.path}/cleaned_${DateTime.now().millisecondsSinceEpoch}.m3u8',
     );
     await file.writeAsString(cleanM3u8);

@@ -14,7 +14,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // 初始化Hive
-  final appDocumentDir = await getApplicationDocumentsDirectory();
+  final Directory appDocumentDir = await getApplicationDocumentsDirectory();
   Hive.init(appDocumentDir.path);
 
   await Hive.openBox('sources');
@@ -25,17 +25,17 @@ void main() async {
   await _ConfigLoader().loadInitialConfig();
 
   // 启动Web服务
-  final server = await startServer();
+  final HttpServer server = await startServer();
 
   runApp(MyApp(server: server)); // 传递server参数
 }
 
 class _ConfigLoader {
   Future<void> loadInitialConfig() async {
-    final uuid = Uuid();
-    final sourcesBox = Hive.box('sources');
-    final proxiesBox = Hive.box('proxies');
-    final tagsBox = Hive.box('tags');
+    final Uuid uuid = Uuid();
+    final Box<dynamic> sourcesBox = Hive.box('sources');
+    final Box<dynamic> proxiesBox = Hive.box('proxies');
+    final Box<dynamic> tagsBox = Hive.box('tags');
 
     if (sourcesBox.isEmpty) {
       await _initializeSources(sourcesBox, uuid);
@@ -56,23 +56,23 @@ class _ConfigLoader {
     }
   }
 
-  Future<void> _initializeSources(Box sourcesBox, Uuid uuid) async {
+  Future<void> _initializeSources(Box<dynamic> sourcesBox, Uuid uuid) async {
     try {
-      final dio = Dio();
+      final Dio dio = Dio();
       log.d(() => '开始加载 sources 配置...');
-      final response = await dio.get(
+      final Response<dynamic> response = await dio.get<dynamic>(
         'https://ktv.aini.us.kg/config.json',
         options: Options(responseType: ResponseType.json),
       );
 
       if (response.statusCode == 200) {
-        final config = response.data;
+        final dynamic config = response.data;
         log.d(() => '成功获取 sources 配置，共${config['sources']?.length ?? 0}个源');
 
         int savedCount = 0;
-        for (final source in config['sources']) {
+        for (final dynamic source in config['sources']) {
           try {
-            final id = uuid.v4();
+            final String id = uuid.v4();
             sourcesBox.put(id, {
               ...source,
               'id': id,
@@ -94,20 +94,20 @@ class _ConfigLoader {
     }
   }
 
-  Future<void> _initializeProxies(Box proxiesBox, Uuid uuid) async {
+  Future<void> _initializeProxies(Box<dynamic> proxiesBox, Uuid uuid) async {
     try {
-      final dio = Dio();
+      final Dio dio = Dio();
       log.d(() => '开始加载 proxies 配置...');
-      final response = await dio.get(
+      final Response<dynamic> response = await dio.get<dynamic>(
         'https://ktv.aini.us.kg/config.json',
         options: Options(responseType: ResponseType.json),
       );
 
       if (response.statusCode == 200) {
-        final config = response.data;
+        final dynamic config = response.data;
         log.d(() => '成功获取 proxies 配置');
 
-        final pid = uuid.v4();
+        final String pid = uuid.v4();
         proxiesBox.put(pid, {
           "id": pid,
           "url": config['proxy']['url'],
@@ -125,22 +125,22 @@ class _ConfigLoader {
     }
   }
 
-  Future<void> _initializeTags(Box tagsBox, Uuid uuid) async {
+  Future<void> _initializeTags(Box<dynamic> tagsBox, Uuid uuid) async {
     try {
-      final dio = Dio();
+      final Dio dio = Dio();
       log.d(() => '开始加载 tags 配置...');
-      final response = await dio.get(
+      final Response<dynamic> response = await dio.get<dynamic>(
         'https://ktv.aini.us.kg/config.json',
         options: Options(responseType: ResponseType.json),
       );
 
       if (response.statusCode == 200) {
-        final config = response.data;
+        final dynamic config = response.data;
         log.d(() => '成功获取 tags 配置，共${config['tags']?.length ?? 0}个标签');
 
         int tagCount = 0;
-        for (final tag in config['tags']) {
-          final tid = uuid.v4();
+        for (final dynamic tag in config['tags']) {
+          final String tid = uuid.v4();
           tagsBox.put(tid, {
             ...tag,
             'id': tid,

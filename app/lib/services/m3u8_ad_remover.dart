@@ -8,7 +8,7 @@ class M3U8AdRemover {
     String m3u8Url, [
     Map<String, String>? headers,
   ]) async {
-    final startTime = DateTime.now().millisecondsSinceEpoch;
+    final int startTime = DateTime.now().millisecondsSinceEpoch;
     headers ??= {};
 
     _log.d(() => '处理地址: $m3u8Url');
@@ -28,7 +28,7 @@ class M3U8AdRemover {
         String.fromCharCodes(str.runes.toList().reversed);
 
     Future<String> fetchM3u8(String url) async {
-      final response = await http.get(Uri.parse(url), headers: headers);
+      final http.Response response = await http.get(Uri.parse(url), headers: headers);
       if (response.statusCode == 200) {
         return response.body.trim();
       }
@@ -40,8 +40,8 @@ class M3U8AdRemover {
       nowPath = nowPath;
 
       try {
-        final baseUri = Uri.parse(fromPath);
-        final resolvedUri = baseUri.resolve(nowPath);
+        final Uri baseUri = Uri.parse(fromPath);
+        final Uri resolvedUri = baseUri.resolve(nowPath);
         return resolvedUri.toString();
       } catch (e) {
         // Fallback for invalid URIs
@@ -50,7 +50,7 @@ class M3U8AdRemover {
         }
         if (fromPath.isEmpty) return nowPath;
 
-        final separator = fromPath.endsWith('/') || nowPath.startsWith('/')
+        final String separator = fromPath.endsWith('/') || nowPath.startsWith('/')
             ? ''
             : '/';
         return '$fromPath$separator$nowPath';
@@ -69,11 +69,11 @@ class M3U8AdRemover {
     }
 
     List<String> compressEmptyLines(List<String> lines) {
-      final result = <String>[];
+      final List<String> result = <String>[];
       bool lastLineWasEmpty = false;
 
-      for (final line in lines) {
-        final isEmpty = line.trim().isEmpty;
+      for (final String line in lines) {
+        final bool isEmpty = line.trim().isEmpty;
         if (!isEmpty || !lastLineWasEmpty) {
           result.add(line);
         }
@@ -109,7 +109,7 @@ class M3U8AdRemover {
 
     // Find ad segments
     Map<String, dynamic> findAdSegments(List<String> segments, String baseUrl) {
-      final cleanSegments = List<String>.from(segments);
+      final List<String> cleanSegments = List<String>.from(segments);
       String firstStr = "";
       String secondStr = "";
       int maxSimilarity = 0;
@@ -117,12 +117,12 @@ class M3U8AdRemover {
       int secondaryCount = 0;
 
       // First pass: determine firstStr
-      for (final segment in cleanSegments) {
+      for (final String segment in cleanSegments) {
         if (!segment.startsWith("#")) {
           if (firstStr.isEmpty) {
             firstStr = segment;
           } else {
-            final similarity = compareSameLen(firstStr, segment);
+            final int similarity = compareSameLen(firstStr, segment);
             if (maxSimilarity > similarity + 1) {
               if (secondStr.length < 5) secondStr = segment;
               secondaryCount++;
@@ -136,17 +136,17 @@ class M3U8AdRemover {
       }
       if (secondaryCount > primaryCount) firstStr = secondStr;
 
-      final firstStrLen = firstStr.length;
-      final halfLength = (cleanSegments.length ~/ 2).toString().length;
+      final int firstStrLen = firstStr.length;
+      final int halfLength = (cleanSegments.length ~/ 2).toString().length;
 
       // Second pass: find lastStr
       int maxc = 0;
       String? lastStr;
-      for (final segment in cleanSegments.reversed) {
+      for (final String segment in cleanSegments.reversed) {
         if (!segment.startsWith("#")) {
-          final reversedFirstStr = reverseString(firstStr);
-          final reversedX = reverseString(segment);
-          final similarity = compareSameLen(reversedFirstStr, reversedX);
+          final String reversedFirstStr = reverseString(firstStr);
+          final String reversedX = reverseString(segment);
+          final int similarity = compareSameLen(reversedFirstStr, reversedX);
           maxSimilarity = compareSameLen(firstStr, segment);
           maxc++;
           if (firstStrLen - maxSimilarity <= halfLength + similarity ||
@@ -159,17 +159,17 @@ class M3U8AdRemover {
 
       _log.d(() => '最后切片: $lastStr');
 
-      final adSegments = <String>[];
-      final cleanedSegments = <String>[];
+      final List<String> adSegments = <String>[];
+      final List<String> cleanedSegments = <String>[];
 
       // Third pass: process segments
       for (int i = 0; i < cleanSegments.length; i++) {
-        final segment = cleanSegments[i];
+        final String segment = cleanSegments[i];
         if (segment.startsWith("#")) {
           if (segment.contains("URI=")) {
-            final uriMatch = RegExp(r'URI="([^"]*)"').firstMatch(segment);
+            final RegExpMatch? uriMatch = RegExp(r'URI="([^"]*)"').firstMatch(segment);
             if (uriMatch != null) {
-              final updatedUri = urljoin(baseUrl, uriMatch.group(1)!);
+              final String updatedUri = urljoin(baseUrl, uriMatch.group(1)!);
               cleanedSegments.add(
                 segment.replaceFirst(
                   RegExp(r'URI="([^"]*)"'),
@@ -199,9 +199,9 @@ class M3U8AdRemover {
       return {'adSegments': adSegments, 'cleanSegments': cleanedSegments};
     }
 
-    final result = findAdSegments(lines, m3u8Url);
-    final cleanSegments = result['cleanSegments'] as List<String>;
-    final adSegments = result['adSegments'] as List<String>;
+    final Map<String, dynamic> result = findAdSegments(lines, m3u8Url);
+    final List<String> cleanSegments = result['cleanSegments'] as List<String>;
+    final List<String> adSegments = result['adSegments'] as List<String>;
 
     _log.d(() => '广告分片: $adSegments');
     _log.d(() => '处理耗时: ${DateTime.now().millisecondsSinceEpoch - startTime} ms');

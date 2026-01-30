@@ -68,7 +68,7 @@ class _SearchPageState extends State<SearchPage> {
     });
 
     try {
-      final response = await _dio.get(
+      final Response<dynamic> response = await _dio.get<dynamic>(
         'http://localhost:8023/api/search',
         queryParameters: {'wd': keyword, 'limit': 100},
         cancelToken: _cancelToken.isCancelled
@@ -179,7 +179,7 @@ class _SearchPageState extends State<SearchPage> {
           },
           child: Builder(
             builder: (context) {
-              final hasFocus = Focus.of(context).hasFocus;
+              final bool hasFocus = Focus.of(context).hasFocus;
               return AnimatedContainer(
                 duration: const Duration(milliseconds: 200),
                 margin: const EdgeInsets.all(8),
@@ -319,7 +319,7 @@ class _SearchPageState extends State<SearchPage> {
   Widget _buildMovieGrid() {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final crossAxisCount = (constraints.maxWidth / 200).floor().clamp(2, 6);
+        final int crossAxisCount = (constraints.maxWidth / 200).floor().clamp(2, 6);
 
         return Column(
           children: [
@@ -351,7 +351,7 @@ class _SearchPageState extends State<SearchPage> {
                 ),
                 itemCount: _movies.length,
                 itemBuilder: (context, index) {
-                  final movie = _movies[index];
+                  final dynamic movie = _movies[index];
                   return _buildMovieCard(movie);
                 },
               ),
@@ -380,7 +380,7 @@ class _SearchPageState extends State<SearchPage> {
       },
       child: Builder(
         builder: (context) {
-          final hasFocus = Focus.of(context).hasFocus;
+          final bool hasFocus = Focus.of(context).hasFocus;
           return AnimatedContainer(
             duration: const Duration(milliseconds: 200),
             margin: const EdgeInsets.all(4),

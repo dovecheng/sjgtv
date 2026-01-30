@@ -38,7 +38,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
 
   void _handleScroll() {
     if (_episodesScrollController.hasClients) {
-      final scrollPosition = _episodesScrollController.position;
+      final ScrollPosition scrollPosition = _episodesScrollController.position;
       if (scrollPosition.isScrollingNotifier.value && _isEpisodesFocused) {
         // Maintain focus during scroll
         _episodesFocusNode.requestFocus();
@@ -57,11 +57,11 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
 
   void _parseEpisodes() {
     _episodes.clear();
-    final playUrl = widget.movie['vod_play_url'];
-    if (playUrl != null && playUrl is String) {
-      final parts = playUrl.split('#');
+    final String? playUrl = widget.movie['vod_play_url'] as String?;
+    if (playUrl != null) {
+      final List<String> parts = playUrl.split('#');
       for (var part in parts) {
-        final episodeParts = part.split('\$');
+        final List<String> episodeParts = part.split('\$');
         if (episodeParts.length == 2) {
           _episodes.add({'title': episodeParts[0], 'url': episodeParts[1]});
         }
@@ -89,7 +89,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
       body: Focus(
@@ -286,7 +286,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                                   WidgetsBinding.instance.addPostFrameCallback((
                                     _,
                                   ) {
-                                    final context = _episodeKeys[_focusedIndex]
+                                    final BuildContext? context = _episodeKeys[_focusedIndex]
                                         .currentContext;
                                     if (context != null) {
                                       Scrollable.ensureVisible(
@@ -309,7 +309,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                                   WidgetsBinding.instance.addPostFrameCallback((
                                     _,
                                   ) {
-                                    final context = _episodeKeys[_focusedIndex]
+                                    final BuildContext? context = _episodeKeys[_focusedIndex]
                                         .currentContext;
                                     if (context != null) {
                                       Scrollable.ensureVisible(
@@ -351,7 +351,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                               ),
                               itemCount: _episodes.length,
                               itemBuilder: (context, index) {
-                                final isFocused =
+                                final bool isFocused =
                                     _isEpisodesFocused &&
                                     _focusedIndex == index;
                                 return Padding(

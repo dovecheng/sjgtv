@@ -22,32 +22,32 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Initialize Hive
-  final appDocumentDir = await getApplicationDocumentsDirectory();
+  final Directory appDocumentDir = await getApplicationDocumentsDirectory();
   Hive.init(appDocumentDir.path);
   await Hive.openBox('sources');
   await Hive.openBox('proxies');
   await Hive.openBox('tags');
 
   // Start web server
-  final server = await startServer();
+  final HttpServer server = await startServer();
 
   runApp(MyApp(server: server));
 }
 
 Future<Directory> _copyAssetsToDocuments() async {
-  final appDir = await getApplicationDocumentsDirectory();
-  final webDir = Directory('${appDir.path}/web');
+  final Directory appDir = await getApplicationDocumentsDirectory();
+  final Directory webDir = Directory('${appDir.path}/web');
 
   if (!await webDir.exists()) {
     await webDir.create(recursive: true);
   }
 
-  final assets = Assets.web.values;
+  final Iterable<String> assets = Assets.web.values;
 
-  for (final asset in assets) {
+  for (final String asset in assets) {
     try {
-      final content = await rootBundle.loadString(asset);
-      final filename = asset.split('/').last;
+      final String content = await rootBundle.loadString(asset);
+      final String filename = asset.split('/').last;
       await File('${webDir.path}/$filename').writeAsString(content);
     } catch (e, s) {
       _log.w(() => 'Error copying $asset: $e', e, s);
@@ -58,14 +58,14 @@ Future<Directory> _copyAssetsToDocuments() async {
 }
 
 Future<HttpServer> startServer({int port = 8023}) async {
-  final webDir = await _copyAssetsToDocuments();
+  final Directory webDir = await _copyAssetsToDocuments();
 
-  final staticHandler = createStaticHandler(
+  final Handler staticHandler = createStaticHandler(
     webDir.path,
     defaultDocument: 'index.html',
   );
 
-  final router = shelf_router.Router()
+  final shelf_router.Router router = shelf_router.Router()
     ..options('/api/<any|.*>', (Request request) => Response.ok(''))
     // Sources endpoints
     ..get('/api/sources', _handleGetSources)
@@ -89,7 +89,7 @@ Future<HttpServer> startServer({int port = 8023}) async {
     ..get('/', staticHandler)
     ..get('/<any|.*>', staticHandler);
 
-  final handler = const Pipeline()
+  final Handler handler = const Pipeline()
       .addMiddleware(logRequests())
       .addMiddleware(corsHeaders())
       .addHandler(router.call);
@@ -135,8 +135,8 @@ class SourceStorage {
 
   // Source methods
   static Future<List<Source>> getAllSources() async {
-    final box = Hive.box(_boxName);
-    final sources = box.values
+    final Box<dynamic> box = Hive.box(_boxName);
+    final List<Source> sources = box.values
         .map((e) => Source.fromJson(Map<String, dynamic>.from(e)))
         .toList();
     sources.sort((a, b) => b.createdAt.compareTo(a.createdAt));
@@ -144,17 +144,17 @@ class SourceStorage {
   }
 
   static Future<Source> addSource(Source source) async {
-    final box = Hive.box(_boxName);
+    final Box<dynamic> box = Hive.box(_boxName);
     await box.put(source.id, source.toJson());
     return source;
   }
 
   static Future<Source> toggleSource(String id) async {
-    final box = Hive.box(_boxName);
-    final sourceJson = box.get(id);
+    final Box<dynamic> box = Hive.box(_boxName);
+    final dynamic sourceJson = box.get(id);
     if (sourceJson == null) throw Exception('Source not found');
 
-    final source = Source.fromJson(Map<String, dynamic>.from(sourceJson));
+    final Source source = Source.fromJson(Map<String, dynamic>.from(sourceJson));
     source.disabled = !source.disabled;
     source.updatedAt = DateTime.now();
     await box.put(id, source.toJson());
@@ -162,35 +162,35 @@ class SourceStorage {
   }
 
   static Future<void> deleteSource(String id) async {
-    final box = Hive.box(_boxName);
+    final Box<dynamic> box = Hive.box(_boxName);
     await box.delete(id);
   }
 
   // Proxy methods
   static Future<Proxy> addProxy(Proxy proxy) async {
-    final box = Hive.box(_proxyBoxName);
+    final Box<dynamic> box = Hive.box(_proxyBoxName);
     await box.put(proxy.id, proxy.toJson());
     return proxy;
   }
 
   static Future<List<Proxy>> getAllProxies() async {
-    final box = Hive.box(_proxyBoxName);
+    final Box<dynamic> box = Hive.box(_proxyBoxName);
     return box.values
         .map((e) => Proxy.fromJson(Map<String, dynamic>.from(e)))
         .toList();
   }
 
   static Future<void> deleteProxy(String id) async {
-    final box = Hive.box(_proxyBoxName);
+    final Box<dynamic> box = Hive.box(_proxyBoxName);
     await box.delete(id);
   }
 
   static Future<Proxy> toggleProxy(String id) async {
-    final box = await Hive.openBox(_proxyBoxName);
-    final proxyJson = box.get(id);
+    final Box<dynamic> box = await Hive.openBox(_proxyBoxName);
+    final dynamic proxyJson = box.get(id);
     if (proxyJson == null) throw Exception('Proxy not found');
 
-    final proxy = Proxy.fromJson(Map<String, dynamic>.from(proxyJson));
+    final Proxy proxy = Proxy.fromJson(Map<String, dynamic>.from(proxyJson));
     proxy.enabled = !proxy.enabled;
     proxy.updatedAt = DateTime.now();
     await box.put(id, proxy.toJson());
@@ -199,8 +199,8 @@ class SourceStorage {
 
   // Tag methods
   static Future<List<Tag>> getAllTags() async {
-    final box = Hive.box(_tagBoxName);
-    final tags = box.values
+    final Box<dynamic> box = Hive.box(_tagBoxName);
+    final List<Tag> tags = box.values
         .map((e) => Tag.fromJson(Map<String, dynamic>.from(e)))
         .toList();
     tags.sort((a, b) => a.order.compareTo(b.order));
@@ -208,28 +208,28 @@ class SourceStorage {
   }
 
   static Future<Tag> addTag(Tag tag) async {
-    final box = Hive.box(_tagBoxName);
+    final Box<dynamic> box = Hive.box(_tagBoxName);
     await box.put(tag.id, tag.toJson());
     return tag;
   }
 
   static Future<Tag> updateTag(Tag tag) async {
-    final box = Hive.box(_tagBoxName);
+    final Box<dynamic> box = Hive.box(_tagBoxName);
     await box.put(tag.id, tag.toJson());
     return tag;
   }
 
   static Future<void> deleteTag(String id) async {
-    final box = Hive.box(_tagBoxName);
+    final Box<dynamic> box = Hive.box(_tagBoxName);
     await box.delete(id);
   }
 
   static Future<void> updateTagOrder(List<String> tagIds) async {
-    final box = Hive.box(_tagBoxName);
+    final Box<dynamic> box = Hive.box(_tagBoxName);
     for (int i = 0; i < tagIds.length; i++) {
-      final tagJson = box.get(tagIds[i]);
+      final dynamic tagJson = box.get(tagIds[i]);
       if (tagJson != null) {
-        final tag = Tag.fromJson(Map<String, dynamic>.from(tagJson));
+        final Tag tag = Tag.fromJson(Map<String, dynamic>.from(tagJson));
         tag.order = i;
         await box.put(tag.id, tag.toJson());
       }
@@ -371,7 +371,7 @@ class Tag {
 // API handlers for sources
 Future<Response> _handleGetSources(Request request) async {
   try {
-    final sources = await SourceStorage.getAllSources();
+    final List<Source> sources = await SourceStorage.getAllSources();
     return _createJsonResponse(sources);
   } catch (e) {
     return _createErrorResponse('获取源列表失败', 500, e);
@@ -380,8 +380,8 @@ Future<Response> _handleGetSources(Request request) async {
 
 Future<Response> _handleAddSource(Request request) async {
   try {
-    final body = await request.readAsString();
-    final data = jsonDecode(body);
+    final String body = await request.readAsString();
+    final dynamic data = jsonDecode(body);
 
     if (data['name'] == null || data['url'] == null) {
       throw Exception('名称和URL不能为空');
@@ -397,7 +397,7 @@ Future<Response> _handleAddSource(Request request) async {
       apiUrl += 'api.php/provide/vod';
     }
 
-    final source = Source(
+    final Source source = Source(
       id: Uuid().v4(),
       name: data['name'].trim(),
       url: apiUrl,
@@ -405,7 +405,7 @@ Future<Response> _handleAddSource(Request request) async {
       tagIds: List<String>.from(data['tagIds'] ?? []),
     );
 
-    final newSource = await SourceStorage.addSource(source);
+    final Source newSource = await SourceStorage.addSource(source);
 
     return _createJsonResponse({
       'success': true,
@@ -419,10 +419,10 @@ Future<Response> _handleAddSource(Request request) async {
 
 Future<Response> _handleToggleSource(Request request) async {
   try {
-    final id = request.url.queryParameters['id'];
+    final String? id = request.url.queryParameters['id'];
     if (id == null) throw Exception('缺少ID参数');
 
-    final updatedSource = await SourceStorage.toggleSource(id);
+    final Source updatedSource = await SourceStorage.toggleSource(id);
     return _createJsonResponse({
       'success': true,
       'data': updatedSource.toJson(),
@@ -434,7 +434,7 @@ Future<Response> _handleToggleSource(Request request) async {
 
 Future<Response> _handleDeleteSource(Request request) async {
   try {
-    final id = request.url.queryParameters['id'];
+    final String? id = request.url.queryParameters['id'];
     if (id == null) throw Exception('缺少ID参数');
 
     await SourceStorage.deleteSource(id);
@@ -447,7 +447,7 @@ Future<Response> _handleDeleteSource(Request request) async {
 // API handlers for proxies
 Future<Response> _handleGetProxies(Request request) async {
   try {
-    final proxies = await SourceStorage.getAllProxies();
+    final List<Proxy> proxies = await SourceStorage.getAllProxies();
     return _createJsonResponse(proxies);
   } catch (e) {
     return _createErrorResponse('获取代理列表失败', 500, e);
@@ -456,8 +456,8 @@ Future<Response> _handleGetProxies(Request request) async {
 
 Future<Response> _handleAddProxy(Request request) async {
   try {
-    final body = await request.readAsString();
-    final data = jsonDecode(body);
+    final String body = await request.readAsString();
+    final dynamic data = jsonDecode(body);
 
     if (data['url'] == null) {
       throw Exception('URL不能为空');
@@ -467,14 +467,14 @@ Future<Response> _handleAddProxy(Request request) async {
       throw Exception('代理名称不能为空');
     }
 
-    final url = data['url'].toString().trim();
+    final String url = data['url'].toString().trim();
     if (!_isValidUrl(url)) {
       throw Exception('请输入有效的URL地址');
     }
 
-    final proxy = Proxy(id: Uuid().v4(), url: url, name: data['name']);
+    final Proxy proxy = Proxy(id: Uuid().v4(), url: url, name: data['name']);
 
-    final newProxy = await SourceStorage.addProxy(proxy);
+    final Proxy newProxy = await SourceStorage.addProxy(proxy);
 
     return _createJsonResponse({
       'success': true,
@@ -488,10 +488,10 @@ Future<Response> _handleAddProxy(Request request) async {
 
 Future<Response> _handleToggleProxy(Request request) async {
   try {
-    final id = request.url.queryParameters['id'];
+    final String? id = request.url.queryParameters['id'];
     if (id == null) throw Exception('缺少ID参数');
 
-    final updatedProxy = await SourceStorage.toggleProxy(id);
+    final Proxy updatedProxy = await SourceStorage.toggleProxy(id);
     return _createJsonResponse({
       'success': true,
       'data': updatedProxy.toJson(),
@@ -503,7 +503,7 @@ Future<Response> _handleToggleProxy(Request request) async {
 
 Future<Response> _handleDeleteProxy(Request request) async {
   try {
-    final id = request.url.queryParameters['id'];
+    final String? id = request.url.queryParameters['id'];
     if (id == null) throw Exception('缺少ID参数');
 
     await SourceStorage.deleteProxy(id);
@@ -516,7 +516,7 @@ Future<Response> _handleDeleteProxy(Request request) async {
 // API handlers for tags
 Future<Response> _handleGetTags(Request request) async {
   try {
-    final tags = await SourceStorage.getAllTags();
+    final List<Tag> tags = await SourceStorage.getAllTags();
     return _createJsonResponse(tags);
   } catch (e) {
     return _createErrorResponse('获取标签列表失败', 500, e);
@@ -525,26 +525,26 @@ Future<Response> _handleGetTags(Request request) async {
 
 Future<Response> _handleAddTag(Request request) async {
   try {
-    final body = await request.readAsString();
-    final data = jsonDecode(body);
+    final String body = await request.readAsString();
+    final dynamic data = jsonDecode(body);
 
     if (data['name'] == null) {
       throw Exception('标签名称不能为空');
     }
 
-    final tags = await SourceStorage.getAllTags();
-    final maxOrder = tags.isEmpty
+    final List<Tag> tags = await SourceStorage.getAllTags();
+    final int maxOrder = tags.isEmpty
         ? 0
         : tags.map((t) => t.order).reduce((a, b) => a > b ? a : b);
 
-    final tag = Tag(
+    final Tag tag = Tag(
       id: Uuid().v4(),
       name: data['name'].toString().trim(),
       color: data['color']?.toString() ?? '#4285F4',
       order: maxOrder + 1,
     );
 
-    final newTag = await SourceStorage.addTag(tag);
+    final Tag newTag = await SourceStorage.addTag(tag);
 
     return _createJsonResponse({
       'success': true,
@@ -558,20 +558,20 @@ Future<Response> _handleAddTag(Request request) async {
 
 Future<Response> _handleUpdateTag(Request request) async {
   try {
-    final body = await request.readAsString();
-    final data = jsonDecode(body);
+    final String body = await request.readAsString();
+    final dynamic data = jsonDecode(body);
 
     if (data['id'] == null || data['name'] == null) {
       throw Exception('ID和名称不能为空');
     }
 
-    final tags = await SourceStorage.getAllTags();
-    final existingTag = tags.firstWhere(
+    final List<Tag> tags = await SourceStorage.getAllTags();
+    final Tag existingTag = tags.firstWhere(
       (t) => t.id == data['id'],
       orElse: () => throw Exception('标签不存在'),
     );
 
-    final updatedTag = Tag(
+    final Tag updatedTag = Tag(
       id: existingTag.id,
       name: data['name'].toString().trim(),
       color: data['color']?.toString() ?? existingTag.color,
@@ -594,14 +594,14 @@ Future<Response> _handleUpdateTag(Request request) async {
 
 Future<Response> _handleUpdateTagOrder(Request request) async {
   try {
-    final body = await request.readAsString();
-    final data = jsonDecode(body);
+    final String body = await request.readAsString();
+    final dynamic data = jsonDecode(body);
 
     if (data['tagIds'] == null || data['tagIds'] is! List) {
       throw Exception('需要标签ID数组');
     }
 
-    final tagIds = List<String>.from(data['tagIds']);
+    final List<String> tagIds = List<String>.from(data['tagIds']);
     await SourceStorage.updateTagOrder(tagIds);
 
     return _createJsonResponse({'success': true, 'message': '标签顺序更新成功'});
@@ -612,7 +612,7 @@ Future<Response> _handleUpdateTagOrder(Request request) async {
 
 Future<Response> _handleDeleteTag(Request request) async {
   try {
-    final id = request.url.queryParameters['id'];
+    final String? id = request.url.queryParameters['id'];
     if (id == null) throw Exception('缺少ID参数');
 
     await SourceStorage.deleteTag(id);
@@ -624,20 +624,20 @@ Future<Response> _handleDeleteTag(Request request) async {
 
 // Search handler
 Future<Response> _handleSearchRequest(Request request) async {
-  final wd = request.url.queryParameters['wd'] ?? '';
+  final String wd = request.url.queryParameters['wd'] ?? '';
   Dio? dio;
 
   try {
-    final sources = await SourceStorage.getAllSources();
-    final activeSources = sources.where((s) => !s.disabled).toList();
+    final List<Source> sources = await SourceStorage.getAllSources();
+    final List<Source> activeSources = sources.where((s) => !s.disabled).toList();
 
     if (activeSources.isEmpty) {
       return _createJsonResponse({'code': 0, 'msg': "没有可用的源", 'list': []});
     }
 
-    final proxyBox = Hive.box(SourceStorage._proxyBoxName);
-    final proxyList = proxyBox.values.toList();
-    final activeProxy = proxyList.firstWhere(
+    final Box<dynamic> proxyBox = Hive.box(SourceStorage._proxyBoxName);
+    final List<dynamic> proxyList = proxyBox.values.toList();
+    final dynamic activeProxy = proxyList.firstWhere(
       (proxy) => proxy['enabled'] == true,
       orElse: () => null,
     );
@@ -646,15 +646,15 @@ Future<Response> _handleSearchRequest(Request request) async {
     dio.options.connectTimeout = const Duration(seconds: 5);
     dio.options.receiveTimeout = const Duration(seconds: 5);
 
-    final results = await Future.wait(
-      activeSources.map((source) async {
-        final baseUrl = activeProxy != null
+    final List<dynamic> results = await Future.wait<dynamic>(
+      activeSources.map((Source source) async {
+        final String baseUrl = activeProxy != null
             ? '${activeProxy['url']}/${source.url}'
             : source.url;
-        final queryParams = {'ac': 'videolist', 'wd': wd};
+        final Map<String, String> queryParams = {'ac': 'videolist', 'wd': wd};
 
         try {
-          final response = await dio!.get(
+          final dynamic response = await dio!.get<dynamic>(
             baseUrl,
             queryParameters: queryParams,
             options: Options(
@@ -667,7 +667,7 @@ Future<Response> _handleSearchRequest(Request request) async {
 
           if (response.statusCode == 200) {
             // 确保正确处理返回数据
-            final data = response.data;
+            final dynamic data = response.data;
             if (data is String) {
               return jsonDecode(data);
             }
@@ -681,9 +681,9 @@ Future<Response> _handleSearchRequest(Request request) async {
       }),
     );
 
-    final validResults = results
+    final List<dynamic> validResults = results
         .where(
-          (r) =>
+          (dynamic r) =>
               r != null &&
               (r['code'] == 1 || r['code'] == '1') &&
               r['list'] != null &&
@@ -695,9 +695,9 @@ Future<Response> _handleSearchRequest(Request request) async {
       return _createJsonResponse({'code': 0, 'msg': "未找到相关内容", 'list': []});
     }
 
-    final mergedList = _mergeResults(validResults, activeSources);
+    final List<dynamic> mergedList = _mergeResults(validResults, activeSources);
 
-    final response = {
+    final Map<String, dynamic> response = {
       'code': 1,
       'msg': "数据列表",
       'total': mergedList.length,
@@ -713,19 +713,19 @@ Future<Response> _handleSearchRequest(Request request) async {
 }
 
 List<dynamic> _mergeResults(List<dynamic> results, List<Source> sources) {
-  final mergedList = <dynamic>[];
-  final seenIds = <String>{};
+  final List<dynamic> mergedList = <dynamic>[];
+  final Set<String> seenIds = <String>{};
 
   for (int i = 0; i < results.length; i++) {
-    final result = results[i];
-    final sourceWeight = sources[i].weight;
+    final dynamic result = results[i];
+    final int sourceWeight = sources[i].weight;
 
-    for (final item in result['list']) {
-      final vodId = item['vod_id'].toString();
+    for (final dynamic item in result['list']) {
+      final String vodId = item['vod_id'].toString();
       if (!seenIds.contains(vodId)) {
         seenIds.add(vodId);
 
-        final weightedItem = Map<String, dynamic>.from(item);
+        final Map<String, dynamic> weightedItem = Map<String, dynamic>.from(item);
         if (weightedItem['vod_hits'] != null) {
           weightedItem['vod_hits'] = (weightedItem['vod_hits'] * sourceWeight)
               .round();
