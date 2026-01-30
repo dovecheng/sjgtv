@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/services.dart';
-import 'package:libretv_app/widgets/full_screen_player_page.dart';
+import 'package:sjgtv/widgets/full_screen_player_page.dart';
 
 class MovieDetailPage extends StatefulWidget {
   final dynamic movie;

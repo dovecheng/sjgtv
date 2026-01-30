@@ -5,6 +5,7 @@ import 'package:base/log.dart';
 import 'package:dio/dio.dart' hide Response;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:sjgtv/gen/assets.gen.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
@@ -41,7 +42,7 @@ Future<Directory> _copyAssetsToDocuments() async {
     await webDir.create(recursive: true);
   }
 
-  final assets = ['assets/web/index.html'];
+  final assets = Assets.web.values;
 
   for (final asset in assets) {
     try {

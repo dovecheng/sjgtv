@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:libretv_app/widgets/update_checker.dart';
+import 'package:sjgtv/widgets/update_checker.dart';
 
 import 'category_page.dart';
 

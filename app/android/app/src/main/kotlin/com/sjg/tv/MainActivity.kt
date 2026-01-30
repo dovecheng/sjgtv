@@ -1,4 +1,4 @@
-package com.example.libretv_app
+package com.sjg.tv
 
 import io.flutter.embedding.android.FlutterActivity
 
