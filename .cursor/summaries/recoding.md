@@ -8,6 +8,8 @@
 - 项目名 / 包名改为 sjgtv、com.sjg.tv（Android、iOS、macOS、Windows、Web）；集成 flutter_launcher_icons、删除 app/linux；README 按依赖更新技术栈并新增「开发中、未发布」说明
 - 精简 base 中许多用不到的模块（尚未精简完）；下一步继续精简 base，完成后进行 app 模块重构
 - 讨论 SSH 远程 + Cursor、Cursor CLI：本机关机则断连，无法继续干活；计划在服务器 macOS 上跑 Cursor、拉项目，用该环境推进 recoding（本机关机不影响）
+- 分析 base 用不到的模块与依赖：列出可删 pubspec、可选模块（viewer/debug/isar/l10n）及建议精简顺序
+- 执行 base 精简：删 pubspec 未使用依赖（A-E）、删 debug 模块；viewer 先保留；下一步为阶段三
 
 **完成项**
 - [api] 新建 `lib/src/api/mixin/cancel_token_mixin.dart`，内容与原文件一致
@@ -20,6 +22,10 @@
 - [app] 删除 `app/linux` 及 `.metadata` 中 linux 平台
 - [doc] README.md：技术栈按 base/app 依赖更新，SDK ≥3.10，新增「开发中、未发布」说明
 - [base] 精简部分用不到的模块（进行中，未完成）
+- [base] 完成 base 用不到项分析：pubspec 未使用依赖（barcode_widget、mobile_scanner、jose、openid_client、pdfx）；可选模块 viewer、debug、isar、l10n 及建议精简顺序
+- [base] 删 pubspec 未使用依赖（barcode_widget、mobile_scanner、jose、openid_client、pdfx 及 dependency_overrides 中 pdfx、device_info_plus）
+- [base] 删 debug 模块及 flutter_colorpicker，移除 api_client_provider、json_adapter、app_runner、l10n_key_tips 对 debug 的引用；viewer 保留
+- base 与 app 的 `flutter pub get`、`dart analyze`、build_runner 通过
 
 **未完成的计划（模块化重构）**
 
@@ -34,7 +40,7 @@
 - [x] 检查并修复 base 模块的依赖错误
 
 阶段二补充：base 精简
-- [ ] 继续精简 base 中用不到的模块
+- [x] 按分析清单执行 base 精简：已删 pubspec 未使用依赖（A-E）与 debug 模块；viewer 先保留；每步 `flutter pub get`、`dart analyze` 通过
 - [ ] 在服务器 macOS 上拉取项目、配置 Cursor，用该环境推进 recoding（本机关机不影响；Agent 需人工逐步驱动，不会自动跑完）
 
 阶段三：应用代码迁移与 app 重构
@@ -55,11 +61,10 @@
 
 **接下来要做的步骤**（依 recoding 为准；DAILY_WORK_LOG、PROJECT_SUMMARY 仅作背景，勿按其中旧计划执行）
 
-1. **阶段二补充：继续精简 base**
-   - 识别并删除 `base` 中用不到的模块/目录，每步 `flutter pub get`、`dart analyze` 通过后再继续。
-   - 参考 root/base 与 DTV 的实际用法，只保留 sjgtv 所需能力；避免过度复杂。
+1. **阶段二补充：base 精简**（已完成：pubspec 未使用依赖已删、debug 已删、viewer 保留）
+   - 若后续再精简：可按需删 viewer（含 webview_flutter）或 Isar（需改 app_config、l10n 存储）；每步 `flutter pub get`、`dart analyze` 通过后再继续。
 
-2. **阶段三：应用代码迁移与 app 重构**（base 精简完成后）
+2. **阶段三：应用代码迁移与 app 重构**（当前下一步）
    - 从 DTV 复制应用代码到 `app` 模块；按功能分步复制（如先入口/配置，再播放/分类/搜索等），每步检查并修复错误。
    - 逐步集成 base 与 app（依赖、导出、引用），每步检查并修复错误。
    - 对 `app` 进行重构（结构、命名、与 base 的边界等），同样每步检查并修复。
@@ -91,6 +96,8 @@
 - 本次：`README.md`；`app/pubspec.yaml`、`app/assets/icon/`、`app/script/dart run flutter_launcher_icons.sh`、`app/README.md`；`app/android/`、`app/ios/`、`app/macos/`、`app/windows/`、`app/web/` 等平台配置（包名、应用名）；删除 `app/linux/`；`app/.metadata`
 - base 精简：`base/` 下部分模块/目录（具体视精简进度而定）
 - 本次：无代码变更，仅讨论 SSH/CLI、macOS Cursor 计划
+- 本次：无代码变更；分析涉及 `base/` 目录、`base/pubspec.yaml`、`base/lib` 各模块导出与引用
+- 本次：`base/pubspec.yaml`；`base/lib/base.dart`；删除 `base/lib/debug.dart`、`base/lib/src/debug/` 全部；修改 `base/lib/src/api/provider/api_client_provider.dart`、`base/lib/src/converter/provider/json_adapter_provider.dart`、`base/lib/src/app/app_runner.dart`、`base/lib/src/app/theme/extension/color_ext.dart`、`base/lib/src/l10n/widget/l10n_key_tips.dart`；相关 `.g.dart` 由 build_runner 重新生成
 
 ## 历史
 
@@ -135,3 +142,16 @@
 - 讨论：SSH 远程 + Cursor、Cursor CLI 均依赖本机；本机关机则断连，Cursor 不继续干活
 - 计划：在服务器 macOS 上跑 Cursor、拉项目，用该环境推进 recoding；本机关机不影响那边 Cursor，但 Agent 不会自动按 recoding 一直跑，需人工逐步驱动
 - 待办：在服务器 macOS 上拉取项目、配置 Cursor，用该环境推进 recoding
+
+### 2026-01-30（base 用不到项分析）
+- 分析了 base 用不到的模块与依赖，产出可执行清单
+- 可删 pubspec（代码无引用）：barcode_widget、mobile_scanner、jose、openid_client、pdfx 及 dependency_overrides 中的 pdfx
+- 可选模块（按产品需求）：viewer（含 webview_flutter）、debug（含 flutter_colorpicker）、isar（需改 app_config/l10n 存储）、l10n（牵涉多，建议阶段三再评估）；另 dynamic_app_icon_flutter、timeago 仅单点使用
+- 建议顺序：先删未使用依赖 → 再按需删 viewer/debug 等；Isar 替换为 Hive/SP 可单独排期
+- 待办：按分析清单执行 base 精简，每步 `flutter pub get`、`dart analyze` 通过后再继续
+
+### 2026-01-30（base 精简执行：A-E、debug 删；viewer 保留）
+- 删 pubspec 未使用依赖：barcode_widget、mobile_scanner、jose、openid_client、pdfx 及 dependency_overrides 中 pdfx、device_info_plus
+- 删 debug 模块：移除 api_client_provider、json_adapter、app_runner、l10n_key_tips 对 debug 的引用；删除 lib/debug.dart、lib/src/debug/ 全部；移除 base 导出、color_ext 对 flutter_colorpicker 的 re-export、pubspec 中 flutter_colorpicker；build_runner、dart analyze 通过
+- viewer 先保留（用户选择）
+- 阶段二补充 base 精简视为完成，下一步为阶段三（应用代码迁移与 app 重构）

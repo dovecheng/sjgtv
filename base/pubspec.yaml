@@ -21,7 +21,6 @@ dependencies:
   #endregion
 
   # freezed_annotation: ^3.1.0
-  barcode_widget: ^2.0.4
   cached_network_image: ^3.4.1 # android ios macos
   cached_network_image_platform_interface: ^4.1.1 # android ios macos
   collection: ^1.19.1
@@ -36,19 +35,15 @@ dependencies:
   intl: ^0.20.2
   isar_community: ^3.3.0
   isar_community_flutter_libs: ^3.3.0 # contains the binaries
-  jose: ^0.3.4
   json_annotation: ^4.9.0
   logging: ^1.3.0
   lpinyin: ^2.0.3
   meta: ^1.16.0
   mime: ^2.0.0
-  mobile_scanner: ^6.0.11 # android ios macos web
-  openid_client: ^0.4.9
   package_info_plus: ^8.3.1
   path: ^1.9.1
   path_provider: ^2.1.5
   permission_handler: ^12.0.1 # android ios windows
-  pdfx: ^2.9.2 # Android iOS macOS web Windows
   quiver: ^3.2.2
   recase: ^4.1.0
   retrofit: ^4.9.0
@@ -60,7 +55,6 @@ dependencies:
   wakelock_plus: ^1.3.2
   webview_flutter: ^4.13.0 # android ios
   timeago: ^3.7.1
-  flutter_colorpicker: ^1.1.0
 
 dev_dependencies:
   flutter_test:
@@ -99,8 +93,6 @@ dependency_overrides:
       url: https://github.com/justkawal/excel
       ref: 751dfc597c893a0b34eccfe6921f126e03a5c683
   archive: ^4.0.7 # excel
-  pdfx: 2.8.0 # pdfx-2.9.2/android/src/main/kotlin/io/scer/pdfx/Messages.kt:21:31 Unresolved reference 'RepositoryItemNotFoundException'.
-  device_info_plus: ^12.3.0 # pdfx
   retrofit: 4.9.0 # 4.9.1 的ParseErrorLogger.logError多了个参数, 需要retrofit_generator: ^10.2.0, 但是又需要analyzer: ^9.0.0
 
 flutter:

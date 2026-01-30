@@ -1,4 +1,3 @@
-import 'package:base/debug.dart';
 import 'package:base/log.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,8 +6,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 // TODO(wy): 2024-07-17 开启【translateKeyTips】并切【L10nKeyTips】下面包含输入框的情况下，输入框的焦点有问题
 
 /// 国际化Key提示控件
-///
-/// 参见: [DebugModel.translateKeyTips]
 class L10nKeyTips extends ConsumerStatefulWidget {
   @visibleForTesting
   static final Log log = (L10nKeyTips).log;
@@ -47,14 +44,7 @@ class L10nKeyTipsState extends ConsumerState<L10nKeyTips> {
 
   @override
   Widget build(BuildContext context) {
-    bool enable =
-        widget.keyTips?.isNotEmpty == true &&
-        ref.watch(
-          debugProvider.select(
-            (AsyncValue<DebugModel> value) =>
-                value.value?.translateKeyTips == true,
-          ),
-        );
+    bool enable = widget.keyTips?.isNotEmpty == true;
     if (!enable) {
       return widget.child;
     }

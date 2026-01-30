@@ -1,8 +1,5 @@
 import 'dart:ui';
 
-export 'package:flutter_colorpicker/flutter_colorpicker.dart'
-    show ColorExtension1, ColorExtension2;
-
 extension ColorLuminanceExt on Color {
   /// 计算颜色是否偏暗
   bool get isDark => computeLuminance() < 0.5;

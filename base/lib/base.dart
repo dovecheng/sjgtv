@@ -3,7 +3,6 @@ export 'api.dart';
 export 'app.dart';
 export 'cache.dart';
 export 'converter.dart';
-export 'debug.dart';
 export 'device_info.dart';
 export 'extension.dart';
 export 'isar.dart';
