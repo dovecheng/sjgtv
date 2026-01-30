@@ -1,4 +1,5 @@
 **会话概要**
+- [app] 将 `app/lib/services`、`app/lib/widgets` 移入 `app/lib/src/`，并更新所有 `package:sjgtv/services`、`package:sjgtv/widgets` 导入为 `package:sjgtv/src/...`；`app/lib/gen/` 保持在 lib 根下
 - 将 `lib/src/mixin/` 下的 `CancelTokenMixin` 迁移到 `lib/src/api/mixin/` 目录
 - 在 `api.dart` 中统一导出，删除原 `mixin.dart` 入口
 - 决定重新来：之前直接复制 base 项目导致大量依赖错误，项目过于复杂

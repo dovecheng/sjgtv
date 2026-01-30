@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:sjgtv/widgets/search_page.dart';
+import 'package:sjgtv/src/widgets/search_page.dart';
 
 class MovieHomePage extends StatefulWidget {
   const MovieHomePage({super.key});
