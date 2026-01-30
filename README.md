@@ -8,7 +8,7 @@
 
 **本项目由 [LibreTV](https://github.com/LibreSpark/LibreTV)（DTV）作者提议并授意重写的新项目。**
 
-原项目链接：[LibreSpark/LibreTV](https://github.com/LibreSpark/LibreTV)  
+原项目链接：[LibreSpark/LibreTV](https://github.com/LibreSpark/LibreTV)
 在此向原作者致谢，并说明本仓库为在其建议下重写、独立维护的新工程。
 
 ---
@@ -38,19 +38,23 @@
 
 ## 🛠️ 技术栈
 
-| 技术/组件        | 用途                     |
-|------------------|--------------------------|
-| Flutter 3.x      | 跨平台应用框架           |
-| Dart 3.x         | 编程语言                 |
-| `media_kit`      | 视频播放（app）          |
-| `base` 模块      | 公共能力（Riverpod、Isar、L10n 等） |
-| `wakelock_plus`  | 屏幕常亮                 |
+| 技术/组件 | 用途 |
+|-----------|------|
+| Flutter / Dart ≥3.10 | 跨平台应用框架与语言 |
+| **base** | 公共库：Riverpod、Isar、L10n、缓存、调试等 |
+| **app** | 视频应用，依赖 base |
+| **状态与数据** | `flutter_riverpod`、`provider`、`hive` / `hive_flutter`、`isar_community`（base） |
+| **网络与存储** | `dio`、`http`、`shelf` / `shelf_router`（本地 API）、`cached_network_image`、`shared_preferences`、`flutter_secure_storage` |
+| **视频播放** | `media_kit`、`media_kit_video`、`media_kit_libs_video` |
+| **UI 与资源** | `google_fonts`、`qr_flutter`、`flutter_gen`（资源生成）、`flutter_launcher_icons`（图标生成） |
+| **系统能力** | `wakelock_plus`、`permission_handler`、`path_provider`、`url_launcher`、`package_info_plus`、`open_file`、`android_intent_plus`、`network_info_plus` |
+| **工具与构建** | `build_runner`、`riverpod_generator`（base）、`retrofit` / `retrofit_generator`（base）等 |
 
 ---
 
 ## ⚙️ 系统初始化配置
 
-应用启动时从以下地址加载默认配置：  
+应用启动时从以下地址加载默认配置：
 `https://ktv.aini.us.kg/config.json`
 
 格式示例与字段说明见 **[app/README.md](app/README.md)**。
@@ -60,7 +64,7 @@
 ## 📱 系统要求
 
 - **Android**：最低 6.0 (API 23)，推荐 9.0+；建议 1GB+ RAM，支持硬件解码
-- **开发**：Flutter SDK ≥ 3.0，Dart ≥ 3.0
+- **开发**：Flutter SDK ≥ 3.10，Dart ≥ 3.10（`base` / `app` 均 `sdk: '>=3.10.0 <4.0.0'`）
 
 ---
 
@@ -111,5 +115,5 @@ cd app && flutter build apk --release
 
 ---
 
-> ✨ 欢迎贡献：请提交 PR 到 `main` 分支。  
+> ✨ 欢迎贡献：请提交 PR 到 `main` 分支。
 > 🐞 问题反馈：<laopaoer@protonmail.com>
