@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:sjgtv/src/widgets/update_checker.dart';
-
-import 'category_page.dart';
+import 'package:sjgtv/src/page/home/category_page.dart';
+import 'package:sjgtv/src/widget/update_checker.dart';
 
 class AppWrapper extends StatefulWidget {
   const AppWrapper({super.key});

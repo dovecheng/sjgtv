@@ -20,12 +20,12 @@ class _ApiClient implements ApiClient {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<List<Map<String, dynamic>>> getSources() async {
+  Future<ApiListResultModel<Source>> getSources() async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<List<Map<String, dynamic>>>(
+    final _options = _setStreamType<ApiListResultModel<Source>>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -35,15 +35,10 @@ class _ApiClient implements ApiClient {
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
-    final _result = await _dio.fetch<List<dynamic>>(_options);
-    late List<Map<String, dynamic>> _value;
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late ApiListResultModel<Source> _value;
     try {
-      _value = _result.data!
-          .map(
-            (dynamic i) =>
-                Map<String, dynamic>.from(i as Map<String, dynamic>),
-          )
-          .toList();
+      _value = ApiListResultModel<Source>.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
@@ -52,13 +47,13 @@ class _ApiClient implements ApiClient {
   }
 
   @override
-  Future<Map<String, dynamic>> addSource(Map<String, dynamic> body) async {
+  Future<ApiResultModel<Source>> addSource(Map<String, dynamic> body) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(body);
-    final _options = _setStreamType<Map<String, dynamic>>(
+    final _options = _setStreamType<ApiResultModel<Source>>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -69,9 +64,9 @@ class _ApiClient implements ApiClient {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late Map<String, dynamic> _value;
+    late ApiResultModel<Source> _value;
     try {
-      _value = Map<String, dynamic>.from(_result.data!);
+      _value = ApiResultModel<Source>.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
@@ -80,12 +75,12 @@ class _ApiClient implements ApiClient {
   }
 
   @override
-  Future<Map<String, dynamic>> toggleSource(String id) async {
+  Future<ApiResultModel<Source>> toggleSource(String id) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{r'id': id};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<Map<String, dynamic>>(
+    final _options = _setStreamType<ApiResultModel<Source>>(
       Options(method: 'PUT', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -96,9 +91,9 @@ class _ApiClient implements ApiClient {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late Map<String, dynamic> _value;
+    late ApiResultModel<Source> _value;
     try {
-      _value = Map<String, dynamic>.from(_result.data!);
+      _value = ApiResultModel<Source>.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
@@ -107,12 +102,12 @@ class _ApiClient implements ApiClient {
   }
 
   @override
-  Future<Map<String, dynamic>> deleteSource(String id) async {
+  Future<ApiResultModel<Object>> deleteSource(String id) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{r'id': id};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<Map<String, dynamic>>(
+    final _options = _setStreamType<ApiResultModel<Object>>(
       Options(method: 'DELETE', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -123,9 +118,9 @@ class _ApiClient implements ApiClient {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late Map<String, dynamic> _value;
+    late ApiResultModel<Object> _value;
     try {
-      _value = Map<String, dynamic>.from(_result.data!);
+      _value = ApiResultModel<Object>.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
@@ -134,12 +129,12 @@ class _ApiClient implements ApiClient {
   }
 
   @override
-  Future<List<Map<String, dynamic>>> getProxies() async {
+  Future<ApiListResultModel<Proxy>> getProxies() async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<List<Map<String, dynamic>>>(
+    final _options = _setStreamType<ApiListResultModel<Proxy>>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -149,15 +144,10 @@ class _ApiClient implements ApiClient {
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
-    final _result = await _dio.fetch<List<dynamic>>(_options);
-    late List<Map<String, dynamic>> _value;
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late ApiListResultModel<Proxy> _value;
     try {
-      _value = _result.data!
-          .map(
-            (dynamic i) =>
-                Map<String, dynamic>.from(i as Map<String, dynamic>),
-          )
-          .toList();
+      _value = ApiListResultModel<Proxy>.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
@@ -166,13 +156,13 @@ class _ApiClient implements ApiClient {
   }
 
   @override
-  Future<Map<String, dynamic>> addProxy(Map<String, dynamic> body) async {
+  Future<ApiResultModel<Proxy>> addProxy(Map<String, dynamic> body) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(body);
-    final _options = _setStreamType<Map<String, dynamic>>(
+    final _options = _setStreamType<ApiResultModel<Proxy>>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -183,9 +173,9 @@ class _ApiClient implements ApiClient {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late Map<String, dynamic> _value;
+    late ApiResultModel<Proxy> _value;
     try {
-      _value = Map<String, dynamic>.from(_result.data!);
+      _value = ApiResultModel<Proxy>.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
@@ -194,12 +184,12 @@ class _ApiClient implements ApiClient {
   }
 
   @override
-  Future<Map<String, dynamic>> toggleProxy(String id) async {
+  Future<ApiResultModel<Proxy>> toggleProxy(String id) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{r'id': id};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<Map<String, dynamic>>(
+    final _options = _setStreamType<ApiResultModel<Proxy>>(
       Options(method: 'PUT', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -210,9 +200,9 @@ class _ApiClient implements ApiClient {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late Map<String, dynamic> _value;
+    late ApiResultModel<Proxy> _value;
     try {
-      _value = Map<String, dynamic>.from(_result.data!);
+      _value = ApiResultModel<Proxy>.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
@@ -221,12 +211,12 @@ class _ApiClient implements ApiClient {
   }
 
   @override
-  Future<Map<String, dynamic>> deleteProxy(String id) async {
+  Future<ApiResultModel<Object>> deleteProxy(String id) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{r'id': id};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<Map<String, dynamic>>(
+    final _options = _setStreamType<ApiResultModel<Object>>(
       Options(method: 'DELETE', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -237,9 +227,9 @@ class _ApiClient implements ApiClient {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late Map<String, dynamic> _value;
+    late ApiResultModel<Object> _value;
     try {
-      _value = Map<String, dynamic>.from(_result.data!);
+      _value = ApiResultModel<Object>.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
@@ -248,12 +238,12 @@ class _ApiClient implements ApiClient {
   }
 
   @override
-  Future<List<Map<String, dynamic>>> getTags() async {
+  Future<ApiListResultModel<Tag>> getTags() async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<List<Map<String, dynamic>>>(
+    final _options = _setStreamType<ApiListResultModel<Tag>>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -263,15 +253,10 @@ class _ApiClient implements ApiClient {
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
-    final _result = await _dio.fetch<List<dynamic>>(_options);
-    late List<Map<String, dynamic>> _value;
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late ApiListResultModel<Tag> _value;
     try {
-      _value = _result.data!
-          .map(
-            (dynamic i) =>
-                Map<String, dynamic>.from(i as Map<String, dynamic>),
-          )
-          .toList();
+      _value = ApiListResultModel<Tag>.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
@@ -280,13 +265,13 @@ class _ApiClient implements ApiClient {
   }
 
   @override
-  Future<Map<String, dynamic>> addTag(Map<String, dynamic> body) async {
+  Future<ApiResultModel<Tag>> addTag(Map<String, dynamic> body) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(body);
-    final _options = _setStreamType<Map<String, dynamic>>(
+    final _options = _setStreamType<ApiResultModel<Tag>>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -297,9 +282,9 @@ class _ApiClient implements ApiClient {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late Map<String, dynamic> _value;
+    late ApiResultModel<Tag> _value;
     try {
-      _value = Map<String, dynamic>.from(_result.data!);
+      _value = ApiResultModel<Tag>.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
@@ -308,13 +293,13 @@ class _ApiClient implements ApiClient {
   }
 
   @override
-  Future<Map<String, dynamic>> updateTag(Map<String, dynamic> body) async {
+  Future<ApiResultModel<Tag>> updateTag(Map<String, dynamic> body) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(body);
-    final _options = _setStreamType<Map<String, dynamic>>(
+    final _options = _setStreamType<ApiResultModel<Tag>>(
       Options(method: 'PUT', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -325,9 +310,9 @@ class _ApiClient implements ApiClient {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late Map<String, dynamic> _value;
+    late ApiResultModel<Tag> _value;
     try {
-      _value = Map<String, dynamic>.from(_result.data!);
+      _value = ApiResultModel<Tag>.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
@@ -336,13 +321,15 @@ class _ApiClient implements ApiClient {
   }
 
   @override
-  Future<Map<String, dynamic>> updateTagOrder(Map<String, dynamic> body) async {
+  Future<ApiResultModel<Object>> updateTagOrder(
+    Map<String, dynamic> body,
+  ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(body);
-    final _options = _setStreamType<Map<String, dynamic>>(
+    final _options = _setStreamType<ApiResultModel<Object>>(
       Options(method: 'PUT', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -353,9 +340,9 @@ class _ApiClient implements ApiClient {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late Map<String, dynamic> _value;
+    late ApiResultModel<Object> _value;
     try {
-      _value = Map<String, dynamic>.from(_result.data!);
+      _value = ApiResultModel<Object>.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
@@ -364,12 +351,12 @@ class _ApiClient implements ApiClient {
   }
 
   @override
-  Future<Map<String, dynamic>> deleteTag(String id) async {
+  Future<ApiResultModel<Object>> deleteTag(String id) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{r'id': id};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<Map<String, dynamic>>(
+    final _options = _setStreamType<ApiResultModel<Object>>(
       Options(method: 'DELETE', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -380,9 +367,9 @@ class _ApiClient implements ApiClient {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late Map<String, dynamic> _value;
+    late ApiResultModel<Object> _value;
     try {
-      _value = Map<String, dynamic>.from(_result.data!);
+      _value = ApiResultModel<Object>.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
@@ -391,13 +378,16 @@ class _ApiClient implements ApiClient {
   }
 
   @override
-  Future<Map<String, dynamic>> search(String wd, {int? limit}) async {
+  Future<ApiResultModel<Map<String, dynamic>>> search(
+    String wd, {
+    int? limit,
+  }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{r'wd': wd, r'limit': limit};
     queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<Map<String, dynamic>>(
+    final _options = _setStreamType<ApiResultModel<Map<String, dynamic>>>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -408,9 +398,9 @@ class _ApiClient implements ApiClient {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late Map<String, dynamic> _value;
+    late ApiResultModel<Map<String, dynamic>> _value;
     try {
-      _value = Map<String, dynamic>.from(_result.data!);
+      _value = ApiResultModel<Map<String, dynamic>>.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;

@@ -1,13 +1,14 @@
 import 'dart:async';
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:wakelock_plus/wakelock_plus.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
-
-import '../services/m3u8_ad_remover.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:sjgtv/src/page/player/player_intents.dart';
+import 'package:sjgtv/src/service/m3u8_ad_remover.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 extension DurationClamp on Duration {
   Duration clamp(Duration min, Duration max) {
@@ -863,26 +864,3 @@ Future<String> _processM3u8Url(String url) async {
   }
 }
 
-class UpIntent extends Intent {
-  const UpIntent();
-}
-
-class DownIntent extends Intent {
-  const DownIntent();
-}
-
-class LeftIntent extends Intent {
-  const LeftIntent();
-}
-
-class RightIntent extends Intent {
-  const RightIntent();
-}
-
-class BackIntent extends Intent {
-  const BackIntent();
-}
-
-class PlayPauseIntent extends Intent {
-  const PlayPauseIntent();
-}

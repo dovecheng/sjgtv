@@ -1,7 +1,9 @@
+import 'package:base/api.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:sjgtv/src/api/service/api_service.dart';
 import 'movie_detail_page.dart';
 
 class SearchPage extends StatefulWidget {
@@ -14,8 +16,8 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-  final Dio _dio = Dio()..interceptors.add(LogInterceptor());
-  CancelToken _cancelToken = CancelToken();
+  final ApiService _apiService = ApiService.standalone();
+  final CancelToken _cancelToken = CancelToken();
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _searchFocusNode = FocusNode();
   List<dynamic> _movies = [];
@@ -68,18 +70,15 @@ class _SearchPageState extends State<SearchPage> {
     });
 
     try {
-      final Response<dynamic> response = await _dio.get<dynamic>(
-        'http://localhost:8023/api/search',
-        queryParameters: {'wd': keyword, 'limit': 100},
-        cancelToken: _cancelToken.isCancelled
-            ? _cancelToken = CancelToken()
-            : _cancelToken,
-      );
+      final ApiResultModel<Map<String, dynamic>> result =
+          await _apiService.search(keyword, limit: 100);
 
-      if (response.statusCode == 200 && response.data['code'] == 1) {
+      if (result.isSuccess && result.data != null) {
         setState(() {
-          _movies = response.data['list'] ?? [];
+          _movies = result.data!['list'] ?? [];
         });
+      } else {
+        _showError('搜索失败: ${result.message}');
       }
     } catch (e) {
       if (e is DioException && e.type == DioExceptionType.cancel) return;

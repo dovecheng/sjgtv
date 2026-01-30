@@ -1,10 +1,15 @@
 import 'dart:io';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
+
+import 'package:base/api.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:sjgtv/src/widgets/search_page.dart';
+import 'package:sjgtv/src/api/service/api_service.dart';
+import 'package:sjgtv/src/model/movie.dart';
+import 'package:sjgtv/src/model/tag.dart';
+import 'package:sjgtv/src/page/search/search_page.dart';
+import 'package:sjgtv/src/widget/focusable_movie_card.dart';
 
 class MovieHomePage extends StatefulWidget {
   const MovieHomePage({super.key});
@@ -14,7 +19,8 @@ class MovieHomePage extends StatefulWidget {
 }
 
 class _MovieHomePageState extends State<MovieHomePage> {
-  final Dio _dio = Dio();
+  final ApiService _apiService = ApiService.standalone();
+  final Dio _dio = Dio(); // 保留用于外部 API（豆瓣）
   int _selectedTab = 0;
   bool _isLoading = false;
   bool _isRefreshing = false;
@@ -71,18 +77,19 @@ class _MovieHomePageState extends State<MovieHomePage> {
 
   Future<void> _fetchTags() async {
     try {
-      final Response<dynamic> response = await _dio.get<dynamic>(
-        'http://localhost:8023/api/tags',
-        options: Options(headers: {'Content-Type': 'application/json'}),
-      );
+      final ApiListResultModel<Tag> result = await _apiService.getTags();
 
-      if (response.statusCode == 200) {
-        final List<dynamic> tags = response.data;
+      if (result.isSuccess && result.data != null) {
         setState(() {
-          _tabs = tags.map((tag) => tag['name'].toString()).toList();
-          for (var tag in _tabs) {
+          _tabs = result.data!.map((tag) => tag.name).toList();
+          for (String tag in _tabs) {
             _currentPageByTag[tag] = 0;
           }
+        });
+      } else {
+        debugPrint('获取标签失败: ${result.message}');
+        setState(() {
+          _tabs = ['获取标签失败'];
         });
       }
     } catch (e) {
@@ -404,184 +411,3 @@ class _MovieHomePageState extends State<MovieHomePage> {
   }
 }
 
-class Movie {
-  final String id;
-  final String title;
-  final int year;
-  final double rating;
-  final String? coverUrl;
-  final bool playable;
-  final bool isNew;
-  final String url;
-
-  Movie({
-    required this.id,
-    required this.title,
-    required this.year,
-    required this.rating,
-    this.coverUrl,
-    required this.playable,
-    required this.isNew,
-    required this.url,
-  });
-}
-
-class FocusableMovieCard extends StatefulWidget {
-  final Movie movie;
-
-  const FocusableMovieCard({super.key, required this.movie});
-
-  @override
-  State<FocusableMovieCard> createState() => _FocusableMovieCardState();
-}
-
-class _FocusableMovieCardState extends State<FocusableMovieCard> {
-  bool _isFocused = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return Focus(
-      onKeyEvent: (node, event) {
-        if (event is KeyDownEvent &&
-            (event.logicalKey == LogicalKeyboardKey.select ||
-                event.logicalKey == LogicalKeyboardKey.enter)) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) =>
-                  SearchPage(initialQuery: widget.movie.title),
-            ),
-          );
-          return KeyEventResult.handled;
-        }
-        return KeyEventResult.ignored;
-      },
-      onFocusChange: (hasFocus) {
-        setState(() => _isFocused = hasFocus);
-      },
-      child: AnimatedScale(
-        duration: Duration(milliseconds: 150),
-        scale: _isFocused ? 1.02 : 1.0,
-        child: AnimatedContainer(
-          duration: Duration(milliseconds: 150),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            border: _isFocused
-                ? Border.all(color: Colors.white, width: 2.0)
-                : null,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Expanded(
-                flex: 4,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(12),
-                    topRight: Radius.circular(12),
-                  ),
-                  child: Container(
-                    decoration: BoxDecoration(color: Color(0xFF262626)),
-                    child: widget.movie.coverUrl != null
-                        ? CachedNetworkImage(
-                            imageUrl: widget.movie.coverUrl!,
-                            httpHeaders: {
-                              'User-Agent':
-                                  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-                              'Accept':
-                                  'image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8',
-                            },
-                            fit: BoxFit.cover,
-                            width: double.infinity,
-                            placeholder: (context, url) => Container(
-                              color: Color(0xFF333333),
-                              child: Center(
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 3.0,
-                                ),
-                              ),
-                            ),
-                            errorWidget: (context, url, error) => Container(
-                              color: Color(0xFF333333),
-                              child: Center(
-                                child: Icon(
-                                  Icons.broken_image,
-                                  color: Colors.grey,
-                                  size: 36,
-                                ),
-                              ),
-                            ),
-                          )
-                        : Container(
-                            color: Color(0xFF333333),
-                            child: Center(
-                              child: Text(
-                                widget.movie.title.split(' ').first,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ),
-                  ),
-                ),
-              ),
-              Container(
-                height: 70,
-                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                decoration: BoxDecoration(
-                  color: Color(0xFF262626),
-                  borderRadius: BorderRadius.vertical(
-                    bottom: Radius.circular(12),
-                  ),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      widget.movie.title,
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          '${widget.movie.year}',
-                          style: TextStyle(fontSize: 16, color: Colors.grey),
-                        ),
-                        Row(
-                          children: [
-                            Icon(Icons.star, size: 16, color: Colors.amber),
-                            SizedBox(width: 4),
-                            Text(
-                              '${widget.movie.rating}',
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.amber,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
