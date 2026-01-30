@@ -158,3 +158,36 @@ app/lib/src/
 - `f17bb4a` - docs: 补充 recoding2.md 历史记录
 - `caa035a` - docs: 历史记录补充时间
 - `d6c7d9f` - fix: shelf 服务启动改用 then 避免阻塞
+
+### 2026-01-30 19:25（代码规范与注释补充）
+
+**注释补充**
+- 为页面和组件补充类注释（app_wrapper, category_page, update_checker, search_page, movie_detail_page, full_screen_player_page）
+
+**更新检查修复**
+- GitHub releases URL 改为 `dovecheng/sjgtv`
+- 404 时静默处理，不弹出错误提示（仓库暂无发布版本时不报错）
+
+**日志规范**
+- 全局 `debugPrint` 替换为 `log.d` / `log.e`
+- 涉及文件：update_checker.dart, full_screen_player_page.dart, category_page.dart
+
+**代码规范**
+- 纯静态类改为 `abstract final class`（AppUpdater, M3U8AdRemover, SourceStorage）
+
+**涉及/修改的文件**
+- 修改：`app/lib/src/widget/update_checker.dart`
+- 修改：`app/lib/src/page/player/full_screen_player_page.dart`
+- 修改：`app/lib/src/page/home/category_page.dart`
+- 修改：`app/lib/src/page/home/app_wrapper.dart`
+- 修改：`app/lib/src/page/search/search_page.dart`
+- 修改：`app/lib/src/page/search/movie_detail_page.dart`
+- 修改：`app/lib/src/service/m3u8_ad_remover.dart`
+- 修改：`app/lib/src/api/shelf/api.dart`
+
+**提交**：
+- `ebaaa00` - docs: 补充页面和组件的类注释
+- `a7a1646` - fix: 更新检查地址改为 dovecheng/sjgtv
+- `c574755` - fix: 更新检查 404 时静默处理，不弹出错误提示
+- `5581325` - refactor: debugPrint 替换为 log.d/log.e
+- `ced018c` - refactor: 纯静态类改为 abstract final class
