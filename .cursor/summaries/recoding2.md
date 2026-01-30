@@ -99,7 +99,7 @@ app/lib/src/
 
 ## 历史
 
-### 2026-01-30（接入 AppRunner 架构与项目结构重构）
+### 2026-01-30 19:07（接入 AppRunner 架构与项目结构重构）
 
 **接入 base AppRunner 架构**
 - 创建 `SjgtvRunner` 继承 base 的 `AppRunner`
