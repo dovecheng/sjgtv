@@ -143,3 +143,18 @@ app/lib/src/
 - 删除：`app/lib/src/services/`、`app/lib/src/widgets/`、`app/lib/src/models/`（内容已迁移）
 
 **提交**：`b92d51e` - refactor: 接入 AppRunner 架构并重构项目结构
+
+### 2026-01-30 19:12（摘要历史补充 + shelf 启动修复）
+
+- 补充 recoding2.md 历史记录（格式与 recoding1.md 一致）
+- 历史记录补充时间（如 `2026-01-30 19:07`）
+- 修复 shelf 服务启动阻塞问题：`await startServer()` 改为 `.then()` 方式，不阻塞 `init()` 流程
+
+**涉及/修改的文件**
+- 修改：`app/lib/src/app/sjgtv_runner.dart`（startServer 改用 then）
+- 修改：`.cursor/summaries/recoding2.md`（补充历史）
+
+**提交**：
+- `f17bb4a` - docs: 补充 recoding2.md 历史记录
+- `caa035a` - docs: 历史记录补充时间
+- `d6c7d9f` - fix: shelf 服务启动改用 then 避免阻塞
