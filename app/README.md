@@ -164,6 +164,16 @@ flutter build apk --release
 - Dart ≥ 3.0
 - Android Studio / VS Code
 
+### 应用启动图标
+
+使用 [flutter_launcher_icons](https://pub.dev/packages/flutter_launcher_icons) 从 `assets/icon/icon.png` 生成各平台图标（Android、iOS、Web、Windows、macOS）。替换源图后执行：
+
+```bash
+flutter pub get
+dart run flutter_launcher_icons
+# 或运行 ./script/dart\ run\ flutter_launcher_icons.sh
+```
+
 ---
 
 ## 📚 参考资料
@@ -181,5 +191,5 @@ flutter build apk --release
 
 ---
 
-> ✨ 欢迎贡献代码！请提交 Pull Request 到 `dev` 分支。  
+> ✨ 欢迎贡献代码！请提交 Pull Request 到 `dev` 分支。
 > 🐞 问题反馈：<laopaoer@protonmail.com>
