@@ -171,3 +171,7 @@
 
 ### 2026-01-30 16:45（收尾 subagent 改名为 check）
 - wrap-up → checkpoint → check；保留 `.cursor/agents/check.md`，删除 wrap-up.md、checkpoint.md；名称越短越好
+
+### 2026-01-30 16:47（check.md 精简表述）
+- description 精简为「变更后收尾：检查修复 → 优化 → 摘要 → 提交推送。说收尾时用。」
+- 正文开头、步骤 3/4、约束段略作精简
