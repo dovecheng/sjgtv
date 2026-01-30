@@ -10,6 +10,7 @@
 - 讨论 SSH 远程 + Cursor、Cursor CLI：本机关机则断连，无法继续干活；计划在服务器 macOS 上跑 Cursor、拉项目，用该环境推进 recoding（本机关机不影响）
 - 分析 base 用不到的模块与依赖：列出可删 pubspec、可选模块（viewer/debug/isar/l10n）及建议精简顺序
 - 执行 base 精简：删 pubspec 未使用依赖（A-E）、删 debug 模块；viewer 先保留；下一步为阶段三
+- 配置 Cursor 收尾流程：讨论用 skill 还是 subagent 实现「skill 完成后 → 检查修复 → 优化 → 摘要 → 提交推送」；结论用 subagent，创建 wrap-up subagent，删除 summary skill
 
 **完成项**
 - [api] 新建 `lib/src/api/mixin/cancel_token_mixin.dart`，内容与原文件一致
@@ -26,6 +27,7 @@
 - [base] 删 pubspec 未使用依赖（barcode_widget、mobile_scanner、jose、openid_client、pdfx 及 dependency_overrides 中 pdfx、device_info_plus）
 - [base] 删 debug 模块及 flutter_colorpicker，移除 api_client_provider、json_adapter、app_runner、l10n_key_tips 对 debug 的引用；viewer 保留
 - base 与 app 的 `flutter pub get`、`dart analyze`、build_runner 通过
+- [cursor] 收尾流程改为 subagent：新建 `.cursor/agents/wrap-up.md`（按序执行检查修复 → 优化 → 摘要 command → 提交推送）；删除 `.cursor/skills/summary/`
 
 **未完成的计划（模块化重构）**
 
@@ -41,7 +43,6 @@
 
 阶段二补充：base 精简
 - [x] 按分析清单执行 base 精简：已删 pubspec 未使用依赖（A-E）与 debug 模块；viewer 先保留；每步 `flutter pub get`、`dart analyze` 通过
-- [ ] 在服务器 macOS 上拉取项目、配置 Cursor，用该环境推进 recoding（本机关机不影响；Agent 需人工逐步驱动，不会自动跑完）
 
 阶段三：应用代码迁移与 app 重构
 - [ ] 从 DTV 项目复制应用代码到 app 模块
@@ -80,6 +81,9 @@
 - 本项目中需**参考** `~/projects/root/base` 与 `~/projects/DTV`（或 `root/base`、`DTV`）的实现与配置。
 - **可参考，但不得修改** root/base、DTV 里的任何文件；只在本项目内新增或修改。
 
+**备注（想法，非待办；优先级最低）**
+- 在服务器 macOS 上拉取项目、配置 Cursor，用该环境推进 recoding（本机关机不影响；Agent 需人工逐步驱动，不会自动跑完）。
+
 **上一次开发的摘要**
 - `.qwen/DAILY_WORK_LOG.md`
 
@@ -98,6 +102,7 @@
 - 本次：无代码变更，仅讨论 SSH/CLI、macOS Cursor 计划
 - 本次：无代码变更；分析涉及 `base/` 目录、`base/pubspec.yaml`、`base/lib` 各模块导出与引用
 - 本次：`base/pubspec.yaml`；`base/lib/base.dart`；删除 `base/lib/debug.dart`、`base/lib/src/debug/` 全部；修改 `base/lib/src/api/provider/api_client_provider.dart`、`base/lib/src/converter/provider/json_adapter_provider.dart`、`base/lib/src/app/app_runner.dart`、`base/lib/src/app/theme/extension/color_ext.dart`、`base/lib/src/l10n/widget/l10n_key_tips.dart`；相关 `.g.dart` 由 build_runner 重新生成
+- 本次：新建 `.cursor/agents/`、`.cursor/agents/wrap-up.md`（收尾 subagent）；删除 `.cursor/skills/summary/`（含 SKILL.md）
 
 ## 历史
 
@@ -155,3 +160,11 @@
 - 删 debug 模块：移除 api_client_provider、json_adapter、app_runner、l10n_key_tips 对 debug 的引用；删除 lib/debug.dart、lib/src/debug/ 全部；移除 base 导出、color_ext 对 flutter_colorpicker 的 re-export、pubspec 中 flutter_colorpicker；build_runner、dart analyze 通过
 - viewer 先保留（用户选择）
 - 阶段二补充 base 精简视为完成，下一步为阶段三（应用代码迁移与 app 重构）
+
+### 2026-01-30 16:39（Cursor 收尾流程改为 subagent）
+- 收尾流程由 skill 改为 subagent：新建 `.cursor/agents/wrap-up.md`（wrap-up），按序执行检查修复 → 优化 → 摘要 command → 提交推送；skill 完成后或用户说「收尾」时使用
+- 删除 `.cursor/skills/summary/`；规则 `.cursor/rules/project-skill-workflow.mdc` 保留
+
+### 2026-01-30 16:41（wrap-up 补充与执行收尾）
+- wrap-up.md 补充：若没有文件修改则不执行收尾流程
+- 执行收尾：dart analyze（base、app）通过，无优化，更新摘要后提交并推送
