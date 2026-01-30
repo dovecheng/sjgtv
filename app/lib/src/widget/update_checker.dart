@@ -20,7 +20,7 @@ import 'package:android_intent_plus/flag.dart';
 class AppUpdater {
   static final Dio _dio = Dio();
   static const String _githubReleasesUrl =
-      'https://api.github.com/repos/laopaoer-wallet/DTV/releases/latest';
+      'https://api.github.com/repos/dovecheng/sjgtv/releases/latest';
 
   static bool _isDownloading = false;
   static double _downloadProgress = 0;
