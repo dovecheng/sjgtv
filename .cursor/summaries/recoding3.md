@@ -19,7 +19,7 @@
 **未完成的计划**
 - [ ] **Flutter 源管理**：SourceManagePage 补**删除源**、**编辑源**（列表项操作 + 编辑页或弹窗，shelf API 已有；可参考**网页** index.html 的删除/编辑交互）
 - [ ] **Flutter 代理/标签**（若需要）：网页已有代理/标签管理；是否在 app 内做代理管理页、标签管理页，待定
-- [ ] **网页国际化**：见下方「网页国际化（建议）」方案，待实现
+- [x] **网页国际化**：已实现（shelf GET /api/l10n + 页面 data-i18n 与 applyL10n，见「网页国际化（建议）」）
 - [ ] TV 与播放：继续优化 TV 焦点、遥控、播放器 UI/交互
 - [ ] 代码质量：再跑一遍 `dart analyze` / `dart fix`，查未使用导入与死代码
 - [ ] 重新分析项目：若用户说「要分析」，则对项目做分析并整理、更新摘要
@@ -28,7 +28,7 @@
 
 - **目标**：`app/assets/web/index.html`（shelf 8023 提供）与 Flutter app 共用同一套文案（en / zh-CN / zh-HK），语言可切换。
 - **数据源**：与 Flutter 一致，以 app 的 `L10n.translations` + base 的 `L10n.translations` 合并后的 key-value 为准；网页只消费，不新增 key 定义。
-- **桥接已就绪**：`app/lib/src/api/shelf/web_l10n.dart` 提供 `getWebL10nMap()`，从 `l10nTranslationProvider.requireValue` 取当前语言翻译，按前缀 `web_`（常量 `webL10nKeysPrefix`，与 `AppWebL10n` 的 `@L10nKeys(keysPrefix)` 共用）过滤后返回 `Map<String, String>`。**待做**：在 shelf（如 `api.dart`）中新增路由（如 `GET /api/l10n`）或内联到 HTML，在请求处理里调用 `getWebL10nMap()` 并返回 JSON；用户表示暂不实施，先记入摘要。
+- **已实现**：shelf 新增 `GET /api/l10n`（api.dart 中 `_handleGetL10n` 调用 `getWebL10nMap()` 返回 JSON）；`app/assets/web/index.html` 对标题、按钮、标签、空态等加 `data-i18n` / `data-i18n-placeholder`，页面加载时执行 `applyL10n()` 请求 `/api/l10n` 并替换文案与 `document.title`。l10n 新增 `web_source_list_title`（源列表），网页「源列表」卡片改用该 key，与「源管理」区分。
 - **推荐做法**（shelf 接入后）：
   1. **shelf 提供翻译接口**：新增 `GET /api/l10n`（语言跟随 Flutter 当前语言，即 `l10nTranslationProvider` 已 resolve 的值），返回 `getWebL10nMap()` 的 JSON。调用需在已挂载的 Provider 作用域内。
   2. **页面约定**：在 HTML 上对需要翻译的节点加 `data-i18n="key"`（如 `data-i18n="web_source_manage_title"`），`<title>`、按钮、表头、提示语等用 key。
@@ -49,6 +49,14 @@
 - **app/lib/src/api/shelf/web_l10n.dart**：`getWebL10nMap()` 无参，从 `l10nTranslationProvider.requireValue` 取 `L10nTranslationModel`（非空）；直接遍历 `tr.entries`（tr 混入 MapMixin，本身即 Map）；按前缀过滤使用常量 `webL10nKeysPrefix`。
 - **app/lib/src/l10n/app_web_l10n.dart**：新增顶级常量 `const String webL10nKeysPrefix = 'web'`，`@L10nKeys(keysPrefix: webL10nKeysPrefix)` 与 `getWebL10nMap()` 过滤逻辑共用；前缀改一处即可。
 - **后续**：shelf 接入（如 `GET /api/l10n` 中调用 `getWebL10nMap()` 并返回 JSON）用户表示暂不实施，已写入「网页国际化（建议）」中的桥接说明与待做项。
+
+**网页国际化实现（2026-01-31）**
+- **shelf**：api.dart 新增 `GET /api/l10n`，handler 调用 `getWebL10nMap()` 返回 JSON；语言跟随 Flutter 当前语言。
+- **网页**：index.html 增加 `data-i18n` / `data-i18n-placeholder` 与 `applyL10n()`，加载时请求 `/api/l10n` 并替换文案、placeholder、document.title。
+- **l10n 对齐**：app_web_l10n 新增 `sourceListTitleL10n`（web_source_list_title），网页「源列表」卡片改用该 key；与 UI 定义逐项核对，无漏。
+
+**涉及/修改的文件（网页国际化）**
+- app/lib/src/api/shelf/api.dart；app/assets/web/index.html；app/lib/src/l10n/app_web_l10n.dart；app/lib/src/l10n/app_web_l10n.gen.dart；app/lib/gen/l10n.gen.dart
 
 ## 历史
 
@@ -79,3 +87,8 @@
 ### 2026-01-31 22:00（web_l10n 精简与常量共用，摘要更新）
 - **web_l10n**：`getWebL10nMap()` 去掉 prefix 参数、用 `requireValue` 替代 valueOrNull、直接遍历 `tr.entries`（L10nTranslationModel 混入 MapMixin）；前缀与 `AppWebL10n` 共用顶级常量 `webL10nKeysPrefix`（定义于 app_web_l10n.dart）。
 - **摘要**：在「网页国际化（建议）」中补充桥接已就绪（getWebL10nMap）、shelf 接入为待做；新增「web_l10n 精简与常量共用」完成项与涉及文件；用户表示 shelf 接入暂不实施，先写入摘要。
+
+### 2026-01-31 23:54（网页国际化 shelf + 页面 data-i18n + 源列表 key）
+- **shelf**：新增 `GET /api/l10n`，_handleGetL10n 调用 getWebL10nMap() 返回 JSON。
+- **网页**：index.html 增加 data-i18n / data-i18n-placeholder 与 applyL10n()，加载时请求 /api/l10n 并替换文案。
+- **l10n**：新增 sourceListTitleL10n（web_source_list_title），网页「源列表」卡片改用该 key；注解 keysPrefix 改回字面量 'web'（代码生成器仅支持字面量）。待办「网页国际化」打勾。

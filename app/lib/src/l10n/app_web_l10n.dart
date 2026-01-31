@@ -4,7 +4,7 @@ import 'package:base/l10n.dart';
 const String webL10nKeysPrefix = 'web';
 
 @L10nKeys(
-  keysPrefix: webL10nKeysPrefix,
+  keysPrefix: 'web', // 与 [webL10nKeysPrefix] 保持一致，代码生成器仅支持字面量
   keysDesc: 'sjgtv 网页（index.html）文案，与 Flutter 源管理/添加源页共用',
 )
 abstract interface class AppWebL10n {
@@ -16,6 +16,15 @@ abstract interface class AppWebL10n {
     keyType: L10nKeyType.label,
   )
   String get sourceManageTitleL10n;
+
+  @L10nKey(
+    en: 'Source List',
+    zh_CN: '源列表',
+    zh_HK: '源列表',
+    keyDesc: '源列表卡片标题',
+    keyType: L10nKeyType.label,
+  )
+  String get sourceListTitleL10n;
 
   @L10nKey(
     en: 'Add Data Source',

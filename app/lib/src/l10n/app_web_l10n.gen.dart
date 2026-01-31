@@ -1,4 +1,4 @@
-// GENERATED CODE BY 2026-01-31 23:34:27 - DO NOT MODIFY BY HAND
+// GENERATED CODE BY 2026-01-31 23:53:43 - DO NOT MODIFY BY HAND
 
 import 'package:base/l10n.dart';
 import 'package:sjgtv/gen/l10n.gen.dart';
@@ -7,7 +7,7 @@ import 'app_web_l10n.dart';
 
 export 'app_web_l10n.dart';
 
-/// has 8 keys
+/// has 9 keys
 ///
 /// keysPrefix: web
 ///
@@ -32,6 +32,24 @@ mixin AppWebL10nMixin implements AppWebL10n {
   String get sourceManageTitleL10nKey => sourceManageTitleL10nEntry.key;
 
   L10nMixin get sourceManageTitleL10nEntry => L10n.web_source_manage_title;
+
+  /// key: web_source_list_title
+  ///
+  /// en: Source List
+  ///
+  /// zh_CN: 源列表
+  ///
+  /// zh_HK: 源列表
+  ///
+  /// keyDesc: 源列表卡片标题
+  ///
+  /// keyType: label
+  @override
+  String get sourceListTitleL10n => sourceListTitleL10nEntry.value;
+
+  String get sourceListTitleL10nKey => sourceListTitleL10nEntry.key;
+
+  L10nMixin get sourceListTitleL10nEntry => L10n.web_source_list_title;
 
   /// key: web_add_source_title
   ///

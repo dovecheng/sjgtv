@@ -12,6 +12,7 @@ import 'package:shelf_cors_headers/shelf_cors_headers.dart';
 import 'package:shelf_router/shelf_router.dart' as shelf_router;
 import 'package:shelf_static/shelf_static.dart';
 import 'package:sjgtv/gen/assets.gen.dart';
+import 'package:sjgtv/src/api/shelf/web_l10n.dart';
 import 'package:sjgtv/src/model/proxy.dart';
 import 'package:sjgtv/src/model/source.dart';
 import 'package:sjgtv/src/model/tag.dart';
@@ -74,6 +75,8 @@ Future<HttpServer> startServer({int port = 8023}) async {
     ..delete('/api/tags', _handleDeleteTag)
     // Search endpoint
     ..get('/api/search', _handleSearchRequest)
+    // 网页国际化：返回当前语言的 web_* 翻译 JSON
+    ..get('/api/l10n', _handleGetL10n)
     // Static files
     ..get('/', staticHandler)
     ..get('/<any|.*>', staticHandler);
@@ -452,6 +455,27 @@ List<dynamic> _mergeResults(List<dynamic> results, List<Source> sources) {
       (dynamic a, dynamic b) => (b['vod_hits'] ?? 0).compareTo(a['vod_hits'] ?? 0));
 
   return mergedList;
+}
+
+// ============================================================================
+// API Handlers - 网页国际化
+// ============================================================================
+
+Future<Response> _handleGetL10n(Request request) async {
+  try {
+    final Map<String, String> map = getWebL10nMap();
+    return Response(
+      200,
+      body: jsonEncode(map),
+      headers: const {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Cache-Control': 'no-store',
+      },
+    );
+  } catch (e, s) {
+    _log.e(() => '获取网页翻译失败: $e', e, s);
+    return _createErrorResponse('获取翻译失败', 500, e);
+  }
 }
 
 // ============================================================================

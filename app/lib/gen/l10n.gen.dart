@@ -1,11 +1,11 @@
-// GENERATED CODE BY 2026-01-31 23:34:27 - DO NOT MODIFY BY HAND
+// GENERATED CODE BY 2026-01-31 23:53:43 - DO NOT MODIFY BY HAND
 // ignore_for_file: constant_identifier_names, prefer_single_quotes
 
 import 'package:base/l10n.dart';
 
 /// L10n keys and translations
 ///
-/// Has 8 keys
+/// Has 9 keys
 enum L10n with L10nMixin {
   /// key: web_add_source_title
   ///
@@ -72,6 +72,19 @@ enum L10n with L10nMixin {
   /// keyType: label
   web_save,
 
+  /// key: web_source_list_title
+  ///
+  /// en: Source List
+  ///
+  /// zh_CN: 源列表
+  ///
+  /// zh_HK: 源列表
+  ///
+  /// keyDesc: 源列表卡片标题
+  ///
+  /// keyType: label
+  web_source_list_title,
+
   /// key: web_source_manage_title
   ///
   /// en: Source Manage
@@ -120,6 +133,7 @@ enum L10n with L10nMixin {
         'web_no_sources': 'No data sources',
         'web_retry': 'Retry',
         'web_save': 'Save',
+        'web_source_list_title': 'Source List',
         'web_source_manage_title': 'Source Manage',
         'web_source_name': 'Name',
         'web_source_url_hint': 'URL (http or https)',
@@ -133,6 +147,7 @@ enum L10n with L10nMixin {
         'web_no_sources': '暂无数据源',
         'web_retry': '重试',
         'web_save': '保存',
+        'web_source_list_title': '源列表',
         'web_source_manage_title': '源管理',
         'web_source_name': '名称',
         'web_source_url_hint': '地址（http 或 https）',
@@ -146,6 +161,7 @@ enum L10n with L10nMixin {
         'web_no_sources': '暫無數據源',
         'web_retry': '重試',
         'web_save': '保存',
+        'web_source_list_title': '源列表',
         'web_source_manage_title': '源管理',
         'web_source_name': '名稱',
         'web_source_url_hint': '地址（http 或 https）',
