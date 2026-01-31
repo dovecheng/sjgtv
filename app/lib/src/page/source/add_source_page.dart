@@ -1,11 +1,13 @@
 import 'package:base/api.dart';
+import 'package:base/l10n.dart';
 import 'package:base/log.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sjgtv/src/api/service/api_service.dart';
 import 'package:sjgtv/src/app/provider/api_service_provider.dart';
-import 'package:sjgtv/src/model/source.dart';
 import 'package:sjgtv/src/app/theme/app_theme.dart';
+import 'package:sjgtv/src/l10n/app_l10n.gen.dart';
+import 'package:sjgtv/src/model/source.dart';
 
 final Log _log = Log('AddSourcePage');
 
@@ -19,7 +21,8 @@ class AddSourcePage extends ConsumerStatefulWidget {
   ConsumerState<AddSourcePage> createState() => _AddSourcePageState();
 }
 
-class _AddSourcePageState extends ConsumerState<AddSourcePage> {
+class _AddSourcePageState extends ConsumerState<AddSourcePage>
+    with AppL10nMixin {
   ApiService get _apiService => ref.read(apiServiceProvider);
 
   final TextEditingController _nameController = TextEditingController();
@@ -95,7 +98,10 @@ class _AddSourcePageState extends ConsumerState<AddSourcePage> {
     return Scaffold(
       backgroundColor: colors.background,
       appBar: AppBar(
-        title: const Text('添加数据源'),
+        title: L10nKeyTips(
+          keyTips: addSourceTitleL10nKey,
+          child: Text(addSourceTitleL10n),
+        ),
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
@@ -109,13 +115,15 @@ class _AddSourcePageState extends ConsumerState<AddSourcePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            TextField(
-              controller: _nameController,
-              focusNode: _nameFocus,
-              enabled: !_isSubmitting,
-              style: const TextStyle(color: Colors.white, fontSize: 18),
-              decoration: InputDecoration(
-                labelText: '名称',
+            L10nKeyTips(
+              keyTips: sourceNameL10nKey,
+              child: TextField(
+                controller: _nameController,
+                focusNode: _nameFocus,
+                enabled: !_isSubmitting,
+                style: const TextStyle(color: Colors.white, fontSize: 18),
+                decoration: InputDecoration(
+                  labelText: sourceNameL10n,
                 labelStyle: TextStyle(color: colors.hint),
                 filled: true,
                 fillColor: colors.cardBackground,
@@ -130,21 +138,25 @@ class _AddSourcePageState extends ConsumerState<AddSourcePage> {
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide(color: colors.primary, width: 2),
                 ),
+                ),
+                onSubmitted: (_) =>
+                    FocusScope.of(context).requestFocus(_urlFocus),
               ),
-              onSubmitted: (_) => FocusScope.of(context).requestFocus(_urlFocus),
             ),
             const SizedBox(height: 24),
-            TextField(
+            L10nKeyTips(
+              keyTips: sourceUrlHintL10nKey,
+              child: TextField(
               controller: _urlController,
               focusNode: _urlFocus,
               enabled: !_isSubmitting,
               keyboardType: TextInputType.url,
               autocorrect: false,
               style: const TextStyle(color: Colors.white, fontSize: 18),
-              decoration: InputDecoration(
-                labelText: '地址（http 或 https）',
-                labelStyle: TextStyle(color: colors.hint),
-                hintText: 'https://example.com/',
+                decoration: InputDecoration(
+                  labelText: sourceUrlHintL10n,
+                  labelStyle: TextStyle(color: colors.hint),
+                  hintText: 'https://example.com/',
                 hintStyle: TextStyle(color: colors.hint),
                 filled: true,
                 fillColor: colors.cardBackground,
@@ -159,8 +171,10 @@ class _AddSourcePageState extends ConsumerState<AddSourcePage> {
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide(color: colors.primary, width: 2),
                 ),
+                ),
+                onSubmitted: (_) =>
+                    FocusScope.of(context).requestFocus(_saveFocus),
               ),
-              onSubmitted: (_) => FocusScope.of(context).requestFocus(_saveFocus),
             ),
             if (_errorText != null) ...<Widget>[
               const SizedBox(height: 16),
@@ -174,8 +188,13 @@ class _AddSourcePageState extends ConsumerState<AddSourcePage> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
                 TextButton(
-                  onPressed: _isSubmitting ? null : () => Navigator.maybePop(context),
-                  child: const Text('取消'),
+                  onPressed: _isSubmitting
+                      ? null
+                      : () => Navigator.maybePop(context),
+                  child: L10nKeyTips(
+                    keyTips: cancelL10nKey,
+                    child: Text(cancelL10n),
+                  ),
                 ),
                 const SizedBox(width: 16),
                 Focus(
@@ -192,7 +211,10 @@ class _AddSourcePageState extends ConsumerState<AddSourcePage> {
                             height: 24,
                             child: CircularProgressIndicator(strokeWidth: 2),
                           )
-                        : const Text('保存'),
+                        : L10nKeyTips(
+                            keyTips: saveL10nKey,
+                            child: Text(saveL10n),
+                          ),
                   ),
                 ),
               ],

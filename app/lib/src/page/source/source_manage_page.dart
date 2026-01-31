@@ -1,4 +1,5 @@
 import 'package:base/api.dart';
+import 'package:base/l10n.dart';
 import 'package:base/log.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -6,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sjgtv/src/api/service/api_service.dart';
 import 'package:sjgtv/src/app/provider/api_service_provider.dart';
 import 'package:sjgtv/src/app/theme/app_theme.dart';
+import 'package:sjgtv/src/l10n/app_l10n.gen.dart';
 import 'package:sjgtv/src/model/source.dart';
 import 'package:sjgtv/src/page/source/add_source_page.dart';
 
@@ -24,7 +26,8 @@ class SourceManagePage extends ConsumerStatefulWidget {
   ConsumerState<SourceManagePage> createState() => _SourceManagePageState();
 }
 
-class _SourceManagePageState extends ConsumerState<SourceManagePage> {
+class _SourceManagePageState extends ConsumerState<SourceManagePage>
+    with AppL10nMixin {
   ApiService get _apiService => ref.read(apiServiceProvider);
 
   List<Source> _sources = [];
@@ -96,7 +99,10 @@ class _SourceManagePageState extends ConsumerState<SourceManagePage> {
     return Scaffold(
       backgroundColor: colors.background,
       appBar: AppBar(
-        title: const Text('源管理'),
+        title: L10nKeyTips(
+          keyTips: sourceManageTitleL10nKey,
+          child: Text(sourceManageTitleL10n),
+        ),
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
@@ -105,10 +111,12 @@ class _SourceManagePageState extends ConsumerState<SourceManagePage> {
           focusColor: Colors.red,
         ),
         actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.add),
-            tooltip: '添加数据源',
-            onPressed: () async {
+          L10nKeyTips(
+            keyTips: addSourceTitleL10nKey,
+            child: IconButton(
+              icon: const Icon(Icons.add),
+              tooltip: addSourceTitleL10n,
+              onPressed: () async {
               final bool? added = await Navigator.of(context).push<bool>(
                 MaterialPageRoute<bool>(
                   builder: (BuildContext context) => const AddSourcePage(),
@@ -118,7 +126,8 @@ class _SourceManagePageState extends ConsumerState<SourceManagePage> {
                 _loadSources();
               }
             },
-            focusColor: Colors.red,
+              focusColor: Colors.red,
+            ),
           ),
         ],
       ),
@@ -137,16 +146,23 @@ class _SourceManagePageState extends ConsumerState<SourceManagePage> {
                       const SizedBox(height: 16),
                       TextButton(
                         onPressed: _loadSources,
-                        child: const Text('重试'),
+                        child: L10nKeyTips(
+                          keyTips: retryL10nKey,
+                          child: Text(retryL10n),
+                        ),
                       ),
                     ],
                   ),
                 )
               : _sources.isEmpty
-                  ? const Center(
-                      child: Text(
-                        '暂无数据源',
-                        style: TextStyle(color: Colors.white70, fontSize: 18),
+                  ? Center(
+                      child: L10nKeyTips(
+                        keyTips: noSourcesL10nKey,
+                        child: Text(
+                          noSourcesL10n,
+                          style: const TextStyle(
+                              color: Colors.white70, fontSize: 18),
+                        ),
                       ),
                     )
                   : ListView.builder(

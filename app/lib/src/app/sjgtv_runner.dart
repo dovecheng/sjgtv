@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:base/base.dart';
 import 'package:dio/dio.dart';
+import 'package:sjgtv/gen/l10n.gen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sjgtv/src/model/proxy_entity.dart';
@@ -38,6 +39,11 @@ final class SjgtvRunner extends AppRunner {
           ApiResultInterceptor(),
         ],
       );
+
+  /// 注入 app 的 L10n.translations，与 base 的 L10n.translations 在 provider 内合并
+  @override
+  L10nTranslationProvider? get l10nTranslation =>
+      L10nTranslationProvider(L10n.translations);
 
   /// 使用 base 同一 Isar 实例，并注册 app 的 sources/proxies/tags schema
   @override
