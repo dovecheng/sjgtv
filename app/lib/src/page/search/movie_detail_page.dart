@@ -38,9 +38,11 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
     _mainContentFocusNode.requestFocus();
 
     _episodesFocusNode.addListener(() {
-      setState(() {
-        _isEpisodesFocused = _episodesFocusNode.hasFocus;
-      });
+      if (mounted) {
+        setState(() {
+          _isEpisodesFocused = _episodesFocusNode.hasFocus;
+        });
+      }
     });
 
     _episodesScrollController.addListener(_handleScroll);

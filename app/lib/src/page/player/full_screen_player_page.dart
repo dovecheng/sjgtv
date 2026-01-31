@@ -104,7 +104,7 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
     });
   }
 
-  void _controlWakelock(bool enable) async {
+  Future<void> _controlWakelock(bool enable) async {
     try {
       enable ? await WakelockPlus.enable() : await WakelockPlus.disable();
     } catch (e) {
@@ -194,7 +194,7 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
     }
   }
 
-  void _preloadNextEpisode() async {
+  Future<void> _preloadNextEpisode() async {
     if (_currentEpisodeIndex >= widget.episodes.length - 1) return;
 
     final String? nextUrl = widget.episodes[_currentEpisodeIndex + 1]['url'];
@@ -212,7 +212,7 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
     }
   }
 
-  void _changeEpisode(int index) async {
+  Future<void> _changeEpisode(int index) async {
     if (widget.episodes.isEmpty ||
         index < 0 ||
         index >= widget.episodes.length ||
@@ -266,10 +266,12 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
         await _player.seek(_episodeProgress[index]!);
       }
 
-      setState(() {
-        _currentEpisodeIndex = index;
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _currentEpisodeIndex = index;
+          _isLoading = false;
+        });
+      }
     } catch (e) {
       if (mounted) {
         setState(() {
