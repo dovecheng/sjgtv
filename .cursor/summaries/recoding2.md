@@ -73,7 +73,8 @@ app/lib/src/
 - [ ] 代码：dart analyze / dart fix 全绿，去除未使用导入与死代码
 - [ ] 结构：重复 UI 模式抽组件或工具函数
 - [ ] 性能：页面/列表避免不必要的 rebuild、能 const 则 const
-- [ ] 依赖：清理未使用依赖、pub outdated 评估升级
+- [x] 依赖：pub outdated 评估与保守升级（dart pub upgrade，app/base 已执行，分析通过）
+- [ ] 依赖：清理未使用依赖（可选）
 
 **下一步行动**（功能类暂缓）
 
@@ -293,3 +294,13 @@ app/lib/src/
 **涉及/修改的文件**
 - 修改：`.cursor/agents/next.md`（步骤五表述）
 - 修改：`.cursor/summaries/recoding2.md`（当前策略、优化待办、下一步行动）
+
+### 2026-01-31 19:40（依赖评估与保守升级）
+
+**依赖优化**
+- app、base 执行 `dart pub outdated` 评估
+- app、base 执行 `dart pub upgrade`（保守升级，不跨 major）：app 47 项依赖更新，base 17 项更新
+- `dart analyze`（app、base）通过
+
+**涉及/修改的文件**
+- 修改：`app/pubspec.lock`、`base/pubspec.lock`
