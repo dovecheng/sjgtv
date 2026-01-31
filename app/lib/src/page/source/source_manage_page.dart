@@ -7,6 +7,7 @@ import 'package:sjgtv/src/api/service/api_service.dart';
 import 'package:sjgtv/src/app/provider/api_service_provider.dart';
 import 'package:sjgtv/src/app/theme/app_colors.dart';
 import 'package:sjgtv/src/model/source.dart';
+import 'package:sjgtv/src/page/source/add_source_page.dart';
 
 final Log _log = Log('SourceManagePage');
 
@@ -102,6 +103,23 @@ class _SourceManagePageState extends ConsumerState<SourceManagePage> {
           onPressed: () => Navigator.maybePop(context),
           focusColor: Colors.red,
         ),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.add),
+            tooltip: '添加数据源',
+            onPressed: () async {
+              final bool? added = await Navigator.of(context).push<bool>(
+                MaterialPageRoute<bool>(
+                  builder: (BuildContext context) => const AddSourcePage(),
+                ),
+              );
+              if (added == true && mounted) {
+                _loadSources();
+              }
+            },
+            focusColor: Colors.red,
+          ),
+        ],
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())

@@ -34,7 +34,8 @@ app/lib/src/
 ├── page/         # 页面
 │   ├── home/     # 首页（app_wrapper, category_page）
 │   ├── player/   # 播放器（full_screen_player_page, player_intents）
-│   └── search/   # 搜索（search_page, movie_detail_page）
+│   ├── search/   # 搜索（search_page, movie_detail_page）
+│   └── source/   # 源管理（source_manage_page, add_source_page）
 ├── service/      # 通用服务（m3u8_ad_remover）
 └── widget/       # 通用组件（focusable_movie_card, update_checker）
 ```
@@ -50,7 +51,8 @@ app/lib/src/
 - [x] 页面改为通过 Provider 获取 ApiService
 
 阶段四：核心功能实现
-- [ ] 源管理功能（已有列表页与入口，待完善添加/删除/编辑）
+- [x] 源管理：添加新源（AddSourcePage + 源管理页入口）
+- [ ] 源管理：删除/编辑
 - [ ] 视频播放（MediaKit）- 已有基础实现
 - [ ] TV 优化 UI 组件
 - [ ] 搜索功能 - 已有基础实现
@@ -256,3 +258,13 @@ app/lib/src/
 - 修改：`app/lib/src/page/search/search_page.dart`
 - 修改：`app/lib/src/page/source/source_manage_page.dart`
 - 修改：`app/lib/src/widget/focusable_movie_card.dart`
+
+### 2026-01-31 19:12（源管理：添加新源）
+
+**添加新源页面与入口**
+- 新增 `app/lib/src/page/source/add_source_page.dart`：表单页（名称、地址），校验 URL 为 http(s)，提交调用 ApiService.addSource，成功后 pop(true)
+- 源管理页 AppBar 增加「添加」图标入口，push AddSourcePage，返回后 _loadSources 刷新列表
+
+**涉及/修改的文件**
+- 新增：`app/lib/src/page/source/add_source_page.dart`
+- 修改：`app/lib/src/page/source/source_manage_page.dart`（添加入口 + 返回后刷新）
