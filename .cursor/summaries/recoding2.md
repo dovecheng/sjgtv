@@ -326,3 +326,19 @@ app/lib/src/
 - 修改：`app/lib/src/page/player/full_screen_player_page.dart`（移除本地 DurationClamp，改用 base/extension）
 - 修改：`app/lib/src/page/search/movie_detail_page.dart`（base/app 导入，theme/textTheme 局部变量复用）
 - 修改：`app/lib/src/page/search/search_page.dart`（仅一处 appThemeColors 不设局部变量）
+
+### 2026-01-31（收尾命令 next 改名为 ok 并优化）
+
+**命令改名**
+- 收尾命令由 `next` 改为 `ok`：`.cursor/agents/next.md` 删除，新增 `.cursor/agents/ok.md`
+- 触发方式：说「收尾」或 `/ok`；可 @ 摘要文件，如 `/ok @.cursor/summaries/recoding2.md`
+
+**内容优化**
+- description 改为「再根据摘要给出下一步建议或询问是否重新分析」
+- 步骤 3 摘要：合并为「写进摘要 + 若已 @ 则以该文件为准，否则新建/更新并建议路径」
+- 步骤 5：建议选项表述精简为「列出若干条供用户选择」；无待办时询问是否重新分析，要分析则分析并整理摘要
+- 步骤 1：read_lints 表述收紧；步骤 4 已含分次提交与 submodule 先子模块 push 再主仓 push
+
+**涉及/修改的文件**
+- 删除：`.cursor/agents/next.md`
+- 新增：`.cursor/agents/ok.md`
