@@ -31,6 +31,7 @@ sjgtv 为模块化 Flutter TV 应用：**base**（公共库）+ **app**（应用
 ## 未完成的计划（合并自三份摘要）
 
 **功能与体验**
+- [ ] **go_route**：计划使用 go_route 做应用路由。
 - [ ] **Flutter 代理/标签**（若需要）：网页已有代理/标签管理；是否在 app 内做代理管理页、标签管理页，待定。
 - [ ] **TV 与播放**：继续优化 TV 焦点、遥控、播放器 UI/交互；视频播放（MediaKit）已有基础，待优化/完善。
 - [ ] **搜索功能**：已有基础实现，待优化体验。
@@ -51,20 +52,19 @@ sjgtv 为模块化 Flutter TV 应用：**base**（公共库）+ **app**（应用
 
 ---
 
-## 项目结构（app，当前）
+## 项目结构（app，按业务分类）
 
 ```
 app/lib/src/
-├── api/          # API：client（Retrofit）、service（ApiService）、shelf（本地服务 + web_l10n）
-├── l10n/          # 应用与网页 L10n（app_api_l10n、app_web_l10n）
-├── model/         # 数据模型与实体（source、proxy、tag、movie 等）
-├── page/          # 页面：home、player、search、source
-├── provider/      # Riverpod 提供者（api_service、sources、json_adapter）
-├── service/       # 通用服务（m3u8_ad_remover）
-├── storage/       # 存储（SourceStorage，用 base $isar）
-├── theme/         # 主题（app_colors、app_theme）
-├── widget/        # 通用组件（focusable_movie_card、network_image_placeholders、update_checker）
-└── sjgtv_runner.dart  # 应用启动器（继承 base AppRunner）
+├── source/       # 数据源业务：model、provider、storage、count、l10n、page
+├── proxy/        # 代理业务：model、provider、count
+├── tag/          # 标签业务：model、provider、count
+├── movie/        # 电影业务：model、page、widget
+├── api/          # 跨业务 API：client、service、shelf、api_service_provider
+├── app/          # 应用级：json_adapter、theme、sjgtv_runner
+├── page/         # 通用页面：home（app_wrapper）、player
+├── service/      # 跨业务服务（m3u8_ad_remover）
+└── widget/       # 跨业务组件（network_image_placeholders、update_checker）
 ```
 
 ---
@@ -120,3 +120,9 @@ app/lib/src/
 ### 2026-01-31 22:10（待办与建议补全，无遗漏）
 - 对照 recoding2 阶段四与 recoding3 待办核查：补入**搜索功能**（已有基础，待优化）、**广告过滤**（已有 m3u8_ad_remover，待完善）；在「TV 与播放」中注明视频播放（MediaKit）已有基础、待优化。
 - 新增**建议优先级**小节（来自 recoding3 项目分析结论）：优先 TV 与播放；按需代理/标签；顺手代码质量与测试。
+
+### 2026-02-01（计划使用 go_route）
+- 未完成的计划：补充 **go_route**（计划使用 go_route 做应用路由）。
+
+### 2026-02-01（app 按业务分类重构）
+- app 结构改为按业务分类：source/（model、provider、storage、count、l10n、page）、proxy/、tag/、movie/ 各自包含其 model、provider、count 等；api/ 保留跨业务层；删除 model/、provider/、sources/、proxies/、tags/、count/、l10n/ 等按功能分类的目录。
