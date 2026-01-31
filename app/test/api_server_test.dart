@@ -3,9 +3,9 @@ import 'dart:io';
 import 'package:base/base.dart';
 import 'package:flutter/material.dart';
 import 'package:sjgtv/src/api/shelf/api.dart';
-import 'package:sjgtv/src/model/proxy_entity.dart';
-import 'package:sjgtv/src/model/source_entity.dart';
-import 'package:sjgtv/src/model/tag_entity.dart';
+import 'package:sjgtv/src/proxy/proxy_model.dart';
+import 'package:sjgtv/src/source/source_model.dart';
+import 'package:sjgtv/src/tag/tag_model.dart';
 
 /// shelf 本地服务测试入口
 ///
@@ -19,9 +19,9 @@ void main() async {
       isarProvider.overrideWith(
         () => IsarProvider(
           schemas: [
-            SourceEntitySchema,
-            ProxyEntitySchema,
-            TagEntitySchema,
+            SourceModelSchema,
+            ProxyModelSchema,
+            TagModelSchema,
           ],
         ),
       ),

@@ -1,9 +1,9 @@
 import 'package:base/api.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
-import 'package:sjgtv/src/model/proxy.dart';
-import 'package:sjgtv/src/model/source.dart';
-import 'package:sjgtv/src/model/tag.dart';
+import 'package:sjgtv/src/proxy/proxy_model.dart';
+import 'package:sjgtv/src/source/source_model.dart';
+import 'package:sjgtv/src/tag/tag_model.dart';
 
 part 'api_client.g.dart';
 
@@ -16,42 +16,42 @@ abstract class ApiClient {
 
   // --- Sources ---
   @GET('/api/sources')
-  Future<ApiListResultModel<Source>> getSources();
+  Future<ApiListResultModel<SourceModel>> getSources();
 
   @POST('/api/sources')
-  Future<ApiResultModel<Source>> addSource(@Body() Map<String, dynamic> body);
+  Future<ApiResultModel<SourceModel>> addSource(@Body() Map<String, dynamic> body);
 
   @PUT('/api/sources')
-  Future<ApiResultModel<Source>> updateSource(@Body() Map<String, dynamic> body);
+  Future<ApiResultModel<SourceModel>> updateSource(@Body() Map<String, dynamic> body);
 
   @PUT('/api/sources/toggle')
-  Future<ApiResultModel<Source>> toggleSource(@Query('id') String id);
+  Future<ApiResultModel<SourceModel>> toggleSource(@Query('id') String id);
 
   @DELETE('/api/sources')
   Future<ApiResultModel<Object>> deleteSource(@Query('id') String id);
 
   // --- Proxies ---
   @GET('/api/proxies')
-  Future<ApiListResultModel<Proxy>> getProxies();
+  Future<ApiListResultModel<ProxyModel>> getProxies();
 
   @POST('/api/proxies')
-  Future<ApiResultModel<Proxy>> addProxy(@Body() Map<String, dynamic> body);
+  Future<ApiResultModel<ProxyModel>> addProxy(@Body() Map<String, dynamic> body);
 
   @PUT('/api/proxies/toggle')
-  Future<ApiResultModel<Proxy>> toggleProxy(@Query('id') String id);
+  Future<ApiResultModel<ProxyModel>> toggleProxy(@Query('id') String id);
 
   @DELETE('/api/proxies')
   Future<ApiResultModel<Object>> deleteProxy(@Query('id') String id);
 
   // --- Tags ---
   @GET('/api/tags')
-  Future<ApiListResultModel<Tag>> getTags();
+  Future<ApiListResultModel<TagModel>> getTags();
 
   @POST('/api/tags')
-  Future<ApiResultModel<Tag>> addTag(@Body() Map<String, dynamic> body);
+  Future<ApiResultModel<TagModel>> addTag(@Body() Map<String, dynamic> body);
 
   @PUT('/api/tags')
-  Future<ApiResultModel<Tag>> updateTag(@Body() Map<String, dynamic> body);
+  Future<ApiResultModel<TagModel>> updateTag(@Body() Map<String, dynamic> body);
 
   @PUT('/api/tags/order')
   Future<ApiResultModel<Object>> updateTagOrder(@Body() Map<String, dynamic> body);

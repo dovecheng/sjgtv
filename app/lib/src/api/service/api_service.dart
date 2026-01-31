@@ -1,9 +1,9 @@
 import 'package:base/api.dart';
 import 'package:dio/dio.dart';
 import 'package:sjgtv/src/api/client/api_client.dart';
-import 'package:sjgtv/src/model/proxy.dart';
-import 'package:sjgtv/src/model/source.dart';
-import 'package:sjgtv/src/model/tag.dart';
+import 'package:sjgtv/src/proxy/proxy_model.dart';
+import 'package:sjgtv/src/source/source_model.dart';
+import 'package:sjgtv/src/tag/tag_model.dart';
 
 /// API 服务层，封装 Retrofit ApiClient
 ///
@@ -31,22 +31,22 @@ class ApiService {
   // --- Sources ---
 
   /// 获取所有数据源
-  Future<ApiListResultModel<Source>> getSources() async {
+  Future<ApiListResultModel<SourceModel>> getSources() async {
     return await _client.getSources();
   }
 
   /// 添加数据源
-  Future<ApiResultModel<Source>> addSource(Map<String, dynamic> body) async {
+  Future<ApiResultModel<SourceModel>> addSource(Map<String, dynamic> body) async {
     return await _client.addSource(body);
   }
 
   /// 更新数据源
-  Future<ApiResultModel<Source>> updateSource(Map<String, dynamic> body) async {
+  Future<ApiResultModel<SourceModel>> updateSource(Map<String, dynamic> body) async {
     return await _client.updateSource(body);
   }
 
   /// 切换数据源启用/禁用状态
-  Future<ApiResultModel<Source>> toggleSource(String id) async {
+  Future<ApiResultModel<SourceModel>> toggleSource(String id) async {
     return await _client.toggleSource(id);
   }
 
@@ -58,17 +58,17 @@ class ApiService {
   // --- Proxies ---
 
   /// 获取所有代理
-  Future<ApiListResultModel<Proxy>> getProxies() async {
+  Future<ApiListResultModel<ProxyModel>> getProxies() async {
     return await _client.getProxies();
   }
 
   /// 添加代理
-  Future<ApiResultModel<Proxy>> addProxy(Map<String, dynamic> body) async {
+  Future<ApiResultModel<ProxyModel>> addProxy(Map<String, dynamic> body) async {
     return await _client.addProxy(body);
   }
 
   /// 切换代理启用/禁用状态
-  Future<ApiResultModel<Proxy>> toggleProxy(String id) async {
+  Future<ApiResultModel<ProxyModel>> toggleProxy(String id) async {
     return await _client.toggleProxy(id);
   }
 
@@ -80,17 +80,17 @@ class ApiService {
   // --- Tags ---
 
   /// 获取所有标签
-  Future<ApiListResultModel<Tag>> getTags() async {
+  Future<ApiListResultModel<TagModel>> getTags() async {
     return await _client.getTags();
   }
 
   /// 添加标签
-  Future<ApiResultModel<Tag>> addTag(Map<String, dynamic> body) async {
+  Future<ApiResultModel<TagModel>> addTag(Map<String, dynamic> body) async {
     return await _client.addTag(body);
   }
 
   /// 更新标签
-  Future<ApiResultModel<Tag>> updateTag(Map<String, dynamic> body) async {
+  Future<ApiResultModel<TagModel>> updateTag(Map<String, dynamic> body) async {
     return await _client.updateTag(body);
   }
 

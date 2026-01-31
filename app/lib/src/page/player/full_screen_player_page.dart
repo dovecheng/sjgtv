@@ -8,7 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:sjgtv/src/theme/app_theme.dart';
+import 'package:sjgtv/src/app/theme/app_theme.dart';
 import 'package:sjgtv/src/page/player/player_intents.dart';
 import 'package:sjgtv/src/service/m3u8_ad_remover.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';

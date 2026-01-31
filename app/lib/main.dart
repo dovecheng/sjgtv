@@ -1,4 +1,4 @@
-import 'package:sjgtv/src/sjgtv_runner.dart';
+import 'package:sjgtv/src/app/sjgtv_runner.dart';
 
 /// 应用入口
 ///

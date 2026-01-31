@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sjgtv/src/page/home/category_page.dart';
+import 'package:sjgtv/src/movie/category_page.dart';
 import 'package:sjgtv/src/widget/update_checker.dart';
 
 /// 应用包装器
