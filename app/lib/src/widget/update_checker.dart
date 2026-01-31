@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:android_intent_plus/android_intent.dart';
 import 'package:android_intent_plus/flag.dart';
+import 'package:base/converter.dart';
 import 'package:base/log.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -72,7 +73,7 @@ abstract final class AppUpdater {
 
   static String? _findApkDownloadUrl(List<dynamic> assets) {
     for (final dynamic asset in assets) {
-      if (asset['name'].toString().endsWith('.apk')) {
+      if (asset['name']?.toString().endsWith('.apk') ?? false) {
         return asset['browser_download_url'];
       }
     }
@@ -80,8 +81,10 @@ abstract final class AppUpdater {
   }
 
   static int _compareVersions(String current, String latest) {
-    final List<int> currentParts = current.split('.').map(int.parse).toList();
-    final List<int> latestParts = latest.split('.').map(int.parse).toList();
+    final List<int> currentParts =
+        current.split('.').map((String e) => IntConverter.toIntOrZero(e)).toList();
+    final List<int> latestParts =
+        latest.split('.').map((String e) => IntConverter.toIntOrZero(e)).toList();
 
     for (var i = 0; i < 3; i++) {
       final int currentPart = i < currentParts.length ? currentParts[i] : 0;

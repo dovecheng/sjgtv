@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:base/app.dart';
+import 'package:base/cache.dart';
 import 'package:flutter/services.dart';
+import 'package:sjgtv/src/app/theme/app_theme.dart';
 import 'package:sjgtv/src/page/player/full_screen_player_page.dart';
 
 /// 电影详情页
@@ -97,7 +99,9 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    final ThemeData theme = context.themeData;
+    final ColorScheme colorScheme = theme.colorScheme;
+    final TextTheme textTheme = theme.textTheme;
 
     return Scaffold(
       body: Focus(
@@ -149,29 +153,38 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                               tag: 'poster-${widget.movie['vod_id']}',
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(12),
-                                child: CachedNetworkImage(
+                                child: CachedImage(
                                   imageUrl: widget.movie['vod_pic'] ?? '',
                                   width: 120,
                                   height: 180,
                                   fit: BoxFit.cover,
-                                  placeholder: (context, url) => Container(
-                                    color: colorScheme.surface,
-                                    child: const Center(
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                      ),
-                                    ),
-                                  ),
-                                  errorWidget: (context, url, error) =>
-                                      Container(
-                                        color: colorScheme.surface,
-                                        child: const Center(
-                                          child: Icon(
-                                            Icons.error_outline,
-                                            size: 32,
-                                          ),
+                                  placeholder: (BuildContext ctx, String url) {
+                                    final AppThemeColors c =
+                                        ctx.appThemeColors;
+                                    return ColoredBox(
+                                      color: c.surfaceVariant,
+                                      child: const Center(
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 3.0,
                                         ),
                                       ),
+                                    );
+                                  },
+                                  errorWidget: (BuildContext ctx,
+                                          String url, Object error) {
+                                    final AppThemeColors c =
+                                        ctx.appThemeColors;
+                                    return ColoredBox(
+                                      color: c.surfaceVariant,
+                                      child: const Center(
+                                        child: Icon(
+                                          Icons.broken_image,
+                                          color: Colors.grey,
+                                          size: 36,
+                                        ),
+                                      ),
+                                    );
+                                  },
                                 ),
                               ),
                             ),
@@ -182,9 +195,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                                 children: [
                                   Text(
                                     widget.movie['vod_name'] ?? '未知标题',
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.displayMedium,
+                                    style: textTheme.displayMedium,
                                   ),
                                   const SizedBox(height: 8),
                                   Wrap(
@@ -217,16 +228,12 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                                   const SizedBox(height: 8),
                                   Text(
                                     '主演: ${widget.movie['vod_actor'] ?? '未知'}',
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.bodyLarge,
+                                    style: textTheme.bodyLarge,
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
                                     '导演: ${widget.movie['vod_director'] ?? '未知'}',
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.bodyLarge,
+                                    style: textTheme.bodyLarge,
                                   ),
                                 ],
                               ),
@@ -244,14 +251,14 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                         children: [
                           Text(
                             '剧情简介',
-                            style: Theme.of(context).textTheme.headlineMedium,
+                            style: textTheme.headlineMedium,
                           ),
                           const SizedBox(height: 8),
                           Text(
                             widget.movie['vod_content'] ??
                                 widget.movie['vod_blurb'] ??
                                 '暂无简介',
-                            style: Theme.of(context).textTheme.bodyLarge,
+                            style: textTheme.bodyLarge,
                           ),
                         ],
                       ),
@@ -272,7 +279,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: Text(
                         '选集',
-                        style: Theme.of(context).textTheme.headlineMedium,
+                        style: textTheme.headlineMedium,
                       ),
                     ),
                     const SizedBox(height: 12),
@@ -402,8 +409,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                                       onPressed: () => _playEpisode(index),
                                       child: Text(
                                         _episodes[index]['title']!,
-                                        style: Theme.of(context)
-                                            .textTheme
+                                        style: textTheme
                                             .bodyLarge!
                                             .copyWith(
                                               fontWeight: isFocused

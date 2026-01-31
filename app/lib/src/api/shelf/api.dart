@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:base/converter.dart';
 import 'package:base/log.dart';
 import 'package:dio/dio.dart' hide Response;
 import 'package:flutter/services.dart';
@@ -234,21 +235,22 @@ Future<Response> _handleAddSource(Request request) async {
       throw Exception('名称和URL不能为空');
     }
 
-    if (!_isValidUrl(data['url'])) {
+    final String urlInput = (data['url']?.toString() ?? '').trim();
+    if (!_isValidUrl(urlInput)) {
       throw Exception('请输入有效的URL地址');
     }
 
-    String apiUrl = data['url'].trim();
-    if (!apiUrl.endsWith('/')) apiUrl += '/';
-    if (!apiUrl.endsWith('api.php/provide/vod')) {
-      apiUrl += 'api.php/provide/vod';
+    String url = urlInput;
+    if (!url.endsWith('/')) url += '/';
+    if (!url.endsWith('api.php/provide/vod')) {
+      url += 'api.php/provide/vod';
     }
 
     final Source source = Source(
       id: const Uuid().v4(),
-      name: data['name'].trim(),
-      url: apiUrl,
-      weight: data['weight'] != null ? int.parse(data['weight'].toString()) : 5,
+      name: (data['name']?.toString() ?? '').trim(),
+      url: url,
+      weight: IntConverter.toIntOrNull(data['weight']) ?? 5,
       tagIds: List<String>.from(data['tagIds'] ?? []),
     );
 
@@ -310,12 +312,16 @@ Future<Response> _handleAddProxy(Request request) async {
       throw Exception('代理名称不能为空');
     }
 
-    final String url = data['url'].toString().trim();
+    final String url = (data['url']?.toString() ?? '').trim();
     if (!_isValidUrl(url)) {
       throw Exception('请输入有效的URL地址');
     }
 
-    final Proxy proxy = Proxy(id: const Uuid().v4(), url: url, name: data['name']);
+    final Proxy proxy = Proxy(
+      id: const Uuid().v4(),
+      url: url,
+      name: (data['name']?.toString() ?? '').trim(),
+    );
 
     final Proxy newProxy = await SourceStorage.addProxy(proxy);
 
@@ -378,7 +384,7 @@ Future<Response> _handleAddTag(Request request) async {
 
     final Tag tag = Tag(
       id: const Uuid().v4(),
-      name: data['name'].toString().trim(),
+      name: (data['name']?.toString() ?? '').trim(),
       color: data['color']?.toString() ?? '#4285F4',
       order: maxOrder + 1,
     );
@@ -408,7 +414,7 @@ Future<Response> _handleUpdateTag(Request request) async {
 
     final Tag updatedTag = Tag(
       id: existingTag.id,
-      name: data['name'].toString().trim(),
+      name: (data['name']?.toString() ?? '').trim(),
       color: data['color']?.toString() ?? existingTag.color,
       order: existingTag.order,
       createdAt: existingTag.createdAt,
@@ -551,7 +557,7 @@ List<dynamic> _mergeResults(List<dynamic> results, List<Source> sources) {
     final int sourceWeight = sources[i].weight;
 
     for (final dynamic item in result['list']) {
-      final String vodId = item['vod_id'].toString();
+      final String vodId = item['vod_id']?.toString() ?? '';
       if (!seenIds.contains(vodId)) {
         seenIds.add(vodId);
 

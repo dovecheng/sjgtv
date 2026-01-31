@@ -1,7 +1,7 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:base/cache.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:sjgtv/src/app/theme/app_colors.dart';
+import 'package:sjgtv/src/app/theme/app_theme.dart';
 import 'package:sjgtv/src/model/movie.dart';
 import 'package:sjgtv/src/page/search/search_page.dart';
 
@@ -20,6 +20,7 @@ class _FocusableMovieCardState extends State<FocusableMovieCard> {
 
   @override
   Widget build(BuildContext context) {
+    final AppThemeColors colors = context.appThemeColors;
     return Focus(
       onKeyEvent: (FocusNode node, KeyEvent event) {
         if (event is KeyDownEvent &&
@@ -61,9 +62,9 @@ class _FocusableMovieCardState extends State<FocusableMovieCard> {
                     topRight: Radius.circular(12),
                   ),
                   child: Container(
-                    decoration: const BoxDecoration(color: AppColors.cardSurface),
+                    decoration: BoxDecoration(color: colors.cardSurface),
                     child: widget.movie.coverUrl != null
-                        ? CachedNetworkImage(
+                        ? CachedImage(
                             imageUrl: widget.movie.coverUrl!,
                             httpHeaders: const {
                               'User-Agent':
@@ -74,8 +75,8 @@ class _FocusableMovieCardState extends State<FocusableMovieCard> {
                             fit: BoxFit.cover,
                             width: double.infinity,
                             placeholder: (BuildContext context, String url) =>
-                                Container(
-                              color: AppColors.surfaceVariant,
+                                ColoredBox(
+                              color: colors.surfaceVariant,
                               child: const Center(
                                 child: CircularProgressIndicator(
                                   strokeWidth: 3.0,
@@ -84,8 +85,8 @@ class _FocusableMovieCardState extends State<FocusableMovieCard> {
                             ),
                             errorWidget: (BuildContext context, String url,
                                     Object error) =>
-                                Container(
-                              color: AppColors.surfaceVariant,
+                                ColoredBox(
+                              color: colors.surfaceVariant,
                               child: const Center(
                                 child: Icon(
                                   Icons.broken_image,
@@ -96,7 +97,7 @@ class _FocusableMovieCardState extends State<FocusableMovieCard> {
                             ),
                           )
                         : Container(
-                            color: AppColors.surfaceVariant,
+                            color: colors.surfaceVariant,
                             child: Center(
                               child: Text(
                                 widget.movie.title.split(' ').first,
@@ -115,9 +116,9 @@ class _FocusableMovieCardState extends State<FocusableMovieCard> {
               Container(
                 height: 70,
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                decoration: const BoxDecoration(
-                  color: AppColors.cardSurface,
-                  borderRadius: BorderRadius.vertical(
+                decoration: BoxDecoration(
+                  color: colors.cardSurface,
+                  borderRadius: const BorderRadius.vertical(
                     bottom: Radius.circular(12),
                   ),
                 ),

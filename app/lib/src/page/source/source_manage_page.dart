@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sjgtv/src/api/service/api_service.dart';
 import 'package:sjgtv/src/app/provider/api_service_provider.dart';
-import 'package:sjgtv/src/app/theme/app_colors.dart';
+import 'package:sjgtv/src/app/theme/app_theme.dart';
 import 'package:sjgtv/src/model/source.dart';
 import 'package:sjgtv/src/page/source/add_source_page.dart';
 
@@ -92,8 +92,9 @@ class _SourceManagePageState extends ConsumerState<SourceManagePage> {
 
   @override
   Widget build(BuildContext context) {
+    final AppThemeColors colors = context.appThemeColors;
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: colors.background,
       appBar: AppBar(
         title: const Text('源管理'),
         backgroundColor: Colors.transparent,
@@ -165,16 +166,8 @@ class _SourceManagePageState extends ConsumerState<SourceManagePage> {
                             }
                             return KeyEventResult.ignored;
                           },
-                          child: Container(
+                          child: Card(
                             margin: const EdgeInsets.only(bottom: 12),
-                            decoration: BoxDecoration(
-                              color: AppColors.cardBackground,
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: Colors.white24,
-                                width: 1,
-                              ),
-                            ),
                             child: ListTile(
                               title: Text(
                                 source.name,
@@ -202,7 +195,7 @@ class _SourceManagePageState extends ConsumerState<SourceManagePage> {
                                 source.disabled ? Icons.toggle_off : Icons.toggle_on,
                                 color: source.disabled
                                     ? Colors.white38
-                                    : AppColors.primary,
+                                    : colors.primary,
                                 size: 36,
                               ),
                               onTap: () => _toggleSource(source),

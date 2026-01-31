@@ -8,6 +8,7 @@ import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sjgtv/src/app/provider/json_adapter_provider.dart';
 import 'package:sjgtv/src/app/theme/app_colors.dart';
+import 'package:sjgtv/src/app/theme/app_theme.dart';
 import 'package:sjgtv/src/api/shelf/api.dart';
 import 'package:sjgtv/src/page/home/app_wrapper.dart';
 import 'package:uuid/uuid.dart';
@@ -73,14 +74,31 @@ final class SjgtvRunner extends AppRunner {
     );
   }
 
-  /// 构建主题
+  /// 构建主题（色板来自 [AppColors]，UI 使用 [Theme.of].colorScheme 或 [AppThemeColors]）
   ThemeData _buildTheme() {
+    final AppThemeColors appColors = AppThemeColors.fromAppColors();
+    final ColorScheme colorScheme = ColorScheme.dark(
+      primary: appColors.primary,
+      onPrimary: Colors.black87,
+      primaryContainer: appColors.primary.withAlpha((255 * 0.2).toInt()),
+      onPrimaryContainer: appColors.primary,
+      secondary: appColors.seedColor,
+      onSecondary: Colors.black87,
+      surface: appColors.background,
+      onSurface: Colors.white,
+      surfaceContainerHighest: appColors.cardBackground,
+      surfaceContainer: appColors.cardSurface,
+      surfaceContainerLow: appColors.surfaceVariant,
+      onSurfaceVariant: appColors.hint,
+      outline: Colors.white24,
+      outlineVariant: appColors.surfaceVariant,
+      error: appColors.error,
+      onError: Colors.white,
+    );
     return ThemeData(
-      colorScheme: ColorScheme.fromSeed(
-        seedColor: AppColors.seedColor,
-        brightness: Brightness.dark,
-      ),
+      colorScheme: colorScheme,
       useMaterial3: true,
+      extensions: <ThemeExtension<dynamic>>[appColors],
       textTheme: GoogleFonts.poppinsTextTheme(
         const TextTheme(
           displayLarge: TextStyle(
@@ -125,8 +143,10 @@ final class SjgtvRunner extends AppRunner {
       ),
       cardTheme: CardThemeData(
         elevation: 0,
+        color: colorScheme.surfaceContainerHighest,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
+          side: BorderSide(color: colorScheme.outline, width: 1),
         ),
         surfaceTintColor: Colors.transparent,
         margin: EdgeInsets.zero,

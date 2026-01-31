@@ -1,28 +1,19 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:base/extension.dart';
 import 'package:base/log.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:sjgtv/src/app/theme/app_colors.dart';
+import 'package:sjgtv/src/app/theme/app_theme.dart';
 import 'package:sjgtv/src/page/player/player_intents.dart';
 import 'package:sjgtv/src/service/m3u8_ad_remover.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 final Log _log = Log('FullScreenPlayer');
-
-/// Duration 扩展：clamp 方法
-extension DurationClamp on Duration {
-  /// 将 Duration 限制在 [min, max] 范围内
-  Duration clamp(Duration min, Duration max) {
-    if (this < min) return min;
-    if (this > max) return max;
-    return this;
-  }
-}
 
 /// 全屏视频播放器页面
 ///
@@ -667,8 +658,8 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
                     value: duration.inMilliseconds > 0
                         ? position.inMilliseconds / duration.inMilliseconds
                         : 0,
-                    valueColor: const AlwaysStoppedAnimation<Color>(
-                      AppColors.seedColor,
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      context.appThemeColors.seedColor,
                     ),
                     backgroundColor: Colors.grey[600],
                     minHeight: 4,

@@ -1,3 +1,4 @@
+export 'src/extension/duration_ext.dart';
 export 'src/extension/scope_ext.dart';
 export 'src/extension/target_platform_ext.dart';
 export 'src/extension/collection_ext.dart';

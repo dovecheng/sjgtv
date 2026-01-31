@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sjgtv/src/api/service/api_service.dart';
 import 'package:sjgtv/src/app/provider/api_service_provider.dart';
 import 'package:sjgtv/src/model/source.dart';
-import 'package:sjgtv/src/app/theme/app_colors.dart';
+import 'package:sjgtv/src/app/theme/app_theme.dart';
 
 final Log _log = Log('AddSourcePage');
 
@@ -91,8 +91,9 @@ class _AddSourcePageState extends ConsumerState<AddSourcePage> {
 
   @override
   Widget build(BuildContext context) {
+    final AppThemeColors colors = context.appThemeColors;
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: colors.background,
       appBar: AppBar(
         title: const Text('添加数据源'),
         backgroundColor: Colors.transparent,
@@ -115,9 +116,9 @@ class _AddSourcePageState extends ConsumerState<AddSourcePage> {
               style: const TextStyle(color: Colors.white, fontSize: 18),
               decoration: InputDecoration(
                 labelText: '名称',
-                labelStyle: const TextStyle(color: AppColors.hint),
+                labelStyle: TextStyle(color: colors.hint),
                 filled: true,
-                fillColor: AppColors.cardBackground,
+                fillColor: colors.cardBackground,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -127,7 +128,7 @@ class _AddSourcePageState extends ConsumerState<AddSourcePage> {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(color: AppColors.primary, width: 2),
+                  borderSide: BorderSide(color: colors.primary, width: 2),
                 ),
               ),
               onSubmitted: (_) => FocusScope.of(context).requestFocus(_urlFocus),
@@ -142,11 +143,11 @@ class _AddSourcePageState extends ConsumerState<AddSourcePage> {
               style: const TextStyle(color: Colors.white, fontSize: 18),
               decoration: InputDecoration(
                 labelText: '地址（http 或 https）',
-                labelStyle: const TextStyle(color: AppColors.hint),
+                labelStyle: TextStyle(color: colors.hint),
                 hintText: 'https://example.com/',
-                hintStyle: const TextStyle(color: AppColors.hint),
+                hintStyle: TextStyle(color: colors.hint),
                 filled: true,
-                fillColor: AppColors.cardBackground,
+                fillColor: colors.cardBackground,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -156,7 +157,7 @@ class _AddSourcePageState extends ConsumerState<AddSourcePage> {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(color: AppColors.primary, width: 2),
+                  borderSide: BorderSide(color: colors.primary, width: 2),
                 ),
               ),
               onSubmitted: (_) => FocusScope.of(context).requestFocus(_saveFocus),
@@ -165,7 +166,7 @@ class _AddSourcePageState extends ConsumerState<AddSourcePage> {
               const SizedBox(height: 16),
               Text(
                 _errorText!,
-                style: const TextStyle(color: AppColors.error, fontSize: 14),
+                style: TextStyle(color: colors.error, fontSize: 14),
               ),
             ],
             const SizedBox(height: 32),
@@ -182,7 +183,7 @@ class _AddSourcePageState extends ConsumerState<AddSourcePage> {
                   child: FilledButton(
                     onPressed: _isSubmitting ? null : _submit,
                     style: FilledButton.styleFrom(
-                      backgroundColor: AppColors.primary,
+                      backgroundColor: colors.primary,
                       foregroundColor: Colors.black87,
                     ),
                     child: _isSubmitting

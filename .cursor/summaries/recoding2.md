@@ -75,6 +75,7 @@ app/lib/src/
 - [ ] 性能：页面/列表避免不必要的 rebuild、能 const 则 const
 - [x] 依赖：pub outdated 评估与保守升级（dart pub upgrade，app/base 已执行，分析通过）
 - [ ] 依赖：清理未使用依赖（可选）
+- [x] 规范：app 复用 base 能力；通过扩展获取的值多处用时用局部变量复用，只用到一次则不设局部变量
 
 **下一步行动**（功能类暂缓）
 
@@ -304,3 +305,24 @@ app/lib/src/
 
 **涉及/修改的文件**
 - 修改：`app/pubspec.lock`、`base/pubspec.lock`
+
+### 2026-01-31（app 复用 base、主题与扩展规范）
+
+**app 尽量不写 base 风格代码**
+- base 新增 `lib/src/extension/duration_ext.dart`：`DurationClampExt`（Duration 的 clamp(min, max)），并在 `extension.dart` 导出
+- app 移除 `full_screen_player_page.dart` 内本地 `extension DurationClamp`，改为 `import 'package:base/extension.dart'` 使用 base 能力
+
+**主题与扩展统一用 base**
+- app 中 `Theme.of(context)` 统一改为 `context.themeData`（base 的 BuildContextThemeExt）
+- movie_detail_page：增加 `import 'package:base/app.dart'`，build 内用 `theme`、`colorScheme`、`textTheme` 局部变量复用，避免多处重复调用扩展
+
+**扩展结果与局部变量约定**
+- 同一作用域内多处用到扩展结果（如 themeData、appThemeColors）时，定义局部变量复用；只用到一次则直接调用，不设局部变量
+- search_page 的 build 里仅一处 `context.appThemeColors.background`，保持直接调用
+
+**涉及/修改的文件**
+- 新增：`base/lib/src/extension/duration_ext.dart`
+- 修改：`base/lib/extension.dart`（导出 duration_ext）
+- 修改：`app/lib/src/page/player/full_screen_player_page.dart`（移除本地 DurationClamp，改用 base/extension）
+- 修改：`app/lib/src/page/search/movie_detail_page.dart`（base/app 导入，theme/textTheme 局部变量复用）
+- 修改：`app/lib/src/page/search/search_page.dart`（仅一处 appThemeColors 不设局部变量）

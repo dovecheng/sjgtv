@@ -13,7 +13,7 @@ import 'package:sjgtv/src/app/provider/api_service_provider.dart';
 import 'package:sjgtv/src/model/movie.dart';
 import 'package:sjgtv/src/model/tag.dart';
 import 'package:sjgtv/src/page/search/search_page.dart';
-import 'package:sjgtv/src/app/theme/app_colors.dart';
+import 'package:sjgtv/src/app/theme/app_theme.dart';
 import 'package:sjgtv/src/page/source/source_manage_page.dart';
 import 'package:sjgtv/src/widget/focusable_movie_card.dart';
 
@@ -203,15 +203,12 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
   }
 
   int _extractYearFromTitle(String title) {
-    try {
-      final RegExpMatch? match = RegExp(r'$(\d{4})$').firstMatch(title);
-      if (match != null) {
-        return int.parse(match.group(1)!);
-      }
-      return DateTime.now().year;
-    } catch (e) {
-      return DateTime.now().year;
+    final RegExpMatch? match = RegExp(r'$(\d{4})$').firstMatch(title);
+    if (match != null) {
+      final int? year = IntConverter.toIntOrNull(match.group(1));
+      if (year != null) return year;
     }
+    return DateTime.now().year;
   }
 
   List<Movie> get _currentMovies => _moviesByTag[_tabs[_selectedTab]] ?? [];
@@ -349,7 +346,7 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
                     decoration: BoxDecoration(
                       color: _selectedTab == index
                           ? Colors.red
-                          : AppColors.surfaceVariant,
+                          : context.appThemeColors.surfaceVariant,
                       borderRadius: BorderRadius.circular(35),
                       border: isFocused
                           ? Border.all(color: Colors.white, width: 2)
