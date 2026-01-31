@@ -72,7 +72,7 @@ app/lib/src/
 
 - [x] 代码：dart analyze / dart fix 全绿（已通过）；未使用导入与死代码可后续人工排查
 - [ ] 结构：重复 UI 模式抽组件或工具函数
-- [ ] 性能：页面/列表避免不必要的 rebuild、能 const 则 const
+- [x] 性能：页面/列表避免不必要的 rebuild、能 const 则 const（category_page、full_screen_player_page、movie_detail_page、search_page、source_manage_page 补 const）
 - [x] 依赖：pub outdated 评估与保守升级（dart pub upgrade，app/base 已执行，分析通过）
 - [ ] 依赖：清理未使用依赖（可选）
 - [x] 规范：app 复用 base 能力；通过扩展获取的值多处用时用局部变量复用，只用到一次则不设局部变量
@@ -342,3 +342,19 @@ app/lib/src/
 **涉及/修改的文件**
 - 删除：`.cursor/agents/next.md`
 - 新增：`.cursor/agents/ok.md`
+
+### 2026-01-31（性能：能 const 则 const）
+
+**优化内容**
+- category_page：Tab/网格 padding、AnimatedContainer duration/padding/constraints、Border.all、加载中/空态 Center、TextStyle 等补 const
+- full_screen_player_page：加载中 Column 内 CircularProgressIndicator、SizedBox、Text 补 const
+- movie_detail_page：图片错误占位 Icon 补 const（const Center 内子节点不再重复 const，避免 unnecessary_const）
+- search_page：搜索按钮区 Icon、Text 及 TextStyle 补 const
+- source_manage_page：「暂无数据源」TextStyle 补 const
+
+**涉及/修改的文件**
+- 修改：`app/lib/src/page/home/category_page.dart`
+- 修改：`app/lib/src/page/player/full_screen_player_page.dart`
+- 修改：`app/lib/src/page/search/movie_detail_page.dart`
+- 修改：`app/lib/src/page/search/search_page.dart`
+- 修改：`app/lib/src/page/source/source_manage_page.dart`

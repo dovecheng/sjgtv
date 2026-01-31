@@ -218,9 +218,9 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                     ),
                     child: Row(
                       children: [
-                        Icon(Icons.search, size: 32, color: Colors.white),
+                        const Icon(Icons.search, size: 32, color: Colors.white),
                         const SizedBox(width: 8),
-                        Text(
+                        const Text(
                           '搜索',
                           style: TextStyle(
                             fontSize: 22,

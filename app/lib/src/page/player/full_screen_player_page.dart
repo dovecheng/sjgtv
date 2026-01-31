@@ -580,9 +580,9 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
             ? const Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CircularProgressIndicator(strokeWidth: 3),
-                  SizedBox(height: 16),
-                  Text('正在加载视频...', style: TextStyle(color: Colors.white)),
+                  const CircularProgressIndicator(strokeWidth: 3),
+                  const SizedBox(height: 16),
+                  const Text('正在加载视频...', style: TextStyle(color: Colors.white)),
                 ],
               )
             : _errorMessage != null

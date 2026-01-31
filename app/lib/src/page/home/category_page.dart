@@ -317,14 +317,14 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
   Widget _buildTabBar() {
     return Container(
       height: 70,
-      padding: EdgeInsets.symmetric(vertical: 12),
+      padding: const EdgeInsets.symmetric(vertical: 12),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        padding: EdgeInsets.symmetric(horizontal: 30),
+        padding: const EdgeInsets.symmetric(horizontal: 30),
         itemCount: _tabs.length,
         itemBuilder: (context, index) {
           return Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Focus(
               autofocus: index == _selectedTab,
               onFocusChange: (hasFocus) {
@@ -340,16 +340,16 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
                 builder: (context) {
                   final bool isFocused = Focus.of(context).hasFocus;
                   return AnimatedContainer(
-                    duration: Duration(milliseconds: 200),
-                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                    constraints: BoxConstraints(minWidth: 100),
+                    duration: const Duration(milliseconds: 200),
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    constraints: const BoxConstraints(minWidth: 100),
                     decoration: BoxDecoration(
                       color: _selectedTab == index
                           ? Colors.red
                           : context.appThemeColors.surfaceVariant,
                       borderRadius: BorderRadius.circular(35),
                       border: isFocused
-                          ? Border.all(color: Colors.white, width: 2)
+                          ? const Border.all(color: Colors.white, width: 2)
                           : null,
                     ),
                     child: SizedBox(
@@ -394,7 +394,7 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
         itemBuilder: (context, index) {
           return FocusableMovieCard(movie: _currentMovies[index]);
         },
-        padding: EdgeInsets.only(left: 20, top: 20, right: 20),
+        padding: const EdgeInsets.only(left: 20, top: 20, right: 20),
       ),
     );
   }
@@ -408,13 +408,13 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
             _buildAppBar(),
             _buildTabBar(),
             if (_isLoading)
-              Expanded(child: Center(child: CircularProgressIndicator()))
+              const Expanded(child: Center(child: CircularProgressIndicator()))
             else if (_tabs[0] == '获取标签失败')
               Expanded(
                 child: Center(
                   child: Text(
                     '无法加载标签，请检查网络连接',
-                    style: TextStyle(color: Colors.white, fontSize: 24),
+                    style: const TextStyle(color: Colors.white, fontSize: 24),
                   ),
                 ),
               )
@@ -423,7 +423,7 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
                 child: Center(
                   child: Text(
                     '没有找到电影数据',
-                    style: TextStyle(color: Colors.white, fontSize: 24),
+                    style: const TextStyle(color: Colors.white, fontSize: 24),
                   ),
                 ),
               )
