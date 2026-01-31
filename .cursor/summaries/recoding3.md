@@ -7,7 +7,7 @@
 - 更早上下文：[recoding1](.cursor/summaries/recoding1.md)（阶段一/二、base 精简、模块化与收尾流程）。
 
 **后续摘要**
-- 无（本摘要为当前最新；新开摘要时可在此注明后续文件）。
+- [recoding4](.cursor/summaries/recoding4.md)：根据 recoding1/2/3 整理的整合概览；新会话可读 recoding3 或 recoding4 获取当前待办。
 
 **完成项**
 - 新建摘要 `.cursor/summaries/recoding3.md`，将可选下一步整理为待办
