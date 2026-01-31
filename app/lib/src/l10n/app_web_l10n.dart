@@ -1,10 +1,13 @@
 import 'package:base/l10n.dart';
 
+/// 网页 l10n 的 key 前缀，与 [AppWebL10n] 的 [L10nKeys.keysPrefix] 及 [getWebL10nMap] 过滤逻辑共用。
+const String webL10nKeysPrefix = 'web';
+
 @L10nKeys(
-  keysPrefix: 'app',
-  keysDesc: 'sjgtv 应用层文案',
+  keysPrefix: webL10nKeysPrefix,
+  keysDesc: 'sjgtv 网页（index.html）文案，与 Flutter 源管理/添加源页共用',
 )
-abstract interface class AppL10n {
+abstract interface class AppWebL10n {
   @L10nKey(
     en: 'Source Manage',
     zh_CN: '源管理',

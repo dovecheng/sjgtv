@@ -1,4 +1,4 @@
-// GENERATED CODE BY 2026-01-31 22:58:06 - DO NOT MODIFY BY HAND
+// GENERATED CODE BY 2026-01-31 23:34:27 - DO NOT MODIFY BY HAND
 // ignore_for_file: constant_identifier_names, prefer_single_quotes
 
 import 'package:base/l10n.dart';
@@ -7,7 +7,7 @@ import 'package:base/l10n.dart';
 ///
 /// Has 8 keys
 enum L10n with L10nMixin {
-  /// key: app_add_source_title
+  /// key: web_add_source_title
   ///
   /// en: Add Data Source
   ///
@@ -18,9 +18,9 @@ enum L10n with L10nMixin {
   /// keyDesc: 添加数据源页标题
   ///
   /// keyType: label
-  app_add_source_title,
+  web_add_source_title,
 
-  /// key: app_cancel
+  /// key: web_cancel
   ///
   /// en: Cancel
   ///
@@ -31,9 +31,9 @@ enum L10n with L10nMixin {
   /// keyDesc: 取消按钮
   ///
   /// keyType: label
-  app_cancel,
+  web_cancel,
 
-  /// key: app_no_sources
+  /// key: web_no_sources
   ///
   /// en: No data sources
   ///
@@ -44,9 +44,9 @@ enum L10n with L10nMixin {
   /// keyDesc: 源列表为空时提示
   ///
   /// keyType: message
-  app_no_sources,
+  web_no_sources,
 
-  /// key: app_retry
+  /// key: web_retry
   ///
   /// en: Retry
   ///
@@ -57,9 +57,9 @@ enum L10n with L10nMixin {
   /// keyDesc: 重试按钮
   ///
   /// keyType: label
-  app_retry,
+  web_retry,
 
-  /// key: app_save
+  /// key: web_save
   ///
   /// en: Save
   ///
@@ -70,9 +70,9 @@ enum L10n with L10nMixin {
   /// keyDesc: 保存按钮
   ///
   /// keyType: label
-  app_save,
+  web_save,
 
-  /// key: app_source_manage_title
+  /// key: web_source_manage_title
   ///
   /// en: Source Manage
   ///
@@ -83,9 +83,9 @@ enum L10n with L10nMixin {
   /// keyDesc: 源管理页标题
   ///
   /// keyType: label
-  app_source_manage_title,
+  web_source_manage_title,
 
-  /// key: app_source_name
+  /// key: web_source_name
   ///
   /// en: Name
   ///
@@ -96,9 +96,9 @@ enum L10n with L10nMixin {
   /// keyDesc: 数据源名称
   ///
   /// keyType: label
-  app_source_name,
+  web_source_name,
 
-  /// key: app_source_url_hint
+  /// key: web_source_url_hint
   ///
   /// en: URL (http or https)
   ///
@@ -109,46 +109,46 @@ enum L10n with L10nMixin {
   /// keyDesc: 数据源地址输入提示
   ///
   /// keyType: label
-  app_source_url_hint;
+  web_source_url_hint;
 
   static final Set<L10nTranslationModel> translations = <L10nTranslationModel>{
     L10nTranslationModel(
       languageTag: 'en',
       translations: const {
-        'app_add_source_title': 'Add Data Source',
-        'app_cancel': 'Cancel',
-        'app_no_sources': 'No data sources',
-        'app_retry': 'Retry',
-        'app_save': 'Save',
-        'app_source_manage_title': 'Source Manage',
-        'app_source_name': 'Name',
-        'app_source_url_hint': 'URL (http or https)',
+        'web_add_source_title': 'Add Data Source',
+        'web_cancel': 'Cancel',
+        'web_no_sources': 'No data sources',
+        'web_retry': 'Retry',
+        'web_save': 'Save',
+        'web_source_manage_title': 'Source Manage',
+        'web_source_name': 'Name',
+        'web_source_url_hint': 'URL (http or https)',
       },
     ),
     L10nTranslationModel(
       languageTag: 'zh-CN',
       translations: const {
-        'app_add_source_title': '添加数据源',
-        'app_cancel': '取消',
-        'app_no_sources': '暂无数据源',
-        'app_retry': '重试',
-        'app_save': '保存',
-        'app_source_manage_title': '源管理',
-        'app_source_name': '名称',
-        'app_source_url_hint': '地址（http 或 https）',
+        'web_add_source_title': '添加数据源',
+        'web_cancel': '取消',
+        'web_no_sources': '暂无数据源',
+        'web_retry': '重试',
+        'web_save': '保存',
+        'web_source_manage_title': '源管理',
+        'web_source_name': '名称',
+        'web_source_url_hint': '地址（http 或 https）',
       },
     ),
     L10nTranslationModel(
       languageTag: 'zh-HK',
       translations: const {
-        'app_add_source_title': '添加數據源',
-        'app_cancel': '取消',
-        'app_no_sources': '暫無數據源',
-        'app_retry': '重試',
-        'app_save': '保存',
-        'app_source_manage_title': '源管理',
-        'app_source_name': '名稱',
-        'app_source_url_hint': '地址（http 或 https）',
+        'web_add_source_title': '添加數據源',
+        'web_cancel': '取消',
+        'web_no_sources': '暫無數據源',
+        'web_retry': '重試',
+        'web_save': '保存',
+        'web_source_manage_title': '源管理',
+        'web_source_name': '名稱',
+        'web_source_url_hint': '地址（http 或 https）',
       },
     ),
   };

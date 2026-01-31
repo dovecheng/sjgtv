@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sjgtv/src/api/service/api_service.dart';
 import 'package:sjgtv/src/app/provider/api_service_provider.dart';
 import 'package:sjgtv/src/app/theme/app_theme.dart';
-import 'package:sjgtv/src/l10n/app_l10n.gen.dart';
+import 'package:sjgtv/src/l10n/app_web_l10n.gen.dart';
 import 'package:sjgtv/src/model/source.dart';
 
 final Log _log = Log('AddSourcePage');
@@ -22,7 +22,7 @@ class AddSourcePage extends ConsumerStatefulWidget {
 }
 
 class _AddSourcePageState extends ConsumerState<AddSourcePage>
-    with AppL10nMixin {
+    with AppWebL10nMixin {
   ApiService get _apiService => ref.read(apiServiceProvider);
 
   final TextEditingController _nameController = TextEditingController();

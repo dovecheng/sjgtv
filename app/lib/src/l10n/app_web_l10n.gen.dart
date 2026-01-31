@@ -1,21 +1,21 @@
-// GENERATED CODE BY 2026-01-31 22:58:06 - DO NOT MODIFY BY HAND
+// GENERATED CODE BY 2026-01-31 23:34:27 - DO NOT MODIFY BY HAND
 
 import 'package:base/l10n.dart';
 import 'package:sjgtv/gen/l10n.gen.dart';
 
-import 'app_l10n.dart';
+import 'app_web_l10n.dart';
 
-export 'app_l10n.dart';
+export 'app_web_l10n.dart';
 
 /// has 8 keys
 ///
-/// keysPrefix: app
+/// keysPrefix: web
 ///
 /// usedContext:
 ///
-/// keysDesc: sjgtv 应用层文案
-mixin AppL10nMixin implements AppL10n {
-  /// key: app_source_manage_title
+/// keysDesc: sjgtv 网页（index.html）文案，与 Flutter 源管理/添加源页共用
+mixin AppWebL10nMixin implements AppWebL10n {
+  /// key: web_source_manage_title
   ///
   /// en: Source Manage
   ///
@@ -31,9 +31,9 @@ mixin AppL10nMixin implements AppL10n {
 
   String get sourceManageTitleL10nKey => sourceManageTitleL10nEntry.key;
 
-  L10nMixin get sourceManageTitleL10nEntry => L10n.app_source_manage_title;
+  L10nMixin get sourceManageTitleL10nEntry => L10n.web_source_manage_title;
 
-  /// key: app_add_source_title
+  /// key: web_add_source_title
   ///
   /// en: Add Data Source
   ///
@@ -49,9 +49,9 @@ mixin AppL10nMixin implements AppL10n {
 
   String get addSourceTitleL10nKey => addSourceTitleL10nEntry.key;
 
-  L10nMixin get addSourceTitleL10nEntry => L10n.app_add_source_title;
+  L10nMixin get addSourceTitleL10nEntry => L10n.web_add_source_title;
 
-  /// key: app_source_name
+  /// key: web_source_name
   ///
   /// en: Name
   ///
@@ -67,9 +67,9 @@ mixin AppL10nMixin implements AppL10n {
 
   String get sourceNameL10nKey => sourceNameL10nEntry.key;
 
-  L10nMixin get sourceNameL10nEntry => L10n.app_source_name;
+  L10nMixin get sourceNameL10nEntry => L10n.web_source_name;
 
-  /// key: app_source_url_hint
+  /// key: web_source_url_hint
   ///
   /// en: URL (http or https)
   ///
@@ -85,9 +85,9 @@ mixin AppL10nMixin implements AppL10n {
 
   String get sourceUrlHintL10nKey => sourceUrlHintL10nEntry.key;
 
-  L10nMixin get sourceUrlHintL10nEntry => L10n.app_source_url_hint;
+  L10nMixin get sourceUrlHintL10nEntry => L10n.web_source_url_hint;
 
-  /// key: app_save
+  /// key: web_save
   ///
   /// en: Save
   ///
@@ -103,9 +103,9 @@ mixin AppL10nMixin implements AppL10n {
 
   String get saveL10nKey => saveL10nEntry.key;
 
-  L10nMixin get saveL10nEntry => L10n.app_save;
+  L10nMixin get saveL10nEntry => L10n.web_save;
 
-  /// key: app_cancel
+  /// key: web_cancel
   ///
   /// en: Cancel
   ///
@@ -121,9 +121,9 @@ mixin AppL10nMixin implements AppL10n {
 
   String get cancelL10nKey => cancelL10nEntry.key;
 
-  L10nMixin get cancelL10nEntry => L10n.app_cancel;
+  L10nMixin get cancelL10nEntry => L10n.web_cancel;
 
-  /// key: app_no_sources
+  /// key: web_no_sources
   ///
   /// en: No data sources
   ///
@@ -139,9 +139,9 @@ mixin AppL10nMixin implements AppL10n {
 
   String get noSourcesL10nKey => noSourcesL10nEntry.key;
 
-  L10nMixin get noSourcesL10nEntry => L10n.app_no_sources;
+  L10nMixin get noSourcesL10nEntry => L10n.web_no_sources;
 
-  /// key: app_retry
+  /// key: web_retry
   ///
   /// en: Retry
   ///
@@ -157,5 +157,5 @@ mixin AppL10nMixin implements AppL10n {
 
   String get retryL10nKey => retryL10nEntry.key;
 
-  L10nMixin get retryL10nEntry => L10n.app_retry;
+  L10nMixin get retryL10nEntry => L10n.web_retry;
 }
