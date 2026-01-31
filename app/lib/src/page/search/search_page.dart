@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sjgtv/src/api/service/api_service.dart';
-import 'package:sjgtv/src/app/provider/api_service_provider.dart';
-import 'package:sjgtv/src/app/theme/app_theme.dart';
+import 'package:sjgtv/src/provider/api_service_provider.dart';
+import 'package:sjgtv/src/theme/app_theme.dart';
 import 'package:sjgtv/src/widget/network_image_placeholders.dart';
 import 'movie_detail_page.dart';
 

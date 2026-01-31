@@ -4,8 +4,8 @@ import 'package:base/log.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sjgtv/src/api/service/api_service.dart';
-import 'package:sjgtv/src/app/provider/api_service_provider.dart';
-import 'package:sjgtv/src/app/theme/app_theme.dart';
+import 'package:sjgtv/src/provider/api_service_provider.dart';
+import 'package:sjgtv/src/theme/app_theme.dart';
 import 'package:sjgtv/src/l10n/app_web_l10n.gen.dart';
 import 'package:sjgtv/src/model/source.dart';
 

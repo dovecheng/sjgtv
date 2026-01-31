@@ -1,7 +1,7 @@
 import 'package:base/cache.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:sjgtv/src/app/theme/app_theme.dart';
+import 'package:sjgtv/src/theme/app_theme.dart';
 import 'package:sjgtv/src/model/movie.dart';
 import 'package:sjgtv/src/page/search/search_page.dart';
 import 'package:sjgtv/src/widget/network_image_placeholders.dart';

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sjgtv/src/app/theme/app_theme.dart';
+import 'package:sjgtv/src/theme/app_theme.dart';
 
 /// 网络图片加载占位（与 [networkImageErrorWidget] 配套使用）
 Widget networkImagePlaceholder(BuildContext context) {

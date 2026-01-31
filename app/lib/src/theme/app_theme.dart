@@ -1,6 +1,6 @@
 import 'package:base/app.dart';
 import 'package:flutter/material.dart';
-import 'package:sjgtv/src/app/theme/app_colors.dart';
+import 'package:sjgtv/src/theme/app_colors.dart';
 
 /// 应用主题色板（由 [AppColors] 注入，UI 通过 [ThemeExtension] 使用）
 @immutable

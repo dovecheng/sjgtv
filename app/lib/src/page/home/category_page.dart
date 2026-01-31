@@ -9,11 +9,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:sjgtv/src/api/service/api_service.dart';
-import 'package:sjgtv/src/app/provider/api_service_provider.dart';
+import 'package:sjgtv/src/provider/api_service_provider.dart';
 import 'package:sjgtv/src/model/movie.dart';
 import 'package:sjgtv/src/model/tag.dart';
 import 'package:sjgtv/src/page/search/search_page.dart';
-import 'package:sjgtv/src/app/theme/app_theme.dart';
+import 'package:sjgtv/src/theme/app_theme.dart';
 import 'package:sjgtv/src/page/source/source_manage_page.dart';
 import 'package:sjgtv/src/widget/focusable_movie_card.dart';
 

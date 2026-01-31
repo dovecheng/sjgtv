@@ -1,8 +1,8 @@
 import 'package:base/api.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sjgtv/src/api/service/api_service.dart';
-import 'package:sjgtv/src/app/provider/api_service_provider.dart';
 import 'package:sjgtv/src/model/source.dart';
+import 'package:sjgtv/src/provider/api_service_provider.dart';
 
 part 'sources_provider.g.dart';
 

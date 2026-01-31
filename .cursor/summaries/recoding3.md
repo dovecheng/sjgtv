@@ -63,6 +63,10 @@
 - **提供者**：api_service_provider、sources_provider 改为类声明（@Riverpod + 生成 .g.dart）；SourceManagePage 用 ref.watch(sourcesProvider)，增删改后 ref.invalidate(sourcesProvider)。
 - **依赖**：app 依赖版本与 base 一致（dio、retrofit、riverpod、riverpod_annotation、riverpod_generator、json_serializable、retrofit_generator 等）；app/build.yaml 与 base 一致；dependency_overrides retrofit: 4.9.0。
 
+**app 文件结构重组（2026-01-31）**
+- 移除 `app/lib/src/app/` 嵌套：provider、theme、sjgtv_runner 迁至 `src/provider/`、`src/theme/`、`src/sjgtv_runner.dart`；所有引用改为 `package:sjgtv/src/provider/...`、`src/theme/...`、`src/sjgtv_runner.dart`；删除旧目录。
+- 修复：source_manage_page 补 `import 'package:flutter/services.dart';` 解决 KeyDownEvent 未定义。
+
 ## 历史
 
 （每条须为「YYYY-MM-DD HH:mm」或「YYYY-MM-DD HH:mm（说明）」格式，不得只写日期。）
@@ -102,3 +106,7 @@
 - **源管理**：SourceStorage.updateSource、shelf PUT /api/sources、ApiService/ApiClient updateSource；AddSourcePage(sourceToEdit)、SourceManagePage 编辑/删除按钮与删除确认弹窗。
 - **提供者**：api_service_provider、sources_provider 改为类声明（@Riverpod + riverpod_generator 生成 .g.dart）；SourceManagePage 用 ref.watch(sourcesProvider)，增删改后 ref.invalidate(sourcesProvider)。
 - **依赖**：app 依赖版本与 base 一致（dio、retrofit、riverpod_annotation、riverpod_generator、json_serializable、retrofit_generator 等）；app/build.yaml 与 base 一致；dependency_overrides retrofit: 4.9.0。待办「Flutter 源管理」打勾。
+
+### 2026-01-31（app 文件结构重组 + ok 收尾）
+- **结构**：移除 src/app 嵌套，provider/theme/sjgtv_runner 迁至 src/ 下；引用统一；删除 app/lib/src/app/。
+- **修复**：source_manage_page 补 import flutter/services 解决 KeyDownEvent 未定义。ok 流程：检查修复 → 摘要 → 提交推送。
