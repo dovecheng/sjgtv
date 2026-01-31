@@ -1,7 +1,10 @@
 import 'package:base/base.dart';
 import 'package:sjgtv/src/model/proxy.dart';
+import 'package:sjgtv/src/model/proxy_entity.dart';
 import 'package:sjgtv/src/model/source.dart';
+import 'package:sjgtv/src/model/source_entity.dart';
 import 'package:sjgtv/src/model/tag.dart';
+import 'package:sjgtv/src/model/tag_entity.dart';
 
 /// sjgtv 应用的 JSON 转换器实现
 ///
@@ -11,11 +14,14 @@ class JsonAdapterImpl extends JsonAdapterProvider {
   void build() {
     super.build();
 
-    // 注册本地 API 实体类
+    // 注册域模型
     registerFromJson(Source.fromJson);
     registerFromJson(Proxy.fromJson);
     registerFromJson(Tag.fromJson);
 
-    // TODO: 后续添加更多实体类的 fromJson 注册
+    // 注册 Isar 实体类（供 JSON 反序列化时使用）
+    registerFromJson(SourceEntity.fromJson);
+    registerFromJson(ProxyEntity.fromJson);
+    registerFromJson(TagEntity.fromJson);
   }
 }
