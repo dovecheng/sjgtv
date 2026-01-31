@@ -146,7 +146,7 @@ class _SourceManagePageState extends ConsumerState<SourceManagePage> {
                   ? const Center(
                       child: Text(
                         '暂无数据源',
-                        style: const TextStyle(color: Colors.white70, fontSize: 18),
+                        style: TextStyle(color: Colors.white70, fontSize: 18),
                       ),
                     )
                   : ListView.builder(

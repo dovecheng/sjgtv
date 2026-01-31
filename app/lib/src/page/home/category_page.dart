@@ -349,7 +349,7 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
                           : context.appThemeColors.surfaceVariant,
                       borderRadius: BorderRadius.circular(35),
                       border: isFocused
-                          ? const Border.all(color: Colors.white, width: 2)
+                          ? Border.all(color: Colors.white, width: 2)
                           : null,
                     ),
                     child: SizedBox(

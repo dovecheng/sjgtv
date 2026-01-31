@@ -74,7 +74,7 @@ app/lib/src/
 - [x] 结构：重复 UI 模式抽组件或工具函数（网络图片占位/错误占位已抽为 network_image_placeholders）
 - [x] 性能：页面/列表避免不必要的 rebuild、能 const 则 const（category_page、full_screen_player_page、movie_detail_page、search_page、source_manage_page 补 const）
 - [x] 依赖：pub outdated 评估与保守升级（dart pub upgrade，app/base 已执行，分析通过）
-- [ ] 依赖：清理未使用依赖（可选）
+- [x] 依赖：清理未使用依赖（app 移除 provider、shared_preferences、flutter_secure_storage、logger、network_info_plus）
 - [x] 规范：app 复用 base 能力；通过扩展获取的值多处用时用局部变量复用，只用到一次则不设局部变量
 
 **下一步行动**（功能类暂缓）
@@ -372,3 +372,15 @@ app/lib/src/
 - 修改：`app/lib/src/page/search/search_page.dart`
 - 修改：`app/lib/src/widget/focusable_movie_card.dart`
 - 修改：`app/lib/src/page/player/full_screen_player_page.dart`
+
+### 2026-01-31 20:20（依赖：清理 app 未使用依赖）
+
+**移除的 app 依赖**
+- provider：app 已用 Riverpod，无 package:provider 引用
+- shared_preferences：app/lib 无引用
+- flutter_secure_storage：app/lib 无引用
+- logger：app 使用 base/log，无 package:logger 引用
+- network_info_plus：app/lib 无引用
+
+**涉及/修改的文件**
+- 修改：`app/pubspec.yaml`
