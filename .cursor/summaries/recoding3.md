@@ -22,7 +22,18 @@
 - [x] **网页国际化**：已实现（shelf GET /api/l10n + 页面 data-i18n 与 applyL10n，见「网页国际化（建议）」）
 - [ ] TV 与播放：继续优化 TV 焦点、遥控、播放器 UI/交互
 - [ ] 代码质量：再跑一遍 `dart analyze` / `dart fix`，查未使用导入与死代码
-- [ ] 重新分析项目：若用户说「要分析」，则对项目做分析并整理、更新摘要
+- [x] **重新分析项目**：已完成分析，结论与建议见「项目分析结论」；待办中已打勾
+- [x] **文档一致性**：app/README.md 技术栈已按 pubspec 依赖更新（media_kit、riverpod、shelf 等），与实现一致
+
+**项目分析结论（2026-01-31）**
+
+- **架构**：base（公共库）+ app（应用层）模块化清晰。base 提供 AppRunner、Riverpod/Isar/L10n/API 等；app 继承 SjgtvRunner，注入 L10n、Isar schema、API 客户端与 JSON 适配器，结构合理。
+- **代码质量**：base 与 app 均 `dart analyze` 无错误；`dart fix --dry-run` 无待修复项。
+- **依赖**：app 与 base 版本已对齐（dio、retrofit、riverpod、isar 等）；retrofit 4.9.0 通过 dependency_overrides 固定，与 generator 兼容。
+- **测试**：app 仅有 `app/test/api_server_test.dart`（shelf 服务启动 + Provider 覆盖）；base 有 test_provider_* 等测试。无单元测试覆盖业务逻辑与 API 契约，可后续补充。
+- **文档一致性**：根 README 与 app 功能描述正确；**app/README.md 技术栈表仍写 video_player、chewie**，实际使用 **media_kit、media_kit_video**，建议更新以免误导。
+- **功能对称**：网页（index.html）已实现源/代理/标签增删改查与排序；Flutter 仅源管理有完整页（SourceManagePage + AddSourcePage），代理/标签无 Flutter 页，与待办一致。
+- **建议**：优先 TV 与播放体验优化；若需在 app 内管理代理/标签再补页；文档可顺手更正 app/README 技术栈。
 
 **网页国际化（建议）**
 
@@ -110,3 +121,11 @@
 ### 2026-01-31（app 文件结构重组 + ok 收尾）
 - **结构**：移除 src/app 嵌套，provider/theme/sjgtv_runner 迁至 src/ 下；引用统一；删除 app/lib/src/app/。
 - **修复**：source_manage_page 补 import flutter/services 解决 KeyDownEvent 未定义。ok 流程：检查修复 → 摘要 → 提交推送。
+
+### 2026-01-31（重新分析项目）
+- 对 base + app 做整体分析：架构、dart analyze/dart fix、依赖、测试、文档一致性、功能对称。
+- 结论写入「项目分析结论」；待办「重新分析项目」打勾；新增可选待办「文档一致性」：app/README 技术栈改为 media_kit。
+
+### 2026-01-31（ok 收尾：文档更新）
+- app/README.md 技术栈表按 pubspec 依赖重写（media_kit、base、riverpod、shelf、构建工具等）；参考资料链接改为 media_kit。
+- 摘要待办「文档一致性」打勾。
