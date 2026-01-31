@@ -70,7 +70,7 @@ app/lib/src/
 
 **优化待办**（无新功能，仅质量/性能/结构）
 
-- [ ] 代码：dart analyze / dart fix 全绿，去除未使用导入与死代码
+- [x] 代码：dart analyze / dart fix 全绿（已通过）；未使用导入与死代码可后续人工排查
 - [ ] 结构：重复 UI 模式抽组件或工具函数
 - [ ] 性能：页面/列表避免不必要的 rebuild、能 const 则 const
 - [x] 依赖：pub outdated 评估与保守升级（dart pub upgrade，app/base 已执行，分析通过）
