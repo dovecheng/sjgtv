@@ -3,7 +3,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sjgtv/src/api/service/api_service.dart';
+import 'package:sjgtv/src/app/provider/api_service_provider.dart';
 import 'movie_detail_page.dart';
 
 /// 电影搜索页
@@ -12,17 +14,17 @@ import 'movie_detail_page.dart';
 /// - 通过本地 shelf 服务搜索电影（聚合多个数据源）
 /// - TV 遥控器友好的搜索框和结果列表
 /// - 点击电影卡片跳转到详情页
-class SearchPage extends StatefulWidget {
+class SearchPage extends ConsumerStatefulWidget {
   final String? initialQuery;
 
   const SearchPage({super.key, this.initialQuery});
 
   @override
-  State<SearchPage> createState() => _SearchPageState();
+  ConsumerState<SearchPage> createState() => _SearchPageState();
 }
 
-class _SearchPageState extends State<SearchPage> {
-  final ApiService _apiService = ApiService.standalone();
+class _SearchPageState extends ConsumerState<SearchPage> {
+  ApiService get _apiService => ref.read(apiServiceProvider);
   final CancelToken _cancelToken = CancelToken();
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _searchFocusNode = FocusNode();

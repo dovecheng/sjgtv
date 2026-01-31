@@ -5,8 +5,10 @@ import 'package:base/log.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:sjgtv/src/api/service/api_service.dart';
+import 'package:sjgtv/src/app/provider/api_service_provider.dart';
 import 'package:sjgtv/src/model/movie.dart';
 import 'package:sjgtv/src/model/tag.dart';
 import 'package:sjgtv/src/page/search/search_page.dart';
@@ -22,15 +24,15 @@ final Log _log = Log('MovieHomePage');
 /// - 支持 TV 遥控器导航（Tab 切换、电影卡片聚焦）
 /// - 支持下拉刷新和滚动加载更多
 /// - 显示二维码供手机端管理数据源
-class MovieHomePage extends StatefulWidget {
+class MovieHomePage extends ConsumerStatefulWidget {
   const MovieHomePage({super.key});
 
   @override
-  State<MovieHomePage> createState() => _MovieHomePageState();
+  ConsumerState<MovieHomePage> createState() => _MovieHomePageState();
 }
 
-class _MovieHomePageState extends State<MovieHomePage> {
-  final ApiService _apiService = ApiService.standalone();
+class _MovieHomePageState extends ConsumerState<MovieHomePage> {
+  ApiService get _apiService => ref.read(apiServiceProvider);
   final Dio _dio = Dio(); // 保留用于外部 API（豆瓣）
   int _selectedTab = 0;
   bool _isLoading = false;

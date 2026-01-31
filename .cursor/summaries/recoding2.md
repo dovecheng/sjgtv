@@ -15,7 +15,7 @@ sjgtv 是一个模块化的 Flutter TV 应用项目，采用 base（基础库）
   - ✅ 迁移页面使用 ApiService（category_page, search_page）
   - ✅ 项目结构重构（按 base 风格组织）
   - 🔄 逐步集成 base 与 app
-  - ⏳ 引入 Riverpod 状态管理
+  - ✅ 引入 Riverpod 状态管理（ApiService Provider + 页面改 Consumer）
 
 **项目结构**
 
@@ -26,7 +26,7 @@ app/lib/src/
 │   ├── service/  # API 服务层（api_service.dart）
 │   └── shelf/    # shelf 本地服务（api.dart）
 ├── app/          # 应用启动
-│   ├── provider/ # 应用级 Provider（json_adapter_provider.dart）
+│   ├── provider/ # 应用级 Provider（json_adapter_provider.dart, api_service_provider.dart）
 │   └── sjgtv_runner.dart
 ├── model/        # 数据模型（source, proxy, tag, movie）
 ├── page/         # 页面
@@ -44,8 +44,8 @@ app/lib/src/
 - [x] 创建 ApiService 服务层
 - [x] 迁移页面使用 ApiService
 - [x] 项目结构重构
-- [ ] 引入 Riverpod 状态管理（创建 ApiService Provider）
-- [ ] 页面改为通过 Provider 获取 ApiService
+- [x] 引入 Riverpod 状态管理（创建 ApiService Provider）
+- [x] 页面改为通过 Provider 获取 ApiService
 
 阶段四：核心功能实现
 - [ ] 源管理功能（Riverpod 生成代码模式）
@@ -62,12 +62,7 @@ app/lib/src/
 
 **下一步行动**
 
-1. **引入 Riverpod 状态管理**
-   - 创建 ApiService 的 Provider
-   - 页面通过 ref.read 获取服务实例
-   - 替换当前的 ApiService.standalone() 调用
-
-2. **完善功能页面**
+1. **完善功能页面**
    - 源管理页面
    - 代理管理页面
    - 标签管理页面
@@ -191,3 +186,23 @@ app/lib/src/
 - `c574755` - fix: 更新检查 404 时静默处理，不弹出错误提示
 - `5581325` - refactor: debugPrint 替换为 log.d/log.e
 - `ced018c` - refactor: 纯静态类改为 abstract final class
+
+### 2026-01-31 18:44（Riverpod 接入与配置）
+
+**app 依赖与 Riverpod 消费者**
+- app 增加依赖：`flutter_hooks`、`hooks_riverpod`
+- 新增 `api_service_provider.dart`：用 base 的 `apiClientProvider`（Dio）创建 ApiService，供页面通过 ref 获取
+- `category_page`（MovieHomePage）、`search_page`（SearchPage）改为 `ConsumerStatefulWidget`，通过 `ref.read(apiServiceProvider)` 获取 ApiService，移除 `ApiService.standalone()` 调用
+- 修复 dart 分析：补全 `ApiService`、`Dio` 类型导入（search_page、category_page、api_service_provider）
+
+**其它配置**
+- `.cursorrules` 增加「Agent 响应语言（最高优先级）」：Cursor Agent 必须始终使用简体中文回复
+- base `l10n_language_provider.dart`：为 zh-CN 预设项设置 `isDefault: true`，新用户默认简体中文
+
+**涉及/修改的文件**
+- 新增：`app/lib/src/app/provider/api_service_provider.dart`
+- 修改：`app/pubspec.yaml`（flutter_hooks、hooks_riverpod）
+- 修改：`app/lib/src/page/home/category_page.dart`（Consumer + ref）
+- 修改：`app/lib/src/page/search/search_page.dart`（Consumer + ref）
+- 修改：`.cursorrules`（Agent 中文规则）
+- 修改：`base/lib/src/l10n/provider/l10n_language_provider.dart`（zh-CN 默认）
