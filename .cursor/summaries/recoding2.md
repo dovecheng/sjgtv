@@ -48,7 +48,7 @@ app/lib/src/
 - [x] 页面改为通过 Provider 获取 ApiService
 
 阶段四：核心功能实现
-- [ ] 源管理功能（Riverpod 生成代码模式）
+- [ ] 源管理功能（已有列表页与入口，待完善添加/删除/编辑）
 - [ ] 视频播放（MediaKit）- 已有基础实现
 - [ ] TV 优化 UI 组件
 - [ ] 搜索功能 - 已有基础实现
@@ -206,3 +206,13 @@ app/lib/src/
 - 修改：`app/lib/src/page/search/search_page.dart`（Consumer + ref）
 - 修改：`.cursorrules`（Agent 中文规则）
 - 修改：`base/lib/src/l10n/provider/l10n_language_provider.dart`（zh-CN 默认）
+
+### 2026-01-31 18:44（源管理页面）
+
+**源管理页与首页入口**
+- 新增 `app/lib/src/page/source/source_manage_page.dart`：ConsumerStatefulWidget，通过 apiServiceProvider 拉取源列表，展示名称/地址/启用状态，支持点击或遥控器切换启用/禁用
+- 首页 category_page AppBar 增加「源管理」图标入口，点击进入 SourceManagePage
+
+**涉及/修改的文件**
+- 新增：`app/lib/src/page/source/source_manage_page.dart`
+- 修改：`app/lib/src/page/home/category_page.dart`（源管理入口 + const 等）

@@ -12,6 +12,7 @@ import 'package:sjgtv/src/app/provider/api_service_provider.dart';
 import 'package:sjgtv/src/model/movie.dart';
 import 'package:sjgtv/src/model/tag.dart';
 import 'package:sjgtv/src/page/search/search_page.dart';
+import 'package:sjgtv/src/page/source/source_manage_page.dart';
 import 'package:sjgtv/src/widget/focusable_movie_card.dart';
 
 final Log _log = Log('MovieHomePage');
@@ -268,18 +269,34 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           IconButton(
-            icon: Icon(Icons.search, size: 20),
+            icon: const Icon(Icons.search, size: 20),
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => SearchPage()),
+                MaterialPageRoute<void>(
+                  builder: (BuildContext context) => const SearchPage(),
+                ),
               );
             },
             focusColor: Colors.red,
           ),
-          SizedBox(width: 10),
+          const SizedBox(width: 10),
           IconButton(
-            icon: Icon(Icons.settings, size: 20),
+            icon: const Icon(Icons.source, size: 20),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute<void>(
+                  builder: (BuildContext context) =>
+                      const SourceManagePage(),
+                ),
+              );
+            },
+            focusColor: Colors.red,
+          ),
+          const SizedBox(width: 10),
+          IconButton(
+            icon: const Icon(Icons.settings, size: 20),
             onPressed: _showQRCodeDialog,
             focusColor: Colors.red,
           ),
