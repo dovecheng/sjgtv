@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:sjgtv/src/app/theme/app_theme.dart';
 import 'package:sjgtv/src/model/movie.dart';
 import 'package:sjgtv/src/page/search/search_page.dart';
+import 'package:sjgtv/src/widget/network_image_placeholders.dart';
 
 /// 可聚焦的电影卡片组件（TV 遥控器适配）
 class FocusableMovieCard extends StatefulWidget {
@@ -74,27 +75,11 @@ class _FocusableMovieCardState extends State<FocusableMovieCard> {
                             },
                             fit: BoxFit.cover,
                             width: double.infinity,
-                            placeholder: (BuildContext context, String url) =>
-                                ColoredBox(
-                              color: colors.surfaceVariant,
-                              child: const Center(
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 3.0,
-                                ),
-                              ),
-                            ),
-                            errorWidget: (BuildContext context, String url,
+                            placeholder: (BuildContext ctx, String url) =>
+                                networkImagePlaceholder(ctx),
+                            errorWidget: (BuildContext ctx, String url,
                                     Object error) =>
-                                ColoredBox(
-                              color: colors.surfaceVariant,
-                              child: const Center(
-                                child: Icon(
-                                  Icons.broken_image,
-                                  color: Colors.grey,
-                                  size: 36,
-                                ),
-                              ),
-                            ),
+                                networkImageErrorWidget(ctx),
                           )
                         : Container(
                             color: colors.surfaceVariant,

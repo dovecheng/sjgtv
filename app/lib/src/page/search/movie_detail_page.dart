@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:base/app.dart';
 import 'package:base/cache.dart';
 import 'package:flutter/services.dart';
-import 'package:sjgtv/src/app/theme/app_theme.dart';
 import 'package:sjgtv/src/page/player/full_screen_player_page.dart';
+import 'package:sjgtv/src/widget/network_image_placeholders.dart';
 
 /// 电影详情页
 ///
@@ -158,33 +158,11 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                                   width: 120,
                                   height: 180,
                                   fit: BoxFit.cover,
-                                  placeholder: (BuildContext ctx, String url) {
-                                    final AppThemeColors c =
-                                        ctx.appThemeColors;
-                                    return ColoredBox(
-                                      color: c.surfaceVariant,
-                                      child: const Center(
-                                        child: CircularProgressIndicator(
-                                          strokeWidth: 3.0,
-                                        ),
-                                      ),
-                                    );
-                                  },
+                                  placeholder: (BuildContext ctx, String url) =>
+                                      networkImagePlaceholder(ctx),
                                   errorWidget: (BuildContext ctx,
-                                          String url, Object error) {
-                                    final AppThemeColors c =
-                                        ctx.appThemeColors;
-                                    return ColoredBox(
-                                      color: c.surfaceVariant,
-                                      child: const Center(
-                                        child: Icon(
-                                          Icons.broken_image,
-                                          color: Colors.grey,
-                                          size: 36,
-                                        ),
-                                      ),
-                                    );
-                                  },
+                                          String url, Object error) =>
+                                      networkImageErrorWidget(ctx),
                                 ),
                               ),
                             ),

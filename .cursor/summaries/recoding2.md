@@ -71,7 +71,7 @@ app/lib/src/
 **优化待办**（无新功能，仅质量/性能/结构）
 
 - [x] 代码：dart analyze / dart fix 全绿（已通过）；未使用导入与死代码可后续人工排查
-- [ ] 结构：重复 UI 模式抽组件或工具函数
+- [x] 结构：重复 UI 模式抽组件或工具函数（网络图片占位/错误占位已抽为 network_image_placeholders）
 - [x] 性能：页面/列表避免不必要的 rebuild、能 const 则 const（category_page、full_screen_player_page、movie_detail_page、search_page、source_manage_page 补 const）
 - [x] 依赖：pub outdated 评估与保守升级（dart pub upgrade，app/base 已执行，分析通过）
 - [ ] 依赖：清理未使用依赖（可选）
@@ -358,3 +358,17 @@ app/lib/src/
 - 修改：`app/lib/src/page/search/movie_detail_page.dart`
 - 修改：`app/lib/src/page/search/search_page.dart`
 - 修改：`app/lib/src/page/source/source_manage_page.dart`
+
+### 2026-01-31 20:15（结构：重复 UI 抽网络图片占位组件）
+
+**抽取共用占位**
+- 新增 `app/lib/src/widget/network_image_placeholders.dart`：`networkImagePlaceholder(context)`、`networkImageErrorWidget(context)`，统一加载中/失败占位样式
+- movie_detail_page、search_page、focusable_movie_card 三处 CachedImage 的 placeholder/errorWidget 改为调用上述函数
+- movie_detail_page 移除未使用导入 app_theme；full_screen_player_page 加载列内移除多余 const 以通过 lint
+
+**涉及/修改的文件**
+- 新增：`app/lib/src/widget/network_image_placeholders.dart`
+- 修改：`app/lib/src/page/search/movie_detail_page.dart`
+- 修改：`app/lib/src/page/search/search_page.dart`
+- 修改：`app/lib/src/widget/focusable_movie_card.dart`
+- 修改：`app/lib/src/page/player/full_screen_player_page.dart`

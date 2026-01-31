@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sjgtv/src/api/service/api_service.dart';
 import 'package:sjgtv/src/app/provider/api_service_provider.dart';
 import 'package:sjgtv/src/app/theme/app_theme.dart';
+import 'package:sjgtv/src/widget/network_image_placeholders.dart';
 import 'movie_detail_page.dart';
 
 /// 电影搜索页
@@ -444,22 +445,10 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                         imageUrl: movie['vod_pic'] ?? '',
                         fit: BoxFit.cover,
                         width: double.infinity,
-                        placeholder: (_, _) => ColoredBox(
-                          color: colors.surfaceVariant,
-                          child: const Center(
-                            child: CircularProgressIndicator(strokeWidth: 3.0),
-                          ),
-                        ),
-                        errorWidget: (_, _, _) => ColoredBox(
-                          color: colors.surfaceVariant,
-                          child: const Center(
-                            child: Icon(
-                              Icons.broken_image,
-                              color: Colors.grey,
-                              size: 36,
-                            ),
-                          ),
-                        ),
+                        placeholder: (BuildContext ctx, _) =>
+                            networkImagePlaceholder(ctx),
+                        errorWidget: (BuildContext ctx, _, _) =>
+                            networkImageErrorWidget(ctx),
                         memCacheWidth: 200,
                         memCacheHeight: 300,
                       ),
