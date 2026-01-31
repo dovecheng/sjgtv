@@ -109,6 +109,10 @@ app/lib/src/
 - **web_l10n**（keysPrefix: web）：index.html 专属，与 **source_l10n**（Flutter 源管理页）分离，避免共用。
 - 网页对需翻译节点加 `data-i18n` / `data-i18n-placeholder` / `data-i18n-title`，加载时 `await applyL10n()` 后请求 `/api/l10n`，替换文案与 document.title；JS 动态消息用 `t(key)`、`tReplace(key, {name})`。
 
+**待补翻译**（index.html 仍有硬编码中文）：
+- `throw new Error('获取源列表失败')`（约 L849）、`throw new Error('获取标签列表失败')`（约 L1240）→ 应改为 `t('web_msg_xxx')`
+- `aria-label="关闭"`、`title="权重: ${...}"` 等
+
 ---
 
 ## 开发原则与参考
