@@ -6,7 +6,6 @@ import 'package:base/converter.dart';
 import 'package:base/log.dart';
 import 'package:dio/dio.dart' hide Response;
 import 'package:flutter/services.dart';
-import 'package:hive/hive.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart' as shelf_io;
 import 'package:shelf_cors_headers/shelf_cors_headers.dart';
@@ -16,6 +15,7 @@ import 'package:sjgtv/gen/assets.gen.dart';
 import 'package:sjgtv/src/model/proxy.dart';
 import 'package:sjgtv/src/model/source.dart';
 import 'package:sjgtv/src/model/tag.dart';
+import 'package:sjgtv/src/storage/source_storage.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 
@@ -84,133 +84,6 @@ Future<HttpServer> startServer({int port = 8023}) async {
       .addHandler(router.call);
 
   return await shelf_io.serve(handler, '0.0.0.0', port);
-}
-
-/// 数据存储类（Hive）
-abstract final class SourceStorage {
-  static const String _boxName = 'sources';
-  static const String _proxyBoxName = 'proxies';
-  static const String _tagBoxName = 'tags';
-
-  // --- Source 方法 ---
-
-  static Future<List<Source>> getAllSources() async {
-    final Box<dynamic> box = Hive.box(_boxName);
-    final List<Source> sources = box.values
-        .map((dynamic e) => Source.fromJson(Map<String, dynamic>.from(e)))
-        .toList();
-    sources.sort((Source a, Source b) => b.createdAt.compareTo(a.createdAt));
-    return sources;
-  }
-
-  static Future<Source> addSource(Source source) async {
-    final Box<dynamic> box = Hive.box(_boxName);
-    await box.put(source.id, source.toJson());
-    return source;
-  }
-
-  static Future<Source> toggleSource(String id) async {
-    final Box<dynamic> box = Hive.box(_boxName);
-    final dynamic data = box.get(id);
-    if (data == null) throw Exception('源不存在');
-
-    final Source source = Source.fromJson(Map<String, dynamic>.from(data));
-    source.disabled = !source.disabled;
-    source.updatedAt = DateTime.now();
-    await box.put(id, source.toJson());
-    return source;
-  }
-
-  static Future<void> deleteSource(String id) async {
-    final Box<dynamic> box = Hive.box(_boxName);
-    await box.delete(id);
-  }
-
-  // --- Proxy 方法 ---
-
-  static Future<List<Proxy>> getAllProxies() async {
-    final Box<dynamic> box = Hive.box(_proxyBoxName);
-    final List<Proxy> proxies = box.values
-        .map((dynamic e) => Proxy.fromJson(Map<String, dynamic>.from(e)))
-        .toList();
-    proxies.sort((Proxy a, Proxy b) => b.createdAt.compareTo(a.createdAt));
-    return proxies;
-  }
-
-  static Future<Proxy> addProxy(Proxy proxy) async {
-    final Box<dynamic> box = Hive.box(_proxyBoxName);
-    await box.put(proxy.id, proxy.toJson());
-    return proxy;
-  }
-
-  static Future<Proxy> toggleProxy(String id) async {
-    final Box<dynamic> box = Hive.box(_proxyBoxName);
-    final dynamic data = box.get(id);
-    if (data == null) throw Exception('代理不存在');
-
-    final Proxy proxy = Proxy.fromJson(Map<String, dynamic>.from(data));
-    proxy.enabled = !proxy.enabled;
-    proxy.updatedAt = DateTime.now();
-    await box.put(id, proxy.toJson());
-    return proxy;
-  }
-
-  static Future<void> deleteProxy(String id) async {
-    final Box<dynamic> box = Hive.box(_proxyBoxName);
-    await box.delete(id);
-  }
-
-  // --- Tag 方法 ---
-
-  static Future<List<Tag>> getAllTags() async {
-    final Box<dynamic> box = Hive.box(_tagBoxName);
-    final List<Tag> tags = box.values
-        .map((dynamic e) => Tag.fromJson(Map<String, dynamic>.from(e)))
-        .toList();
-    tags.sort((Tag a, Tag b) => a.order.compareTo(b.order));
-    return tags;
-  }
-
-  static Future<Tag> addTag(Tag tag) async {
-    final Box<dynamic> box = Hive.box(_tagBoxName);
-    await box.put(tag.id, tag.toJson());
-    return tag;
-  }
-
-  static Future<void> updateTag(Tag tag) async {
-    final Box<dynamic> box = Hive.box(_tagBoxName);
-    await box.put(tag.id, tag.toJson());
-  }
-
-  static Future<void> deleteTag(String id) async {
-    final Box<dynamic> box = Hive.box(_tagBoxName);
-    await box.delete(id);
-
-    // 同时从所有源中移除此标签
-    final Box<dynamic> sourceBox = Hive.box(_boxName);
-    for (final dynamic key in sourceBox.keys) {
-      final dynamic data = sourceBox.get(key);
-      if (data != null) {
-        final Source source = Source.fromJson(Map<String, dynamic>.from(data));
-        if (source.tagIds.contains(id)) {
-          source.tagIds.remove(id);
-          await sourceBox.put(key, source.toJson());
-        }
-      }
-    }
-  }
-
-  static Future<void> updateTagOrder(List<String> tagIds) async {
-    final Box<dynamic> box = Hive.box(_tagBoxName);
-    for (int i = 0; i < tagIds.length; i++) {
-      final dynamic tagJson = box.get(tagIds[i]);
-      if (tagJson != null) {
-        final Tag tag = Tag.fromJson(Map<String, dynamic>.from(tagJson));
-        tag.order = i;
-        await box.put(tag.id, tag.toJson());
-      }
-    }
-  }
 }
 
 // ============================================================================
@@ -476,12 +349,9 @@ Future<Response> _handleSearchRequest(Request request) async {
       return _createSuccessResponse({'list': <dynamic>[]}, msg: '没有可用的源');
     }
 
-    final Box<dynamic> proxyBox = Hive.box(SourceStorage._proxyBoxName);
-    final List<dynamic> proxyList = proxyBox.values.toList();
-    final dynamic activeProxy = proxyList.firstWhere(
-      (dynamic proxy) => proxy['enabled'] == true,
-      orElse: () => null,
-    );
+    final List<Proxy> proxies = await SourceStorage.getAllProxies();
+    final List<Proxy> enabledProxies = proxies.where((Proxy p) => p.enabled).toList();
+    final Proxy? activeProxy = enabledProxies.isEmpty ? null : enabledProxies.first;
 
     dio = Dio();
     dio.options.connectTimeout = const Duration(seconds: 5);
@@ -490,7 +360,7 @@ Future<Response> _handleSearchRequest(Request request) async {
     final List<dynamic> results = await Future.wait<dynamic>(
       activeSources.map((Source source) async {
         final String baseUrl = activeProxy != null
-            ? '${activeProxy['url']}/${source.url}'
+            ? '${activeProxy.url}/${source.url}'
             : source.url;
         final Map<String, String> queryParams = {'ac': 'videolist', 'wd': wd};
 

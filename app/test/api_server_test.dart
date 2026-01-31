@@ -1,9 +1,11 @@
 import 'dart:io';
 
+import 'package:base/base.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:sjgtv/src/api/shelf/api.dart';
+import 'package:sjgtv/src/model/proxy_entity.dart';
+import 'package:sjgtv/src/model/source_entity.dart';
+import 'package:sjgtv/src/model/tag_entity.dart';
 
 /// shelf 本地服务测试入口
 ///
@@ -11,12 +13,21 @@ import 'package:sjgtv/src/api/shelf/api.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // 初始化 Hive
-  final Directory appDocumentDir = await getApplicationDocumentsDirectory();
-  Hive.init(appDocumentDir.path);
-  await Hive.openBox('sources');
-  await Hive.openBox('proxies');
-  await Hive.openBox('tags');
+  // 使用 base 同一 Isar 实例（覆盖 isarProvider 并注册 app schema）
+  configRef(
+    overrides: [
+      isarProvider.overrideWith(
+        () => IsarProvider(
+          schemas: [
+            SourceEntitySchema,
+            ProxyEntitySchema,
+            TagEntitySchema,
+          ],
+        ),
+      ),
+    ],
+  );
+  await $ref.read(isarProvider.future);
 
   // 启动 Web 服务
   final HttpServer server = await startServer();

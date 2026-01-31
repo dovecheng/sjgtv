@@ -4,12 +4,17 @@ import 'package:base/base.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:hive/hive.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:sjgtv/src/model/proxy_entity.dart';
+import 'package:sjgtv/src/model/source_entity.dart';
+import 'package:sjgtv/src/model/tag_entity.dart';
+import 'package:sjgtv/src/storage/source_storage.dart';
 import 'package:sjgtv/src/app/provider/json_adapter_provider.dart';
 import 'package:sjgtv/src/app/theme/app_colors.dart';
 import 'package:sjgtv/src/app/theme/app_theme.dart';
 import 'package:sjgtv/src/api/shelf/api.dart';
+import 'package:sjgtv/src/model/proxy.dart';
+import 'package:sjgtv/src/model/source.dart';
+import 'package:sjgtv/src/model/tag.dart';
 import 'package:sjgtv/src/page/home/app_wrapper.dart';
 import 'package:uuid/uuid.dart';
 
@@ -34,14 +39,21 @@ final class SjgtvRunner extends AppRunner {
         ],
       );
 
+  /// 使用 base 同一 Isar 实例，并注册 app 的 sources/proxies/tags schema
+  @override
+  IsarProvider? get isar => IsarProvider(
+        schemas: [
+          SourceEntitySchema,
+          ProxyEntitySchema,
+          TagEntitySchema,
+        ],
+      );
+
   @override
   Future<void> init() async {
     await super.init();
 
-    // 初始化 Hive 本地存储
-    await _initHive();
-
-    // 加载初始配置
+    // 加载初始配置（Isar 由 base initProvider 通过 isarProvider 初始化）
     await _ConfigLoader().loadInitialConfig();
 
     // 启动 shelf 本地 API 服务（不阻塞）
@@ -49,18 +61,6 @@ final class SjgtvRunner extends AppRunner {
       server = s;
       log.d(() => 'shelf 本地服务已启动: http://localhost:8023');
     });
-  }
-
-  /// 初始化 Hive 存储
-  Future<void> _initHive() async {
-    final Directory appDocumentDir = await getApplicationDocumentsDirectory();
-    Hive.init(appDocumentDir.path);
-
-    await Hive.openBox('sources');
-    await Hive.openBox('proxies');
-    await Hive.openBox('tags');
-
-    log.d(() => 'Hive 初始化完成');
   }
 
   /// 构建应用
@@ -160,30 +160,27 @@ final class SjgtvRunner extends AppRunner {
 class _ConfigLoader {
   Future<void> loadInitialConfig() async {
     final Uuid uuid = Uuid();
-    final Box<dynamic> sourcesBox = Hive.box('sources');
-    final Box<dynamic> proxiesBox = Hive.box('proxies');
-    final Box<dynamic> tagsBox = Hive.box('tags');
 
-    if (sourcesBox.isEmpty) {
-      await _initializeSources(sourcesBox, uuid);
+    if (await SourceStorage.sourceCount == 0) {
+      await _initializeSources(uuid);
     } else {
       log.d(() => 'sources 已有数据，跳过初始化');
     }
 
-    if (proxiesBox.isEmpty) {
-      await _initializeProxies(proxiesBox, uuid);
+    if (await SourceStorage.proxyCount == 0) {
+      await _initializeProxies(uuid);
     } else {
       log.d(() => 'proxies 已有数据，跳过初始化');
     }
 
-    if (tagsBox.isEmpty) {
-      await _initializeTags(tagsBox, uuid);
+    if (await SourceStorage.tagCount == 0) {
+      await _initializeTags(uuid);
     } else {
       log.d(() => 'tags 已有数据，跳过初始化');
     }
   }
 
-  Future<void> _initializeSources(Box<dynamic> sourcesBox, Uuid uuid) async {
+  Future<void> _initializeSources(Uuid uuid) async {
     try {
       final Dio dio = Dio();
       log.d(() => '开始加载 sources 配置...');
@@ -201,12 +198,20 @@ class _ConfigLoader {
         for (final dynamic source in config['sources']) {
           try {
             final String id = uuid.v4();
-            sourcesBox.put(id, {
-              ...source,
-              'id': id,
-              'createdAt': DateTime.now().toIso8601String(),
-              'updatedAt': DateTime.now().toIso8601String(),
-            });
+            final String urlRaw = (source['url']?.toString() ?? '').trim();
+            String url = urlRaw;
+            if (url.isNotEmpty && !url.endsWith('/')) url += '/';
+            if (url.isNotEmpty && !url.endsWith('api.php/provide/vod')) {
+              url += 'api.php/provide/vod';
+            }
+            final Source newSource = Source(
+              id: id,
+              name: (source['name']?.toString() ?? '').trim(),
+              url: url,
+              weight: IntConverter.toIntOrNull(source['weight']) ?? 5,
+              tagIds: List<String>.from(source['tagIds'] ?? []),
+            );
+            await SourceStorage.addSource(newSource);
             savedCount++;
             log.d(() => '成功保存源: ${source['name']}');
           } catch (e, s) {
@@ -222,7 +227,7 @@ class _ConfigLoader {
     }
   }
 
-  Future<void> _initializeProxies(Box<dynamic> proxiesBox, Uuid uuid) async {
+  Future<void> _initializeProxies(Uuid uuid) async {
     try {
       final Dio dio = Dio();
       log.d(() => '开始加载 proxies 配置...');
@@ -234,16 +239,14 @@ class _ConfigLoader {
       if (response.statusCode == 200) {
         final dynamic config = response.data;
         log.d(() => '成功获取 proxies 配置');
-
-        final String pid = uuid.v4();
-        proxiesBox.put(pid, {
-          "id": pid,
-          "url": config['proxy']['url'],
-          "name": config['proxy']['name'],
-          "enabled": config['proxy']['enabled'],
-          "createdAt": DateTime.now().toIso8601String(),
-          "updatedAt": DateTime.now().toIso8601String(),
-        });
+        final dynamic proxy = config['proxy'];
+        final Proxy newProxy = Proxy(
+          id: uuid.v4(),
+          url: (proxy['url']?.toString() ?? '').trim(),
+          name: (proxy['name']?.toString() ?? '').trim(),
+          enabled: proxy['enabled'] == true,
+        );
+        await SourceStorage.addProxy(newProxy);
         log.d(() => '成功保存代理配置');
       } else {
         log.w(() => '获取 proxies 配置失败，状态码: ${response.statusCode}');
@@ -253,7 +256,7 @@ class _ConfigLoader {
     }
   }
 
-  Future<void> _initializeTags(Box<dynamic> tagsBox, Uuid uuid) async {
+  Future<void> _initializeTags(Uuid uuid) async {
     try {
       final Dio dio = Dio();
       log.d(() => '开始加载 tags 配置...');
@@ -265,16 +268,15 @@ class _ConfigLoader {
       if (response.statusCode == 200) {
         final dynamic config = response.data;
         log.d(() => '成功获取 tags 配置，共${config['tags']?.length ?? 0}个标签');
-
         int tagCount = 0;
-        for (final dynamic tag in config['tags']) {
-          final String tid = uuid.v4();
-          tagsBox.put(tid, {
-            ...tag,
-            'id': tid,
-            'createdAt': DateTime.now().toIso8601String(),
-            'updatedAt': DateTime.now().toIso8601String(),
-          });
+        for (final dynamic tag in config['tags'] ?? <dynamic>[]) {
+          final Tag newTag = Tag(
+            id: uuid.v4(),
+            name: (tag['name']?.toString() ?? '').trim(),
+            color: tag['color']?.toString() ?? '#4285F4',
+            order: tagCount,
+          );
+          await SourceStorage.addTag(newTag);
           tagCount++;
           log.d(() => '成功保存标签: ${tag['name']}');
         }
