@@ -82,6 +82,25 @@ app/lib/src/
 1. **优化**：按上面优化待办逐项做
 2. **功能页面**（后续再做）：源管理删除/编辑、代理管理、标签管理
 
+---
+
+## 项目分析（2026-01-31 20:25）
+
+**静态分析**：`dart analyze app base` 全绿，无错误、无警告。
+
+**结构概览**
+- **app**：api（client/service/shelf）、app（provider/theme/sjgtv_runner）、model、page（home/player/search/source）、service、widget；职责清晰，依赖 base。
+- **base**：api、app、cache、converter、extension、isar、l10n、log、permission、provider、search、snake_bar、viewer、widget 等；能力完整，app 已复用 theme/extension/cache/api/converter/log 等。
+
+**代码质量**
+- 优化待办已全部完成（代码、结构、性能、依赖、规范）。
+- app 内仅 1 处 TODO：`json_adapter_provider.dart`「后续添加更多实体类的 fromJson 注册」，属扩展点，非缺陷。
+
+**可选后续方向**
+- **功能**：源管理删除/编辑、代理、标签、TV UI 与搜索体验等（按当前策略暂缓）。
+- **精简**：base 的 viewer 模块（webview_flutter）若 app 不用可考虑移除或独立；Isar 换 Hive/SP 为可选。
+- **扩展**：新实体类时在 JsonAdapterImpl 中补充 fromJson 注册。
+
 **开发原则**
 
 - 循序渐进，每步检查修复错误
@@ -384,3 +403,38 @@ app/lib/src/
 
 **涉及/修改的文件**
 - 修改：`app/pubspec.yaml`
+
+### 2026-01-31 20:25（项目重新分析）
+
+**分析结论**
+- `dart analyze app base` 全绿。
+- 结构：app 与 base 分工清晰，app 已复用 base 的 theme/extension/cache/api/converter/log 等。
+- 代码质量：优化待办已全部完成；app 内仅 1 处 TODO（json_adapter_provider 扩展点）。
+- 可选后续：功能待办暂缓；base viewer 精简、Isar 换 Hive/SP 为可选；新实体类时补充 JsonAdapter 注册。
+
+**涉及/修改的文件**
+- 修改：`.cursor/summaries/recoding2.md`（新增「项目分析」小节与本节历史）
+
+### 2026-01-31（Isar 同实例、实体 JSON、Riverpod 收尾）
+
+**Isar 用 base 同一实例**
+- SjgtvRunner 覆盖 `isar` 返回 `IsarProvider(schemas: [SourceEntitySchema, ProxyEntitySchema, TagEntitySchema])`，与 base 同库 `isar_v5`
+- SourceStorage 改用 base 的 `$isar`，移除 `app/lib/src/storage/sjgtv_isar.dart`
+- 测试入口用 `configRef` + `isarProvider.overrideWith` 初始化 Isar
+
+**实体 JSON 序列化**
+- SourceEntity/ProxyEntity/TagEntity 增加 `@JsonSerializable()`，与 Isar 同写 `*.g.dart`（build_runner 合并）
+- 实体提供 `factory fromJson`、`toJson()` 委托生成方法；JsonAdapterImpl 注册三实体 `fromJson`
+
+**SourceStorage 与 lint**
+- 查询链移除无意义的 `.anyId()`
+- api_server_test、sjgtv_runner 移除多余 `import 'package:base/isar.dart'`（base.dart 已导出）
+
+**Riverpod**
+- apiServiceProvider 用 `ref.read(apiClientProvider)`，补充常驻（keepAlive）说明
+- 不写 ref 扩展（避免 read/watch 混淆）；各页保留显式 `_apiService => ref.read(apiServiceProvider)`
+
+**涉及/修改的文件**
+- 修改：`app/lib/src/app/sjgtv_runner.dart`、`app/lib/src/storage/source_storage.dart`、`app/lib/src/app/provider/api_service_provider.dart`、`app/lib/src/app/provider/json_adapter_provider.dart`、`app/lib/src/model/*_entity.dart`、`app/lib/src/api/shelf/api.dart`、`app/lib/main.dart`、`app/pubspec.yaml`、`app/test/api_server_test.dart`
+- 删除：`app/lib/src/storage/sjgtv_isar.dart`
+- 新增：`app/lib/src/storage/source_storage.dart`（若此前未纳入）、实体 `*.g.dart` 合并 JSON 生成
