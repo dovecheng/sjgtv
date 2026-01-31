@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sjgtv/src/api/service/api_service.dart';
 import 'package:sjgtv/src/app/provider/api_service_provider.dart';
+import 'package:sjgtv/src/app/theme/app_colors.dart';
 import 'package:sjgtv/src/model/source.dart';
 
 final Log _log = Log('SourceManagePage');
@@ -91,7 +92,7 @@ class _SourceManagePageState extends ConsumerState<SourceManagePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF121212),
+      backgroundColor: AppColors.background,
       appBar: AppBar(
         title: const Text('源管理'),
         backgroundColor: Colors.transparent,
@@ -149,7 +150,7 @@ class _SourceManagePageState extends ConsumerState<SourceManagePage> {
                           child: Container(
                             margin: const EdgeInsets.only(bottom: 12),
                             decoration: BoxDecoration(
-                              color: const Color(0xFF1E1E1E),
+                              color: AppColors.cardBackground,
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(
                                 color: Colors.white24,
@@ -183,7 +184,7 @@ class _SourceManagePageState extends ConsumerState<SourceManagePage> {
                                 source.disabled ? Icons.toggle_off : Icons.toggle_on,
                                 color: source.disabled
                                     ? Colors.white38
-                                    : const Color(0xFF00C8FF),
+                                    : AppColors.primary,
                                 size: 36,
                               ),
                               onTap: () => _toggleSource(source),

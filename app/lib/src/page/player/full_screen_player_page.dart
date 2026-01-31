@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:sjgtv/src/app/theme/app_colors.dart';
 import 'package:sjgtv/src/page/player/player_intents.dart';
 import 'package:sjgtv/src/service/m3u8_ad_remover.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
@@ -667,7 +668,7 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
                         ? position.inMilliseconds / duration.inMilliseconds
                         : 0,
                     valueColor: const AlwaysStoppedAnimation<Color>(
-                      Color(0xFF0066FF),
+                      AppColors.seedColor,
                     ),
                     backgroundColor: Colors.grey[600],
                     minHeight: 4,

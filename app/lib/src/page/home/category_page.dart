@@ -13,6 +13,7 @@ import 'package:sjgtv/src/app/provider/api_service_provider.dart';
 import 'package:sjgtv/src/model/movie.dart';
 import 'package:sjgtv/src/model/tag.dart';
 import 'package:sjgtv/src/page/search/search_page.dart';
+import 'package:sjgtv/src/app/theme/app_colors.dart';
 import 'package:sjgtv/src/page/source/source_manage_page.dart';
 import 'package:sjgtv/src/widget/focusable_movie_card.dart';
 
@@ -348,7 +349,7 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
                     decoration: BoxDecoration(
                       color: _selectedTab == index
                           ? Colors.red
-                          : Color(0xFF333333),
+                          : AppColors.surfaceVariant,
                       borderRadius: BorderRadius.circular(35),
                       border: isFocused
                           ? Border.all(color: Colors.white, width: 2)

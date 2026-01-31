@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sjgtv/src/api/service/api_service.dart';
 import 'package:sjgtv/src/app/provider/api_service_provider.dart';
+import 'package:sjgtv/src/app/theme/app_colors.dart';
 import 'movie_detail_page.dart';
 
 /// 电影搜索页
@@ -31,13 +32,6 @@ class _SearchPageState extends ConsumerState<SearchPage> {
   List<dynamic> _movies = [];
   bool _isLoading = false;
   bool _showSearchHint = true;
-
-  // 颜色方案
-  final Color _primaryColor = const Color(0xFF00C8FF);
-  final Color _darkBackground = const Color(0xFF121212);
-  final Color _cardBackground = const Color(0xFF1E1E1E);
-  final Color _textColor = Colors.white;
-  final Color _hintColor = const Color(0xFFAAAAAA);
 
   @override
   void initState() {
@@ -118,7 +112,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
         behavior: SnackBarBehavior.floating,
         duration: const Duration(seconds: 3),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        backgroundColor: const Color(0xFFB00020),
+        backgroundColor: AppColors.error,
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
       ),
     );
@@ -130,18 +124,18 @@ class _SearchPageState extends ConsumerState<SearchPage> {
       child: Material(
         elevation: 8,
         borderRadius: BorderRadius.circular(32),
-        color: _cardBackground,
+        color: AppColors.cardBackground,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(32),
             border: _searchFocusNode.hasFocus
-                ? Border.all(color: _primaryColor, width: 3)
+                ? Border.all(color: AppColors.primary, width: 3)
                 : null,
             boxShadow: _searchFocusNode.hasFocus
                 ? [
                     BoxShadow(
-                      color: _primaryColor.withAlpha((255 * 0.3).toInt()),
+                      color: AppColors.primary.withAlpha((255 * 0.3).toInt()),
                       blurRadius: 12,
                       spreadRadius: 2,
                     ),
@@ -156,14 +150,14 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                   child: TextField(
                     focusNode: _searchFocusNode,
                     controller: _searchController,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 24,
-                      color: _textColor,
+                      color: Colors.white,
                       fontWeight: FontWeight.w500,
                     ),
                     decoration: InputDecoration(
                       hintText: '搜索电影、电视剧...',
-                      hintStyle: TextStyle(fontSize: 22, color: _hintColor),
+                      hintStyle: TextStyle(fontSize: 22, color: AppColors.hint),
                       border: InputBorder.none,
                     ),
                     onSubmitted: (value) {
@@ -199,12 +193,12 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                 duration: const Duration(milliseconds: 200),
                 margin: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: hasFocus ? _primaryColor : const Color(0xFF333333),
-                  borderRadius: BorderRadius.circular(24),
-                  boxShadow: hasFocus
-                      ? [
-                          BoxShadow(
-                            color: _primaryColor.withAlpha(255 ~/ 2),
+                color: hasFocus ? AppColors.primary : AppColors.surfaceVariant,
+                borderRadius: BorderRadius.circular(24),
+                boxShadow: hasFocus
+                    ? [
+                        BoxShadow(
+                          color: AppColors.primary.withAlpha(255 ~/ 2),
                             blurRadius: 12,
                             spreadRadius: 2,
                           ),
@@ -251,14 +245,14 @@ class _SearchPageState extends ConsumerState<SearchPage> {
           children: [
             const CircularProgressIndicator(
               strokeWidth: 6,
-              valueColor: AlwaysStoppedAnimation(Color(0xFF00C8FF)),
+              valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
             ),
             const SizedBox(height: 32),
             Text(
               '正在搜索中...',
               style: TextStyle(
                 fontSize: 24,
-                color: _textColor.withAlpha((255 * 0.8).toInt()),
+                color: Colors.white.withAlpha((255 * 0.8).toInt()),
               ),
             ),
           ],
@@ -275,14 +269,14 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                   Icon(
                     Icons.movie_creation,
                     size: 120,
-                    color: _hintColor.withAlpha((255 * 0.3).toInt()),
+                    color: AppColors.hint.withAlpha((255 * 0.3).toInt()),
                   ),
                   const SizedBox(height: 32),
                   Text(
                     '输入电影或电视剧名称',
                     style: TextStyle(
                       fontSize: 28,
-                      color: _hintColor,
+                      color: AppColors.hint,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -291,7 +285,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                     '使用遥控器方向键导航，确认键选择',
                     style: TextStyle(
                       fontSize: 20,
-                      color: _hintColor.withAlpha((255 * 0.7).toInt()),
+                      color: AppColors.hint.withAlpha((255 * 0.7).toInt()),
                     ),
                   ),
                 ],
@@ -304,14 +298,14 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                   Icon(
                     Icons.search_off,
                     size: 120,
-                    color: _hintColor.withAlpha((255 * 0.3).toInt()),
+                    color: AppColors.hint.withAlpha((255 * 0.3).toInt()),
                   ),
                   const SizedBox(height: 32),
                   Text(
                     '没有找到相关内容',
                     style: TextStyle(
                       fontSize: 28,
-                      color: _hintColor,
+                      color: AppColors.hint,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -320,7 +314,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                     '尝试其他关键词',
                     style: TextStyle(
                       fontSize: 20,
-                      color: _hintColor.withAlpha((255 * 0.7).toInt()),
+                      color: AppColors.hint.withAlpha((255 * 0.7).toInt()),
                     ),
                   ),
                 ],
@@ -346,7 +340,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                     '搜索结果 (${_movies.length})',
                     style: TextStyle(
                       fontSize: 22,
-                      color: _textColor.withAlpha((255 * 0.8).toInt()),
+                      color: Colors.white.withAlpha((255 * 0.8).toInt()),
                     ),
                   ),
                 ],
@@ -404,7 +398,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
               boxShadow: hasFocus
                   ? [
                       BoxShadow(
-                        color: _primaryColor.withAlpha((255 * 0.4).toInt()),
+                        color: AppColors.primary.withAlpha((255 * 0.4).toInt()),
                         blurRadius: 16,
                         spreadRadius: 4,
                       ),
@@ -421,11 +415,11 @@ class _SearchPageState extends ConsumerState<SearchPage> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
                 side: hasFocus
-                    ? BorderSide(color: _primaryColor, width: 3)
+                    ? BorderSide(color: AppColors.primary, width: 3)
                     : BorderSide.none,
               ),
               elevation: hasFocus ? 8 : 4,
-              color: _cardBackground,
+              color: AppColors.cardBackground,
               clipBehavior: Clip.antiAlias,
               child: InkWell(
                 borderRadius: BorderRadius.circular(12),
@@ -464,7 +458,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               fontSize: 16,
-                              color: _textColor,
+                              color: Colors.white,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -480,7 +474,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                                       vertical: 2,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: _primaryColor.withAlpha(
+                                      color: AppColors.primary.withAlpha(
                                         (255 * 0.2).toInt(),
                                       ),
                                       borderRadius: BorderRadius.circular(4),
@@ -489,7 +483,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                                       movie['vod_year'].toString(),
                                       style: TextStyle(
                                         fontSize: 12,
-                                        color: _primaryColor,
+                                        color: AppColors.primary,
                                       ),
                                     ),
                                   ),
@@ -502,7 +496,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                                     movie['type_name'],
                                     style: TextStyle(
                                       fontSize: 12,
-                                      color: _hintColor,
+                                      color: AppColors.hint,
                                     ),
                                   ),
                                 ),
@@ -517,7 +511,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                                     '| ${movie['vod_play_from']}',
                                     style: TextStyle(
                                       fontSize: 12,
-                                      color: _hintColor,
+                                      color: AppColors.hint,
                                     ),
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
@@ -533,7 +527,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                       Container(
                         height: 4,
                         decoration: BoxDecoration(
-                          color: _primaryColor,
+                          color: AppColors.primary,
                           borderRadius: const BorderRadius.vertical(
                             bottom: Radius.circular(12),
                           ),
@@ -575,7 +569,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
             preferredSize: const Size(double.infinity, 200),
             child: _buildSearchField(),
           ),
-          backgroundColor: _darkBackground,
+          backgroundColor: AppColors.background,
           body: _buildContent(),
         ),
       ),

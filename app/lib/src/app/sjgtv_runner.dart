@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sjgtv/src/app/provider/json_adapter_provider.dart';
+import 'package:sjgtv/src/app/theme/app_colors.dart';
 import 'package:sjgtv/src/api/shelf/api.dart';
 import 'package:sjgtv/src/page/home/app_wrapper.dart';
 import 'package:uuid/uuid.dart';
@@ -76,7 +77,7 @@ final class SjgtvRunner extends AppRunner {
   ThemeData _buildTheme() {
     return ThemeData(
       colorScheme: ColorScheme.fromSeed(
-        seedColor: const Color(0xFF0066FF),
+        seedColor: AppColors.seedColor,
         brightness: Brightness.dark,
       ),
       useMaterial3: true,

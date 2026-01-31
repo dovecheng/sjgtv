@@ -16,6 +16,7 @@ sjgtv 是一个模块化的 Flutter TV 应用项目，采用 base（基础库）
   - ✅ 项目结构重构（按 base 风格组织）
   - 🔄 逐步集成 base 与 app
   - ✅ 引入 Riverpod 状态管理（ApiService Provider + 页面改 Consumer）
+  - ✅ 主题色统一（AppColors：app/theme/app_colors.dart，多页/组件改用）
 
 **项目结构**
 
@@ -27,6 +28,7 @@ app/lib/src/
 │   └── shelf/    # shelf 本地服务（api.dart）
 ├── app/          # 应用启动
 │   ├── provider/ # 应用级 Provider（json_adapter_provider.dart, api_service_provider.dart）
+│   ├── theme/    # 主题（app_colors.dart）
 │   └── sjgtv_runner.dart
 ├── model/        # 数据模型（source, proxy, tag, movie）
 ├── page/         # 页面
@@ -234,3 +236,23 @@ app/lib/src/
 - 修改：`app/lib/src/page/source/source_manage_page.dart`（mounted 检查）
 - 修改：`app/lib/src/page/home/category_page.dart`（mounted/hasClients、base converter）
 - 修改：`app/lib/src/page/search/search_page.dart`（mounted 检查、if 大括号）
+
+### 2026-01-31 19:10（主题色统一 AppColors）
+
+**主题色抽取与统一**
+- 新增 `app/lib/src/app/theme/app_colors.dart`：集中定义 background、cardBackground、cardSurface、surfaceVariant、primary、seedColor、error、hint 等常量
+- SjgtvRunner：主题 seedColor 改用 AppColors.seedColor
+- category_page：Tab 未选背景改用 AppColors.surfaceVariant
+- full_screen_player_page：进度条主色改用 AppColors.seedColor
+- focusable_movie_card：卡片背景/占位/错误区改用 AppColors.cardSurface、AppColors.surfaceVariant
+- search_page：移除页面内颜色成员变量，全面改用 AppColors（cardBackground、primary、hint、error、background 等）
+- source_manage_page：背景与卡片色改用 AppColors.background、AppColors.cardBackground、AppColors.primary
+
+**涉及/修改的文件**
+- 新增：`app/lib/src/app/theme/app_colors.dart`
+- 修改：`app/lib/src/app/sjgtv_runner.dart`
+- 修改：`app/lib/src/page/home/category_page.dart`
+- 修改：`app/lib/src/page/player/full_screen_player_page.dart`
+- 修改：`app/lib/src/page/search/search_page.dart`
+- 修改：`app/lib/src/page/source/source_manage_page.dart`
+- 修改：`app/lib/src/widget/focusable_movie_card.dart`
