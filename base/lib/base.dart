@@ -11,8 +11,4 @@ export 'log.dart';
 export 'package_info.dart';
 export 'permission.dart';
 export 'provider.dart';
-export 'search.dart';
-export 'snake_bar.dart';
-export 'text_scale.dart';
-export 'viewer.dart';
 export 'widget.dart';

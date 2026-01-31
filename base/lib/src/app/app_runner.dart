@@ -91,10 +91,6 @@ abstract base class AppRunner {
   @mustCallSuper
   Future<void> initProvider() async {
     log.d(() => 'start');
-    // 监听器过滤指定提供者
-    BaseProviderObserver().updateFilter.addAll({
-      textScaleProvider,
-    });
 
     // 覆盖提供者
     log.d(() => 'overrides start');
