@@ -1,7 +1,9 @@
 import 'package:base/api.dart';
 import 'package:base/log.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sjgtv/src/api/service/api_service.dart';
 import 'package:sjgtv/src/app/provider/api_service_provider.dart';
 import 'package:sjgtv/src/model/source.dart';
 
@@ -34,12 +36,14 @@ class _SourceManagePageState extends ConsumerState<SourceManagePage> {
   }
 
   Future<void> _loadSources() async {
+    if (!mounted) return;
     setState(() {
       _isLoading = true;
       _errorMessage = null;
     });
     try {
       final ApiListResultModel<Source> result = await _apiService.getSources();
+      if (!mounted) return;
       if (result.isSuccess && result.data != null) {
         setState(() {
           _sources = result.data!;
@@ -53,6 +57,7 @@ class _SourceManagePageState extends ConsumerState<SourceManagePage> {
       }
     } catch (e, s) {
       _log.e(() => '获取源列表失败', e, s);
+      if (!mounted) return;
       setState(() {
         _errorMessage = e.toString();
         _isLoading = false;

@@ -82,15 +82,23 @@ class _SearchPageState extends ConsumerState<SearchPage> {
           await _apiService.search(keyword, limit: 100);
 
       if (result.isSuccess && result.data != null) {
-        setState(() {
-          _movies = result.data!['list'] ?? [];
-        });
+        if (mounted) {
+          setState(() {
+            _movies = result.data!['list'] ?? [];
+          });
+        }
       } else {
-        _showError('搜索失败: ${result.message}');
+        if (mounted) {
+          _showError('搜索失败: ${result.message}');
+        }
       }
     } catch (e) {
-      if (e is DioException && e.type == DioExceptionType.cancel) return;
-      _showError('搜索失败: ${e.toString()}');
+      if (e is DioException && e.type == DioExceptionType.cancel) {
+        return;
+      }
+      if (mounted) {
+        _showError('搜索失败: ${e.toString()}');
+      }
     } finally {
       if (mounted) {
         setState(() {

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:base/api.dart';
+import 'package:base/converter.dart';
 import 'package:base/log.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -63,6 +64,7 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
   }
 
   void _onScroll() {
+    if (!_scrollController.hasClients || !mounted) return;
     final ScrollPosition position = _scrollController.position;
     final double maxScroll = position.maxScrollExtent;
     final double currentScroll = position.pixels;
@@ -81,21 +83,24 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
   }
 
   Future<void> _loadInitialData() async {
+    if (!mounted) return;
     setState(() => _isLoading = true);
     await _fetchTags();
+    if (!mounted) return;
     if (_tabs.isNotEmpty && _tabs[0] != '加载中...') {
       await _fetchMovies(_tabs[_selectedTab]);
     }
+    if (!mounted) return;
     setState(() => _isLoading = false);
   }
 
   Future<void> _fetchTags() async {
     try {
       final ApiListResultModel<Tag> result = await _apiService.getTags();
-
+      if (!mounted) return;
       if (result.isSuccess && result.data != null) {
         setState(() {
-          _tabs = result.data!.map((tag) => tag.name).toList();
+          _tabs = result.data!.map((Tag tag) => tag.name).toList();
           for (String tag in _tabs) {
             _currentPageByTag[tag] = 0;
           }
@@ -108,6 +113,7 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
       }
     } catch (e) {
       _log.e(() => '获取标签失败', e);
+      if (!mounted) return;
       setState(() {
         _tabs = ['获取标签失败'];
       });
@@ -136,17 +142,19 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
         },
       );
 
+      if (!mounted) return;
       if (response.statusCode == 200) {
         final List<dynamic> subjects = response.data['subjects'] ?? [];
-        final List<Movie> movies = subjects.map((subject) {
+        final List<Movie> movies = subjects.map((dynamic subject) {
+          final String title = StringConverter.toStringifyOrEmpty(subject['title']);
           return Movie(
-            id: subject['id'],
-            title: subject['title'],
-            year: _extractYearFromTitle(subject['title']),
-            rating: double.tryParse(subject['rate'] ?? '0') ?? 0,
-            coverUrl: subject['cover'],
-            playable: subject['playable'] ?? false,
-            isNew: subject['is_new'] ?? false,
+            id: StringConverter.toStringifyOrEmpty(subject['id']),
+            title: title,
+            year: _extractYearFromTitle(title),
+            rating: DoubleConverter.toDoubleOrZero(subject['rate']),
+            coverUrl: StringConverter.toStringifyOrNull(subject['cover']),
+            playable: BoolConverter.toBoolOrFalse(subject['playable']),
+            isNew: BoolConverter.toBoolOrFalse(subject['is_new']),
             url:
                 "https://img3.doubanio.com/view/photo/s_ratio_poster/public/p2897743122.jpg",
           );
@@ -165,18 +173,20 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
       }
     } catch (e) {
       _log.e(() => '获取电影失败', e);
-      setState(() => _hasMore = false);
+      if (mounted) setState(() => _hasMore = false);
     } finally {
-      setState(() {
-        _isLoading = false;
-        _isRefreshing = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _isRefreshing = false;
+        });
+      }
     }
   }
 
   Future<void> _handleRefresh() async {
     if (_isRefreshing) return;
-
+    if (!mounted) return;
     setState(() {
       _isRefreshing = true;
       _currentPageByTag[_tabs[_selectedTab]] = 0;
@@ -185,6 +195,7 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
 
     await _fetchMovies(_tabs[_selectedTab]);
 
+    if (!mounted) return;
     setState(() {
       _isRefreshing = false;
     });

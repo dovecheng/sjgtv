@@ -216,3 +216,21 @@ app/lib/src/
 **涉及/修改的文件**
 - 新增：`app/lib/src/page/source/source_manage_page.dart`
 - 修改：`app/lib/src/page/home/category_page.dart`（源管理入口 + const 等）
+
+### 2026-01-31 18:54（运行时安全与 base converter）
+
+**异步与 context 安全**
+- source_manage_page：_loadSources 在每次 await 后 setState 前检查 mounted，catch 里同样检查
+- category_page：_loadInitialData、_fetchTags、_fetchMovies、_handleRefresh 中异步后 setState 前加 mounted；_onScroll 开头加 hasClients 与 mounted 检查；_fetchMovies 在 await _dio.get 后、使用 response 前检查 mounted
+- search_page：成功分支 setState 与两处 _showError 调用前加 mounted；catch 里 _showError 前加 mounted
+
+**豆瓣 API 解析**
+- category_page：构造 Movie 时改用 base 的 converter（StringConverter、DoubleConverter、BoolConverter），避免接口字段为 null 或类型不符时强转异常
+
+**Lint**
+- search_page：单行 if 补全大括号，满足 curly_braces_in_flow_control_structures
+
+**涉及/修改的文件**
+- 修改：`app/lib/src/page/source/source_manage_page.dart`（mounted 检查）
+- 修改：`app/lib/src/page/home/category_page.dart`（mounted/hasClients、base converter）
+- 修改：`app/lib/src/page/search/search_page.dart`（mounted 检查、if 大括号）
