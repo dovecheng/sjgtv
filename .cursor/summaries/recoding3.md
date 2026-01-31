@@ -23,8 +23,13 @@
 - [ ] 代码质量：再跑一遍 `dart analyze` / `dart fix`，查未使用导入与死代码
 - [ ] 重新分析项目：若用户说「要分析」，则对项目做分析并整理、更新摘要
 
+**本次完成（2026-01-31）**
+- **app 模块 bug 修复**：full_screen_player_page 切换集数后 setState 前加 mounted 检查；movie_detail_page 选集焦点监听 setState 前加 mounted；full_screen_player 中 void async 改为 Future<void>
+- **app 模块 l10n 接入**：定义 app_l10n 抽象类（@L10nKeys + @L10nKey），用 base 的 tool gen_l10n_mixin 生成 L10n 枚举与 AppL10nMixin；SjgtvRunner 注入 L10n.translations 到 l10nTranslationProvider；SourceManagePage、AddSourcePage 混入 AppL10nMixin 并替换文案；使用国际化的控件套上 L10nKeyTips（keyTips 用 xxxL10nKey）
+
 **涉及/修改的文件**
 - 新增：`.cursor/summaries/recoding3.md`
+- 本次：app/lib/src/app/sjgtv_runner.dart；app/lib/src/page/source/source_manage_page.dart、add_source_page.dart；app/lib/src/page/player/full_screen_player_page.dart；app/lib/src/page/search/movie_detail_page.dart；app/lib/gen/l10n.gen.dart；app/lib/src/l10n/（app_l10n.dart、app_l10n.gen.dart）
 
 ## 历史
 
@@ -42,3 +47,7 @@
 
 ### 2026-01-31 21:32（区分网页与 Flutter）
 - 新增「源管理/代理/标签：网页 vs Flutter」说明：网页 = index.html（扫码管理，功能完整）；Flutter = SourceManagePage/AddSourcePage（缺删除、编辑；代理/标签暂无）。待办中明确标注 **Flutter 源管理**、**Flutter 代理/标签**，避免与网页混淆
+
+### 2026-01-31（ok 收尾：app bug 修复 + app l10n 接入）
+- **app bug 修复**：full_screen_player_page 中 _changeEpisode 成功分支 setState 前加 if (mounted)；movie_detail_page 中 _episodesFocusNode.addListener 内 setState 前加 if (mounted)；_controlWakelock、_preloadNextEpisode、_changeEpisode 由 void async 改为 Future<void>
+- **app l10n**：新增 app/lib/src/l10n/app_l10n.dart（@L10nKeys keysPrefix: app + 8 个 @L10nKey getter）；dart run tool/gen_l10n_mixin.dart 生成 app/lib/gen/l10n.gen.dart（L10n 枚举 + translations）、app/lib/src/l10n/app_l10n.gen.dart（AppL10nMixin）；SjgtvRunner override l10nTranslation => L10nTranslationProvider(L10n.translations)；SourceManagePage、AddSourcePage 混入 AppL10nMixin，文案用 xxxL10n，并用 L10nKeyTips(keyTips: xxxL10nKey, child: ...) 包裹
