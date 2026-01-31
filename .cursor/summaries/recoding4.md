@@ -52,19 +52,36 @@ sjgtv 为模块化 Flutter TV 应用：**base**（公共库）+ **app**（应用
 
 ---
 
-## 项目结构（app，按业务分类）
+## 项目结构（app，业务 > 职责）
 
 ```
 app/lib/src/
-├── source/       # 数据源业务：model、provider、storage、count、l10n、page
-├── proxy/        # 代理业务：model、provider、count
-├── tag/          # 标签业务：model、provider、count
-├── movie/        # 电影业务：model、page、widget
-├── api/          # 跨业务 API：client、service、shelf、api_service_provider
-├── app/          # 应用级：json_adapter、theme、sjgtv_runner
-├── page/         # 通用页面：home（app_wrapper）、player
-├── service/      # 跨业务服务（m3u8_ad_remover）
-└── widget/       # 跨业务组件（network_image_placeholders、update_checker）
+├── source/       # 数据源业务
+│   ├── model/
+│   ├── provider/
+│   ├── l10n/
+│   └── page/
+├── proxy/        # 代理业务
+│   ├── model/
+│   └── provider/
+├── tag/          # 标签业务
+│   ├── model/
+│   └── provider/
+├── movie/        # 电影业务
+│   ├── model/
+│   ├── page/     # category、search、detail、full_screen_player、player_intents
+│   ├── service/  # m3u8_ad_remover
+│   └── widget/   # focusable_movie_card、network_image_placeholders
+├── app/api/      # 远程 API：ConfigApi（config.json）
+├── shelf/        # 独立业务：ShelfApi 单例，混入 ShelfApiL10nMixin；HTTP 服务，调用 provider 读写数据
+│   ├── api.dart  # ShelfApi 路由与 handler
+│   └── l10n/     # api_l10n（shelf API 消息）、web_l10n（index.html 网页专属）
+└── app/          # 应用级
+    ├── api/      # ConfigApi（远程配置）
+    ├── provider/ # config_api_provider、json_adapter_provider
+    ├── runner/   # sjgtv_runner
+    ├── theme/
+    └── widget/   # update_checker
 ```
 
 ---
@@ -88,9 +105,9 @@ app/lib/src/
 
 ## 网页国际化（已实现摘要）
 
-- shelf 提供 `GET /api/l10n`，返回 `getWebL10nMap()` 的 JSON；语言跟随 Flutter 当前语言。
-- 网页对需翻译节点加 `data-i18n` / `data-i18n-placeholder`，加载时请求 `/api/l10n` 并执行 `applyL10n()` 替换文案与 document.title。
-- 详细约定与扩展见 recoding3「网页国际化（建议）」。
+- shelf 提供 `GET /api/l10n`，过滤 `web_` 前缀返回翻译 JSON；语言跟随 Flutter 当前语言。
+- **web_l10n**（keysPrefix: web）：index.html 专属，与 **source_l10n**（Flutter 源管理页）分离，避免共用。
+- 网页对需翻译节点加 `data-i18n` / `data-i18n-placeholder` / `data-i18n-title`，加载时 `await applyL10n()` 后请求 `/api/l10n`，替换文案与 document.title；JS 动态消息用 `t(key)`、`tReplace(key, {name})`。
 
 ---
 
@@ -126,3 +143,16 @@ app/lib/src/
 
 ### 2026-02-01（app 按业务分类重构）
 - app 结构改为按业务分类：source/（model、provider、storage、count、l10n、page）、proxy/、tag/、movie/ 各自包含其 model、provider、count 等；api/ 保留跨业务层；删除 model/、provider/、sources/、proxies/、tags/、count/、l10n/ 等按功能分类的目录。
+
+### 2026-02-01（业务下按职责分子目录）
+- 业务下再按职责分：source/model/、source/provider/、source/l10n/、source/page/；proxy/model/、proxy/provider/；tag/model/、tag/provider/；movie/model/、movie/page/、movie/widget/。
+
+### 2026-02-01（移除 api 层、ConfigApi、AppWrapper）
+- **移除 api/**：Flutter UI 不再通过 HTTP 调用 localhost 获取源/代理/标签，直接使用 Riverpod provider。
+- **ConfigApi**：app/api/config_api.dart，Retrofit 单例，调用远程 config.json；configApiProvider 返回请求结果 Map。
+- **AppWrapper 逻辑**：移至 MovieHomePage（category_page.dart），删除 app_wrapper.dart。
+
+### 2026-02-01（shelf/网页/源 l10n 调整）
+- **ShelfApi 单例**：shelf api.dart 定义 ShelfApi 类，混入 ShelfApiL10nMixin，全部方法入类，方法内用 this.xxxL10n 获取翻译。
+- **web_l10n**：新建 keysPrefix: web，index.html 专属；handleGetL10n 过滤 web_ 前缀；补全网页全部文案 data-i18n、JS 用 t()/tReplace()。
+- **source_l10n**：去除方法名冗余前缀（manageTitleL10n、listTitleL10n、addTitleL10n、nameL10n、urlHintL10n），避免 source_source_xxx 叠加。
