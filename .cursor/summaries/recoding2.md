@@ -1,3 +1,9 @@
+**引用摘要**（再次会话时先读以延续上下文）
+- [recoding1](.cursor/summaries/recoding1.md)：阶段一/二（项目结构、base 迁移与精简）、阶段三起步；本摘要承接其后的 app 重构与优化。
+
+**后续摘要**
+- [recoding3](.cursor/summaries/recoding3.md)：收尾后的可选下一步与待办（源管理删除/编辑、代理/标签、TV 与播放、代码质量、重新分析等）。
+
 **项目概要**
 
 sjgtv 是一个模块化的 Flutter TV 应用项目，采用 base（基础库）+ app（应用层）的结构。当前处于**阶段三：app 模块重构**阶段，已完成 AppRunner 架构接入和项目结构重构。
@@ -438,3 +444,6 @@ app/lib/src/
 - 修改：`app/lib/src/app/sjgtv_runner.dart`、`app/lib/src/storage/source_storage.dart`、`app/lib/src/app/provider/api_service_provider.dart`、`app/lib/src/app/provider/json_adapter_provider.dart`、`app/lib/src/model/*_entity.dart`、`app/lib/src/api/shelf/api.dart`、`app/lib/main.dart`、`app/pubspec.yaml`、`app/test/api_server_test.dart`
 - 删除：`app/lib/src/storage/sjgtv_isar.dart`
 - 新增：`app/lib/src/storage/source_storage.dart`（若此前未纳入）、实体 `*.g.dart` 合并 JSON 生成
+
+### 2026-01-31 21:32（一二三摘要关联）
+- 增加「引用摘要」「后续摘要」小节：引用 [recoding1](.cursor/summaries/recoding1.md)，后续见 [recoding3](.cursor/summaries/recoding3.md)，确保一二三摘要相互关联

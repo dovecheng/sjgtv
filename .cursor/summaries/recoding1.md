@@ -1,3 +1,9 @@
+**引用摘要**（再次会话时先读以延续上下文）
+- 无（本摘要为 recoding 链起点）
+
+**后续摘要**
+- [recoding2](.cursor/summaries/recoding2.md)：阶段三 app 重构、AppRunner/API/Riverpod/主题等；其后再见 [recoding3](.cursor/summaries/recoding3.md)。
+
 **会话概要**
 - [doc] README：原作者与链接改为 laopaoer / laopaoer-wallet/DTV；致谢改为「谢谢他把我带入坑」
 - [app] 将 `app/lib/services`、`app/lib/widgets` 移入 `app/lib/src/`，并更新所有 `package:sjgtv/services`、`package:sjgtv/widgets` 导入为 `package:sjgtv/src/...`；`app/lib/gen/` 保持在 lib 根下
@@ -200,3 +206,6 @@
 ### 2026-01-30 17:37（Retrofit API 声明、final 显式类型、next 收尾）
 - app 接入 Retrofit：新增 retrofit/json_annotation 依赖，dev 新增 retrofit_generator、json_serializable；新建 `app/lib/services/api_client.dart` 声明本地 shelf 接口（sources/proxies/tags/search），生成 `api_client.g.dart`（生成器对 Map 转换有误已手动修正）
 - final 变量显式声明类型：app/lib（main、api、m3u8_ad_remover、各 widget）、base/lib/src/l10n/provider/l10n_translation_provider.dart、.vscode/dart.code-snippets 中 final 均补全类型；full_screen_player 漏网两处与片段中 key/controller 已补
+
+### 2026-01-31 21:32（一二三摘要关联）
+- 增加「引用摘要」「后续摘要」小节：本摘要为链起点；后续见 [recoding2](.cursor/summaries/recoding2.md)、[recoding3](.cursor/summaries/recoding3.md)，便于再次会话时沿链读旧摘要以延续上下文
