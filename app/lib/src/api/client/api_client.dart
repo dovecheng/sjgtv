@@ -21,6 +21,9 @@ abstract class ApiClient {
   @POST('/api/sources')
   Future<ApiResultModel<Source>> addSource(@Body() Map<String, dynamic> body);
 
+  @PUT('/api/sources')
+  Future<ApiResultModel<Source>> updateSource(@Body() Map<String, dynamic> body);
+
   @PUT('/api/sources/toggle')
   Future<ApiResultModel<Source>> toggleSource(@Query('id') String id);
 

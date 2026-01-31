@@ -2,10 +2,10 @@ import 'package:base/api.dart';
 import 'package:base/l10n.dart';
 import 'package:base/log.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sjgtv/src/api/service/api_service.dart';
 import 'package:sjgtv/src/app/provider/api_service_provider.dart';
+import 'package:sjgtv/src/app/provider/sources_provider.dart';
 import 'package:sjgtv/src/app/theme/app_theme.dart';
 import 'package:sjgtv/src/l10n/app_web_l10n.gen.dart';
 import 'package:sjgtv/src/model/source.dart';
@@ -15,10 +15,7 @@ final Log _log = Log('SourceManagePage');
 
 /// 源管理页
 ///
-/// 功能：
-/// - 从本地 shelf 服务获取数据源列表
-/// - 展示名称、地址、启用状态
-/// - 支持切换启用/禁用、TV 遥控器焦点
+/// 通过 [sourcesProvider] 监听列表，增删改或切换后 [ref.invalidate] 即可自动刷新。
 class SourceManagePage extends ConsumerStatefulWidget {
   const SourceManagePage({super.key});
 
@@ -30,52 +27,12 @@ class _SourceManagePageState extends ConsumerState<SourceManagePage>
     with AppWebL10nMixin {
   ApiService get _apiService => ref.read(apiServiceProvider);
 
-  List<Source> _sources = [];
-  bool _isLoading = true;
-  String? _errorMessage;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadSources();
-  }
-
-  Future<void> _loadSources() async {
-    if (!mounted) return;
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
-    try {
-      final ApiListResultModel<Source> result = await _apiService.getSources();
-      if (!mounted) return;
-      if (result.isSuccess && result.data != null) {
-        setState(() {
-          _sources = result.data!;
-          _isLoading = false;
-        });
-      } else {
-        setState(() {
-          _errorMessage = result.message ?? '获取源列表失败';
-          _isLoading = false;
-        });
-      }
-    } catch (e, s) {
-      _log.e(() => '获取源列表失败', e, s);
-      if (!mounted) return;
-      setState(() {
-        _errorMessage = e.toString();
-        _isLoading = false;
-      });
-    }
-  }
-
   Future<void> _toggleSource(Source source) async {
     try {
       final ApiResultModel<Source> result =
           await _apiService.toggleSource(source.id);
       if (result.isSuccess) {
-        await _loadSources();
+        ref.invalidate(sourcesProvider);
       } else {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -93,9 +50,62 @@ class _SourceManagePageState extends ConsumerState<SourceManagePage>
     }
   }
 
+  Future<void> _deleteSource(Source source) async {
+    final AppThemeColors dialogColors = context.appThemeColors;
+    final bool? confirm = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext ctx) => AlertDialog(
+        title: const Text('删除源'),
+        content: Text('确定要删除源「${source.name}」吗？此操作无法撤销。'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: Text(cancelL10n),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            style: FilledButton.styleFrom(
+              backgroundColor: dialogColors.error,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('确认删除'),
+          ),
+        ],
+      ),
+    );
+    if (confirm != true || !mounted) return;
+    try {
+      final ApiResultModel<Object> result =
+          await _apiService.deleteSource(source.id);
+      if (!mounted) return;
+      if (result.isSuccess) {
+        ref.invalidate(sourcesProvider);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('已删除')),
+          );
+        }
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(result.message ?? '删除失败')),
+          );
+        }
+      }
+    } catch (e) {
+      _log.e(() => '删除源失败', e);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('删除失败: $e')),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final AppThemeColors colors = context.appThemeColors;
+    final AsyncValue<List<Source>> sourcesAsync = ref.watch(sourcesProvider);
     return Scaffold(
       backgroundColor: colors.background,
       appBar: AppBar(
@@ -117,62 +127,67 @@ class _SourceManagePageState extends ConsumerState<SourceManagePage>
               icon: const Icon(Icons.add),
               tooltip: addSourceTitleL10n,
               onPressed: () async {
-              final bool? added = await Navigator.of(context).push<bool>(
-                MaterialPageRoute<bool>(
-                  builder: (BuildContext context) => const AddSourcePage(),
-                ),
-              );
-              if (added == true && mounted) {
-                _loadSources();
-              }
-            },
+                final bool? added = await Navigator.of(context).push<bool>(
+                  MaterialPageRoute<bool>(
+                    builder: (BuildContext context) =>
+                        const AddSourcePage(),
+                  ),
+                );
+                if (added == true && mounted) {
+                  ref.invalidate(sourcesProvider);
+                }
+              },
               focusColor: Colors.red,
             ),
           ),
         ],
       ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : _errorMessage != null
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        _errorMessage!,
-                        style: const TextStyle(color: Colors.white70),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 16),
-                      TextButton(
-                        onPressed: _loadSources,
-                        child: L10nKeyTips(
-                          keyTips: retryL10nKey,
-                          child: Text(retryL10n),
-                        ),
-                      ),
-                    ],
+      body: sourcesAsync.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (Object error, StackTrace stackTrace) {
+          _log.e(() => '获取源列表失败', error, stackTrace);
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  error.toString(),
+                  style: const TextStyle(color: Colors.white70),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16),
+                TextButton(
+                  onPressed: () => ref.invalidate(sourcesProvider),
+                  child: L10nKeyTips(
+                    keyTips: retryL10nKey,
+                    child: Text(retryL10n),
                   ),
-                )
-              : _sources.isEmpty
-                  ? Center(
-                      child: L10nKeyTips(
-                        keyTips: noSourcesL10nKey,
-                        child: Text(
-                          noSourcesL10n,
-                          style: const TextStyle(
-                              color: Colors.white70, fontSize: 18),
-                        ),
-                      ),
-                    )
-                  : ListView.builder(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 24,
-                        vertical: 16,
-                      ),
-                      itemCount: _sources.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        final Source source = _sources[index];
+                ),
+              ],
+            ),
+          );
+        },
+        data: (List<Source> sources) {
+          if (sources.isEmpty) {
+            return Center(
+              child: L10nKeyTips(
+                keyTips: noSourcesL10nKey,
+                child: Text(
+                  noSourcesL10n,
+                  style: const TextStyle(
+                      color: Colors.white70, fontSize: 18),
+                ),
+              ),
+            );
+          }
+          return ListView.builder(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 24,
+              vertical: 16,
+            ),
+            itemCount: sources.length,
+            itemBuilder: (BuildContext context, int index) {
+              final Source source = sources[index];
                         return Focus(
                           onKeyEvent: (FocusNode node, KeyEvent event) {
                             if (event is KeyDownEvent &&
@@ -207,19 +222,51 @@ class _SourceManagePageState extends ConsumerState<SourceManagePage>
                                   overflow: TextOverflow.ellipsis,
                                 ),
                               ),
-                              trailing: Icon(
-                                source.disabled ? Icons.toggle_off : Icons.toggle_on,
-                                color: source.disabled
-                                    ? Colors.white38
-                                    : colors.primary,
-                                size: 36,
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  IconButton(
+                                    icon: const Icon(Icons.edit),
+                                    onPressed: () async {
+                                      final bool? updated =
+                                          await Navigator.of(context).push<bool>(
+                                        MaterialPageRoute<bool>(
+                                          builder: (BuildContext context) =>
+                                              AddSourcePage(
+                                            sourceToEdit: source,
+                                          ),
+                                        ),
+                                      );
+                                      if (updated == true && mounted) {
+                                        ref.invalidate(sourcesProvider);
+                                      }
+                                    },
+                                    focusColor: Colors.red,
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(Icons.delete_outline),
+                                    onPressed: () => _deleteSource(source),
+                                    focusColor: Colors.red,
+                                  ),
+                                  Icon(
+                                    source.disabled
+                                        ? Icons.toggle_off
+                                        : Icons.toggle_on,
+                                    color: source.disabled
+                                        ? Colors.white38
+                                        : colors.primary,
+                                    size: 36,
+                                  ),
+                                ],
                               ),
                               onTap: () => _toggleSource(source),
                             ),
                           ),
                         );
-                      },
-                    ),
+            },
+          );
+        },
+      ),
     );
   }
 }

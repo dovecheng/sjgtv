@@ -14,10 +14,10 @@
 
 **源管理 / 代理 / 标签：网页 vs Flutter**
 - **网页**：`app/assets/web/index.html`，shelf 端口 8023 提供；TV/平板扫码打开，源/代理/标签的增删改查、排序均已实现。
-- **Flutter**：SourceManagePage（源列表、启用禁用、进 AddSourcePage）、AddSourcePage（添加源）；缺源删除、源编辑；代理/标签暂无 Flutter 页。
+- **Flutter**：SourceManagePage（源列表、启用/禁用、**删除源**、**编辑源**、进 AddSourcePage）、AddSourcePage（添加/编辑源）；代理/标签暂无 Flutter 页。
 
 **未完成的计划**
-- [ ] **Flutter 源管理**：SourceManagePage 补**删除源**、**编辑源**（列表项操作 + 编辑页或弹窗，shelf API 已有；可参考**网页** index.html 的删除/编辑交互）
+- [x] **Flutter 源管理**：SourceManagePage 已补删除源、编辑源（shelf PUT /api/sources、DELETE；AddSourcePage 支持 sourceToEdit；列表项编辑/删除按钮 + 删除确认弹窗）；源列表改用 [sourcesProvider] 以 ref.watch 自动刷新
 - [ ] **Flutter 代理/标签**（若需要）：网页已有代理/标签管理；是否在 app 内做代理管理页、标签管理页，待定
 - [x] **网页国际化**：已实现（shelf GET /api/l10n + 页面 data-i18n 与 applyL10n，见「网页国际化（建议）」）
 - [ ] TV 与播放：继续优化 TV 焦点、遥控、播放器 UI/交互
@@ -58,6 +58,11 @@
 **涉及/修改的文件（网页国际化）**
 - app/lib/src/api/shelf/api.dart；app/assets/web/index.html；app/lib/src/l10n/app_web_l10n.dart；app/lib/src/l10n/app_web_l10n.gen.dart；app/lib/gen/l10n.gen.dart
 
+**Flutter 源管理删除/编辑 + 提供者类声明 + 依赖对齐 base（2026-02-01）**
+- **源管理**：SourceStorage.updateSource、shelf PUT /api/sources、ApiService/ApiClient updateSource；AddSourcePage(sourceToEdit)、SourceManagePage 列表项编辑/删除按钮与删除确认弹窗。
+- **提供者**：api_service_provider、sources_provider 改为类声明（@Riverpod + 生成 .g.dart）；SourceManagePage 用 ref.watch(sourcesProvider)，增删改后 ref.invalidate(sourcesProvider)。
+- **依赖**：app 依赖版本与 base 一致（dio、retrofit、riverpod、riverpod_annotation、riverpod_generator、json_serializable、retrofit_generator 等）；app/build.yaml 与 base 一致；dependency_overrides retrofit: 4.9.0。
+
 ## 历史
 
 （每条须为「YYYY-MM-DD HH:mm」或「YYYY-MM-DD HH:mm（说明）」格式，不得只写日期。）
@@ -92,3 +97,8 @@
 - **shelf**：新增 `GET /api/l10n`，_handleGetL10n 调用 getWebL10nMap() 返回 JSON。
 - **网页**：index.html 增加 data-i18n / data-i18n-placeholder 与 applyL10n()，加载时请求 /api/l10n 并替换文案。
 - **l10n**：新增 sourceListTitleL10n（web_source_list_title），网页「源列表」卡片改用该 key；注解 keysPrefix 改回字面量 'web'（代码生成器仅支持字面量）。待办「网页国际化」打勾。
+
+### 2026-02-01 00:06（Flutter 源管理删除/编辑 + 提供者类声明 + 依赖对齐 base）
+- **源管理**：SourceStorage.updateSource、shelf PUT /api/sources、ApiService/ApiClient updateSource；AddSourcePage(sourceToEdit)、SourceManagePage 编辑/删除按钮与删除确认弹窗。
+- **提供者**：api_service_provider、sources_provider 改为类声明（@Riverpod + riverpod_generator 生成 .g.dart）；SourceManagePage 用 ref.watch(sourcesProvider)，增删改后 ref.invalidate(sourcesProvider)。
+- **依赖**：app 依赖版本与 base 一致（dio、retrofit、riverpod_annotation、riverpod_generator、json_serializable、retrofit_generator 等）；app/build.yaml 与 base 一致；dependency_overrides retrofit: 4.9.0。待办「Flutter 源管理」打勾。

@@ -60,6 +60,7 @@ Future<HttpServer> startServer({int port = 8023}) async {
     // Sources endpoints
     ..get('/api/sources', _handleGetSources)
     ..post('/api/sources', _handleAddSource)
+    ..put('/api/sources', _handleUpdateSource)
     ..put('/api/sources/toggle', _handleToggleSource)
     ..delete('/api/sources', _handleDeleteSource)
     // Proxies endpoints
@@ -133,6 +134,56 @@ Future<Response> _handleAddSource(Request request) async {
     final Source newSource = await SourceStorage.addSource(source);
 
     return _createSuccessResponse(newSource.toJson(), msg: '源添加成功');
+  } catch (e) {
+    return _createErrorResponse(e.toString(), 400, e);
+  }
+}
+
+Future<Response> _handleUpdateSource(Request request) async {
+  try {
+    final String body = await request.readAsString();
+    final dynamic data = jsonDecode(body);
+
+    if (data['id'] == null) throw Exception('缺少ID参数');
+    if (data['name'] == null || data['url'] == null) {
+      throw Exception('名称和URL不能为空');
+    }
+
+    final String urlInput = (data['url']?.toString() ?? '').trim();
+    if (!_isValidUrl(urlInput)) {
+      throw Exception('请输入有效的URL地址');
+    }
+
+    String url = urlInput;
+    if (!url.endsWith('/')) url += '/';
+    if (!url.endsWith('api.php/provide/vod')) {
+      url += 'api.php/provide/vod';
+    }
+
+    final List<Source> existing =
+        await SourceStorage.getAllSources();
+    Source? src;
+    for (final Source s in existing) {
+      if (s.id == data['id']) {
+        src = s;
+        break;
+      }
+    }
+    if (src == null) throw Exception('源不存在');
+
+    final Source updated = Source(
+      id: src.id,
+      name: (data['name']?.toString() ?? '').trim(),
+      url: url,
+      weight: IntConverter.toIntOrNull(data['weight']) ?? src.weight,
+      disabled: src.disabled,
+      tagIds: List<String>.from(data['tagIds'] ?? src.tagIds),
+      createdAt: src.createdAt,
+      updatedAt: DateTime.now(),
+    );
+
+    final Source result = await SourceStorage.updateSource(updated);
+    return _createSuccessResponse(result.toJson(), msg: '源更新成功');
   } catch (e) {
     return _createErrorResponse(e.toString(), 400, e);
   }

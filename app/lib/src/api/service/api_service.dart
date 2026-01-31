@@ -40,6 +40,11 @@ class ApiService {
     return await _client.addSource(body);
   }
 
+  /// 更新数据源
+  Future<ApiResultModel<Source>> updateSource(Map<String, dynamic> body) async {
+    return await _client.updateSource(body);
+  }
+
   /// 切换数据源启用/禁用状态
   Future<ApiResultModel<Source>> toggleSource(String id) async {
     return await _client.toggleSource(id);

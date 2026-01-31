@@ -25,6 +25,23 @@ abstract final class SourceStorage {
     return source;
   }
 
+  static Future<Source> updateSource(Source source) async {
+    final List<SourceEntity> list = await $isar.sourceEntitys
+        .where()
+        .filter()
+        .uuidEqualTo(source.id)
+        .findAll();
+    final SourceEntity? e = list.isEmpty ? null : list.first;
+    if (e == null) throw Exception('源不存在');
+    e.name = source.name;
+    e.url = source.url;
+    e.weight = source.weight;
+    e.tagIds = List<String>.from(source.tagIds);
+    e.updatedAt = DateTime.now();
+    await $isar.writeTxn(() async => $isar.sourceEntitys.put(e));
+    return _sourceFromEntity(e);
+  }
+
   static Future<Source> toggleSource(String id) async {
     final List<SourceEntity> list = await $isar.sourceEntitys
         .where()

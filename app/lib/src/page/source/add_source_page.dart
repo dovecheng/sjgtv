@@ -11,11 +11,13 @@ import 'package:sjgtv/src/model/source.dart';
 
 final Log _log = Log('AddSourcePage');
 
-/// 添加数据源页
+/// 添加/编辑数据源页
 ///
-/// 表单：名称、地址；提交调用 ApiService.addSource，成功后返回列表并刷新。
+/// 表单：名称、地址；[sourceToEdit] 非空时为编辑模式，预填并提交调用 updateSource。
 class AddSourcePage extends ConsumerStatefulWidget {
-  const AddSourcePage({super.key});
+  const AddSourcePage({super.key, this.sourceToEdit});
+
+  final Source? sourceToEdit;
 
   @override
   ConsumerState<AddSourcePage> createState() => _AddSourcePageState();
@@ -33,6 +35,16 @@ class _AddSourcePageState extends ConsumerState<AddSourcePage>
 
   bool _isSubmitting = false;
   String? _errorText;
+
+  @override
+  void initState() {
+    super.initState();
+    final Source? edit = widget.sourceToEdit;
+    if (edit != null) {
+      _nameController.text = edit.name;
+      _urlController.text = edit.url;
+    }
+  }
 
   @override
   void dispose() {
@@ -70,20 +82,33 @@ class _AddSourcePageState extends ConsumerState<AddSourcePage>
     });
 
     try {
-      final ApiResultModel<Source> result = await _apiService.addSource(
-        <String, dynamic>{'name': name, 'url': url},
-      );
+      final Source? edit = widget.sourceToEdit;
+      final ApiResultModel<Source> result = edit != null
+          ? await _apiService.updateSource(<String, dynamic>{
+              'id': edit.id,
+              'name': name,
+              'url': url,
+              'weight': edit.weight,
+              'tagIds': edit.tagIds,
+            })
+          : await _apiService.addSource(
+              <String, dynamic>{'name': name, 'url': url},
+            );
       if (!mounted) return;
       if (result.isSuccess) {
         Navigator.of(context).pop(true);
         return;
       }
       setState(() {
-        _errorText = result.message ?? '添加失败';
+        _errorText = result.message ?? (edit != null ? '更新失败' : '添加失败');
         _isSubmitting = false;
       });
     } catch (e, s) {
-      _log.e(() => '添加源失败', e, s);
+      _log.e(
+        () => widget.sourceToEdit != null ? '更新源失败' : '添加源失败',
+        e,
+        s,
+      );
       if (!mounted) return;
       setState(() {
         _errorText = e.toString();
@@ -100,7 +125,9 @@ class _AddSourcePageState extends ConsumerState<AddSourcePage>
       appBar: AppBar(
         title: L10nKeyTips(
           keyTips: addSourceTitleL10nKey,
-          child: Text(addSourceTitleL10n),
+          child: Text(
+            widget.sourceToEdit != null ? '编辑源' : addSourceTitleL10n,
+          ),
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
