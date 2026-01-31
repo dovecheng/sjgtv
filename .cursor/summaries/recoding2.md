@@ -306,7 +306,7 @@ app/lib/src/
 **涉及/修改的文件**
 - 修改：`app/pubspec.lock`、`base/pubspec.lock`
 
-### 2026-01-31（app 复用 base、主题与扩展规范）
+### 2026-01-31 20:00（app 复用 base、主题与扩展规范）
 
 **app 尽量不写 base 风格代码**
 - base 新增 `lib/src/extension/duration_ext.dart`：`DurationClampExt`（Duration 的 clamp(min, max)），并在 `extension.dart` 导出
@@ -327,7 +327,7 @@ app/lib/src/
 - 修改：`app/lib/src/page/search/movie_detail_page.dart`（base/app 导入，theme/textTheme 局部变量复用）
 - 修改：`app/lib/src/page/search/search_page.dart`（仅一处 appThemeColors 不设局部变量）
 
-### 2026-01-31（收尾命令 next 改名为 ok 并优化）
+### 2026-01-31 20:05（收尾命令 next 改名为 ok 并优化）
 
 **命令改名**
 - 收尾命令由 `next` 改为 `ok`：`.cursor/agents/next.md` 删除，新增 `.cursor/agents/ok.md`
@@ -343,7 +343,7 @@ app/lib/src/
 - 删除：`.cursor/agents/next.md`
 - 新增：`.cursor/agents/ok.md`
 
-### 2026-01-31（性能：能 const 则 const）
+### 2026-01-31 20:10（性能：能 const 则 const）
 
 **优化内容**
 - category_page：Tab/网格 padding、AnimatedContainer duration/padding/constraints、Border.all、加载中/空态 Center、TextStyle 等补 const
