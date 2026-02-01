@@ -64,6 +64,39 @@ class TagsStorageProvider extends _$TagsStorageProvider {
     ref.invalidateSelf();
   }
 
+  /// 用远程 config 的 tags 全量替换本地（先删后加）
+  Future<void> replaceAllTagsFromConfig(
+    List<dynamic> tagsFromConfig,
+    String Function() newUuid,
+  ) async {
+    if (tagsFromConfig.isEmpty) return;
+    await $isar.writeTxn(() async {
+      final List<TagModel> existing =
+          await $isar.tags.where().anyId().findAll();
+      for (final TagModel t in existing) {
+        if (t.id != null) await $isar.tags.delete(t.id!);
+      }
+      final List<SourceModel> sources =
+          await $isar.sources.where().anyId().findAll();
+      for (final SourceModel s in sources) {
+        s.tagIds = <String>[];
+        s.updatedAt = DateTime.now();
+        await $isar.sources.put(s);
+      }
+      int order = 0;
+      for (final dynamic tag in tagsFromConfig) {
+        final TagModel newTag = TagModel(
+          uuid: newUuid(),
+          name: (tag['name']?.toString() ?? '').trim(),
+          color: tag['color']?.toString() ?? '#4285F4',
+          order: order++,
+        );
+        await $isar.tags.put(newTag);
+      }
+    });
+    ref.invalidateSelf();
+  }
+
   Future<void> updateTagModelOrder(List<String> tagUuids) async {
     await $isar.writeTxn(() async {
       for (int i = 0; i < tagUuids.length; i++) {
