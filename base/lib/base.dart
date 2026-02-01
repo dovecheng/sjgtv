@@ -7,5 +7,4 @@ export 'extension.dart';
 export 'isar.dart';
 export 'l10n.dart';
 export 'log.dart';
-export 'package_info.dart';
 export 'provider.dart';
