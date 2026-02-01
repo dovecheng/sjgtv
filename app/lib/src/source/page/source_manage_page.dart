@@ -3,7 +3,7 @@ import 'package:base/log.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sjgtv/src/source/provider/sources_storage_provider.dart';
+import 'package:sjgtv/src/source/provider/sources_provider.dart';
 import 'package:base/app.dart';
 import 'package:sjgtv/src/source/l10n/source_l10n.gen.dart';
 import 'package:sjgtv/src/source/model/source_model.dart';
@@ -13,7 +13,7 @@ final Log _log = Log('SourceManagePage');
 
 /// 源管理页
 ///
-/// 通过 [sourcesStorageProvider] 监听列表，增删改或切换后 [ref.invalidate] 即可自动刷新。
+/// 通过 [sourcesProvider] 监听列表，增删改或切换后 [ref.invalidate] 即可自动刷新。
 class SourceManagePage extends ConsumerStatefulWidget {
   const SourceManagePage({super.key});
 
@@ -25,8 +25,8 @@ class _SourceManagePageState extends ConsumerState<SourceManagePage>
     with SourceL10nMixin {
   Future<void> _toggleSource(SourceModel source) async {
     try {
-      await ref.read(sourcesStorageProvider.notifier).toggleSource(source.uuid);
-      if (mounted) ref.invalidate(sourcesStorageProvider);
+      await ref.read(sourcesProvider.notifier).toggleSource(source.uuid);
+      if (mounted) ref.invalidate(sourcesProvider);
     } catch (e) {
       _log.e(() => '切换源状态失败', e);
       if (mounted) {
@@ -62,9 +62,9 @@ class _SourceManagePageState extends ConsumerState<SourceManagePage>
     );
     if (confirm != true || !mounted) return;
     try {
-      await ref.read(sourcesStorageProvider.notifier).deleteSource(source.uuid);
+      await ref.read(sourcesProvider.notifier).deleteSource(source.uuid);
       if (!mounted) return;
-      ref.invalidate(sourcesStorageProvider);
+      ref.invalidate(sourcesProvider);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('已删除')),
@@ -84,7 +84,7 @@ class _SourceManagePageState extends ConsumerState<SourceManagePage>
   Widget build(BuildContext context) {
     final ColorScheme colorScheme = context.theme.colorScheme;
     final AsyncValue<List<SourceModel>> sourcesAsync =
-        ref.watch(sourcesStorageProvider);
+        ref.watch(sourcesProvider);
     return Scaffold(
       backgroundColor: colorScheme.surface,
       appBar: AppBar(
@@ -113,7 +113,7 @@ class _SourceManagePageState extends ConsumerState<SourceManagePage>
                   ),
                 );
                 if (added == true && mounted) {
-                  ref.invalidate(sourcesStorageProvider);
+                  ref.invalidate(sourcesProvider);
                 }
               },
               focusColor: Colors.red,
@@ -136,7 +136,7 @@ class _SourceManagePageState extends ConsumerState<SourceManagePage>
                 ),
                 const SizedBox(height: 16),
                 TextButton(
-                  onPressed: () => ref.invalidate(sourcesStorageProvider),
+                  onPressed: () => ref.invalidate(sourcesProvider),
                   child: L10nKeyTips(
                     keyTips: retryL10nKey,
                     child: Text(retryL10n),
@@ -217,7 +217,7 @@ class _SourceManagePageState extends ConsumerState<SourceManagePage>
                               ),
                             );
                             if (updated == true && mounted) {
-                                ref.invalidate(sourcesStorageProvider);
+                                ref.invalidate(sourcesProvider);
                             }
                           },
                           focusColor: Colors.red,

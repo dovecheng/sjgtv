@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'sources_storage_provider.dart';
+part of 'sources_provider.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -8,49 +8,47 @@ part of 'sources_storage_provider.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// 源列表提供者 [sourcesStorageProvider]
+/// 源列表提供者 [sourcesProvider]
 ///
 /// build 为从 Isar 获取列表；增删改通过 notifier 方法，写库后 invalidate 自身刷新。
 
-@ProviderFor(SourcesStorageProvider)
-const sourcesStorageProvider = SourcesStorageProviderProvider._();
+@ProviderFor(SourcesProvider)
+const sourcesProvider = SourcesProviderProvider._();
 
-/// 源列表提供者 [sourcesStorageProvider]
+/// 源列表提供者 [sourcesProvider]
 ///
 /// build 为从 Isar 获取列表；增删改通过 notifier 方法，写库后 invalidate 自身刷新。
-final class SourcesStorageProviderProvider
-    extends $AsyncNotifierProvider<SourcesStorageProvider, List<SourceModel>> {
-  /// 源列表提供者 [sourcesStorageProvider]
+final class SourcesProviderProvider
+    extends $AsyncNotifierProvider<SourcesProvider, List<SourceModel>> {
+  /// 源列表提供者 [sourcesProvider]
   ///
   /// build 为从 Isar 获取列表；增删改通过 notifier 方法，写库后 invalidate 自身刷新。
-  const SourcesStorageProviderProvider._()
+  const SourcesProviderProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'sourcesStorageProvider',
+        name: r'sourcesProvider',
         isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$sourcesStorageProviderHash();
+  String debugGetCreateSourceHash() => _$sourcesProviderHash();
 
   @$internal
   @override
-  SourcesStorageProvider create() => SourcesStorageProvider();
+  SourcesProvider create() => SourcesProvider();
 }
 
-String _$sourcesStorageProviderHash() =>
-    r'208e99f9e65c349dd30f905d4006992d1d2d72e5';
+String _$sourcesProviderHash() => r'c19c55fb236a23463d29c2a6f3f8d7d0e296a001';
 
-/// 源列表提供者 [sourcesStorageProvider]
+/// 源列表提供者 [sourcesProvider]
 ///
 /// build 为从 Isar 获取列表；增删改通过 notifier 方法，写库后 invalidate 自身刷新。
 
-abstract class _$SourcesStorageProvider
-    extends $AsyncNotifier<List<SourceModel>> {
+abstract class _$SourcesProvider extends $AsyncNotifier<List<SourceModel>> {
   FutureOr<List<SourceModel>> build();
   @$mustCallSuper
   @override
