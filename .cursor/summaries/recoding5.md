@@ -35,7 +35,7 @@
 
 ```
 app/lib/src/
-├── source/     # 数据源：model、provider、l10n、page（SourceManagePage、AddSourcePage）
+├── source/     # 数据源：model、provider、l10n、page（SourceManagePage、SourceFormPage）
 ├── proxy/      # 代理：model、provider
 ├── tag/        # 标签：model、provider
 ├── movie/      # 电影：model、page（category、search、detail、full_screen_player）、service（m3u8_ad_remover）、widget
@@ -72,7 +72,7 @@ app/lib/src/
 ## 源管理 / 代理 / 标签：网页 vs Flutter
 
 - **网页**：`app/assets/web/index.html`，shelf 端口 8023；TV/平板扫码；源/代理/标签增删改查与排序已实现；GET /api/l10n + data-i18n 国际化。
-- **Flutter**：SourceManagePage、AddSourcePage 已实现；代理/标签暂无 Flutter 页。
+- **Flutter**：SourceManagePage、SourceFormPage 已实现；代理/标签暂无 Flutter 页。
 
 ---
 
@@ -100,3 +100,8 @@ app/lib/src/
 - **主题**：仅支持暗黑，使用原生 `ThemeData.dark()`；删除 app_colors、app_theme，移除 google_fonts；页面与组件改用 `context.theme.colorScheme`、`theme.textTheme`；仅传暗黑主题故不再指定 themeMode。
 - **MaterialApp title**：新增 app_l10n（app_title），buildApp 从 l10nTranslationProvider 取 `app_title` 作为 title。
 - **update_checker**：对话框颜色与文字样式改为从 Theme.of(context) 的 colorScheme、textTheme 获取。
+
+### 2026-02-02（源表单页重命名 + Android 构建配置）
+- **源表单页**：`add_source_page.dart` / `AddSourceModelPage` 重命名为 `source_form_page.dart` / `SourceFormPage`，体现添加与编辑共用；删除旧文件，source_manage_page 引用已更新。
+- **空目录**：删除 app/lib 下空文件夹 theme、page。
+- **Android**：AGP 8.9.1、Gradle 8.11.1、Kotlin 2.1.0（满足 Flutter 与 androidx.browser 要求）；app/build.gradle.kts 中 Kotlin 插件 id 统一为 `org.jetbrains.kotlin.android`。
