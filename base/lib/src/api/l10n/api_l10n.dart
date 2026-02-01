@@ -108,31 +108,4 @@ abstract interface class ApiL10n {
     keyType: L10nKeyType.error,
   )
   String get unknownErrorL10n;
-
-  @L10nKey(
-    en: 'Application Upgrade',
-    zh_CN: '应用更新',
-    zh_HK: '應用更新',
-    keyDesc: '点击跳转应用商店的更新按钮',
-    keyType: L10nKeyType.message,
-  )
-  String get versionUpgradeButtonL10n;
-
-  @L10nKey(
-    en: 'App must be updated to the latest version',
-    zh_CN: 'App必须更新为最新版本',
-    zh_HK: 'App必須更新為最新版本',
-    keyDesc: '版本过低提示内容',
-    keyType: L10nKeyType.message,
-  )
-  String get versionUpgradeMessageL10n;
-
-  @L10nKey(
-    en: 'New Version',
-    zh_CN: '新版本',
-    zh_HK: '新版本',
-    keyDesc: '版本过低提示内容',
-    keyType: L10nKeyType.message,
-  )
-  String get versionUpgradeTitleL10n;
 }

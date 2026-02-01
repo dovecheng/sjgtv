@@ -1,4 +1,4 @@
-// GENERATED CODE BY 2026-01-30 07:39:47 - DO NOT MODIFY BY HAND
+// GENERATED CODE BY 2026-02-02 02:15:48 - DO NOT MODIFY BY HAND
 
 import 'package:base/gen/l10n.gen.dart';
 import 'package:base/l10n.dart';
@@ -7,7 +7,7 @@ import 'api_l10n.dart';
 
 export 'api_l10n.dart';
 
-/// has 14 keys
+/// has 11 keys
 ///
 /// keysPrefix: api
 ///
@@ -212,60 +212,4 @@ mixin ApiL10nMixin implements ApiL10n {
   String get unknownErrorL10nKey => unknownErrorL10nEntry.key;
 
   L10nMixin get unknownErrorL10nEntry => L10n.api_unknown_error;
-
-  /// key: api_version_upgrade_button
-  ///
-  /// en: Application Upgrade
-  ///
-  /// zh_CN: 应用更新
-  ///
-  /// zh_HK: 應用更新
-  ///
-  /// keyDesc: 点击跳转应用商店的更新按钮
-  ///
-  /// keyType: message
-  @override
-  String get versionUpgradeButtonL10n => versionUpgradeButtonL10nEntry.value;
-
-  String get versionUpgradeButtonL10nKey => versionUpgradeButtonL10nEntry.key;
-
-  L10nMixin get versionUpgradeButtonL10nEntry =>
-      L10n.api_version_upgrade_button;
-
-  /// key: api_version_upgrade_message
-  ///
-  /// en: App must be updated to the latest version
-  ///
-  /// zh_CN: App必须更新为最新版本
-  ///
-  /// zh_HK: App必須更新為最新版本
-  ///
-  /// keyDesc: 版本过低提示内容
-  ///
-  /// keyType: message
-  @override
-  String get versionUpgradeMessageL10n => versionUpgradeMessageL10nEntry.value;
-
-  String get versionUpgradeMessageL10nKey => versionUpgradeMessageL10nEntry.key;
-
-  L10nMixin get versionUpgradeMessageL10nEntry =>
-      L10n.api_version_upgrade_message;
-
-  /// key: api_version_upgrade_title
-  ///
-  /// en: New Version
-  ///
-  /// zh_CN: 新版本
-  ///
-  /// zh_HK: 新版本
-  ///
-  /// keyDesc: 版本过低提示内容
-  ///
-  /// keyType: message
-  @override
-  String get versionUpgradeTitleL10n => versionUpgradeTitleL10nEntry.value;
-
-  String get versionUpgradeTitleL10nKey => versionUpgradeTitleL10nEntry.key;
-
-  L10nMixin get versionUpgradeTitleL10nEntry => L10n.api_version_upgrade_title;
 }
