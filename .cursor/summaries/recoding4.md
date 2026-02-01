@@ -173,6 +173,7 @@ app/lib/src/
 - **safe_list_index**：extension 无引用，删除。
 - **permission**：PermissionStatusExt、PermissionL10n 无引用，删除 permission/、permission.dart。
 - **device_info**：$deviceInfo、$deviceId 等无引用，删除 device_info/、device_info.dart，移除 flutter_device_id、device_info_plus 依赖。
+- **widget**：base/lib/src/widget/ 全部 16 个控件均无引用（app/base 其他模块未使用），删除整个 widget 模块及 widget.dart  barrel；base 仅保留 l10n/widget/（L10nKeyTips 等）。
 
 ### 2026-02-01（补全网页待翻译项）
 - index.html：`throw new Error('获取源列表失败')`、`throw new Error('获取标签列表失败')` 改为 `t('web_msg_xxx')`；`aria-label="关闭"` 改为 `t('web_close')`；`title="权重: ${...}"` 改为 `t('web_weight'): ${...}`。web_l10n 新增 closeL10n。待补翻译已全部完成。
