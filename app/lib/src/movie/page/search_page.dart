@@ -260,61 +260,67 @@ class _SearchPageState extends ConsumerState<SearchPage> {
     if (_movies.isEmpty) {
       return _showSearchHint
           ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.movie_creation,
-                    size: 120,
-                    color: colorScheme.onSurfaceVariant.withAlpha((255 * 0.3).toInt()),
-                  ),
-                  const SizedBox(height: 32),
-                  Text(
-                    '输入电影或电视剧名称',
-                    style: TextStyle(
-                      fontSize: 28,
-                      color: colorScheme.onSurfaceVariant,
-                      fontWeight: FontWeight.w500,
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Icon(
+                      Icons.movie_creation,
+                      size: 120,
+                      color: colorScheme.onSurfaceVariant.withAlpha((255 * 0.3).toInt()),
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    '使用遥控器方向键导航，确认键选择',
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: colorScheme.onSurfaceVariant.withAlpha((255 * 0.7).toInt()),
+                    const SizedBox(height: 32),
+                    Text(
+                      '输入电影或电视剧名称',
+                      style: TextStyle(
+                        fontSize: 28,
+                        color: colorScheme.onSurfaceVariant,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 16),
+                    Text(
+                      '使用遥控器方向键导航，确认键选择',
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: colorScheme.onSurfaceVariant.withAlpha((255 * 0.7).toInt()),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             )
           : Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.search_off,
-                    size: 120,
-                    color: colorScheme.onSurfaceVariant.withAlpha((255 * 0.3).toInt()),
-                  ),
-                  const SizedBox(height: 32),
-                  Text(
-                    '没有找到相关内容',
-                    style: TextStyle(
-                      fontSize: 28,
-                      color: colorScheme.onSurfaceVariant,
-                      fontWeight: FontWeight.w500,
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Icon(
+                      Icons.search_off,
+                      size: 120,
+                      color: colorScheme.onSurfaceVariant.withAlpha((255 * 0.3).toInt()),
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    '尝试其他关键词',
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: colorScheme.onSurfaceVariant.withAlpha((255 * 0.7).toInt()),
+                    const SizedBox(height: 32),
+                    Text(
+                      '没有找到相关内容',
+                      style: TextStyle(
+                        fontSize: 28,
+                        color: colorScheme.onSurfaceVariant,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 16),
+                    Text(
+                      '尝试其他关键词',
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: colorScheme.onSurfaceVariant.withAlpha((255 * 0.7).toInt()),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             );
     }
