@@ -1,0 +1,101 @@
+{
+    "name": "Flutter 4 Android",
+    "build": {
+        "dockerfile": "Dockerfile",
+        "options": ["--tag", "flutter4android"],
+        "args": {
+            "USERNAME": "${localEnv:USER}${localEnv:USERNAME}"
+        }
+    },
+
+    "containerEnv": {
+        "SHELL": "/bin/bash",
+        "JAVA_HOME": "/usr/lib/jvm/java-17-openjdk-amd64",
+        "BASH_ENV": "/home/${localEnv:USER}${localEnv:USERNAME}/.bashrc"
+    },
+
+    "mounts": [
+		"source=${localWorkspaceFolder}/.devcontainer/.bashrc,target=/home/${localEnv:USER}${localEnv:USERNAME}/.bashrc.1,readonly,type=bind",
+		"source=${localEnv:HOME}/.ssh,target=/home/${localEnv:USER}${localEnv:USERNAME}/.ssh,type=bind"
+	],
+
+    "runArgs": [
+        "--platform",
+        "linux/amd64",
+        "--name",
+        "${localWorkspaceFolderBasename}-${localEnv:USER}${localEnv:USERNAME}",
+        "--userns=keep-id",
+        "--security-opt=label=disable",
+        "--annotation=run.oci.keep_original_groups=1",
+        "--pids-limit=65536"
+    ],
+
+    // "initializeCommand": "",
+    "onCreateCommand": "bash ./.devcontainer/on-create.sh",
+    // "updateContentCommand": "",
+    // "postCreateCommand": "",
+    "postStartCommand": "bash -c 'source ~/.bashrc && echo \"Environment loaded successfully\"'",
+    "postAttachCommand": "bash ./.devcontainer/git-init.sh",
+
+    "waitFor": "postStartCommand",
+
+    "remoteUser": "${localEnv:USER}${localEnv:USERNAME}",
+
+    "features": {
+        "ghcr.io/devcontainers-extra/features/starship": {},
+        "ghcr.io/devcontainers-extra/features/go-task:1": {}
+    },
+
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                // 路径智能感知 - 自动补全文件路径
+                "christian-kohler.path-intellisense",
+                // Dart 语言支持 - Dart 开发核心插件
+                "dart-code.dart-code",
+                // Flutter 开发工具 - Flutter 应用开发支持
+                "dart-code.flutter",
+                // GitL - Git 命令行增强工具
+                "devlon.gitl",
+                // Git History - Git 提交历史查看器
+                "donjayamanne.githistory",
+                // // GitLens - Git 超级增强工具，显示代码作者和提交信息
+                // "eamodio.gitlens",
+                // Git Project Manager - Git 项目管理器
+                "felipecaputo.git-project-manager",
+                // Todo Tree - TODO 注释树形显示
+                "gruntfuggly.todo-tree",
+                // Dart Barrel - Dart barrel 文件生成器
+                "imgildev.ovsx-dart-barrel",
+                // Pubspec Assist - Pubspec.yaml 文件助手
+                "jeroen-meijer.pubspec-assist",
+                // Git Graph - Git 提交图可视化
+                "mhutchie.git-graph",
+                // 中文语言包 - VS Code 中文界面
+                "ms-ceintl.vscode-language-pack-zh-hans",
+                // Git Log Graph - Git 日志图形化显示
+                "phil294.git-log--graph",
+                // Git Extension Pack - Git 扩展包
+                "pinage404.git-extension-pack",
+                // YAML 支持 - YAML 文件语法高亮和验证
+                "redhat.vscode-yaml",
+                // Code Spell Checker - 代码拼写检查器
+                "streetsidesoftware.code-spell-checker",
+                // Task - 任务管理工具
+                "task.vscode-task",
+                // Code Translate - 代码翻译工具
+                "w88975.code-translate",
+                // Android 开发扩展 - Android 应用开发支持
+                "adelphes.android-dev-ext",
+                // Kotlin 语言支持 - Kotlin 开发工具
+                "fwcd.kotlin",
+                // Flutter Dart 工具 - Flutter 和 Dart 实用工具
+                "rodrigorahman.flutter-dart-utils",
+                // AVD 管理器 - Android 虚拟设备管理
+                "toroxx.vscode-avdmanager",
+                // 文件头注释生成器
+                "ygqygq2.turbo-file-header"
+            ]
+        }
+    }
+}
