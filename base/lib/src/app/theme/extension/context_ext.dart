@@ -11,5 +11,4 @@ extension BuildContextThemeExt on BuildContext {
 
   /// 获取应用主题
   ThemeData get theme => Theme.of(this);
-
 }

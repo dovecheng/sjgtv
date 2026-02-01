@@ -9,14 +9,9 @@ enum DeviceType {
 
 extension MediaQueryDataDeviceTypeExt on MediaQueryData {
   /// 判断当前设备类型
-  DeviceType get deviceType {
-    final double shortestSide = size.shortestSide;
-    if (shortestSide >= 900) {
-      return DeviceType.tv;
-    }
-    if (shortestSide >= 600) {
-      return DeviceType.tablet;
-    }
-    return DeviceType.phone;
-  }
+  DeviceType get deviceType => switch (size.shortestSide) {
+      >= 900 => DeviceType.tv,
+      >= 600 => DeviceType.tablet,
+      _ => DeviceType.phone,
+    };
 }
