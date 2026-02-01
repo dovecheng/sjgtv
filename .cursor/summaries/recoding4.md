@@ -169,5 +169,10 @@ app/lib/src/
 ### 2026-02-01 13:56（记录 DTV 老项目 AI 索引来源）
 - 补充 **老项目 DTV 的 AI 索引** 小节：来源 https://zread.ai/laopaoer-wallet/DTV，供会话中参考 DTV 结构/逻辑；本次拉取该 URL 超时未获取到正文，仅记录 URL 与待补充说明。
 
+### 2026-02-01（base 移除未使用模块）
+- **safe_list_index**：extension 无引用，删除。
+- **permission**：PermissionStatusExt、PermissionL10n 无引用，删除 permission/、permission.dart。
+- **device_info**：$deviceInfo、$deviceId 等无引用，删除 device_info/、device_info.dart，移除 flutter_device_id、device_info_plus 依赖。
+
 ### 2026-02-01（补全网页待翻译项）
 - index.html：`throw new Error('获取源列表失败')`、`throw new Error('获取标签列表失败')` 改为 `t('web_msg_xxx')`；`aria-label="关闭"` 改为 `t('web_close')`；`title="权重: ${...}"` 改为 `t('web_weight'): ${...}`。web_l10n 新增 closeL10n。待补翻译已全部完成。
