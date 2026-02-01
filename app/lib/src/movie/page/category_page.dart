@@ -13,7 +13,6 @@ import 'package:sjgtv/src/movie/model/movie_model.dart';
 import 'package:sjgtv/src/tag/model/tag_model.dart';
 import 'package:sjgtv/src/tag/provider/tags_provider.dart';
 import 'package:sjgtv/src/movie/page/search_page.dart';
-import 'package:sjgtv/src/app/theme/app_theme.dart';
 import 'package:sjgtv/src/app/widget/update_checker.dart';
 import 'package:sjgtv/src/source/page/source_manage_page.dart';
 import 'package:sjgtv/src/movie/widget/focusable_movie_card.dart';
@@ -330,7 +329,7 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
                     decoration: BoxDecoration(
                       color: _selectedTab == index
                           ? Colors.red
-                          : context.appThemeColors.surfaceVariant,
+                          : context.theme.colorScheme.surfaceContainerLow,
                       borderRadius: BorderRadius.circular(35),
                       border: isFocused
                           ? Border.all(color: Colors.white, width: 2)

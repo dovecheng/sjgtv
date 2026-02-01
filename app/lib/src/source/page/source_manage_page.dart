@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sjgtv/src/source/provider/sources_storage_provider.dart';
-import 'package:sjgtv/src/app/theme/app_theme.dart';
+import 'package:base/app.dart';
 import 'package:sjgtv/src/source/l10n/source_l10n.gen.dart';
 import 'package:sjgtv/src/source/model/source_model.dart';
 import 'package:sjgtv/src/source/page/add_source_page.dart';
@@ -38,7 +38,7 @@ class _SourceManagePageState extends ConsumerState<SourceManagePage>
   }
 
   Future<void> _deleteSource(SourceModel source) async {
-    final AppThemeColors dialogColors = context.appThemeColors;
+    final ColorScheme colorScheme = context.theme.colorScheme;
     final bool? confirm = await showDialog<bool>(
       context: context,
       builder: (BuildContext ctx) => AlertDialog(
@@ -52,7 +52,7 @@ class _SourceManagePageState extends ConsumerState<SourceManagePage>
           FilledButton(
             onPressed: () => Navigator.of(ctx).pop(true),
             style: FilledButton.styleFrom(
-              backgroundColor: dialogColors.error,
+              backgroundColor: colorScheme.error,
               foregroundColor: Colors.white,
             ),
             child: const Text('确认删除'),
@@ -82,11 +82,11 @@ class _SourceManagePageState extends ConsumerState<SourceManagePage>
 
   @override
   Widget build(BuildContext context) {
-    final AppThemeColors colors = context.appThemeColors;
+    final ColorScheme colorScheme = context.theme.colorScheme;
     final AsyncValue<List<SourceModel>> sourcesAsync =
         ref.watch(sourcesStorageProvider);
     return Scaffold(
-      backgroundColor: colors.background,
+      backgroundColor: colorScheme.surface,
       appBar: AppBar(
         title: L10nKeyTips(
           keyTips: manageTitleL10nKey,
@@ -233,7 +233,7 @@ class _SourceManagePageState extends ConsumerState<SourceManagePage>
                               : Icons.toggle_on,
                           color: source.disabled
                               ? Colors.white38
-                              : colors.primary,
+                              : colorScheme.primary,
                           size: 36,
                         ),
                       ],

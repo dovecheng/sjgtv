@@ -1,7 +1,7 @@
 import 'package:base/cache.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:sjgtv/src/app/theme/app_theme.dart';
+import 'package:base/app.dart';
 import 'package:sjgtv/src/movie/model/movie_model.dart';
 import 'package:sjgtv/src/movie/page/search_page.dart';
 import 'package:sjgtv/src/movie/widget/network_image_placeholders.dart';
@@ -21,7 +21,7 @@ class _FocusableMovieCardState extends State<FocusableMovieCard> {
 
   @override
   Widget build(BuildContext context) {
-    final AppThemeColors colors = context.appThemeColors;
+    final ColorScheme colorScheme = context.theme.colorScheme;
     return Focus(
       onKeyEvent: (FocusNode node, KeyEvent event) {
         if (event is KeyDownEvent &&
@@ -63,7 +63,7 @@ class _FocusableMovieCardState extends State<FocusableMovieCard> {
                     topRight: Radius.circular(12),
                   ),
                   child: Container(
-                    decoration: BoxDecoration(color: colors.cardSurface),
+                    decoration: BoxDecoration(color: colorScheme.surfaceContainer),
                     child: widget.movie.coverUrl != null
                         ? CachedImage(
                             imageUrl: widget.movie.coverUrl!,
@@ -82,7 +82,7 @@ class _FocusableMovieCardState extends State<FocusableMovieCard> {
                                 networkImageErrorWidget(ctx),
                           )
                         : Container(
-                            color: colors.surfaceVariant,
+                            color: colorScheme.surfaceContainerLow,
                             child: Center(
                               child: Text(
                                 widget.movie.title.split(' ').first,
@@ -102,7 +102,7 @@ class _FocusableMovieCardState extends State<FocusableMovieCard> {
                 height: 70,
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 decoration: BoxDecoration(
-                  color: colors.cardSurface,
+                  color: colorScheme.surfaceContainer,
                   borderRadius: const BorderRadius.vertical(
                     bottom: Radius.circular(12),
                   ),

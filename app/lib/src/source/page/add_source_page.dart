@@ -3,7 +3,7 @@ import 'package:base/log.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sjgtv/src/source/provider/sources_storage_provider.dart';
-import 'package:sjgtv/src/app/theme/app_theme.dart';
+import 'package:base/app.dart';
 import 'package:sjgtv/src/source/l10n/source_l10n.gen.dart';
 import 'package:sjgtv/src/source/model/source_model.dart';
 import 'package:uuid/uuid.dart';
@@ -133,9 +133,9 @@ class _AddSourceModelPageState extends ConsumerState<AddSourceModelPage>
 
   @override
   Widget build(BuildContext context) {
-    final AppThemeColors colors = context.appThemeColors;
+    final ColorScheme colorScheme = context.theme.colorScheme;
     return Scaffold(
-      backgroundColor: colors.background,
+      backgroundColor: colorScheme.surface,
       appBar: AppBar(
         title: L10nKeyTips(
           keyTips: addTitleL10nKey,
@@ -165,9 +165,9 @@ class _AddSourceModelPageState extends ConsumerState<AddSourceModelPage>
                 style: const TextStyle(color: Colors.white, fontSize: 18),
                 decoration: InputDecoration(
                   labelText: nameL10n,
-                  labelStyle: TextStyle(color: colors.hint),
+                  labelStyle: TextStyle(color: colorScheme.onSurfaceVariant),
                   filled: true,
-                  fillColor: colors.cardBackground,
+                  fillColor: colorScheme.surfaceContainerHighest,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -177,7 +177,7 @@ class _AddSourceModelPageState extends ConsumerState<AddSourceModelPage>
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: colors.primary, width: 2),
+                    borderSide: BorderSide(color: colorScheme.primary, width: 2),
                   ),
                 ),
                 onSubmitted: (_) =>
@@ -196,11 +196,11 @@ class _AddSourceModelPageState extends ConsumerState<AddSourceModelPage>
                 style: const TextStyle(color: Colors.white, fontSize: 18),
                 decoration: InputDecoration(
                   labelText: urlHintL10n,
-                  labelStyle: TextStyle(color: colors.hint),
+                  labelStyle: TextStyle(color: colorScheme.onSurfaceVariant),
                   hintText: 'https://example.com/',
-                  hintStyle: TextStyle(color: colors.hint),
+                  hintStyle: TextStyle(color: colorScheme.onSurfaceVariant),
                   filled: true,
-                  fillColor: colors.cardBackground,
+                  fillColor: colorScheme.surfaceContainerHighest,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -210,7 +210,7 @@ class _AddSourceModelPageState extends ConsumerState<AddSourceModelPage>
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: colors.primary, width: 2),
+                    borderSide: BorderSide(color: colorScheme.primary, width: 2),
                   ),
                 ),
                 onSubmitted: (_) =>
@@ -221,7 +221,7 @@ class _AddSourceModelPageState extends ConsumerState<AddSourceModelPage>
               const SizedBox(height: 16),
               Text(
                 _errorText!,
-                style: TextStyle(color: colors.error, fontSize: 14),
+                style: TextStyle(color: colorScheme.error, fontSize: 14),
               ),
             ],
             const SizedBox(height: 32),
@@ -243,7 +243,7 @@ class _AddSourceModelPageState extends ConsumerState<AddSourceModelPage>
                   child: FilledButton(
                     onPressed: _isSubmitting ? null : _submit,
                     style: FilledButton.styleFrom(
-                      backgroundColor: colors.primary,
+                      backgroundColor: colorScheme.primary,
                       foregroundColor: Colors.black87,
                     ),
                     child: _isSubmitting

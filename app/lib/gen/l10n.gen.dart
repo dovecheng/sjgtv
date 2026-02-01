@@ -1,12 +1,25 @@
-// GENERATED CODE BY 2026-02-01 15:18:49 - DO NOT MODIFY BY HAND
+// GENERATED CODE BY 2026-02-02 02:57:19 - DO NOT MODIFY BY HAND
 // ignore_for_file: constant_identifier_names, prefer_single_quotes
 
 import 'package:base/l10n.dart';
 
 /// L10n keys and translations
 ///
-/// Has 121 keys
+/// Has 122 keys
 enum L10n with L10nMixin {
+  /// key: app_title
+  ///
+  /// en: AppleCMS Movie Player
+  ///
+  /// zh_CN: 苹果CMS电影播放器
+  ///
+  /// zh_HK: 蘋果CMS電影播放器
+  ///
+  /// keyDesc: 应用标题（MaterialApp title、任务栏等）
+  ///
+  /// keyType: label
+  app_title,
+
   /// key: shelf_api_data_list
   ///
   /// en: Data list
@@ -1584,6 +1597,7 @@ enum L10n with L10nMixin {
     L10nTranslationModel(
       languageTag: 'en',
       translations: const {
+        'app_title': 'AppleCMS Movie Player',
         'shelf_api_data_list': 'Data list',
         'shelf_api_get_l10n_fail': 'Failed to get translations',
         'shelf_api_get_proxy_list_fail': 'Failed to get proxy list',
@@ -1711,6 +1725,7 @@ enum L10n with L10nMixin {
     L10nTranslationModel(
       languageTag: 'zh-CN',
       translations: const {
+        'app_title': '苹果CMS电影播放器',
         'shelf_api_data_list': '数据列表',
         'shelf_api_get_l10n_fail': '获取翻译失败',
         'shelf_api_get_proxy_list_fail': '获取代理列表失败',
@@ -1838,6 +1853,7 @@ enum L10n with L10nMixin {
     L10nTranslationModel(
       languageTag: 'zh-HK',
       translations: const {
+        'app_title': '蘋果CMS電影播放器',
         'shelf_api_data_list': '數據列表',
         'shelf_api_get_l10n_fail': '獲取翻譯失敗',
         'shelf_api_get_proxy_list_fail': '獲取代理列表失敗',

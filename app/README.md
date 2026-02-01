@@ -36,7 +36,6 @@
 | `media_kit_libs_video` | 各平台视频解码库 |
 | `shelf` / `shelf_router` / `shelf_static` | 本地 Web 服务（端口 8023，管理页与 API） |
 | `shelf_cors_headers` | CORS 支持 |
-| `google_fonts` | 字体 |
 | `qr_flutter` | 二维码（扫码打开管理页等） |
 | `flutter_gen` | 资源与 L10n 代码生成 |
 | `wakelock_plus` | 播放时防休眠 |

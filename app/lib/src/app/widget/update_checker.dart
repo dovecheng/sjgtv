@@ -106,29 +106,38 @@ abstract final class AppUpdater {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) => StatefulBuilder(
-        builder: (context, setState) {
+      builder: (BuildContext context) => StatefulBuilder(
+        builder: (BuildContext context, StateSetter setState) {
+          final ThemeData theme = Theme.of(context);
+          final ColorScheme colorScheme = theme.colorScheme;
+          final TextTheme textTheme = theme.textTheme;
           return AlertDialog(
-            title: Text('发现新版本 v$version'),
+            title: Text(
+              '发现新版本 v$version',
+              style: textTheme.titleLarge,
+            ),
             content: SingleChildScrollView(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text('更新内容:'),
+                children: <Widget>[
+                  Text('更新内容:', style: textTheme.titleSmall),
                   const SizedBox(height: 8),
-                  Text(notes.isNotEmpty ? notes : '暂无更新说明'),
+                  Text(
+                    notes.isNotEmpty ? notes : '暂无更新说明',
+                    style: textTheme.bodyMedium,
+                  ),
                   if (_isDownloading) ...[
                     const SizedBox(height: 16),
                     LinearProgressIndicator(
                       value: _downloadProgress,
-                      backgroundColor: Colors.grey[200],
-                      color: Colors.blue,
+                      backgroundColor: colorScheme.surfaceContainerHighest,
+                      valueColor: AlwaysStoppedAnimation<Color>(colorScheme.primary),
                     ),
                     const SizedBox(height: 8),
                     Text(
                       '下载中: ${(_downloadProgress * 100).toStringAsFixed(1)}%',
-                      style: const TextStyle(fontSize: 12),
+                      style: textTheme.bodySmall,
                     ),
                   ],
                 ],
