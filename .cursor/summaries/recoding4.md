@@ -177,3 +177,8 @@ app/lib/src/
 
 ### 2026-02-01（补全网页待翻译项）
 - index.html：`throw new Error('获取源列表失败')`、`throw new Error('获取标签列表失败')` 改为 `t('web_msg_xxx')`；`aria-label="关闭"` 改为 `t('web_close')`；`title="权重: ${...}"` 改为 `t('web_weight'): ${...}`。web_l10n 新增 closeL10n。待补翻译已全部完成。
+
+### 2026-02-02（base app/theme 精简）
+- **移除未使用**：hex_color、system_ui_overlay_mode、app_theme_mode_provider（app 无主题切换，固定 dark theme）。
+- **DeviceType 拆至 media_query_ext**：MediaQueryData 扩展 deviceType。
+- **移除未使用扩展**：brightness_ext、color_ext、theme_mode_ext；context_ext 改用 `theme.brightness == Brightness.dark`。
