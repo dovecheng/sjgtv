@@ -14,7 +14,6 @@ abstract base class AppRunner {
     ?apiClient?.let(
       (ApiClientProvider it) => apiClientProvider.overrideWith(() => it),
     ),
-    ?debug?.let((DebugProvider it) => debugProvider.overrideWith(() => it)),
     ?isar?.let((IsarProvider it) => isarProvider.overrideWith(() => it)),
     ?jsonAdapter?.let(
       (JsonAdapterProvider it) => jsonAdapterProvider.overrideWith(() => it),
@@ -31,10 +30,6 @@ abstract base class AppRunner {
   /// 接口客户端
   @protected
   ApiClientProvider? get apiClient => null;
-
-  /// 调试配置
-  @protected
-  DebugProvider? get debug => null;
 
   /// 渲染错误
   @protected
@@ -96,10 +91,6 @@ abstract base class AppRunner {
   @mustCallSuper
   Future<void> initProvider() async {
     log.d(() => 'start');
-    // 监听器过滤指定提供者
-    BaseProviderObserver().updateFilter.addAll({
-      textScaleProvider,
-    });
 
     // 覆盖提供者
     log.d(() => 'overrides start');
@@ -117,8 +108,6 @@ abstract base class AppRunner {
     $ref.read(apiClientProvider);
     // Json解析方法, 在调用接口前, 需要先初始化
     $ref.read(jsonAdapterProvider);
-    // 调试/环境配置, 在调用接口前, 需要先初始化
-    await $ref.read(debugProvider.future);
 
     // 国际化翻译
     $ref.read(l10nTranslationProvider);

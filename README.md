@@ -1,6 +1,6 @@
 # sjgtv
 
-基于 **Flutter** 的模块化智能电视/机顶盒视频应用工程：`base` 公共库 + `app` 应用（参考 [LibreTV](https://github.com/LibreSpark/LibreTV) / DTV）。应用层支持多格式与网络流播放，面向电视遥控器操作优化。
+基于 **Flutter** 的模块化智能电视/机顶盒视频应用工程：`base` 公共库 + `app` 应用（参考 [DTV](https://github.com/laopaoer-wallet/DTV)（laopaoer））。应用层支持多格式与网络流播放，面向电视遥控器操作优化。
 
 **本项目旨在测试 [Cursor](https://cursor.com) AI 生成代码的能力。**
 
@@ -10,10 +10,10 @@
 
 ## 📌 项目由来
 
-**本项目由 [LibreTV](https://github.com/LibreSpark/LibreTV)（DTV）作者提议并授意重写的新项目。**
+**本项目由 [DTV](https://github.com/laopaoer-wallet/DTV) 作者（laopaoer）提议并授意重写的新项目。**
 
-原项目链接：[LibreSpark/LibreTV](https://github.com/LibreSpark/LibreTV)
-在此向原作者致谢，并说明本仓库为在其建议下重写、独立维护的新工程。
+原项目链接：[laopaoer-wallet/DTV](https://github.com/laopaoer-wallet/DTV)
+谢谢他把我带入坑，本仓库在其建议下重写、独立维护。
 
 ---
 
@@ -109,13 +109,13 @@ cd app && flutter build apk --release
 - [Flutter 官方文档](https://docs.flutter.dev/)
 - [Dart 语言指南](https://dart.dev/guides)
 - [TV 应用设计规范](https://developer.android.com/design/tv)
-- [LibreSpark/LibreTV](https://github.com/LibreSpark/LibreTV)（本项目的提议与参考来源）
+- [laopaoer-wallet/DTV](https://github.com/laopaoer-wallet/DTV)（本项目的提议与参考来源）
 
 ---
 
 ## 🙏 鸣谢
 
-感谢 [LibreTV](https://github.com/LibreSpark/LibreTV) 作者提议重写新项目并授权参考原实现，本仓库在此基础上独立演进。
+感谢 [DTV](https://github.com/laopaoer-wallet/DTV) 作者（laopaoer）提议重写新项目并授权参考原实现，本仓库在此基础上独立演进。
 
 ---
 

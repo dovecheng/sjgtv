@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:base/api.dart';
-import 'package:base/debug.dart';
 import 'package:base/log.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -24,7 +23,7 @@ Dio get $dio => _dio!;
 ///           baseOptions: BaseOptions(...)
 ///       ));
 /// ```
-@Riverpod(keepAlive: true, dependencies: [DebugProvider])
+@Riverpod(keepAlive: true)
 class ApiClientProvider extends _$ApiClientProvider {
   /// 客户端配置
   final BaseOptions? _baseOptions;

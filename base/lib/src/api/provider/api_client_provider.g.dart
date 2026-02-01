@@ -51,16 +51,9 @@ final class ApiClientProviderProvider
         retry: null,
         name: r'apiClientProvider',
         isAutoDispose: false,
-        dependencies: const <ProviderOrFamily>[debugProvider],
-        $allTransitiveDependencies: const <ProviderOrFamily>[
-          ApiClientProviderProvider.$allTransitiveDependencies0,
-          ApiClientProviderProvider.$allTransitiveDependencies1,
-        ],
+        dependencies: null,
+        $allTransitiveDependencies: null,
       );
-
-  static const $allTransitiveDependencies0 = debugProvider;
-  static const $allTransitiveDependencies1 =
-      DebugProviderProvider.$allTransitiveDependencies0;
 
   @override
   String debugGetCreateSourceHash() => _$apiClientProviderHash();
@@ -78,7 +71,7 @@ final class ApiClientProviderProvider
   }
 }
 
-String _$apiClientProviderHash() => r'8a03b2e275e27e1abd359bc406ce7c48ab413f59';
+String _$apiClientProviderHash() => r'724e847bdb8abf83692659a78656ef2778e644c3';
 
 /// HTTP客户端 [apiClientProvider]
 ///
