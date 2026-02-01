@@ -101,6 +101,13 @@ class L10nLanguageModel {
     Iterable<L10nLanguageModel> languages,
   ) {
     assert(languages.isNotEmpty, '语言列表不能为空');
+    if (languages.isEmpty) {
+      return L10nLanguageModel(
+        languageTag: 'en',
+        displayName: 'EN',
+        isSelected: true,
+      );
+    }
 
     // 获取当前选中语言或默认语言
     L10nLanguageModel? language =

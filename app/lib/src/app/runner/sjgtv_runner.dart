@@ -10,7 +10,6 @@ import 'package:sjgtv/src/source/model/source_model.dart';
 import 'package:sjgtv/src/tag/model/tag_model.dart';
 import 'package:sjgtv/src/source/provider/source_count_provider.dart';
 import 'package:sjgtv/src/proxy/provider/proxy_count_provider.dart';
-import 'package:sjgtv/src/tag/provider/tag_count_provider.dart';
 import 'package:sjgtv/src/proxy/provider/proxies_provider.dart';
 import 'package:sjgtv/src/source/provider/sources_storage_provider.dart';
 import 'package:sjgtv/src/tag/provider/tags_provider.dart';
@@ -175,23 +174,24 @@ class _ConfigLoader {
         await $ref.read(sourceCountStorageProvider.future) == 0;
     final bool needProxies =
         await $ref.read(proxyCountStorageProvider.future) == 0;
-    final bool needTags =
-        await $ref.read(tagCountStorageProvider.future) == 0;
-
-    if (!needSources && !needProxies && !needTags) {
-      log.d(() => 'sources/proxies/tags 已有数据，跳过初始化');
-      return;
-    }
 
     try {
-      log.d(() => '开始加载远程配置...');
+      $ref.invalidate(configApiProvider);
+      debugPrint('[Config] 开始加载远程配置: https://ktv.aini.us.kg/config.json');
+      log.d(() => '开始加载远程配置: https://ktv.aini.us.kg/config.json');
       final Map<String, dynamic>? config =
           await $ref.read(configApiProvider.future);
 
       if (config == null) {
-        log.w(() => '配置格式异常');
+        debugPrint('[Config] 远程配置拉取失败');
+        log.w(() => '远程配置拉取失败');
         return;
       }
+
+      debugPrint(
+          '[Config] 远程配置拉取成功: sources=${config['sources']?.length ?? 0}, tags=${config['tags']?.length ?? 0}');
+      log.d(() =>
+          '远程配置拉取成功: sources=${config['sources']?.length ?? 0}, tags=${config['tags']?.length ?? 0}');
 
       if (needSources) {
         await _initializeSourceModels(uuid, config);
@@ -205,13 +205,26 @@ class _ConfigLoader {
         log.d(() => 'proxies 已有数据，跳过初始化');
       }
 
-      if (needTags) {
-        await _initializeTagModels(uuid, config);
+      final List<dynamic>? tags = config['tags'] as List<dynamic>?;
+      if (tags != null && tags.isNotEmpty) {
+        debugPrint('[Config] 即将用远程 ${tags.length} 个 tag 覆盖本地');
+        try {
+          await $ref
+              .read(tagsStorageProvider.notifier)
+              .replaceAllTagsFromConfig(tags, () => uuid.v4());
+          $ref.invalidate(tagsStorageProvider);
+          debugPrint('[Config] 已用远程 config 同步标签: ${tags.length} 个');
+          log.d(() => '已用远程 config 同步标签: ${tags.length} 个');
+        } catch (e, s) {
+          log.e(() => 'replaceAllTagsFromConfig 失败: $e', e, s);
+          debugPrint('[Config] 同步标签失败: $e');
+        }
       } else {
-        log.d(() => 'tags 已有数据，跳过初始化');
+        log.d(() => '远程无 tags 或 tags 已有数据，跳过');
       }
     } catch (e, s) {
       log.e(() => '加载远程配置失败: $e', e, s);
+      debugPrint('[Config] 加载远程配置失败: $e');
     }
   }
 
@@ -274,26 +287,4 @@ class _ConfigLoader {
     }
   }
 
-  Future<void> _initializeTagModels(Uuid uuid, Map<String, dynamic> config) async {
-    try {
-      log.d(() => '成功获取 tags 配置，共${config['tags']?.length ?? 0}个标签');
-      int tagCount = 0;
-      for (final dynamic tag in config['tags'] ?? <dynamic>[]) {
-        final TagModel newTagModel = TagModel(
-          uuid: uuid.v4(),
-          name: (tag['name']?.toString() ?? '').trim(),
-          color: tag['color']?.toString() ?? '#4285F4',
-          order: tagCount,
-        );
-        await $ref
-            .read(tagsStorageProvider.notifier)
-            .addTagModel(newTagModel);
-        tagCount++;
-        log.d(() => '成功保存标签: ${tag['name']}');
-      }
-      log.d(() => '实际保存标签数量: $tagCount');
-    } catch (e, s) {
-      log.e(() => '加载 tags 初始配置失败: $e', e, s);
-    }
-  }
 }

@@ -76,6 +76,7 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
     final double maxScroll = position.maxScrollExtent;
     final double currentScroll = position.pixels;
 
+    if (_tabs.isEmpty) return;
     if (currentScroll >= maxScroll - 1.0 && _hasMore && !_isLoading) {
       final DateTime now = DateTime.now();
       if (_lastLoadMoreTime == null ||
@@ -104,7 +105,9 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
           await ref.read(tagsStorageProvider.future);
       if (!mounted) return;
       setState(() {
-        _tabs = tags.map((TagModel tag) => tag.name).toList();
+        final List<String> names = tags.map((TagModel tag) => tag.name).toList();
+        _tabs = names.isEmpty ? ['暂无标签'] : names;
+        _selectedTab = 0;
         for (String tag in _tabs) {
           _currentPageByTag[tag] = 0;
         }
@@ -175,6 +178,7 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
   Future<void> _handleRefresh() async {
     if (_isRefreshing) return;
     if (!mounted) return;
+    if (_tabs.isEmpty) return;
     setState(() {
       _isRefreshing = true;
       _currentPageByTag[_tabs[_selectedTab]] = 0;
@@ -190,7 +194,7 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
   }
 
   List<MovieModel> get _currentMovies =>
-      _moviesByTag[_tabs[_selectedTab]] ?? [];
+      _tabs.isEmpty ? <MovieModel>[] : (_moviesByTag[_tabs[_selectedTab]] ?? []);
 
   Future<String> _getLocalIp() async {
     try {
@@ -380,6 +384,29 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    ref.listen<AsyncValue<List<TagModel>>>(tagsStorageProvider, (prev, next) {
+      if (!mounted) return;
+      next.when(
+        data: (List<TagModel> tags) {
+          if (tags.isEmpty) return;
+          if (_tabs.isEmpty ||
+              _tabs[0] == '暂无标签' ||
+              _tabs[0] == '加载中...' ||
+              _tabs[0] == '获取标签失败') {
+            setState(() {
+              _tabs = tags.map((TagModel t) => t.name).toList();
+              _selectedTab = 0;
+              for (String tag in _tabs) {
+                _currentPageByTag[tag] = 0;
+              }
+            });
+            _fetchMovies(_tabs[0]);
+          }
+        },
+        loading: () {},
+        error: (_, __) {},
+      );
+    });
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -388,7 +415,7 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
             _buildTabBar(),
             if (_isLoading)
               const Expanded(child: Center(child: CircularProgressIndicator()))
-            else if (_tabs[0] == '获取标签失败')
+            else if (_tabs.isNotEmpty && _tabs[0] == '获取标签失败')
               Expanded(
                 child: Center(
                   child: Text(
