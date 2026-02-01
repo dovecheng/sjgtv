@@ -545,18 +545,16 @@ class _SearchPageState extends ConsumerState<SearchPage> {
   Widget build(BuildContext context) {
     return PopScope(
       canPop: !_searchFocusNode.hasFocus && _searchController.text.isEmpty,
-      onPopInvokedWithResult: (didPop, result) {
+      onPopInvokedWithResult: (bool didPop, dynamic result) {
         if (!didPop) {
           _cancelToken.cancel();
           if (_searchFocusNode.hasFocus) {
             _searchFocusNode.unfocus();
-          } else if (_searchController.text.isNotEmpty) {
+          } else if (_searchController.text.isNotEmpty && mounted) {
             setState(() {
               _movies.clear();
               _searchController.clear();
             });
-          } else {
-            Navigator.maybePop(context);
           }
         }
       },

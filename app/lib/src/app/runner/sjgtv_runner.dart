@@ -77,7 +77,10 @@ final class SjgtvRunner extends AppRunner {
       title: '苹果CMS电影播放器',
       debugShowCheckedModeBanner: false,
       theme: _buildTheme(),
-      home: const MovieHomePage(),
+      home: PopScope(
+        canPop: false,
+        child: const MovieHomePage(),
+      ),
     );
   }
 
