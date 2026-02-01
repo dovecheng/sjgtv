@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:base/api.dart';
 import 'package:base/log.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +16,15 @@ import 'package:sjgtv/src/source/page/source_manage_page.dart';
 import 'package:sjgtv/src/movie/widget/focusable_movie_card.dart';
 
 final Log _log = Log('MovieHomePage');
+
+/// 豆瓣请求用独立 Dio，不经过 base 拦截器，与 curl 行为一致避免 400
+final Dio _doubanDio = Dio();
+
+/// 仅加 User-Agent，与 curl 无头或简单头一致
+const Map<String, String> _doubanRequestHeaders = <String, String>{
+  'User-Agent':
+      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0',
+};
 
 /// 电影首页（分类浏览）
 ///
@@ -35,7 +43,6 @@ class MovieHomePage extends ConsumerStatefulWidget {
 }
 
 class _MovieHomePageState extends ConsumerState<MovieHomePage> {
-  Dio get _dio => ref.read(apiClientProvider); // 外部 API（豆瓣）复用 base 统一 Dio
   int _selectedTab = 0;
   bool _isLoading = false;
   bool _isRefreshing = false;
@@ -132,20 +139,41 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
       final int currentPage = loadMore ? (_currentPageByTag[tag] ?? 0) : 0;
       final int startIndex = currentPage * _moviesPerPage;
 
-      final Response<dynamic> response = await _dio.get<dynamic>(
-        'https://movie.douban.com/j/search_subjects',
-        queryParameters: {
-          'type': 'movie',
-          'tag': tag,
-          'sort': 'recommend',
-          'page_limit': _moviesPerPage.toString(),
-          'page_start': startIndex.toString(),
-        },
+      const String path = 'https://movie.douban.com/j/search_subjects';
+      final String requestUrl =
+          '$path?type=movie&tag=${Uri.encodeComponent(tag)}&sort=recommend&page_limit=$_moviesPerPage&page_start=$startIndex';
+      debugPrint('[豆瓣API] 实际请求URL: $requestUrl');
+      debugPrint('[豆瓣API] 参数: tag=$tag, page_start=$startIndex');
+
+      final Response<dynamic> response = await _doubanDio.get<dynamic>(
+        requestUrl,
+        options: Options(headers: _doubanRequestHeaders),
       );
+
+      debugPrint('[豆瓣API] 响应: statusCode=${response.statusCode}, data类型=${response.data?.runtimeType}');
+      if (response.data is Map) {
+        final Map<dynamic, dynamic> m = response.data as Map<dynamic, dynamic>;
+        debugPrint('[豆瓣API] 响应键: ${m.keys.toList()}');
+        if (m.containsKey('errorType')) {
+          debugPrint('[豆瓣API] 实际HTTP状态码: ${m['code']}, errorType: ${m['errorType']}, msg: ${m['msg']}, requestId: ${m['requestId']}');
+        } else if (m.containsKey('subjects')) {
+          final List<dynamic> sub = m['subjects'] as List<dynamic>;
+          debugPrint('[豆瓣API] subjects数量: ${sub.length}');
+        }
+      } else {
+        final String bodyStr = response.data?.toString() ?? 'null';
+        debugPrint('[豆瓣API] 响应体(前500字符): ${bodyStr.length > 500 ? bodyStr.substring(0, 500) : bodyStr}');
+      }
+      if (response.statusCode != null && response.statusCode != 200) {
+        debugPrint('[豆瓣API] 非200状态，可能被拦截或限流');
+      }
 
       if (!mounted) return;
       if (response.statusCode == 200) {
         final List<dynamic> subjects = response.data['subjects'] ?? [];
+        if (subjects.isEmpty) {
+          debugPrint('[豆瓣API] 200但subjects为空，完整data: ${response.data}');
+        }
         final List<MovieModel> movies = subjects
             .map((dynamic s) =>
                 MovieModel.fromJson(Map<String, dynamic>.from(s as Map)))
@@ -162,7 +190,13 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
           _hasMore = movies.length >= _moviesPerPage;
         });
       }
-    } catch (e) {
+    } catch (e, st) {
+      if (e is DioException && e.response != null) {
+        debugPrint('[豆瓣API] 实际HTTP状态码: ${e.response!.statusCode}, 响应: ${e.response!.data}');
+      } else {
+        debugPrint('[豆瓣API] 请求异常: $e');
+        debugPrint('[豆瓣API] 堆栈: $st');
+      }
       _log.e(() => '获取电影失败', e);
       if (mounted) setState(() => _hasMore = false);
     } finally {
@@ -319,42 +353,51 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
                   _fetchMovies(_tabs[index]);
                 }
               },
-              child: Builder(
-                builder: (context) {
-                  final bool isFocused = Focus.of(context).hasFocus;
-                  return AnimatedContainer(
-                    duration: const Duration(milliseconds: 200),
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                    constraints: const BoxConstraints(minWidth: 100),
-                    decoration: BoxDecoration(
-                      color: _selectedTab == index
-                          ? Colors.red
-                          : context.appThemeColors.surfaceVariant,
-                      borderRadius: BorderRadius.circular(35),
-                      border: isFocused
-                          ? Border.all(color: Colors.white, width: 2)
-                          : null,
-                    ),
-                    child: SizedBox(
-                      height: double.infinity,
-                      child: Center(
-                        child: Text(
-                          _tabs[index],
-                          style: TextStyle(
-                            color: _selectedTab == index
-                                ? Colors.white
-                                : Colors.grey,
-                            fontSize: 20,
-                            height: 1.0,
+              child: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _selectedTab = index;
+                    _hasMore = true;
+                  });
+                  _fetchMovies(_tabs[index]);
+                },
+                child: Builder(
+                  builder: (context) {
+                    final bool isFocused = Focus.of(context).hasFocus;
+                    return AnimatedContainer(
+                      duration: const Duration(milliseconds: 200),
+                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      constraints: const BoxConstraints(minWidth: 100),
+                      decoration: BoxDecoration(
+                        color: _selectedTab == index
+                            ? Colors.red
+                            : context.appThemeColors.surfaceVariant,
+                        borderRadius: BorderRadius.circular(35),
+                        border: isFocused
+                            ? Border.all(color: Colors.white, width: 2)
+                            : null,
+                      ),
+                      child: SizedBox(
+                        height: double.infinity,
+                        child: Center(
+                          child: Text(
+                            _tabs[index],
+                            style: TextStyle(
+                              color: _selectedTab == index
+                                  ? Colors.white
+                                  : Colors.grey,
+                              fontSize: 20,
+                              height: 1.0,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.visible,
                           ),
-                          maxLines: 1,
-                          overflow: TextOverflow.visible,
                         ),
                       ),
-                    ),
-                  );
-                },
+                    );
+                  },
               ),
+            ),
             ),
           );
         },
