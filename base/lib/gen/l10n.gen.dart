@@ -1,11 +1,11 @@
-// GENERATED CODE BY 2026-01-30 07:39:47 - DO NOT MODIFY BY HAND
+// GENERATED CODE BY 2026-02-01 15:25:09 - DO NOT MODIFY BY HAND
 // ignore_for_file: constant_identifier_names, prefer_single_quotes
 
 import 'package:base/l10n.dart';
 
 /// L10n keys and translations
 ///
-/// Has 17 keys
+/// Has 14 keys
 enum L10n with L10nMixin {
   /// key: api_bad_certificate
   ///
@@ -187,46 +187,7 @@ enum L10n with L10nMixin {
   /// keyDesc: 版本过低提示内容
   ///
   /// keyType: message
-  api_version_upgrade_title,
-
-  /// key: permission_camera_denied
-  ///
-  /// en: Camera access is not enabled, please grant camera access
-  ///
-  /// zh_CN: 未启用相机访问，请授予相机访问权限
-  ///
-  /// zh_HK: 未啟用相機訪問，請授予相機存取權限
-  ///
-  /// keyDesc: 请在设置中打开相机权限
-  ///
-  /// keyType: label
-  permission_camera_denied,
-
-  /// key: permission_photos_denied
-  ///
-  /// en: App is unable to access photo album. Please grant access to photo album
-  ///
-  /// zh_CN: 应用无法访问相册，请授予访问相册的权限
-  ///
-  /// zh_HK: 應用無法訪問相冊， 請授予訪問相冊的權限
-  ///
-  /// keyDesc: 无法从相册获取图片。请在设置中打开相册相关权限
-  ///
-  /// keyType: label
-  permission_photos_denied,
-
-  /// key: permission_storage_denied
-  ///
-  /// en: Storage permission is required to access files
-  ///
-  /// zh_CN: 需要存储权限才能访问文件
-  ///
-  /// zh_HK: 需要存儲權限才能訪問文件
-  ///
-  /// keyDesc: 需要存儲權限才能訪問文件
-  ///
-  /// keyType: label
-  permission_storage_denied;
+  api_version_upgrade_title;
 
   static final Set<L10nTranslationModel> translations = <L10nTranslationModel>{
     L10nTranslationModel(
@@ -247,12 +208,6 @@ enum L10n with L10nMixin {
         'api_version_upgrade_message':
             'App must be updated to the latest version',
         'api_version_upgrade_title': 'New Version',
-        'permission_camera_denied':
-            'Camera access is not enabled, please grant camera access',
-        'permission_photos_denied':
-            'App is unable to access photo album. Please grant access to photo album',
-        'permission_storage_denied':
-            'Storage permission is required to access files',
       },
     ),
     L10nTranslationModel(
@@ -272,9 +227,6 @@ enum L10n with L10nMixin {
         'api_version_upgrade_button': '应用更新',
         'api_version_upgrade_message': 'App必须更新为最新版本',
         'api_version_upgrade_title': '新版本',
-        'permission_camera_denied': '未启用相机访问，请授予相机访问权限',
-        'permission_photos_denied': '应用无法访问相册，请授予访问相册的权限',
-        'permission_storage_denied': '需要存储权限才能访问文件',
       },
     ),
     L10nTranslationModel(
@@ -294,9 +246,6 @@ enum L10n with L10nMixin {
         'api_version_upgrade_button': '應用更新',
         'api_version_upgrade_message': 'App必須更新為最新版本',
         'api_version_upgrade_title': '新版本',
-        'permission_camera_denied': '未啟用相機訪問，請授予相機存取權限',
-        'permission_photos_denied': '應用無法訪問相冊， 請授予訪問相冊的權限',
-        'permission_storage_denied': '需要存儲權限才能訪問文件',
       },
     ),
   };
