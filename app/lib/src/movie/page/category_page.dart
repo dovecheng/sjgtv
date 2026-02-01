@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:base/api.dart';
+import 'package:base/app.dart';
+import 'package:base/extension.dart';
 import 'package:base/log.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -282,12 +284,15 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
             },
             focusColor: Colors.red,
           ),
-          const SizedBox(width: 10),
-          IconButton(
-            icon: const Icon(Icons.settings, size: 20),
-            onPressed: _showQRCodeDialog,
-            focusColor: Colors.red,
-          ),
+          if ($platform.isMobileNative &&
+              context.mediaQuery.deviceType == DeviceType.tv) ...[
+            const SizedBox(width: 10),
+            IconButton(
+              icon: const Icon(Icons.settings, size: 20),
+              onPressed: _showQRCodeDialog,
+              focusColor: Colors.red,
+            ),
+          ],
         ],
       ),
     );
