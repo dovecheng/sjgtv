@@ -1,4 +1,4 @@
-// GENERATED CODE BY 2026-02-01 03:58:59 - DO NOT MODIFY BY HAND
+// GENERATED CODE BY 2026-02-01 15:18:49 - DO NOT MODIFY BY HAND
 
 import 'package:base/l10n.dart';
 import 'package:sjgtv/gen/l10n.gen.dart';
@@ -7,7 +7,7 @@ import 'web_l10n.dart';
 
 export 'web_l10n.dart';
 
-/// has 87 keys
+/// has 88 keys
 ///
 /// keysPrefix: web
 ///
@@ -791,6 +791,24 @@ mixin WebL10nMixin implements WebL10n {
   String get cancelL10nKey => cancelL10nEntry.key;
 
   L10nMixin get cancelL10nEntry => L10n.web_cancel;
+
+  /// key: web_close
+  ///
+  /// en: Close
+  ///
+  /// zh_CN: 关闭
+  ///
+  /// zh_HK: 關閉
+  ///
+  /// keyDesc: 关闭按钮 aria-label
+  ///
+  /// keyType: label
+  @override
+  String get closeL10n => closeL10nEntry.value;
+
+  String get closeL10nKey => closeL10nEntry.key;
+
+  L10nMixin get closeL10nEntry => L10n.web_close;
 
   /// key: web_loading
   ///

@@ -1,11 +1,11 @@
-// GENERATED CODE BY 2026-02-01 04:09:39 - DO NOT MODIFY BY HAND
+// GENERATED CODE BY 2026-02-01 15:18:49 - DO NOT MODIFY BY HAND
 // ignore_for_file: constant_identifier_names, prefer_single_quotes
 
 import 'package:base/l10n.dart';
 
 /// L10n keys and translations
 ///
-/// Has 120 keys
+/// Has 121 keys
 enum L10n with L10nMixin {
   /// key: shelf_api_data_list
   ///
@@ -591,6 +591,19 @@ enum L10n with L10nMixin {
   ///
   /// keyType: message
   web_cannot_undo,
+
+  /// key: web_close
+  ///
+  /// en: Close
+  ///
+  /// zh_CN: 关闭
+  ///
+  /// zh_HK: 關閉
+  ///
+  /// keyDesc: 关闭按钮 aria-label
+  ///
+  /// keyType: label
+  web_close,
 
   /// key: web_confirm_delete
   ///
@@ -1617,6 +1630,7 @@ enum L10n with L10nMixin {
         'web_average_weight': 'Average Weight',
         'web_cancel': 'Cancel',
         'web_cannot_undo': 'Cannot undo after delete',
+        'web_close': 'Close',
         'web_confirm_delete': 'Confirm Delete',
         'web_delete': 'Delete',
         'web_disable': 'Disable',
@@ -1743,6 +1757,7 @@ enum L10n with L10nMixin {
         'web_average_weight': '平均权重',
         'web_cancel': '取消',
         'web_cannot_undo': '此操作无法撤销',
+        'web_close': '关闭',
         'web_confirm_delete': '确认删除',
         'web_delete': '删除',
         'web_disable': '禁用',
@@ -1869,6 +1884,7 @@ enum L10n with L10nMixin {
         'web_average_weight': '平均權重',
         'web_cancel': '取消',
         'web_cannot_undo': '此操作無法撤銷',
+        'web_close': '關閉',
         'web_confirm_delete': '確認刪除',
         'web_delete': '刪除',
         'web_disable': '禁用',

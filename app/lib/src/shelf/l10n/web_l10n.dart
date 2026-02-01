@@ -200,6 +200,9 @@ abstract interface class WebL10n {
   @L10nKey(en: 'Cancel', zh_CN: '取消', zh_HK: '取消', keyDesc: '取消按钮', keyType: L10nKeyType.label)
   String get cancelL10n;
 
+  @L10nKey(en: 'Close', zh_CN: '关闭', zh_HK: '關閉', keyDesc: '关闭按钮 aria-label', keyType: L10nKeyType.label)
+  String get closeL10n;
+
   @L10nKey(en: 'Loading...', zh_CN: '加载中...', zh_HK: '載入中...', keyDesc: '加载态', keyType: L10nKeyType.message)
   String get loadingL10n;
 

@@ -750,7 +750,7 @@
     notification.innerHTML = `
       <i class="fas ${iconClass} icon"></i>
       <div class="content">${message}</div>
-      <button class="close-btn" aria-label="关闭">
+      <button class="close-btn" aria-label="${t('web_close')}">
         <i class="fas fa-times"></i>
       </button>
     `;
@@ -846,7 +846,7 @@
         `;
 
       const response = await fetch(`${API_BASE_URL}/api/sources`);
-      if (!response.ok) throw new Error('获取源列表失败');
+      if (!response.ok) throw new Error(t('web_msg_source_list_load_fail'));
 
       allSources = await response.json();
       renderSources(allSources);
@@ -892,7 +892,7 @@
             <td><small class="url-text">${escapeHtml(source.url)}</small></td>
             <td>
               ${source.weight}
-              <div class="weight-indicator" title="权重: ${source.weight}">
+              <div class="weight-indicator" title="${t('web_weight')}: ${source.weight}">
                 <div class="weight-bar" style="width: ${source.weight * 10}%"></div>
               </div>
             </td>
@@ -1237,7 +1237,7 @@
       `;
 
       const response = await fetch(`${API_BASE_URL}/api/tags`);
-      if (!response.ok) throw new Error('获取标签列表失败');
+      if (!response.ok) throw new Error(t('web_msg_tag_list_load_fail'));
 
       allTags = await response.json();
       renderTags(allTags);
