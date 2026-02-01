@@ -4,6 +4,7 @@ import 'package:base/base.dart';
 import 'package:sjgtv/gen/l10n.gen.dart';
 import 'package:sjgtv/src/app/provider/config_api_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sjgtv/src/proxy/model/proxy_model.dart';
 import 'package:sjgtv/src/source/model/source_model.dart';
@@ -46,6 +47,13 @@ final class SjgtvRunner extends AppRunner {
   @override
   L10nTranslationProvider? get l10nTranslation =>
       L10nTranslationProvider(L10n.translations);
+
+  /// 仅支持横屏
+  @override
+  List<DeviceOrientation> get preferredOrientations => const [
+        DeviceOrientation.landscapeLeft,
+        DeviceOrientation.landscapeRight,
+      ];
 
   /// 使用 base 同一 Isar 实例，并注册 app 的 sources/proxies/tags schema
   @override
