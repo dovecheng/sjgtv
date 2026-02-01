@@ -8,21 +8,21 @@ import 'package:sjgtv/src/source/l10n/source_l10n.gen.dart';
 import 'package:sjgtv/src/source/model/source_model.dart';
 import 'package:uuid/uuid.dart';
 
-final Log _log = Log('AddSourceModelPage');
+final Log _log = Log('SourceFormPage');
 
 /// 添加/编辑数据源页
 ///
 /// 表单：名称、地址；[sourceToEdit] 非空时为编辑模式，预填并提交调用 updateSource。
-class AddSourceModelPage extends ConsumerStatefulWidget {
-  const AddSourceModelPage({super.key, this.sourceToEdit});
+class SourceFormPage extends ConsumerStatefulWidget {
+  const SourceFormPage({super.key, this.sourceToEdit});
 
   final SourceModel? sourceToEdit;
 
   @override
-  ConsumerState<AddSourceModelPage> createState() => _AddSourceModelPageState();
+  ConsumerState<SourceFormPage> createState() => _SourceFormPageState();
 }
 
-class _AddSourceModelPageState extends ConsumerState<AddSourceModelPage>
+class _SourceFormPageState extends ConsumerState<SourceFormPage>
     with SourceL10nMixin {
 
   final TextEditingController _nameController = TextEditingController();

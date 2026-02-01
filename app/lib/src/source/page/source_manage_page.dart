@@ -7,7 +7,7 @@ import 'package:sjgtv/src/source/provider/sources_storage_provider.dart';
 import 'package:base/app.dart';
 import 'package:sjgtv/src/source/l10n/source_l10n.gen.dart';
 import 'package:sjgtv/src/source/model/source_model.dart';
-import 'package:sjgtv/src/source/page/add_source_page.dart';
+import 'package:sjgtv/src/source/page/source_form_page.dart';
 
 final Log _log = Log('SourceManagePage');
 
@@ -109,7 +109,7 @@ class _SourceManagePageState extends ConsumerState<SourceManagePage>
                 final bool? added = await Navigator.of(context).push<bool>(
                   MaterialPageRoute<bool>(
                     builder: (BuildContext context) =>
-                        const AddSourceModelPage(),
+                        const SourceFormPage(),
                   ),
                 );
                 if (added == true && mounted) {
@@ -211,7 +211,7 @@ class _SourceManagePageState extends ConsumerState<SourceManagePage>
                                 await Navigator.of(context).push<bool>(
                               MaterialPageRoute<bool>(
                                 builder: (BuildContext context) =>
-                                    AddSourceModelPage(
+                                    SourceFormPage(
                                   sourceToEdit: source,
                                 ),
                               ),
