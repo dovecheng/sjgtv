@@ -182,3 +182,12 @@ app/lib/src/
 - **移除未使用**：hex_color、system_ui_overlay_mode、app_theme_mode_provider（app 无主题切换，固定 dark theme）。
 - **DeviceType 拆至 media_query_ext**：MediaQueryData 扩展 deviceType。
 - **移除未使用扩展**：brightness_ext、color_ext、theme_mode_ext；context_ext 改用 `theme.brightness == Brightness.dark`。
+
+### 2026-02-01（仅支持横屏 + PC 窗口 800x600、居中、最小尺寸）
+- **横屏**：SjgtvRunner 覆写 `preferredOrientations` 为 landscapeLeft/Right。
+- **PC 窗口**：Windows（main.cpp、win32_window）与 macOS（MainFlutterWindow、MainMenu.xib）初始 800x600、启动居中、最小可缩 800x600。
+
+### 2026-02-01（二维码按钮显示条件 + base 收尾）
+- **二维码按钮**：category_page 中仅在 `$platform.isMobileNative && context.mediaQuery.deviceType == DeviceType.tv` 时显示（业务内直接判断，不放在扩展里）。
+- **context_ext**：移除 shouldShowQRCode 扩展。
+- **base**：cache_image 移除未使用导入 package:base/cache.dart。
