@@ -3,8 +3,6 @@ export 'src/app/app_runner.dart';
 export 'src/app/extension/context_ext.dart';
 export 'src/app/config/model/app_config_model.dart';
 export 'src/app/config/provider/app_config_provider.dart';
-export 'src/app/icon/model/app_icon_model.dart';
-export 'src/app/icon/provider/app_icon_provider.dart';
 export 'src/app/theme/extension/brightness_ext.dart';
 export 'src/app/theme/extension/theme_mode_ext.dart';
 export 'src/app/theme/extension/color_ext.dart';

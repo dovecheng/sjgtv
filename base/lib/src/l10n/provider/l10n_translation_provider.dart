@@ -38,7 +38,7 @@ class L10nTranslationProvider extends _$L10nTranslationProvider {
     }
 
     tr ??= presetTranslations.first;
-    final result = tr;
+    final L10nTranslationModel result = tr;
 
     if (presetTranslations != L10n.translations) {
       L10nTranslationModel? baseTr = L10n.translations.firstWhereOrNull(

@@ -16,7 +16,11 @@ class L10nLanguageProvider extends _$L10nLanguageProvider {
           presetLanguages ??
           <L10nLanguageModel>{
             L10nLanguageModel(languageTag: 'en', displayName: 'EN'),
-            L10nLanguageModel(languageTag: 'zh-CN', displayName: '简中'),
+            L10nLanguageModel(
+              languageTag: 'zh-CN',
+              displayName: '简中',
+              isDefault: true,
+            ),
             L10nLanguageModel(languageTag: 'zh-HK', displayName: '繁中'),
           };
 

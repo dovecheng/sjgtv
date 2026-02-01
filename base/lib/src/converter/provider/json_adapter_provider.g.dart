@@ -45,7 +45,7 @@ final class JsonAdapterProviderProvider
 }
 
 String _$jsonAdapterProviderHash() =>
-    r'3dc5803ebd879210228fc4fe47b83113dffacbf9';
+    r'2558268bf3609f9951bb72372d6fb7607c5ab7b6';
 
 /// 注册Json转换器 [jsonAdapterProvider]
 

@@ -23,13 +23,31 @@
 
 ## 🛠️ 技术栈
 
-| 技术/组件       | 用途                     |
-|----------------|--------------------------|
-| Flutter 3.x    | 跨平台应用开发框架        |
-| Dart 3.x       | 编程语言                 |
-| `video_player` | 核心视频播放功能         |
-| `chewie`       | 播放器 UI 控件           |
-| `wakelock_plus`| 屏幕常亮控制             |
+| 技术/组件 | 用途 |
+|----------|------|
+| Flutter 3.x / Dart 3.x | 跨平台应用开发框架与语言 |
+| `base`（path） | 公共库：Riverpod、Isar、L10n、API、缓存等 |
+| `flutter_riverpod` / `riverpod_annotation` | 状态管理 |
+| `isar_community` | 本地数据库（与 base 共用实例） |
+| `dio` / `retrofit` | HTTP 客户端与 API 声明 |
+| `cached_network_image` | 网络图片缓存 |
+| `media_kit` | 核心视频播放（MP4、HLS、MKV 等） |
+| `media_kit_video` | 播放器 UI 控件 |
+| `media_kit_libs_video` | 各平台视频解码库 |
+| `shelf` / `shelf_router` / `shelf_static` | 本地 Web 服务（端口 8023，管理页与 API） |
+| `shelf_cors_headers` | CORS 支持 |
+| `google_fonts` | 字体 |
+| `qr_flutter` | 二维码（扫码打开管理页等） |
+| `flutter_gen` | 资源与 L10n 代码生成 |
+| `wakelock_plus` | 播放时防休眠 |
+| `path_provider` | 应用目录路径 |
+| `permission_handler` | 权限请求 |
+| `package_info_plus` | 应用版本信息 |
+| `url_launcher` | 打开外部链接 |
+| `open_file` | 打开本地文件 |
+| `android_intent_plus` | Android 意图（如调起外部播放） |
+
+**构建与代码生成**：`build_runner`、`riverpod_generator`、`retrofit_generator`、`json_serializable`、`isar_community_generator`、`flutter_gen_runner`。**图标生成**：`flutter_launcher_icons`。
 
 ---
 
@@ -180,7 +198,7 @@ dart run flutter_launcher_icons
 
 - [Flutter 官方文档](https://docs.flutter.dev/)
 - [Dart 语言指南](https://dart.dev/guides)
-- [video_player 插件文档](https://pub.dev/packages/video_player)
+- [media_kit 插件文档](https://pub.dev/packages/media_kit)
 - [TV 应用设计规范](https://developer.android.com/design/tv)
 
 ---
