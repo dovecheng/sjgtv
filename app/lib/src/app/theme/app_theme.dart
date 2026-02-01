@@ -75,8 +75,8 @@ class AppThemeColors extends ThemeExtension<AppThemeColors> {
   }
 }
 
-/// [BuildContext] 扩展：获取应用主题色板（基于 base 的 [themeData]）
+/// [BuildContext] 扩展：获取应用主题色板（基于 base 的 [theme]）
 extension AppThemeColorsExtension on BuildContext {
   AppThemeColors get appThemeColors =>
-      themeData.extension<AppThemeColors>()!;
+      theme.extension<AppThemeColors>()!;
 }
