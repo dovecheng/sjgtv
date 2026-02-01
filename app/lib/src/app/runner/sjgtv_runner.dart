@@ -12,7 +12,7 @@ import 'package:sjgtv/src/source/provider/source_count_provider.dart';
 import 'package:sjgtv/src/proxy/provider/proxy_count_provider.dart';
 import 'package:sjgtv/src/tag/provider/tag_count_provider.dart';
 import 'package:sjgtv/src/proxy/provider/proxies_provider.dart';
-import 'package:sjgtv/src/source/provider/sources_storage_provider.dart';
+import 'package:sjgtv/src/source/provider/sources_provider.dart';
 import 'package:sjgtv/src/tag/provider/tags_provider.dart';
 import 'package:sjgtv/src/app/provider/json_adapter_provider.dart';
 import 'package:sjgtv/src/shelf/api.dart';
@@ -31,11 +31,6 @@ final class SjgtvRunner extends AppRunner {
   /// JSON 转换器配置
   @override
   JsonAdapterProvider get jsonAdapter => JsonAdapterImpl();
-
-  /// API 客户端配置
-  @override
-  ApiClientProvider get apiClient =>
-      ApiClientProvider(interceptors: [ApiResultInterceptor()]);
 
   /// 注入 app 的 L10n.translations，与 base 的 L10n.translations 在 provider 内合并
   @override
@@ -109,7 +104,7 @@ class _ConfigLoader {
         configApiProvider.future,
       );
 
-      if (config == null) {
+      if (config == null || config.isEmpty) {
         log.w(() => '配置格式异常');
         return;
       }
@@ -161,7 +156,7 @@ class _ConfigLoader {
             tagIds: List<String>.from(source['tagIds'] ?? []),
           );
           await $ref
-              .read(sourcesStorageProvider.notifier)
+              .read(sourcesProvider.notifier)
               .addSource(newSourceModel);
           savedCount++;
           log.d(() => '成功保存源: ${source['name']}');
