@@ -53,6 +53,7 @@ app/lib/src/
 
 **功能与体验**
 
+- [ ] **手机/平板手势点击**：控件的响应事件当前主要针对 TV 遥控器；为支持手机和平板，需补充手势/点击（GestureDetector、onTap 等）响应。
 - [ ] **go_route**：计划用 go_route 做应用路由。
 - [ ] **TV 与播放**：优化 TV 焦点、遥控、播放器 UI/交互；完善 MediaKit 播放。
 - [ ] **搜索**：已有基础，待优化体验。
@@ -61,6 +62,9 @@ app/lib/src/
 
 **质量与其它**
 
+- [ ] **ApiResultInterceptor 与直接 Dio 解析**：使用 apiClientProvider / $dio 时，ApiResultInterceptor 会将 response.data 包装为 `{ code, data, msg }`，真实 body 在 `data` 中。直接 `response.data['xxx']` 会取不到；需用 `ApiResultModel.fromJson(response.data)` 再取 `result.data?['xxx']`。其他直接使用 Dio 的地方（如 update_checker、search_provider 等）若走 $dio，需同样处理。
+- [ ] **页面数据逻辑改用 Riverpod**：部分页面（如 category_page）的数据获取与状态仍在 State 中维护，应抽成 Provider（FutureProvider/AsyncNotifier 等），便于复用与测试。
+- [ ] **Retrofit API 未覆盖**：仍有接口用裸 Dio 调用，未声明为 Retrofit API（如 category_page 豆瓣 search_subjects、update_checker 的 GitHub releases、search_provider 的源 videolist 等），可逐步抽成 @GET/@POST 接口。
 - [ ] **代码质量**：`dart analyze` / `dart fix`，清理未使用导入与死代码。
 - [ ] **测试**（可选）：业务/API 单元测试可后续补充。
 - [ ] **精简**（可选）：base viewer、Isar 换 Hive/SP 等按需排期。
@@ -105,3 +109,9 @@ app/lib/src/
 - **源表单页**：`add_source_page.dart` / `AddSourceModelPage` 重命名为 `source_form_page.dart` / `SourceFormPage`，体现添加与编辑共用；删除旧文件，source_manage_page 引用已更新。
 - **空目录**：删除 app/lib 下空文件夹 theme、page。
 - **Android**：AGP 8.9.1、Gradle 8.11.1、Kotlin 2.1.0（满足 Flutter 与 androidx.browser 要求）；app/build.gradle.kts 中 Kotlin 插件 id 统一为 `org.jetbrains.kotlin.android`。
+
+### 2026-02-02（豆瓣 API + 源 Provider 重命名 + 摘要待办）
+- **豆瓣 search_subjects**：使用 $dio + Options(contentType: '') 或浏览器模拟头；响应经 ApiResultInterceptor 包装，需用 ApiResultModel.fromJson(response.data) 再取 result.data?['subjects']。
+- **SourcesProvider**：SourcesStorageProvider → SourcesProvider，sourcesStorageProvider → sourcesProvider，文件 sources_storage_provider.dart → sources_provider.dart；addSources 批量添加方法。
+- **build.yaml**：app/base 同步 json_serializable、riverpod_generator 配置；provider_name_strip_pattern 设为 ""。
+- **摘要待办**：ApiResultInterceptor 与直接 Dio 解析说明；手机/平板手势点击响应待补充。
