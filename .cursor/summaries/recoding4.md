@@ -109,9 +109,14 @@ app/lib/src/
 - **web_l10n**（keysPrefix: web）：index.html 专属，与 **source_l10n**（Flutter 源管理页）分离，避免共用。
 - 网页对需翻译节点加 `data-i18n` / `data-i18n-placeholder` / `data-i18n-title`，加载时 `await applyL10n()` 后请求 `/api/l10n`，替换文案与 document.title；JS 动态消息用 `t(key)`、`tReplace(key, {name})`。
 
-**待补翻译**（index.html 仍有硬编码中文）：
-- `throw new Error('获取源列表失败')`（约 L849）、`throw new Error('获取标签列表失败')`（约 L1240）→ 应改为 `t('web_msg_xxx')`
-- `aria-label="关闭"`、`title="权重: ${...}"` 等
+**待补翻译**：已补全。
+
+---
+
+## 老项目 DTV 的 AI 索引（参考用）
+
+- **来源**：https://zread.ai/laopaoer-wallet/DTV/1-overview（zread.ai 上的 DTV 项目 AI 索引，1-overview 为概览页）。
+- **用途**：供会话中查阅 DTV 老项目结构、逻辑时参考；仅读参考，不修改 DTV。
 
 ---
 
@@ -160,3 +165,9 @@ app/lib/src/
 - **ShelfApi 单例**：shelf api.dart 定义 ShelfApi 类，混入 ShelfApiL10nMixin，全部方法入类，方法内用 this.xxxL10n 获取翻译。
 - **web_l10n**：新建 keysPrefix: web，index.html 专属；handleGetL10n 过滤 web_ 前缀；补全网页全部文案 data-i18n、JS 用 t()/tReplace()。
 - **source_l10n**：去除方法名冗余前缀（manageTitleL10n、listTitleL10n、addTitleL10n、nameL10n、urlHintL10n），避免 source_source_xxx 叠加。
+
+### 2026-02-01 13:56（记录 DTV 老项目 AI 索引来源）
+- 补充 **老项目 DTV 的 AI 索引** 小节：来源 https://zread.ai/laopaoer-wallet/DTV，供会话中参考 DTV 结构/逻辑；本次拉取该 URL 超时未获取到正文，仅记录 URL 与待补充说明。
+
+### 2026-02-01（补全网页待翻译项）
+- index.html：`throw new Error('获取源列表失败')`、`throw new Error('获取标签列表失败')` 改为 `t('web_msg_xxx')`；`aria-label="关闭"` 改为 `t('web_close')`；`title="权重: ${...}"` 改为 `t('web_weight'): ${...}`。web_l10n 新增 closeL10n。待补翻译已全部完成。
