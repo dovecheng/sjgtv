@@ -36,7 +36,7 @@ class MovieHomePage extends ConsumerStatefulWidget {
 }
 
 class _MovieHomePageState extends ConsumerState<MovieHomePage> {
-  Dio get _dio => ref.read(apiClientProvider); // 外部 API（豆瓣）复用 base 统一 Dio
+  Dio get _dio => ref.read(apiClientProvider);
   int _selectedTab = 0;
   bool _isLoading = false;
   bool _isRefreshing = false;
@@ -77,7 +77,11 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
     final double maxScroll = position.maxScrollExtent;
     final double currentScroll = position.pixels;
 
-    if (currentScroll >= maxScroll - 1.0 && _hasMore && !_isLoading) {
+    if (currentScroll >= maxScroll - 1.0 &&
+        _hasMore &&
+        !_isLoading &&
+        _tabs.isNotEmpty &&
+        _selectedTab < _tabs.length) {
       final DateTime now = DateTime.now();
       if (_lastLoadMoreTime == null ||
           now.difference(_lastLoadMoreTime!) > Duration(milliseconds: 100)) {
@@ -101,8 +105,7 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
 
   Future<void> _fetchTags() async {
     try {
-      final List<TagModel> tags =
-          await ref.read(tagsStorageProvider.future);
+      final List<TagModel> tags = await ref.read(tagsStorageProvider.future);
       if (!mounted) return;
       setState(() {
         _tabs = tags.map((TagModel tag) => tag.name).toList();
@@ -120,6 +123,7 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
   }
 
   Future<void> _fetchMovies(String tag, {bool loadMore = false}) async {
+    if (tag == '加载中...' || tag == '获取标签失败') return;
     if (!loadMore && _loadedTags.contains(tag)) {
       return;
     }
@@ -132,21 +136,28 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
 
       final Response<dynamic> response = await _dio.get<dynamic>(
         'https://movie.douban.com/j/search_subjects',
-        queryParameters: {
+        queryParameters: <String, String>{
           'type': 'movie',
           'tag': tag,
           'sort': 'recommend',
           'page_limit': _moviesPerPage.toString(),
           'page_start': startIndex.toString(),
         },
+        options: Options(headers: <String, String>{'Content-Type': ''}),
       );
 
       if (!mounted) return;
+
       if (response.statusCode == 200) {
-        final List<dynamic> subjects = response.data['subjects'] ?? [];
+        final ApiResultModel<Map<String, dynamic>> result =
+            ApiResultModel.fromJson(response.data);
+        final List<dynamic> subjects = result.data?['subjects'] ?? [];
+        log.d(() => 'subjects: $subjects');
         final List<MovieModel> movies = subjects
-            .map((dynamic s) =>
-                MovieModel.fromJson(Map<String, dynamic>.from(s as Map)))
+            .map(
+              (dynamic s) =>
+                  MovieModel.fromJson(Map<String, dynamic>.from(s as Map)),
+            )
             .toList();
 
         setState(() {
@@ -276,8 +287,7 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
               Navigator.push(
                 context,
                 MaterialPageRoute<void>(
-                  builder: (BuildContext context) =>
-                      const SourceManagePage(),
+                  builder: (BuildContext context) => const SourceManagePage(),
                 ),
               );
             },
@@ -324,7 +334,10 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
                   final bool isFocused = Focus.of(context).hasFocus;
                   return AnimatedContainer(
                     duration: const Duration(milliseconds: 200),
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 12,
+                    ),
                     constraints: const BoxConstraints(minWidth: 100),
                     decoration: BoxDecoration(
                       color: _selectedTab == index
@@ -392,11 +405,20 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
             _buildTabBar(),
             if (_isLoading)
               const Expanded(child: Center(child: CircularProgressIndicator()))
-            else if (_tabs[0] == '获取标签失败')
+            else if (_tabs.isNotEmpty && _tabs[0] == '获取标签失败')
               Expanded(
                 child: Center(
                   child: Text(
                     '无法加载标签，请检查网络连接',
+                    style: const TextStyle(color: Colors.white, fontSize: 24),
+                  ),
+                ),
+              )
+            else if (_tabs.isEmpty)
+              Expanded(
+                child: Center(
+                  child: Text(
+                    '暂无标签',
                     style: const TextStyle(color: Colors.white, fontSize: 24),
                   ),
                 ),
