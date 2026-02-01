@@ -73,6 +73,20 @@ app/lib/src/
 
 ---
 
+## 直接使用 Dio 的位置
+
+| 位置 | Dio 来源 | 请求目标 | ApiResultInterceptor | 解析方式 |
+|------|----------|----------|----------------------|----------|
+| `category_page.dart` | apiClientProvider | 豆瓣 search_subjects | ✅ | 需用 ApiResultModel.fromJson |
+| `search_provider.dart` | `Dio()` 新建 | 各源 videolist | ❌ | 直接 response.data |
+| `update_checker.dart` | `Dio()` 静态 | GitHub Releases / APK 下载 | ❌ | 直接 response.data |
+| `shelf/api.dart` | `Dio()` 新建 | 各源 videolist（服务端） | ❌ | 直接 response.data |
+
+- 只有 **category_page** 使用 apiClientProvider，受 ApiResultInterceptor 影响，需按 ApiResultModel 解析。
+- **search_provider**、**update_checker**、**shelf/api** 均自建 Dio，不经拦截器，直接解析 response.data 即可。
+
+---
+
 ## 源管理 / 代理 / 标签：网页 vs Flutter
 
 - **网页**：`app/assets/web/index.html`，shelf 端口 8023；TV/平板扫码；源/代理/标签增删改查与排序已实现；GET /api/l10n + data-i18n 国际化。
