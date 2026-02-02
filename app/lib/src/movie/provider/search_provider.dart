@@ -154,32 +154,58 @@ class MovieSearchService {
     }
   }
 
+  /// 规范化「片名+年份」作为去重键：trim、合并连续空格，便于多源同片合并。
+  static String _normalizeMergeKey(String name, String year) {
+    final String n = name.trim().replaceAll(RegExp(r'\s+'), ' ').toLowerCase();
+    final String y = year.trim();
+    return '$n|$y';
+  }
+
+  /// 按「片名+年份」合并多源结果，同一条目下收集多个源到 sources 列表。
+  /// 默认展示与播放使用第一个有效源（vod_play_url 非空），避免默认源不兼容。
   List<dynamic> _mergeResults(
       List<dynamic> results, List<SourceModel> sources) {
-    final List<dynamic> merged = <dynamic>[];
-    final Set<String> seenIds = <String>{};
+    // key: 规范化(片名+年份)，value: 该组下的所有源条目（保持发现顺序）
+    final Map<String, List<Map<String, dynamic>>> groups =
+        <String, List<Map<String, dynamic>>>{};
 
     for (int i = 0; i < results.length; i++) {
       final dynamic result = results[i];
-      final int weight = sources[i].weight;
+      final SourceModel source = sources[i];
+      final int weight = source.weight;
 
       for (final dynamic item in result['list']) {
-        final String vodId = item['vod_id']?.toString() ?? '';
-        if (seenIds.contains(vodId)) continue;
-        seenIds.add(vodId);
+        final String name = (item['vod_name'] as String?).toString().trim();
+        final String year = (item['vod_year'] as String?).toString().trim();
+        if (name.isEmpty) continue;
+        final String key = _normalizeMergeKey(name, year);
 
-        final Map<String, dynamic> weighted =
-            Map<String, dynamic>.from(item);
-        if (weighted['vod_hits'] != null) {
-          weighted['vod_hits'] =
-              ((weighted['vod_hits'] as num) * weight).round();
+        final Map<String, dynamic> entry = Map<String, dynamic>.from(item);
+        if (entry['vod_hits'] != null) {
+          entry['vod_hits'] =
+              ((entry['vod_hits'] as num) * weight).round();
         }
-        weighted['source'] = {
-          'name': sources[i].name,
+        entry['source'] = <String, dynamic>{
+          'name': source.name,
           'weight': weight,
         };
-        merged.add(weighted);
+        groups.putIfAbsent(key, () => <Map<String, dynamic>>[]).add(entry);
       }
+    }
+
+    final List<dynamic> merged = <dynamic>[];
+    for (final List<Map<String, dynamic>> list in groups.values) {
+      final List<Map<String, dynamic>> validSources = list
+          .where((Map<String, dynamic> e) =>
+              (e['vod_play_url']?.toString() ?? '').trim().isNotEmpty)
+          .toList();
+      if (validSources.isEmpty) continue;
+
+      // 默认用第一个有效源作为主展示与默认播放（保留第一个发现的源的信息）
+      final Map<String, dynamic> main =
+          Map<String, dynamic>.from(validSources.first);
+      main['sources'] = validSources;
+      merged.add(main);
     }
 
     merged.sort(

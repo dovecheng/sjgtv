@@ -26,16 +26,22 @@ final Log _log = Log('FullScreenPlayer');
 /// - 自动播放下一集
 /// - 记录每集播放进度
 /// - 屏幕常亮
+/// - 多源时：菜单键打开换源面板，可切换播放源并保留进度
 class FullScreenPlayerPage extends StatefulWidget {
   final dynamic movie;
   final List<Map<String, String>> episodes;
   final int initialIndex;
+  /// 多播放源列表，每项需含 vod_play_url，可选 vod_pic、vod_name、source
+  final List<Map<String, dynamic>>? sources;
+  final int currentSourceIndex;
 
   const FullScreenPlayerPage({
     super.key,
     required this.movie,
     required this.episodes,
     required this.initialIndex,
+    this.sources,
+    this.currentSourceIndex = 0,
   });
 
   @override
@@ -45,6 +51,11 @@ class FullScreenPlayerPage extends StatefulWidget {
 class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
   late final Player _player;
   late final VideoController _videoController;
+  /// 当前使用的播放源列表（sources ?? [movie]）
+  late final List<Map<String, dynamic>> _sources;
+  int _currentSourceIndex;
+  /// 当前源的剧集列表（从当前源的 vod_play_url 解析，换源时更新）
+  late List<Map<String, String>> _episodes;
   int _currentEpisodeIndex;
   bool _isLoading = true;
   String? _errorMessage;
@@ -71,22 +82,84 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
   final ValueNotifier<Duration?> _seekPosition = ValueNotifier<Duration?>(null);
   Timer? _seekHideTimer;
   final Duration _seekDisplayDuration = const Duration(seconds: 1);
+  bool _showSourcePanel = false;
+  final FocusNode _sourcePanelFocusNode = FocusNode();
+  int _sourcePanelFocusedIndex = 0;
 
-  _FullScreenPlayerPageState() : _currentEpisodeIndex = 0;
+  _FullScreenPlayerPageState()
+      : _currentSourceIndex = 0,
+        _currentEpisodeIndex = 0;
+
+  /// 仅保留可播放的源（vod_play_url 非空且能解析出剧集）
+  List<Map<String, dynamic>> _filterPlayableSources(
+      List<Map<String, dynamic>> list) {
+    return list
+        .where((Map<String, dynamic> s) =>
+            (s['vod_play_url']?.toString() ?? '').trim().isNotEmpty &&
+            _parseEpisodesFromPlayUrl(s).isNotEmpty)
+        .toList();
+  }
 
   @override
   void initState() {
     super.initState();
     MediaKit.ensureInitialized();
-    _currentEpisodeIndex = widget.initialIndex;
+    List<Map<String, dynamic>> raw =
+        widget.sources != null && widget.sources!.isNotEmpty
+            ? List<Map<String, dynamic>>.from(widget.sources!)
+            : <Map<String, dynamic>>[widget.movie as Map<String, dynamic>];
+    _sources = _filterPlayableSources(raw);
+    if (_sources.isEmpty) {
+      _sources = raw;
+    }
+    _currentSourceIndex =
+        widget.currentSourceIndex.clamp(0, _sources.length - 1);
+    _episodes = _parseEpisodesFromPlayUrl(_sources[_currentSourceIndex]);
+    _currentEpisodeIndex =
+        widget.initialIndex.clamp(0, _episodes.isEmpty ? 0 : _episodes.length - 1);
+    _sourcePanelFocusedIndex = _currentSourceIndex;
     _player = Player();
-    _videoController = VideoController(_player);
-    _initializePlayer(widget.episodes[_currentEpisodeIndex]['url']!);
+    _videoController = VideoController(
+      _player,
+      configuration: const VideoControllerConfiguration(
+        enableHardwareAcceleration: false, // 禁用硬解，避免部分设备解码超时
+      ),
+    );
+    final String? firstUrl = _episodes.isNotEmpty
+        ? _episodes[_currentEpisodeIndex]['url']
+        : null;
+    if (firstUrl != null && firstUrl.isNotEmpty) {
+      _initializePlayer(firstUrl);
+    } else {
+      setState(() {
+        _isLoading = false;
+        _errorMessage = '当前源无有效剧集';
+      });
+    }
     _playerFocusNode.addListener(() {
       if (_playerFocusNode.hasFocus) {
         _toggleControlsVisibility(true);
       }
     });
+  }
+
+  /// 从源的 vod_play_url 解析剧集列表
+  List<Map<String, String>> _parseEpisodesFromPlayUrl(
+      Map<String, dynamic> source) {
+    final List<Map<String, String>> list = <Map<String, String>>[];
+    final String? playUrl = source['vod_play_url'] as String?;
+    if (playUrl == null || playUrl.isEmpty) return list;
+    final List<String> parts = playUrl.split('#');
+    for (final String part in parts) {
+      final List<String> episodeParts = part.split('\$');
+      if (episodeParts.length == 2) {
+        list.add(<String, String>{
+          'title': episodeParts[0],
+          'url': episodeParts[1],
+        });
+      }
+    }
+    return list;
   }
 
   void _toggleControlsVisibility(bool visible) {
@@ -152,6 +225,7 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
     _bufferingSubscription?.cancel();
     _player.dispose();
     _playerFocusNode.dispose();
+    _sourcePanelFocusNode.dispose();
     _controlsVisibility.dispose();
     _isSeeking.dispose();
     _isBuffering.dispose();
@@ -195,9 +269,9 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
   }
 
   Future<void> _preloadNextEpisode() async {
-    if (_currentEpisodeIndex >= widget.episodes.length - 1) return;
+    if (_currentEpisodeIndex >= _episodes.length - 1) return;
 
-    final String? nextUrl = widget.episodes[_currentEpisodeIndex + 1]['url'];
+    final String? nextUrl = _episodes[_currentEpisodeIndex + 1]['url'];
     if (nextUrl == null || nextUrl.isEmpty) return;
 
     try {
@@ -213,9 +287,9 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
   }
 
   Future<void> _changeEpisode(int index) async {
-    if (widget.episodes.isEmpty ||
+    if (_episodes.isEmpty ||
         index < 0 ||
-        index >= widget.episodes.length ||
+        index >= _episodes.length ||
         index == _currentEpisodeIndex) {
       return;
     }
@@ -233,7 +307,7 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            '正在加载: ${widget.episodes[index]['title'] ?? '第${index + 1}集'}',
+            '正在加载: ${_episodes[index]['title'] ?? '第${index + 1}集'}',
             style: const TextStyle(color: Colors.white),
           ),
           duration: const Duration(seconds: 2),
@@ -246,7 +320,7 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
 
     _episodeProgress[_currentEpisodeIndex] = _player.state.position;
 
-    final String? url = widget.episodes[index]['url'];
+    final String? url = _episodes[index]['url'];
     if (url == null || url.isEmpty) {
       setState(() {
         _errorMessage = '无效的视频URL';
@@ -284,8 +358,62 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
     }
   }
 
+  /// 切换到指定播放源，保留当前播放进度
+  Future<void> _switchToSource(int index) async {
+    if (index < 0 ||
+        index >= _sources.length ||
+        index == _currentSourceIndex) {
+      return;
+    }
+    final Duration savedPosition = _player.state.position;
+    setState(() {
+      _showSourcePanel = false;
+      _currentSourceIndex = index;
+      _episodes = _parseEpisodesFromPlayUrl(_sources[index]);
+      _currentEpisodeIndex =
+          _currentEpisodeIndex.clamp(0, _episodes.isEmpty ? 0 : _episodes.length - 1);
+      _controlsVisibility.value = true;
+      _isLoading = true;
+      _errorMessage = null;
+      _isBuffering.value = true;
+    });
+    _sourcePanelFocusedIndex = index;
+
+    final String? url = _episodes.isEmpty
+        ? null
+        : _episodes[_currentEpisodeIndex]['url'];
+    if (url == null || url.isEmpty) {
+      setState(() {
+        _isLoading = false;
+        _errorMessage = '该源无有效剧集';
+        _isBuffering.value = false;
+      });
+      return;
+    }
+
+    try {
+      await _player.pause();
+      final String processM3u8Url = await _processM3u8Url(url);
+      await _player.open(Media(processM3u8Url));
+      _player.setVolume(_volume);
+      await _player.seek(savedPosition.clamp(Duration.zero, _player.state.duration));
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _errorMessage = '换源失败: ${e.toString()}';
+          _isBuffering.value = false;
+        });
+      }
+      _log.e(() => '换源失败', e);
+    }
+  }
+
   void _playNextEpisode() {
-    if (_currentEpisodeIndex < widget.episodes.length - 1) {
+    if (_currentEpisodeIndex < _episodes.length - 1) {
       _changeEpisode(_currentEpisodeIndex + 1);
     } else {
       _player.pause();
@@ -429,10 +557,23 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
         return KeyEventResult.handled;
       case LogicalKeyboardKey.escape:
         _stopSeek(Duration.zero);
+        if (_showSourcePanel) {
+          setState(() => _showSourcePanel = false);
+          return KeyEventResult.handled;
+        }
         Navigator.pop(context);
         return KeyEventResult.handled;
       case LogicalKeyboardKey.contextMenu:
         _stopSeek(Duration.zero);
+        setState(() {
+          _showSourcePanel = !_showSourcePanel;
+          if (_showSourcePanel) {
+            _sourcePanelFocusedIndex = _currentSourceIndex;
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              _sourcePanelFocusNode.requestFocus();
+            });
+          }
+        });
         return KeyEventResult.handled;
       case LogicalKeyboardKey.audioVolumeUp:
         final double newVolume = (_volume + 5).clamp(0.0, 100.0);
@@ -475,33 +616,44 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: Shortcuts(
-        shortcuts: {
-          const SingleActivator(LogicalKeyboardKey.select):
-              const ActivateIntent(),
-          const SingleActivator(LogicalKeyboardKey.enter):
-              const ActivateIntent(),
-          const SingleActivator(LogicalKeyboardKey.arrowUp): const UpIntent(),
-          const SingleActivator(LogicalKeyboardKey.arrowDown):
-              const DownIntent(),
-          const SingleActivator(LogicalKeyboardKey.arrowLeft):
-              const LeftIntent(),
-          const SingleActivator(LogicalKeyboardKey.arrowRight):
-              const RightIntent(),
-          const SingleActivator(LogicalKeyboardKey.mediaPlayPause):
-              const PlayPauseIntent(),
-          const SingleActivator(LogicalKeyboardKey.escape): const BackIntent(),
-        },
-        child: Actions(
-          actions: {
-            BackIntent: CallbackAction<BackIntent>(
-              onInvoke: (intent) {
-                Navigator.pop(context);
-                return null;
-              },
-            ),
+    return PopScope(
+      canPop: !_showSourcePanel,
+      onPopInvokedWithResult: (bool didPop, dynamic result) {
+        if (!didPop && _showSourcePanel) {
+          setState(() => _showSourcePanel = false);
+        }
+      },
+      child: Scaffold(
+        backgroundColor: Colors.black,
+        body: Shortcuts(
+          shortcuts: {
+            const SingleActivator(LogicalKeyboardKey.select):
+                const ActivateIntent(),
+            const SingleActivator(LogicalKeyboardKey.enter):
+                const ActivateIntent(),
+            const SingleActivator(LogicalKeyboardKey.arrowUp): const UpIntent(),
+            const SingleActivator(LogicalKeyboardKey.arrowDown):
+                const DownIntent(),
+            const SingleActivator(LogicalKeyboardKey.arrowLeft):
+                const LeftIntent(),
+            const SingleActivator(LogicalKeyboardKey.arrowRight):
+                const RightIntent(),
+            const SingleActivator(LogicalKeyboardKey.mediaPlayPause):
+                const PlayPauseIntent(),
+            const SingleActivator(LogicalKeyboardKey.escape): const BackIntent(),
+          },
+          child: Actions(
+            actions: {
+              BackIntent: CallbackAction<BackIntent>(
+                onInvoke: (intent) {
+                  if (_showSourcePanel) {
+                    setState(() => _showSourcePanel = false);
+                    return null;
+                  }
+                  Navigator.pop(context);
+                  return null;
+                },
+              ),
             PlayPauseIntent: CallbackAction<PlayPauseIntent>(
               onInvoke: (intent) {
                 _togglePlayPause();
@@ -565,6 +717,175 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
               ),
               _buildSeekIndicator(),
               if (_showVolumeHUD) _buildVolumeHUD(),
+              if (_showSourcePanel) _buildSourcePanel(),
+            ],
+          ),
+        ),
+      ),
+    ),
+    );
+  }
+
+  String _getSourceName(Map<String, dynamic> source) {
+    final dynamic s = source['source'];
+    if (s is Map && s['name'] != null) return s['name'] as String;
+    return '源${_sources.indexOf(source) + 1}';
+  }
+
+  Widget _buildSourcePanel() {
+    return Positioned(
+      top: 0,
+      right: 0,
+      bottom: 0,
+      width: 320,
+      child: Focus(
+        focusNode: _sourcePanelFocusNode,
+        autofocus: true,
+        onKeyEvent: (FocusNode node, KeyEvent event) {
+          if (event is! KeyDownEvent) return KeyEventResult.ignored;
+          switch (event.logicalKey) {
+            case LogicalKeyboardKey.arrowUp:
+              setState(() {
+                _sourcePanelFocusedIndex =
+                    (_sourcePanelFocusedIndex - 1).clamp(0, _sources.length - 1);
+              });
+              return KeyEventResult.handled;
+            case LogicalKeyboardKey.arrowDown:
+              setState(() {
+                _sourcePanelFocusedIndex =
+                    (_sourcePanelFocusedIndex + 1).clamp(0, _sources.length - 1);
+              });
+              return KeyEventResult.handled;
+            case LogicalKeyboardKey.select:
+            case LogicalKeyboardKey.enter:
+              _switchToSource(_sourcePanelFocusedIndex);
+              return KeyEventResult.handled;
+            case LogicalKeyboardKey.escape:
+            case LogicalKeyboardKey.contextMenu:
+              setState(() => _showSourcePanel = false);
+              return KeyEventResult.handled;
+            default:
+              return KeyEventResult.ignored;
+          }
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.black87,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black45,
+                blurRadius: 12,
+                offset: const Offset(-4, 0),
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  '换源',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              Expanded(
+                child: ListView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  itemCount: _sources.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    final Map<String, dynamic> source = _sources[index];
+                    final String name = _getSourceName(source);
+                    final List<Map<String, String>> eps =
+                        _parseEpisodesFromPlayUrl(source);
+                    final bool isCurrent = index == _currentSourceIndex;
+                    final bool isFocused = index == _sourcePanelFocusedIndex;
+                    final String pic = source['vod_pic'] as String? ?? '';
+                    final String title =
+                        source['vod_name'] as String? ?? '未知';
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 12.0),
+                      child: Material(
+                        color: isFocused
+                            ? Colors.white24
+                            : (isCurrent ? Colors.white12 : Colors.transparent),
+                        borderRadius: BorderRadius.circular(8),
+                        child: InkWell(
+                          onTap: () => _switchToSource(index),
+                          borderRadius: BorderRadius.circular(8),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(6),
+                                  child: Image.network(
+                                    pic,
+                                    width: 64,
+                                    height: 88,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (_, __, ___) => Container(
+                                      width: 64,
+                                      height: 88,
+                                      color: Colors.grey[800],
+                                      child: const Icon(
+                                        Icons.movie_outlined,
+                                        color: Colors.white54,
+                                        size: 32,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                        title,
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      const SizedBox(height: 6),
+                                      Chip(
+                                        label: Text(
+                                          name,
+                                          style: const TextStyle(fontSize: 12),
+                                        ),
+                                        visualDensity: VisualDensity.compact,
+                                        backgroundColor: Colors.white24,
+                                        padding: EdgeInsets.zero,
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        '共${eps.length}集',
+                                        style: TextStyle(
+                                          color: Colors.white70,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
             ],
           ),
         ),
@@ -599,7 +920,7 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
                   const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () => _initializePlayer(
-                      widget.episodes[_currentEpisodeIndex]['url']!,
+                      _episodes[_currentEpisodeIndex]['url']!,
                     ),
                     child: const Text('重试'),
                   ),
