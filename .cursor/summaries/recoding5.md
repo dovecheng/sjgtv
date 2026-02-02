@@ -35,7 +35,7 @@
 
 ```
 app/lib/src/
-├── source/     # 数据源：model、provider、l10n、page（SourceManagePage、SourceFormPage）
+├── source/     # 数据源：model、provider、l10n、page、util（source_url_util：源 URL 规范化与代理解析）
 ├── proxy/      # 代理：model、provider
 ├── tag/        # 标签：model、provider
 ├── movie/      # 电影：model、page（category、search、detail、full_screen_player）、service（m3u8_ad_remover）、widget
@@ -130,3 +130,7 @@ app/lib/src/
 - **SourcesProvider**：SourcesStorageProvider → SourcesProvider，sourcesStorageProvider → sourcesProvider，文件 sources_storage_provider.dart → sources_provider.dart；addSources 批量添加方法。
 - **build.yaml**：app/base 同步 json_serializable、riverpod_generator 配置；provider_name_strip_pattern 设为 ""。
 - **摘要待办**：ApiResultInterceptor 与直接 Dio 解析说明；手机/平板手势点击响应待补充。
+
+### 2026-02-02 15:23（源 URL 工具抽取）
+- **source_url_util**：新建 `app/lib/src/source/util/source_url_util.dart`，提供 `normalizeSourceBase`、`resolveSourceBaseUrl`（源 URL 去重 + 代理拼接）。
+- **shelf/api.dart**、**search_provider.dart**：移除重复的 `_normalizeSourceBase` / `_resolveBaseUrl` / `_proxyOrigin`，改为引用 source_url_util。
