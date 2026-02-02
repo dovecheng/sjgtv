@@ -46,8 +46,11 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
   final Set<String> _loadedTags = {};
   final Map<String, int> _currentPageByTag = {};
   static const int _moviesPerPage = 20;
+  static const int _gridCrossAxisCount = 5;
   final ScrollController _scrollController = ScrollController();
   final FocusNode _refreshFocusNode = FocusNode();
+  final List<FocusNode> _cardFocusNodes = [];
+  final List<GlobalKey> _cardKeys = [];
   DateTime? _lastLoadMoreTime;
 
   @override
@@ -68,7 +71,32 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
   void dispose() {
     _scrollController.dispose();
     _refreshFocusNode.dispose();
+    for (final FocusNode node in _cardFocusNodes) {
+      node.dispose();
+    }
+    _cardFocusNodes.clear();
     super.dispose();
+  }
+
+  void _ensureCardFocusNodes(int count) {
+    while (_cardFocusNodes.length < count) {
+      _cardFocusNodes.add(FocusNode());
+    }
+    if (_cardFocusNodes.length > count) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        for (int i = count; i < _cardFocusNodes.length; i++) {
+          _cardFocusNodes[i].dispose();
+        }
+        _cardFocusNodes.removeRange(count, _cardFocusNodes.length);
+      });
+    }
+  }
+
+  void _ensureCardKeys(int count) {
+    while (_cardKeys.length < count) {
+      _cardKeys.add(GlobalKey());
+    }
   }
 
   void _onScroll() {
@@ -375,20 +403,55 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
     );
   }
 
+  void _scrollToCard(int targetIndex) {
+    if (targetIndex < 0 || targetIndex >= _cardKeys.length || !mounted) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final BuildContext? ctx = _cardKeys[targetIndex].currentContext;
+      if (ctx != null) {
+        Scrollable.ensureVisible(
+          ctx,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      }
+    });
+  }
+
   Widget _buildMovieGrid() {
+    final int itemCount = _currentMovies.length;
+    _ensureCardFocusNodes(itemCount);
+    _ensureCardKeys(itemCount);
     return RefreshIndicator(
       onRefresh: _handleRefresh,
       child: GridView.builder(
         controller: _scrollController,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 5,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: _gridCrossAxisCount,
           childAspectRatio: 0.65,
           mainAxisSpacing: 30,
           crossAxisSpacing: 30,
         ),
-        itemCount: _currentMovies.length,
-        itemBuilder: (context, index) {
-          return FocusableMovieCard(movie: _currentMovies[index]);
+        itemCount: itemCount,
+        itemBuilder: (BuildContext context, int index) {
+          return FocusableMovieCard(
+            key: _cardKeys[index],
+            movie: _currentMovies[index],
+            focusNode: index < _cardFocusNodes.length
+                ? _cardFocusNodes[index]
+                : null,
+            gridIndex: index,
+            crossAxisCount: _gridCrossAxisCount,
+            itemCount: itemCount,
+            onMoveFocus: (int targetIndex) {
+              if (targetIndex >= 0 &&
+                  targetIndex < _cardFocusNodes.length &&
+                  mounted) {
+                _cardFocusNodes[targetIndex].requestFocus();
+                _scrollToCard(targetIndex);
+              }
+            },
+          );
         },
         padding: const EdgeInsets.only(left: 20, top: 20, right: 20),
       ),
@@ -436,10 +499,9 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
               Expanded(
                 child: Focus(
                   focusNode: _refreshFocusNode,
-                  onKeyEvent: (node, event) {
+                  onKeyEvent: (FocusNode node, KeyEvent event) {
                     if (event is KeyDownEvent &&
-                        (event.logicalKey == LogicalKeyboardKey.arrowUp ||
-                            event.logicalKey == LogicalKeyboardKey.pageUp)) {
+                        event.logicalKey == LogicalKeyboardKey.pageUp) {
                       _handleRefresh();
                       return KeyEventResult.handled;
                     }
