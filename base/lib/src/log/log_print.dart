@@ -52,19 +52,12 @@ void consoleLog(
   }
 
   message = prefix + lines.join('\n');
-  // message = prefix + lines.join('\n[$levelName] $prefix');
 
+  // dev.log 仅在有调试连接时可见（debug 模式）；profile/release 用 print 保证控制台能看到
   if (kIsApp && kDebugMode) {
-    dev.log(message, name: levelName, level: level.value);
-    // for (String line in lines) {
-    //   dev.log(name: levelName, prefix + line);
-    // }
+    dev.log(message, name: levelName);
   } else {
     // ignore: avoid_print
     print('[$levelName] $message');
-    // for (String line in lines) {
-    //   // ignore: avoid_print
-    //   print('[$levelName] $prefix $line');
-    // }
   }
 }
