@@ -8,6 +8,7 @@ import 'package:sjgtv/src/proxy/model/proxy_model.dart';
 import 'package:sjgtv/src/proxy/provider/proxies_provider.dart';
 import 'package:sjgtv/src/source/model/source_model.dart';
 import 'package:sjgtv/src/source/provider/sources_provider.dart';
+import 'package:sjgtv/src/source/util/source_url_util.dart';
 
 final Log _log = Log('MovieSearch');
 
@@ -60,10 +61,8 @@ class MovieSearchService {
     try {
       final List<dynamic> results = await Future.wait<dynamic>(
         activeSources.map((SourceModel source) async {
-          final String sourceBase = _normalizeSourceBase(source.url);
-          final String baseUrl = activeProxy != null
-              ? _proxyOrigin(activeProxy) + sourceBase
-              : sourceBase;
+          final String baseUrl =
+              resolveSourceBaseUrl(activeProxy, source.url);
           final String requestUrl =
               '$baseUrl?ac=videolist&wd=${Uri.encodeQueryComponent(keyword)}';
           debugPrint('[MovieSearch] 请求源: ${source.name} -> $requestUrl');
@@ -152,21 +151,6 @@ class MovieSearchService {
     } finally {
       dio.close();
     }
-  }
-
-  /// 去掉重复的 vod/api.php/provide/，保证格式为 https://{domain}/api.php/provide/vod。
-  static String _normalizeSourceBase(String url) {
-    const String duplicate = '/vod/api.php/provide/';
-    if (url.contains(duplicate)) {
-      return url.replaceFirst(duplicate, '/');
-    }
-    return url;
-  }
-
-  /// 代理根：仅 scheme + host + port + '/'，拼接后为 /https://{domain}/api.php/provide/vod。
-  static String _proxyOrigin(ProxyModel proxy) {
-    final Uri uri = Uri.parse(proxy.url);
-    return '${uri.scheme}://${uri.host}${uri.port != 80 && uri.port != 443 ? ':${uri.port}' : ''}/';
   }
 
   List<dynamic> _mergeResults(
