@@ -134,3 +134,7 @@ app/lib/src/
 ### 2026-02-02 15:23（源 URL 工具抽取）
 - **source_url_util**：新建 `app/lib/src/source/util/source_url_util.dart`，提供 `normalizeSourceBase`、`resolveSourceBaseUrl`（源 URL 去重 + 代理拼接）。
 - **shelf/api.dart**、**search_provider.dart**：移除重复的 `_normalizeSourceBase` / `_resolveBaseUrl` / `_proxyOrigin`，改为引用 source_url_util。
+
+### 2026-02-02 16:34（config_api 与 search_provider 日志统一为 base Log）
+- **config_api_provider**：移除 `_configPrint` 与 `debugPrint`，统一用 `_log.d` / `_log.e`；闭包内用局部变量避免可空 lint。
+- **search_provider**：所有 `debugPrint` 改为 `_log.d`，请求失败处改为 `_log.e(…, e, s)`；移除未使用的 `foundation.dart` 导入。
