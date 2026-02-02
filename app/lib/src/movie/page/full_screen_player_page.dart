@@ -836,7 +836,7 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
                                     width: 64,
                                     height: 88,
                                     fit: BoxFit.cover,
-                                    errorBuilder: (_, __, ___) => Container(
+                                    errorBuilder: (_, _, _) => Container(
                                       width: 64,
                                       height: 88,
                                       color: Colors.grey[800],
