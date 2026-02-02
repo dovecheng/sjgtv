@@ -80,13 +80,29 @@ abstract final class AppUpdater {
     return null;
   }
 
-  static int _compareVersions(String current, String latest) {
-    final List<int> currentParts =
-        current.split('.').map((String e) => IntConverter.toIntOrZero(e)).toList();
-    final List<int> latestParts =
-        latest.split('.').map((String e) => IntConverter.toIntOrZero(e)).toList();
+  /// 解析版本号，支持 26.02.02+2 格式（主版本 + build 号）
+  static List<int> _parseVersion(String version) {
+    final String raw = version.replaceAll('v', '').trim();
+    final List<String> mainAndBuild = raw.split('+');
+    final String mainPart = mainAndBuild[0].trim();
+    final String buildPart =
+        mainAndBuild.length > 1 ? mainAndBuild[1].trim() : '0';
+    final List<int> mainParts = mainPart
+        .split('.')
+        .map((String e) => IntConverter.toIntOrZero(e))
+        .toList();
+    mainParts.add(IntConverter.toIntOrZero(buildPart));
+    return mainParts;
+  }
 
-    for (var i = 0; i < 3; i++) {
+  static int _compareVersions(String current, String latest) {
+    final List<int> currentParts = _parseVersion(current);
+    final List<int> latestParts = _parseVersion(latest);
+    final int maxLen = currentParts.length > latestParts.length
+        ? currentParts.length
+        : latestParts.length;
+
+    for (var i = 0; i < maxLen; i++) {
       final int currentPart = i < currentParts.length ? currentParts[i] : 0;
       final int latestPart = i < latestParts.length ? latestParts[i] : 0;
 
