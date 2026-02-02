@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:base/base.dart';
 import 'package:sjgtv/gen/l10n.gen.dart';
 import 'package:sjgtv/src/app/provider/config_api_provider.dart';
+import 'package:sjgtv/src/app/widget/update_checker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sjgtv/src/proxy/model/proxy_model.dart';
@@ -71,8 +72,47 @@ final class SjgtvRunner extends AppRunner {
       l10nTranslationProvider.future,
     );
     final String title = tr['app_title'] ?? '苹果CMS电影播放器';
-    return MaterialApp(
+    return _AppWithUpdateCheck(
       title: title,
+    );
+  }
+}
+
+/// 带启动时更新检查的根 Widget
+///
+/// 使用 [GlobalKey<NavigatorState>] 保证任意页面下都能弹出更新对话框；
+/// 仅在每次启动时首帧后延迟执行一次检查。
+class _AppWithUpdateCheck extends StatefulWidget {
+  const _AppWithUpdateCheck({required this.title});
+
+  final String title;
+
+  @override
+  State<_AppWithUpdateCheck> createState() => _AppWithUpdateCheckState();
+}
+
+class _AppWithUpdateCheckState extends State<_AppWithUpdateCheck> {
+  final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _runUpdateCheck());
+  }
+
+  Future<void> _runUpdateCheck() async {
+    await Future.delayed(const Duration(milliseconds: 1500));
+    final BuildContext? ctx = _navigatorKey.currentContext;
+    if (ctx != null && ctx.mounted) {
+      await AppUpdater.instance.checkForUpdate(ctx);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      navigatorKey: _navigatorKey,
+      title: widget.title,
       debugShowCheckedModeBanner: false,
       theme: ThemeData.dark(),
       home: const MovieHomePage(),

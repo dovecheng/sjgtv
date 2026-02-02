@@ -12,7 +12,6 @@ import 'package:sjgtv/src/movie/model/movie_model.dart';
 import 'package:sjgtv/src/tag/model/tag_model.dart';
 import 'package:sjgtv/src/tag/provider/tags_provider.dart';
 import 'package:sjgtv/src/movie/page/search_page.dart';
-import 'package:sjgtv/src/app/widget/update_checker.dart';
 import 'package:sjgtv/src/source/page/source_manage_page.dart';
 import 'package:sjgtv/src/movie/widget/focusable_movie_card.dart';
 
@@ -21,7 +20,6 @@ final Log _log = Log('MovieHomePage');
 /// 电影首页（分类浏览）
 ///
 /// 功能：
-/// - 启动时检查应用更新
 /// - 从本地 shelf 服务获取标签列表作为分类 Tab
 /// - 从豆瓣 API 获取对应分类的电影列表
 /// - 支持 TV 遥控器导航（Tab 切换、电影卡片聚焦）
@@ -57,13 +55,6 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
     super.initState();
     _scrollController.addListener(_onScroll);
     _loadInitialData();
-    _checkForUpdates();
-  }
-
-  Future<void> _checkForUpdates() async {
-    await Future.delayed(const Duration(seconds: 1));
-    if (!mounted) return;
-    await AppUpdater.instance.checkForUpdate(context);
   }
 
   @override

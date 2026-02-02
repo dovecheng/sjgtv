@@ -59,9 +59,8 @@ class AppUpdater with UpdateCheckerL10nMixin implements UpdateCheckerL10n {
       final String? releaseNotes = latestRelease['body'] as String?;
       final String? apkUrl = _findApkDownloadUrl(latestRelease['assets'] ?? []);
 
-      final Version current = Version.parse(currentVersion);
-      final Version latest = Version.parse(latestVersion);
-      if (current < latest && context.mounted) {
+      final bool hasUpdate = _isNewerVersion(latestVersion, currentVersion);
+      if (hasUpdate && context.mounted) {
         _showUpdateDialog(
           context,
           releaseUrl,
@@ -79,6 +78,24 @@ class AppUpdater with UpdateCheckerL10nMixin implements UpdateCheckerL10n {
     } catch (e) {
       log.e(() => '检查更新失败', e);
     }
+  }
+
+  /// 比较版本字符串（支持 26.02.02+4 格式），返回 [latestVersion] 是否比 [currentVersion] 新。
+  /// 显式解析主版本与 build 号，避免依赖 pub_semver 对 build 的排序差异。
+  bool _isNewerVersion(String latestVersion, String currentVersion) {
+    final List<String> curParts = currentVersion.split('+');
+    final List<String> latParts = latestVersion.split('+');
+    final String curBase = curParts[0].trim();
+    final String latBase = latParts[0].trim();
+    final int curBuild = curParts.length > 1 ? int.tryParse(curParts[1].trim()) ?? 0 : 0;
+    final int latBuild = latParts.length > 1 ? int.tryParse(latParts[1].trim()) ?? 0 : 0;
+
+    final Version curV = Version.parse(curBase);
+    final Version latV = Version.parse(latBase);
+    if (curV.compareTo(latV) != 0) {
+      return curV.compareTo(latV) < 0;
+    }
+    return curBuild < latBuild;
   }
 
   String? _findApkDownloadUrl(List<dynamic> assets) {
