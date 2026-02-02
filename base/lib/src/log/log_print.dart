@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:developer' as dev;
 
 import 'package:base/env.dart';
+// ignore: implementation_imports
+import 'package:flutter/src/foundation/print.dart';
 import 'package:logging/logging.dart';
 import 'package:stack_trace/stack_trace.dart';
 
@@ -53,11 +55,10 @@ void consoleLog(
 
   message = prefix + lines.join('\n');
 
-  // dev.log 仅在有调试连接时可见（debug 模式）；profile/release 用 print 保证控制台能看到
+  // dev.log 仅在有调试连接时可见（debug 模式）；profile 用 print 保证控制台能看到
   if (kIsApp && kDebugMode) {
     dev.log(message, name: levelName);
   } else {
-    // ignore: avoid_print
-    print('[$levelName] $message');
+    debugPrint('[$levelName] $message');
   }
 }
