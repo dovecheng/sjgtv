@@ -110,7 +110,7 @@ jobs:
           export PATH="$ANDROID_HOME/build-tools/${{ env.ANDROID_BUILD_TOOLS }}:$PATH"
 
           KEYSTORE_FILE=$(mktemp)
-          echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > "$KEYSTORE_FILE"
+          echo "${{ secrets.ANDROID_KEYSTORE }}" | tr -d '\n\r\t ' | base64 --decode > "$KEYSTORE_FILE"
 
           find build/app/outputs/flutter-apk -name '*.apk' | xargs -P 4 -I {} \
             apksigner sign \
