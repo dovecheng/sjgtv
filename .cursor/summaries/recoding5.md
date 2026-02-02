@@ -141,3 +141,7 @@ app/lib/src/
 
 ### 2026-02-02 16:35（图片加载请求头已完成）
 - 待办「图片加载请求头」已由用户完成，摘要中已勾选。
+
+### 2026-02-02（update_checker 与 category_page 小调整）
+- **update_checker**：平台判断改为 base 的 `$platform.isAndroidNative`，日志改为 base 扩展的 `log`（移除 `defaultTargetPlatform` 与实例 `_log`）；依赖 base 导出 extension。
+- **category_page**：移除未使用的 `package:base/extension.dart` 导入。
