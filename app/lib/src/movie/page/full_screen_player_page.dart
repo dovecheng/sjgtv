@@ -84,7 +84,12 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
   final Duration _seekDisplayDuration = const Duration(seconds: 1);
   bool _showSourcePanel = false;
   final FocusNode _sourcePanelFocusNode = FocusNode();
+  final ScrollController _sourcePanelScrollController = ScrollController();
   int _sourcePanelFocusedIndex = 0;
+  /// 每项一个 GlobalKey，用于 Scrollable.ensureVisible 按真实高度滚动
+  late final List<GlobalKey> _sourceItemKeys;
+  /// 项未构建时的估算高度，用于先滚到可见区域再 ensureVisible
+  static const double _sourceListItemHeightFallback = 120.0;
 
   _FullScreenPlayerPageState()
       : _currentSourceIndex = 0,
@@ -118,6 +123,7 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
     _currentEpisodeIndex =
         widget.initialIndex.clamp(0, _episodes.isEmpty ? 0 : _episodes.length - 1);
     _sourcePanelFocusedIndex = _currentSourceIndex;
+    _sourceItemKeys = List.generate(_sources.length, (_) => GlobalKey());
     _player = Player();
     _videoController = VideoController(
       _player,
@@ -226,6 +232,7 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
     _player.dispose();
     _playerFocusNode.dispose();
     _sourcePanelFocusNode.dispose();
+    _sourcePanelScrollController.dispose();
     _controlsVisibility.dispose();
     _isSeeking.dispose();
     _isBuffering.dispose();
@@ -571,6 +578,7 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
             _sourcePanelFocusedIndex = _currentSourceIndex;
             WidgetsBinding.instance.addPostFrameCallback((_) {
               _sourcePanelFocusNode.requestFocus();
+              _scrollSourcePanelToFocusedIndex();
             });
           }
         });
@@ -732,6 +740,39 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
     return '源${_sources.indexOf(source) + 1}';
   }
 
+  /// 将换源面板列表滚动到当前焦点项（按真实高度），使键盘上下移动焦点时可见
+  void _scrollSourcePanelToFocusedIndex() {
+    const Duration duration = Duration(milliseconds: 200);
+    const Curve curve = Curves.easeInOut;
+    void doEnsureVisible() {
+      if (!mounted || _sourcePanelFocusedIndex >= _sourceItemKeys.length) return;
+      final BuildContext? itemContext =
+          _sourceItemKeys[_sourcePanelFocusedIndex].currentContext;
+      if (itemContext != null) {
+        Scrollable.ensureVisible(
+          itemContext,
+          alignment: 0.5,
+          duration: duration,
+          curve: curve,
+        );
+        return;
+      }
+      if (!_sourcePanelScrollController.hasClients) return;
+      final double maxExtent =
+          _sourcePanelScrollController.position.maxScrollExtent;
+      final double estimatedOffset = (_sourcePanelFocusedIndex *
+              _sourceListItemHeightFallback)
+          .clamp(0.0, maxExtent);
+      _sourcePanelScrollController
+          .animateTo(estimatedOffset, duration: duration, curve: curve)
+          .then((_) {
+        if (!mounted) return;
+        WidgetsBinding.instance.addPostFrameCallback((_) => doEnsureVisible());
+      });
+    }
+    WidgetsBinding.instance.addPostFrameCallback((_) => doEnsureVisible());
+  }
+
   Widget _buildSourcePanel() {
     return Positioned(
       top: 0,
@@ -749,12 +790,14 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
                 _sourcePanelFocusedIndex =
                     (_sourcePanelFocusedIndex - 1).clamp(0, _sources.length - 1);
               });
+              _scrollSourcePanelToFocusedIndex();
               return KeyEventResult.handled;
             case LogicalKeyboardKey.arrowDown:
               setState(() {
                 _sourcePanelFocusedIndex =
                     (_sourcePanelFocusedIndex + 1).clamp(0, _sources.length - 1);
               });
+              _scrollSourcePanelToFocusedIndex();
               return KeyEventResult.handled;
             case LogicalKeyboardKey.select:
             case LogicalKeyboardKey.enter:
@@ -799,13 +842,14 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
                 ),
                 Expanded(
                   child: ListView.builder(
+                    controller: _sourcePanelScrollController,
                     padding: EdgeInsets.only(
                       left: 12,
                       right: 12,
                       bottom: MediaQuery.paddingOf(context).bottom,
                     ),
-                  itemCount: _sources.length,
-                  itemBuilder: (BuildContext context, int index) {
+                    itemCount: _sources.length,
+                    itemBuilder: (BuildContext context, int index) {
                     final Map<String, dynamic> source = _sources[index];
                     final String name = _getSourceName(source);
                     final List<Map<String, String>> eps =
@@ -815,9 +859,11 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
                     final String pic = source['vod_pic'] as String? ?? '';
                     final String title =
                         source['vod_name'] as String? ?? '未知';
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 12.0),
-                      child: Material(
+                    return KeyedSubtree(
+                      key: _sourceItemKeys[index],
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 12.0),
+                        child: Material(
                         color: isFocused
                             ? Colors.white24
                             : (isCurrent ? Colors.white12 : Colors.transparent),
@@ -890,6 +936,7 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
                           ),
                         ),
                       ),
+                    ),
                     );
                   },
                 ),
