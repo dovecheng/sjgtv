@@ -58,7 +58,7 @@ app/lib/src/
 - [ ] **TV 与播放**：优化 TV 焦点、遥控、播放器 UI/交互；完善 MediaKit 播放。
 - [ ] **搜索**：已有基础，待优化体验。
 - [ ] **广告过滤**：完善 m3u8_ad_remover。
-- [ ] **图片加载请求头**：图片加载不出来，需加请求头（如来源/Referer）；需确认当前图片控件是否支持自定义请求头。
+- [x] **图片加载请求头**：图片加载不出来，需加请求头（如来源/Referer）；需确认当前图片控件是否支持自定义请求头。（已完成）
 - [ ] **Flutter 代理/标签**（按需）：网页已有管理；是否在 app 内做页待定。
 
 **质量与其它**
@@ -138,3 +138,6 @@ app/lib/src/
 ### 2026-02-02 16:34（config_api 与 search_provider 日志统一为 base Log）
 - **config_api_provider**：移除 `_configPrint` 与 `debugPrint`，统一用 `_log.d` / `_log.e`；闭包内用局部变量避免可空 lint。
 - **search_provider**：所有 `debugPrint` 改为 `_log.d`，请求失败处改为 `_log.e(…, e, s)`；移除未使用的 `foundation.dart` 导入。
+
+### 2026-02-02 16:35（图片加载请求头已完成）
+- 待办「图片加载请求头」已由用户完成，摘要中已勾选。
