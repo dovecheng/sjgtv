@@ -18,6 +18,30 @@ import 'package:uuid/uuid.dart';
 
 final _log = Log('Api');
 
+/// 去掉重复的 vod/api.php/provide/，保证格式为 https://{domain}/api.php/provide/vod。
+String _normalizeSourceBase(String url) {
+  const String duplicate = '/vod/api.php/provide/';
+  if (url.contains(duplicate)) {
+    return url.replaceFirst(duplicate, '/');
+  }
+  return url;
+}
+
+/// 使用代理时：代理 origin + 规范化源 URL，格式为 /https://{domain}/api.php/provide/vod。
+String _resolveBaseUrl(String? proxyUrl, String sourceUrl) {
+  final String normalized = _normalizeSourceBase(sourceUrl);
+  if (proxyUrl == null || proxyUrl.isEmpty) return normalized;
+  final bool sourceIsAbsolute =
+      normalized.startsWith('http://') || normalized.startsWith('https://');
+  if (sourceIsAbsolute) {
+    final Uri uri = Uri.parse(proxyUrl);
+    final String origin =
+        '${uri.scheme}://${uri.host}${uri.port != 80 && uri.port != 443 ? ':${uri.port}' : ''}/';
+    return origin + normalized;
+  }
+  return proxyUrl;
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -648,9 +672,9 @@ Future<Response> _handleSearchRequest(Request request) async {
 
     final results = await Future.wait(
       activeSources.map((source) async {
-        final baseUrl = activeProxy != null
-            ? '${activeProxy['url']}/${source.url}'
-            : source.url;
+        final String? proxyUrl =
+            activeProxy != null ? activeProxy['url'] as String? : null;
+        final String baseUrl = _resolveBaseUrl(proxyUrl, source.url);
         final queryParams = {'ac': 'videolist', 'wd': wd};
 
         try {
