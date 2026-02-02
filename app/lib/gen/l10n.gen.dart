@@ -1,11 +1,11 @@
-// GENERATED CODE BY 2026-02-02 02:57:19 - DO NOT MODIFY BY HAND
+// GENERATED CODE BY 2026-02-02 22:59:24 - DO NOT MODIFY BY HAND
 // ignore_for_file: constant_identifier_names, prefer_single_quotes
 
 import 'package:base/l10n.dart';
 
 /// L10n keys and translations
 ///
-/// Has 122 keys
+/// Has 135 keys
 enum L10n with L10nMixin {
   /// key: app_title
   ///
@@ -448,6 +448,175 @@ enum L10n with L10nMixin {
   ///
   /// keyType: label
   source_url_hint,
+
+  /// key: update_checker_auto_update
+  ///
+  /// en: Auto update
+  ///
+  /// zh_CN: 自动更新
+  ///
+  /// zh_HK: 自動更新
+  ///
+  /// keyDesc: 自动下载并安装按钮
+  ///
+  /// keyType: label
+  update_checker_auto_update,
+
+  /// key: update_checker_cancel_download
+  ///
+  /// en: Cancel download
+  ///
+  /// zh_CN: 取消下载
+  ///
+  /// zh_HK: 取消下載
+  ///
+  /// keyDesc: 取消下载按钮
+  ///
+  /// keyType: label
+  update_checker_cancel_download,
+
+  /// key: update_checker_download_fail
+  ///
+  /// en: Download failed
+  ///
+  /// zh_CN: 下载失败
+  ///
+  /// zh_HK: 下載失敗
+  ///
+  /// keyDesc: 下载失败提示前缀
+  ///
+  /// keyType: error
+  update_checker_download_fail,
+
+  /// key: update_checker_downloading
+  ///
+  /// en: Downloading
+  ///
+  /// zh_CN: 下载中
+  ///
+  /// zh_HK: 下載中
+  ///
+  /// keyDesc: 下载进度前缀
+  ///
+  /// keyType: label
+  update_checker_downloading,
+
+  /// key: update_checker_install_fail
+  ///
+  /// en: Install failed
+  ///
+  /// zh_CN: 安装失败
+  ///
+  /// zh_HK: 安裝失敗
+  ///
+  /// keyDesc: APK 安装失败提示
+  ///
+  /// keyType: error
+  update_checker_install_fail,
+
+  /// key: update_checker_install_permission_required
+  ///
+  /// en: Allow installing unknown apps to install update
+  ///
+  /// zh_CN: 需要允许安装未知应用才能安装更新
+  ///
+  /// zh_HK: 需要允許安裝未知應用才能安裝更新
+  ///
+  /// keyDesc: 未授予安装未知应用权限提示
+  ///
+  /// keyType: message
+  update_checker_install_permission_required,
+
+  /// key: update_checker_later
+  ///
+  /// en: Later
+  ///
+  /// zh_CN: 稍后再说
+  ///
+  /// zh_HK: 稍後再說
+  ///
+  /// keyDesc: 稍后更新按钮
+  ///
+  /// keyType: label
+  update_checker_later,
+
+  /// key: update_checker_manual_update
+  ///
+  /// en: Manual update
+  ///
+  /// zh_CN: 手动更新
+  ///
+  /// zh_HK: 手動更新
+  ///
+  /// keyDesc: 跳转发布页按钮
+  ///
+  /// keyType: label
+  update_checker_manual_update,
+
+  /// key: update_checker_new_version_title
+  ///
+  /// en: New version available
+  ///
+  /// zh_CN: 发现新版本
+  ///
+  /// zh_HK: 發現新版本
+  ///
+  /// keyDesc: 更新对话框标题前缀
+  ///
+  /// keyType: label
+  update_checker_new_version_title,
+
+  /// key: update_checker_no_notes
+  ///
+  /// en: No release notes
+  ///
+  /// zh_CN: 暂无更新说明
+  ///
+  /// zh_HK: 暫無更新說明
+  ///
+  /// keyDesc: 无更新说明时占位
+  ///
+  /// keyType: message
+  update_checker_no_notes,
+
+  /// key: update_checker_storage_required
+  ///
+  /// en: Storage permission required to download update
+  ///
+  /// zh_CN: 需要存储权限才能下载更新
+  ///
+  /// zh_HK: 需要存儲權限才能下載更新
+  ///
+  /// keyDesc: 未授予存储权限提示
+  ///
+  /// keyType: message
+  update_checker_storage_required,
+
+  /// key: update_checker_update_content
+  ///
+  /// en: Update content:
+  ///
+  /// zh_CN: 更新内容:
+  ///
+  /// zh_HK: 更新內容:
+  ///
+  /// keyDesc: 更新说明区域标题
+  ///
+  /// keyType: label
+  update_checker_update_content,
+
+  /// key: update_checker_user_cancel_download
+  ///
+  /// en: User cancelled download
+  ///
+  /// zh_CN: 用户取消下载
+  ///
+  /// zh_HK: 用戶取消下載
+  ///
+  /// keyDesc: 用户取消下载（日志/内部）
+  ///
+  /// keyType: message
+  update_checker_user_cancel_download,
 
   /// key: web_actions
   ///
@@ -1631,6 +1800,21 @@ enum L10n with L10nMixin {
         'source_retry': 'Retry',
         'source_save': 'Save',
         'source_url_hint': 'URL (http or https)',
+        'update_checker_auto_update': 'Auto update',
+        'update_checker_cancel_download': 'Cancel download',
+        'update_checker_download_fail': 'Download failed',
+        'update_checker_downloading': 'Downloading',
+        'update_checker_install_fail': 'Install failed',
+        'update_checker_install_permission_required':
+            'Allow installing unknown apps to install update',
+        'update_checker_later': 'Later',
+        'update_checker_manual_update': 'Manual update',
+        'update_checker_new_version_title': 'New version available',
+        'update_checker_no_notes': 'No release notes',
+        'update_checker_storage_required':
+            'Storage permission required to download update',
+        'update_checker_update_content': 'Update content:',
+        'update_checker_user_cancel_download': 'User cancelled download',
         'web_actions': 'Actions',
         'web_active_sources': 'Active Sources',
         'web_add_proxy': 'Add Proxy',
@@ -1759,6 +1943,19 @@ enum L10n with L10nMixin {
         'source_retry': '重试',
         'source_save': '保存',
         'source_url_hint': '地址（http 或 https）',
+        'update_checker_auto_update': '自动更新',
+        'update_checker_cancel_download': '取消下载',
+        'update_checker_download_fail': '下载失败',
+        'update_checker_downloading': '下载中',
+        'update_checker_install_fail': '安装失败',
+        'update_checker_install_permission_required': '需要允许安装未知应用才能安装更新',
+        'update_checker_later': '稍后再说',
+        'update_checker_manual_update': '手动更新',
+        'update_checker_new_version_title': '发现新版本',
+        'update_checker_no_notes': '暂无更新说明',
+        'update_checker_storage_required': '需要存储权限才能下载更新',
+        'update_checker_update_content': '更新内容:',
+        'update_checker_user_cancel_download': '用户取消下载',
         'web_actions': '操作',
         'web_active_sources': '活跃源',
         'web_add_proxy': '添加代理',
@@ -1887,6 +2084,19 @@ enum L10n with L10nMixin {
         'source_retry': '重試',
         'source_save': '保存',
         'source_url_hint': '地址（http 或 https）',
+        'update_checker_auto_update': '自動更新',
+        'update_checker_cancel_download': '取消下載',
+        'update_checker_download_fail': '下載失敗',
+        'update_checker_downloading': '下載中',
+        'update_checker_install_fail': '安裝失敗',
+        'update_checker_install_permission_required': '需要允許安裝未知應用才能安裝更新',
+        'update_checker_later': '稍後再說',
+        'update_checker_manual_update': '手動更新',
+        'update_checker_new_version_title': '發現新版本',
+        'update_checker_no_notes': '暫無更新說明',
+        'update_checker_storage_required': '需要存儲權限才能下載更新',
+        'update_checker_update_content': '更新內容:',
+        'update_checker_user_cancel_download': '用戶取消下載',
         'web_actions': '操作',
         'web_active_sources': '活躍源',
         'web_add_proxy': '添加代理',

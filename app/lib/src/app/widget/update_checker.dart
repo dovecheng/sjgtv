@@ -2,55 +2,68 @@ import 'dart:io';
 
 import 'package:android_intent_plus/android_intent.dart';
 import 'package:android_intent_plus/flag.dart';
-import 'package:base/converter.dart';
-import 'package:base/log.dart';
+import 'package:base/base.dart';
 import 'package:dio/dio.dart';
+import 'package:pub_semver/pub_semver.dart';
+import 'package:flutter/foundation.dart' show defaultTargetPlatform;
 import 'package:flutter/material.dart';
 import 'package:open_file/open_file.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:sjgtv/src/app/widget/l10n/update_checker_l10n.gen.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-/// 应用更新检查器
+/// 应用更新检查器（单例，混入 [UpdateCheckerL10nMixin] 使用 l10n）
 ///
 /// 功能：
 /// - 从 GitHub Releases 检查最新版本
-/// - 比较当前版本与最新版本
+/// - 比较当前版本与最新版本（支持 26.02.02+2 主版本+build 号）
 /// - 显示更新对话框（含更新说明）
 /// - 支持自动下载 APK 并安装（Android）
-/// - 支持手动跳转到 GitHub 下载页
-abstract final class AppUpdater {
-  static final Log _log = Log('AppUpdater');
-  static final Dio _dio = Dio();
+/// - 支持手动跳转到 GitHub tag 发布页
+class AppUpdater with UpdateCheckerL10nMixin implements UpdateCheckerL10n {
+  AppUpdater._();
+
+  static final AppUpdater instance = AppUpdater._();
+
+  final Log _log = Log('AppUpdater');
+  final Dio _dio = Dio();
   static const String _githubReleasesUrl =
       'https://api.github.com/repos/dovecheng/sjgtv/releases/latest';
+  static const String _githubReleasesTagBase =
+      'https://github.com/dovecheng/sjgtv/releases/tag/';
 
-  static bool _isDownloading = false;
-  static double _downloadProgress = 0;
-  static CancelToken? _cancelToken;
+  bool _isDownloading = false;
+  double _downloadProgress = 0;
+  CancelToken? _cancelToken;
 
-  static Future<void> checkForUpdate(BuildContext context) async {
+  Future<void> checkForUpdate(BuildContext context) async {
     try {
       final PackageInfo packageInfo = await PackageInfo.fromPlatform();
-      final String currentVersion = packageInfo.version;
+      // PackageInfo.version 不含 + 后内容，需与 buildNumber 拼接后再与远程 tag（如 26.02.02+2）比较
+      final String currentVersion = packageInfo.buildNumber.isNotEmpty
+          ? '${packageInfo.version}+${packageInfo.buildNumber}'
+          : packageInfo.version;
 
-      final Response<dynamic> response = await _dio.get<dynamic>(_githubReleasesUrl);
+      final Response<dynamic> response =
+          await _dio.get<dynamic>(_githubReleasesUrl);
       final dynamic latestRelease = response.data;
 
-      // 检查响应是否有效
       if (latestRelease == null || latestRelease['tag_name'] == null) {
         _log.d(() => '检查更新: 无有效的发布版本');
         return;
       }
 
-      final String latestVersion = latestRelease['tag_name'].replaceAll('v', '');
-      final String releaseUrl = latestRelease['html_url'];
-      final String? releaseNotes = latestRelease['body'];
+      final String tagName = latestRelease['tag_name'] as String;
+      final String latestVersion = tagName.replaceAll('v', '').trim();
+      final String releaseUrl = '$_githubReleasesTagBase$tagName';
+      final String? releaseNotes = latestRelease['body'] as String?;
       final String? apkUrl = _findApkDownloadUrl(latestRelease['assets'] ?? []);
 
-      if (_compareVersions(currentVersion, latestVersion) < 0 &&
-          context.mounted) {
+      final Version current = Version.parse(currentVersion);
+      final Version latest = Version.parse(latestVersion);
+      if (current < latest && context.mounted) {
         _showUpdateDialog(
           context,
           releaseUrl,
@@ -60,7 +73,6 @@ abstract final class AppUpdater {
         );
       }
     } on DioException catch (e) {
-      // 404 表示没有发布版本，静默处理
       if (e.response?.statusCode == 404) {
         _log.d(() => '检查更新: 仓库暂无发布版本');
         return;
@@ -71,7 +83,7 @@ abstract final class AppUpdater {
     }
   }
 
-  static String? _findApkDownloadUrl(List<dynamic> assets) {
+  String? _findApkDownloadUrl(List<dynamic> assets) {
     for (final dynamic asset in assets) {
       if (asset['name']?.toString().endsWith('.apk') ?? false) {
         return asset['browser_download_url'];
@@ -80,39 +92,7 @@ abstract final class AppUpdater {
     return null;
   }
 
-  /// 解析版本号，支持 26.02.02+2 格式（主版本 + build 号）
-  static List<int> _parseVersion(String version) {
-    final String raw = version.replaceAll('v', '').trim();
-    final List<String> mainAndBuild = raw.split('+');
-    final String mainPart = mainAndBuild[0].trim();
-    final String buildPart =
-        mainAndBuild.length > 1 ? mainAndBuild[1].trim() : '0';
-    final List<int> mainParts = mainPart
-        .split('.')
-        .map((String e) => IntConverter.toIntOrZero(e))
-        .toList();
-    mainParts.add(IntConverter.toIntOrZero(buildPart));
-    return mainParts;
-  }
-
-  static int _compareVersions(String current, String latest) {
-    final List<int> currentParts = _parseVersion(current);
-    final List<int> latestParts = _parseVersion(latest);
-    final int maxLen = currentParts.length > latestParts.length
-        ? currentParts.length
-        : latestParts.length;
-
-    for (var i = 0; i < maxLen; i++) {
-      final int currentPart = i < currentParts.length ? currentParts[i] : 0;
-      final int latestPart = i < latestParts.length ? latestParts[i] : 0;
-
-      if (currentPart < latestPart) return -1;
-      if (currentPart > latestPart) return 1;
-    }
-    return 0;
-  }
-
-  static void _showUpdateDialog(
+  void _showUpdateDialog(
     BuildContext context,
     String url,
     String version,
@@ -129,7 +109,7 @@ abstract final class AppUpdater {
           final TextTheme textTheme = theme.textTheme;
           return AlertDialog(
             title: Text(
-              '发现新版本 v$version',
+              '$newVersionTitleL10n v$version',
               style: textTheme.titleLarge,
             ),
             content: SingleChildScrollView(
@@ -137,10 +117,10 @@ abstract final class AppUpdater {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text('更新内容:', style: textTheme.titleSmall),
+                  Text(updateContentL10n, style: textTheme.titleSmall),
                   const SizedBox(height: 8),
                   Text(
-                    notes.isNotEmpty ? notes : '暂无更新说明',
+                    notes.isNotEmpty ? notes : noNotesL10n,
                     style: textTheme.bodyMedium,
                   ),
                   if (_isDownloading) ...[
@@ -148,11 +128,12 @@ abstract final class AppUpdater {
                     LinearProgressIndicator(
                       value: _downloadProgress,
                       backgroundColor: colorScheme.surfaceContainerHighest,
-                      valueColor: AlwaysStoppedAnimation<Color>(colorScheme.primary),
+                      valueColor:
+                          AlwaysStoppedAnimation<Color>(colorScheme.primary),
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      '下载中: ${(_downloadProgress * 100).toStringAsFixed(1)}%',
+                      '$downloadingL10n: ${(_downloadProgress * 100).toStringAsFixed(1)}%',
                       style: textTheme.bodySmall,
                     ),
                   ],
@@ -163,13 +144,13 @@ abstract final class AppUpdater {
               if (!_isDownloading) ...[
                 TextButton(
                   onPressed: () => Navigator.pop(context),
-                  child: const Text('稍后再说'),
+                  child: Text(laterL10n),
                 ),
-                if (apkUrl != null)
+                if (defaultTargetPlatform.isAndroidNative && apkUrl != null)
                   TextButton(
                     onPressed: () =>
                         _downloadAndInstallApk(context, apkUrl, setState),
-                    child: const Text('自动更新'),
+                    child: Text(autoUpdateL10n),
                   ),
                 TextButton(
                   onPressed: () async {
@@ -181,12 +162,12 @@ abstract final class AppUpdater {
                       );
                     }
                   },
-                  child: const Text('手动更新'),
+                  child: Text(manualUpdateL10n),
                 ),
               ] else ...[
                 TextButton(
                   onPressed: _cancelDownload,
-                  child: const Text('取消下载'),
+                  child: Text(cancelDownloadL10n),
                 ),
               ],
             ],
@@ -196,27 +177,34 @@ abstract final class AppUpdater {
     );
   }
 
-  static Future<void> _downloadAndInstallApk(
+  Future<void> _downloadAndInstallApk(
     BuildContext context,
     String apkUrl,
     StateSetter setState,
   ) async {
+    if (!defaultTargetPlatform.isAndroidNative) return;
     try {
-      // 请求存储权限
       final PermissionStatus status = await Permission.storage.request();
       if (!status.isGranted) {
         if (context.mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(const SnackBar(content: Text('需要存储权限才能下载更新')));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(storageRequiredL10n)),
+          );
         }
         return;
       }
 
-      // 请求安装未知来源应用的权限
-      if (Platform.isAndroid) {
+      if (defaultTargetPlatform.isAndroidNative) {
         if (!await Permission.requestInstallPackages.isGranted) {
           await Permission.requestInstallPackages.request();
+          if (!await Permission.requestInstallPackages.isGranted) {
+            if (context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(installPermissionRequiredL10n)),
+              );
+            }
+            return;
+          }
         }
       }
 
@@ -231,7 +219,7 @@ abstract final class AppUpdater {
           '${dir.path}/update_${DateTime.now().millisecondsSinceEpoch}.apk';
 
       await _dio.download(
-        "https://proxy.aini.us.kg/$apkUrl",
+        'https://proxy.aini.us.kg/$apkUrl',
         savePath,
         cancelToken: _cancelToken,
         onReceiveProgress: (received, total) {
@@ -251,9 +239,18 @@ abstract final class AppUpdater {
         Navigator.pop(context);
       }
 
-      // 安装APK
-      if (Platform.isAndroid) {
-        await _installApk(savePath);
+      if (defaultTargetPlatform.isAndroidNative) {
+        if (!await Permission.requestInstallPackages.isGranted) {
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(installPermissionRequiredL10n)),
+            );
+          }
+          return;
+        }
+        if (context.mounted) {
+          await _installApk(context, savePath);
+        }
       }
     } catch (e) {
       _log.e(() => '下载失败', e);
@@ -262,35 +259,54 @@ abstract final class AppUpdater {
       });
 
       if (context.mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('下载失败: ${e.toString()}')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('$downloadFailL10n: ${e.toString()}')),
+        );
       }
     }
   }
 
-  static Future<void> _installApk(String apkPath) async {
-    if (await File(apkPath).exists()) {
+  /// 安装 APK。Android 7+ 必须通过 FileProvider 提供 content URI，不能使用 file://，
+  /// 故优先使用 [OpenFile.open]（内部使用 FileProvider），失败时再尝试 [AndroidIntent]。
+  Future<void> _installApk(BuildContext? context, String apkPath) async {
+    if (!await File(apkPath).exists()) return;
+    if (!defaultTargetPlatform.isAndroidNative) return;
+    try {
+      final OpenResult result = await OpenFile.open(apkPath);
+      if (result.type != ResultType.done &&
+          context != null &&
+          context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              result.message.isEmpty ? installFailL10n : result.message,
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      _log.e(() => '安装失败', e);
       try {
-        if (Platform.isAndroid) {
-          final AndroidIntent intent = AndroidIntent(
-            action: 'action_view',
-            type: 'application/vnd.android.package-archive',
-            data: Uri.file(apkPath).toString(), // 使用 Uri.file 替代 Uri.fromFile
-            flags: <int>[Flag.FLAG_ACTIVITY_NEW_TASK],
+        final AndroidIntent intent = AndroidIntent(
+          action: 'action_view',
+          type: 'application/vnd.android.package-archive',
+          data: Uri.file(apkPath).toString(),
+          flags: <int>[Flag.FLAG_ACTIVITY_NEW_TASK],
+        );
+        await intent.launch();
+      } catch (e2) {
+        _log.e(() => '安装失败（备用 intent）', e2);
+        if (context != null && context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('$installFailL10n: ${e.toString()}')),
           );
-          await intent.launch();
         }
-      } catch (e) {
-        _log.e(() => '安装失败', e);
-        // 如果使用intent失败，尝试使用open_file
-        await OpenFile.open(apkPath);
       }
     }
   }
 
-  static void _cancelDownload() {
-    _cancelToken?.cancel('用户取消下载');
+  void _cancelDownload() {
+    _cancelToken?.cancel(userCancelDownloadL10n);
     _isDownloading = false;
     _downloadProgress = 0;
   }

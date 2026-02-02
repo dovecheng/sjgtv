@@ -64,7 +64,7 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
   Future<void> _checkForUpdates() async {
     await Future.delayed(const Duration(seconds: 1));
     if (!mounted) return;
-    await AppUpdater.checkForUpdate(context);
+    await AppUpdater.instance.checkForUpdate(context);
   }
 
   @override
@@ -321,15 +321,16 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
             },
             focusColor: Colors.red,
           ),
-          if ($platform.isMobileNative &&
-              context.mediaQuery.deviceType == DeviceType.tv) ...[
+          // FIXME(dove): 2026-02-02 判断的不对, 实际设备是 TV, 但是也没显示二维码
+          // if ($platform.isMobileNative &&
+          //     context.mediaQuery.deviceType == DeviceType.tv) ...[
             const SizedBox(width: 10),
             IconButton(
               icon: const Icon(Icons.settings, size: 20),
               onPressed: _showQRCodeDialog,
               focusColor: Colors.red,
             ),
-          ],
+          // ],
         ],
       ),
     );
