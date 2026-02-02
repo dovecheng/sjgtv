@@ -611,6 +611,34 @@
             "problemMatcher": []
         },
         {
+            "label": "adb: connect 192.168.3.158",
+            "command": "/bin/bash",
+            "args": [
+                "-lc",
+                "source ~/.bashrc && adb connect 192.168.3.158"
+            ],
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "adb: disconnect 192.168.3.158",
+            "command": "/bin/bash",
+            "args": [
+                "-lc",
+                "source ~/.bashrc && adb disconnect 192.168.3.158"
+            ],
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
             "label": "adb: connect localhost:5555",
             "command": "/bin/bash",
             "args": [
