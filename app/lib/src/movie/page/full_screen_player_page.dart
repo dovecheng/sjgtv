@@ -5,6 +5,7 @@ import 'package:base/extension.dart';
 import 'package:base/log.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:path_provider/path_provider.dart';
@@ -90,6 +91,10 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
   late final List<GlobalKey> _sourceItemKeys;
   /// 项未构建时的估算高度，用于先滚到可见区域再 ensureVisible
   static const double _sourceListItemHeightFallback = 120.0;
+  /// 源测试结果：延迟(ms)、m3u8 是否可用
+  final Map<int, _SourceTestResult> _sourceTestResults = {};
+  /// 正在测试的源下标
+  final Set<int> _sourceTestingIndices = {};
 
   _FullScreenPlayerPageState()
       : _currentSourceIndex = 0,
@@ -579,6 +584,7 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               _sourcePanelFocusNode.requestFocus();
               _scrollSourcePanelToFocusedIndex();
+              _testAllSources();
             });
           }
         });
@@ -738,6 +744,80 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
     final dynamic s = source['source'];
     if (s is Map && s['name'] != null) return s['name'] as String;
     return '源${_sources.indexOf(source) + 1}';
+  }
+
+  static const Duration _sourceTestTimeout = Duration(seconds: 10);
+
+  /// 对单个源测速并检测 m3u8 可用性
+  Future<void> _testOneSource(int index) async {
+    if (index < 0 || index >= _sources.length) return;
+    setState(() => _sourceTestingIndices.add(index));
+    int? speedMs;
+    bool m3u8Ok = false;
+    try {
+      final List<Map<String, String>> eps =
+          _parseEpisodesFromPlayUrl(_sources[index]);
+      final String? url =
+          eps.isNotEmpty ? eps[0]['url'] : null;
+      if (url == null || url.isEmpty) {
+        if (mounted) {
+          setState(() {
+            _sourceTestingIndices.remove(index);
+            _sourceTestResults[index] = _SourceTestResult(
+              speedMs: null,
+              speedKbps: null,
+              m3u8Ok: false,
+            );
+          });
+        }
+        return;
+      }
+      final Stopwatch stopwatch = Stopwatch()..start();
+      final http.Response response = await http
+          .get(Uri.parse(url))
+          .timeout(_sourceTestTimeout);
+      stopwatch.stop();
+      speedMs = stopwatch.elapsedMilliseconds;
+      final String body = response.body.trim();
+      final int bodyBytes = response.bodyBytes.length;
+      m3u8Ok = response.statusCode == 200 && body.contains('#EXTM3U');
+      double? speedKbps;
+      if (speedMs > 0 && bodyBytes > 0) {
+        speedKbps = bodyBytes / 1024 / (speedMs / 1000);
+      }
+      if (mounted) {
+        setState(() {
+          _sourceTestingIndices.remove(index);
+          _sourceTestResults[index] = _SourceTestResult(
+            speedMs: speedMs,
+            speedKbps: speedKbps,
+            m3u8Ok: m3u8Ok,
+          );
+        });
+      }
+    } catch (e) {
+      _log.d(() => '源$index 测试失败: $e');
+      if (mounted) {
+        setState(() {
+          _sourceTestingIndices.remove(index);
+          _sourceTestResults[index] = _SourceTestResult(
+            speedMs: speedMs,
+            speedKbps: null,
+            m3u8Ok: false,
+          );
+        });
+      }
+    }
+  }
+
+  /// 对全部源并发测速并检测 m3u8 可用性
+  void _testAllSources() {
+    _sourceTestResults.clear();
+    _sourceTestingIndices.clear();
+    setState(() {});
+    for (int i = 0; i < _sources.length; i++) {
+      _testOneSource(i);
+    }
   }
 
   /// 将换源面板列表滚动到当前焦点项（按真实高度），使键盘上下移动焦点时可见
@@ -928,6 +1008,8 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
                                           fontSize: 12,
                                         ),
                                       ),
+                                      const SizedBox(height: 4),
+                                      _buildSourceTestStatus(index),
                                     ],
                                   ),
                                 ),
@@ -946,6 +1028,74 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildSourceTestStatus(int index) {
+    final bool testing = _sourceTestingIndices.contains(index);
+    final _SourceTestResult? result = _sourceTestResults[index];
+    if (testing) {
+      return Row(
+        children: [
+          SizedBox(
+            width: 12,
+            height: 12,
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              color: Colors.white70,
+            ),
+          ),
+          const SizedBox(width: 6),
+          Text(
+            '测试中...',
+            style: TextStyle(color: Colors.white70, fontSize: 11),
+          ),
+        ],
+      );
+    }
+    if (result == null) {
+      return const SizedBox.shrink();
+    }
+    const double fontSize = 11.0;
+    const Color speedColor = Colors.greenAccent;
+    const Color delayColor = Colors.orange;
+    final String speedStr = result.speedKbps != null
+        ? '${result.speedKbps!.toStringAsFixed(1)} KB/s'
+        : '-- KB/s';
+    final String delayStr = result.speedMs != null
+        ? '${result.speedMs}ms'
+        : '--ms';
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          '下载速度 $speedStr',
+          style: TextStyle(
+            color: speedColor.withValues(alpha: 0.95),
+            fontSize: fontSize,
+          ),
+        ),
+        const SizedBox(height: 2),
+        Text(
+          '延迟 $delayStr',
+          style: TextStyle(
+            color: delayColor.withValues(alpha: 0.95),
+            fontSize: fontSize,
+          ),
+        ),
+        if (!result.m3u8Ok)
+          Padding(
+            padding: const EdgeInsets.only(top: 2),
+            child: Text(
+              'm3u8 不可用',
+              style: TextStyle(
+                color: Colors.redAccent.withValues(alpha: 0.9),
+                fontSize: fontSize - 1,
+              ),
+            ),
+          ),
+      ],
     );
   }
 
@@ -1226,6 +1376,20 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
       ),
     );
   }
+}
+
+/// 单个源的测速与 m3u8 可用性结果
+class _SourceTestResult {
+  const _SourceTestResult({
+    required this.speedMs,
+    required this.speedKbps,
+    required this.m3u8Ok,
+  });
+  /// 延迟（毫秒）
+  final int? speedMs;
+  /// 下载速度（KB/s）
+  final double? speedKbps;
+  final bool m3u8Ok;
 }
 
 Future<String> _processM3u8Url(String url) async {
