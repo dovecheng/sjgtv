@@ -7,10 +7,36 @@ import 'package:sjgtv/src/movie/page/search_page.dart';
 import 'package:sjgtv/src/movie/widget/network_image_placeholders.dart';
 
 /// 可聚焦的电影卡片组件（TV 遥控器适配）
+///
+/// 当 [gridIndex]、[crossAxisCount]、[itemCount]、[onMoveFocus] 均非空时，
+/// 方向键会在网格内按行/列移动焦点，避免上键焦点跳到外部。
 class FocusableMovieCard extends StatefulWidget {
   final MovieModel movie;
 
-  const FocusableMovieCard({super.key, required this.movie});
+  /// 可选，由父组件传入以便 requestFocus
+  final FocusNode? focusNode;
+
+  /// 在网格中的索引（与 [onMoveFocus] 一起用于方向键网格内移动）
+  final int? gridIndex;
+
+  /// 网格列数
+  final int? crossAxisCount;
+
+  /// 网格总项数
+  final int? itemCount;
+
+  /// 将焦点移到目标索引的卡片
+  final void Function(int targetIndex)? onMoveFocus;
+
+  const FocusableMovieCard({
+    super.key,
+    required this.movie,
+    this.focusNode,
+    this.gridIndex,
+    this.crossAxisCount,
+    this.itemCount,
+    this.onMoveFocus,
+  });
 
   @override
   State<FocusableMovieCard> createState() => _FocusableMovieCardState();
@@ -22,19 +48,46 @@ class _FocusableMovieCardState extends State<FocusableMovieCard> {
   @override
   Widget build(BuildContext context) {
     final ColorScheme colorScheme = context.theme.colorScheme;
+    final bool canMoveInGrid = widget.gridIndex != null &&
+        widget.crossAxisCount != null &&
+        widget.itemCount != null &&
+        widget.onMoveFocus != null;
+
     return Focus(
+      focusNode: widget.focusNode,
       onKeyEvent: (FocusNode node, KeyEvent event) {
-        if (event is KeyDownEvent &&
-            (event.logicalKey == LogicalKeyboardKey.select ||
-                event.logicalKey == LogicalKeyboardKey.enter)) {
-          Navigator.push(
-            context,
-            MaterialPageRoute<void>(
-              builder: (BuildContext context) =>
-                  SearchPage(initialQuery: widget.movie.title),
-            ),
-          );
-          return KeyEventResult.handled;
+        if (event is KeyDownEvent) {
+          if (event.logicalKey == LogicalKeyboardKey.select ||
+              event.logicalKey == LogicalKeyboardKey.enter) {
+            Navigator.push(
+              context,
+              MaterialPageRoute<void>(
+                builder: (BuildContext context) =>
+                    SearchPage(initialQuery: widget.movie.title),
+              ),
+            );
+            return KeyEventResult.handled;
+          }
+          if (canMoveInGrid) {
+            final int i = widget.gridIndex!;
+            final int cols = widget.crossAxisCount!;
+            final int n = widget.itemCount!;
+            final void Function(int) move = widget.onMoveFocus!;
+            int? target;
+            if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
+              target = i - cols;
+            } else if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
+              target = i + cols;
+            } else if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+              if (i % cols != 0) target = i - 1;
+            } else if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
+              if ((i + 1) % cols != 0 && i + 1 < n) target = i + 1;
+            }
+            if (target != null && target >= 0 && target < n) {
+              move(target);
+              return KeyEventResult.handled;
+            }
+          }
         }
         return KeyEventResult.ignored;
       },
