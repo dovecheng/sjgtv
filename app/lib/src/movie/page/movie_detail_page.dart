@@ -87,6 +87,8 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
   }
 
   void _playEpisode(int index) {
+    final List<Map<String, dynamic>>? sources =
+        widget.movie['sources'] as List<Map<String, dynamic>>?;
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -94,6 +96,8 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
           movie: widget.movie,
           episodes: _episodes,
           initialIndex: index,
+          sources: sources,
+          currentSourceIndex: 0,
         ),
       ),
     );
