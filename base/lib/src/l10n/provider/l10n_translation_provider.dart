@@ -40,16 +40,18 @@ class L10nTranslationProvider extends _$L10nTranslationProvider {
     if (tr == null && presetTranslations.isNotEmpty) {
       tr = presetTranslations.first;
     }
-    if (tr == null) {
-      tr = L10nTranslationModel(languageTag: 'en', translations: <String, String>{});
-    }
+    tr ??= L10nTranslationModel(
+      languageTag: 'en',
+      translations: <String, String>{},
+    );
     final L10nTranslationModel result = tr;
 
-    if (presetTranslations != L10n.translations && L10n.translations.isNotEmpty) {
+    if (presetTranslations != L10n.translations &&
+        L10n.translations.isNotEmpty) {
       L10nTranslationModel? baseTr = L10n.translations.firstWhereOrNull(
         (L10nTranslationModel e) => e.languageTag == result.languageTag,
       );
-      if (baseTr == null) baseTr = L10n.translations.first;
+      baseTr ??= L10n.translations.first;
       result.translations = {...?baseTr.translations, ...?result.translations};
     }
 
