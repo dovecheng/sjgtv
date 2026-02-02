@@ -20,35 +20,12 @@ import 'package:sjgtv/src/tag/model/tag_model.dart';
 import 'package:sjgtv/src/proxy/provider/proxies_provider.dart';
 import 'package:sjgtv/src/source/provider/sources_provider.dart';
 import 'package:sjgtv/src/tag/provider/tags_provider.dart';
+import 'package:sjgtv/src/source/util/source_url_util.dart';
 import 'package:base/provider.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 
 final Log _log = Log('Api');
-
-/// 去掉重复的 vod/api.php/provide/，保证格式为 https://{domain}/api.php/provide/vod。
-String _normalizeSourceBase(String url) {
-  const String duplicate = '/vod/api.php/provide/';
-  if (url.contains(duplicate)) {
-    return url.replaceFirst(duplicate, '/');
-  }
-  return url;
-}
-
-/// 使用代理时：代理 origin + 规范化源 URL，格式为 /https://{domain}/api.php/provide/vod。
-String _resolveBaseUrl(ProxyModel? proxy, String sourceUrl) {
-  final String normalized = _normalizeSourceBase(sourceUrl);
-  if (proxy == null) return normalized;
-  final bool sourceIsAbsolute =
-      normalized.startsWith('http://') || normalized.startsWith('https://');
-  if (sourceIsAbsolute) {
-    final Uri uri = Uri.parse(proxy.url);
-    final String origin =
-        '${uri.scheme}://${uri.host}${uri.port != 80 && uri.port != 443 ? ':${uri.port}' : ''}/';
-    return origin + normalized;
-  }
-  return proxy.url;
-}
 
 /// shelf 本地 API 服务单例（混入 [ShelfApiL10nMixin]，方法内用 this.xxxL10n 获取翻译）
 class ShelfApi with ShelfApiL10nMixin implements ShelfApiL10n {
@@ -456,7 +433,7 @@ class ShelfApi with ShelfApiL10nMixin implements ShelfApiL10n {
       final List<dynamic> results = await Future.wait<dynamic>(
         activeSourceModels.map((SourceModel source) async {
           final String baseUrl =
-              _resolveBaseUrl(activeProxyModel, source.url);
+              resolveSourceBaseUrl(activeProxyModel, source.url);
           final Map<String, String> queryParams = {'ac': 'videolist', 'wd': wd};
 
           try {
