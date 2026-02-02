@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:base/api.dart';
-import 'package:base/converter.dart';
 import 'package:base/log.dart';
 import 'package:dio/dio.dart';
 
@@ -35,11 +34,9 @@ class ApiLogInterceptor extends Interceptor {
     response.requestOptions.responseTime = DateTime.now();
 
     if (response.requestOptions.isLoggable) {
-      int? code = switch (response.data) {
-        {'code': Object code} => IntConverter.toInt(code),
-        _ => response.statusCode,
-      };
-      LogLevel level = code == 200 ? LogLevel.info : LogLevel.warn;
+      LogLevel level = response.statusCode == 200
+          ? LogLevel.info
+          : LogLevel.warn;
 
       log.log(level, () {
         Map<String, dynamic> map = {
@@ -59,9 +56,7 @@ class ApiLogInterceptor extends Interceptor {
   void onError(DioException err, ErrorInterceptorHandler handler) {
     err.requestOptions.responseTime ??= DateTime.now();
 
-    if ( /*err.type != DioExceptionType.cancel && */ err
-        .requestOptions
-        .isLoggable) {
+    if (err.requestOptions.isLoggable) {
       log.e(() {
         Map<String, dynamic> map = {
           ...err.requestOptions.toMap(),

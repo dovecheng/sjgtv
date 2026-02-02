@@ -1,7 +1,7 @@
 import 'package:base/cache.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:sjgtv/src/app/theme/app_theme.dart';
+import 'package:base/app.dart';
 import 'package:sjgtv/src/movie/model/movie_model.dart';
 import 'package:sjgtv/src/movie/page/search_page.dart';
 import 'package:sjgtv/src/movie/widget/network_image_placeholders.dart';
@@ -21,7 +21,7 @@ class _FocusableMovieCardState extends State<FocusableMovieCard> {
 
   @override
   Widget build(BuildContext context) {
-    final AppThemeColors colors = context.appThemeColors;
+    final ColorScheme colorScheme = context.theme.colorScheme;
     return Focus(
       onKeyEvent: (FocusNode node, KeyEvent event) {
         if (event is KeyDownEvent &&
@@ -52,28 +52,26 @@ class _FocusableMovieCardState extends State<FocusableMovieCard> {
                 ? Border.all(color: Colors.white, width: 2.0)
                 : null,
           ),
-          child: ClipRect(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Expanded(
-                  flex: 4,
-                  child: ClipRRect(
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(12),
-                      topRight: Radius.circular(12),
-                    ),
-                    child: Container(
-                    decoration: BoxDecoration(color: colors.cardSurface),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                flex: 4,
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(12),
+                    topRight: Radius.circular(12),
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(color: colorScheme.surfaceContainer),
                     child: widget.movie.coverUrl != null
                         ? CachedImage(
                             imageUrl: widget.movie.coverUrl!,
-                            httpHeaders: const <String, String>{
+                            httpHeaders: const {
                               'User-Agent':
-                                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0',
+                                  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
                               'Accept':
                                   'image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8',
-                              'Referer': 'https://movie.douban.com/',
                             },
                             fit: BoxFit.cover,
                             width: double.infinity,
@@ -84,7 +82,7 @@ class _FocusableMovieCardState extends State<FocusableMovieCard> {
                                 networkImageErrorWidget(ctx),
                           )
                         : Container(
-                            color: colors.surfaceVariant,
+                            color: colorScheme.surfaceContainerLow,
                             child: Center(
                               child: Text(
                                 widget.movie.title.split(' ').first,
@@ -97,27 +95,26 @@ class _FocusableMovieCardState extends State<FocusableMovieCard> {
                               ),
                             ),
                           ),
-                    ),
                   ),
                 ),
+              ),
               Container(
-                height: 56,
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                height: 70,
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 decoration: BoxDecoration(
-                  color: colors.cardSurface,
+                  color: colorScheme.surfaceContainer,
                   borderRadius: const BorderRadius.vertical(
                     bottom: Radius.circular(12),
                   ),
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       widget.movie.title,
                       style: const TextStyle(
-                        fontSize: 15,
+                        fontSize: 18,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
@@ -129,17 +126,16 @@ class _FocusableMovieCardState extends State<FocusableMovieCard> {
                       children: [
                         Text(
                           '${widget.movie.year}',
-                          style: const TextStyle(fontSize: 13, color: Colors.grey),
+                          style: const TextStyle(fontSize: 16, color: Colors.grey),
                         ),
                         Row(
-                          mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(Icons.star, size: 14, color: Colors.amber),
-                            const SizedBox(width: 2),
+                            const Icon(Icons.star, size: 16, color: Colors.amber),
+                            const SizedBox(width: 4),
                             Text(
                               '${widget.movie.rating}',
                               style: const TextStyle(
-                                fontSize: 13,
+                                fontSize: 16,
                                 color: Colors.amber,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -155,7 +151,6 @@ class _FocusableMovieCardState extends State<FocusableMovieCard> {
           ),
         ),
       ),
-    ),
     );
   }
 }

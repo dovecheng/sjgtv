@@ -18,7 +18,7 @@ import 'package:sjgtv/src/proxy/model/proxy_model.dart';
 import 'package:sjgtv/src/source/model/source_model.dart';
 import 'package:sjgtv/src/tag/model/tag_model.dart';
 import 'package:sjgtv/src/proxy/provider/proxies_provider.dart';
-import 'package:sjgtv/src/source/provider/sources_storage_provider.dart';
+import 'package:sjgtv/src/source/provider/sources_provider.dart';
 import 'package:sjgtv/src/tag/provider/tags_provider.dart';
 import 'package:base/provider.dart';
 import 'package:path_provider/path_provider.dart';
@@ -103,7 +103,7 @@ class ShelfApi with ShelfApiL10nMixin implements ShelfApiL10n {
   Future<Response> handleGetSourceModels(Request request) async {
     try {
       final List<SourceModel> sources =
-          await $ref.read(sourcesStorageProvider.future);
+          await $ref.read(sourcesProvider.future);
       return createSuccessResponse(sources.map((SourceModel s) => s.toJson()).toList());
     } catch (e) {
       return createErrorResponse(getSourceListFailL10n, 500, e);
@@ -139,7 +139,7 @@ class ShelfApi with ShelfApiL10nMixin implements ShelfApiL10n {
       );
 
       final SourceModel newSourceModel =
-          await $ref.read(sourcesStorageProvider.notifier).addSource(source);
+          await $ref.read(sourcesProvider.notifier).addSource(source);
 
       return createSuccessResponse(newSourceModel.toJson(), msg: sourceAddSuccessL10n);
     } catch (e) {
@@ -169,7 +169,7 @@ class ShelfApi with ShelfApiL10nMixin implements ShelfApiL10n {
       }
 
       final List<SourceModel> existing =
-          await $ref.read(sourcesStorageProvider.future);
+          await $ref.read(sourcesProvider.future);
       SourceModel? src;
       for (final SourceModel s in existing) {
         if (s.uuid == data['id']) {
@@ -191,7 +191,7 @@ class ShelfApi with ShelfApiL10nMixin implements ShelfApiL10n {
       );
 
       final SourceModel result =
-          await $ref.read(sourcesStorageProvider.notifier).updateSource(updated);
+          await $ref.read(sourcesProvider.notifier).updateSource(updated);
       return createSuccessResponse(result.toJson(), msg: sourceUpdateSuccessL10n);
     } catch (e) {
       return createErrorResponse(e.toString(), 400, e);
@@ -204,7 +204,7 @@ class ShelfApi with ShelfApiL10nMixin implements ShelfApiL10n {
       if (id == null) throw Exception(idRequiredL10n);
 
       final SourceModel updatedSourceModel =
-          await $ref.read(sourcesStorageProvider.notifier).toggleSource(id);
+          await $ref.read(sourcesProvider.notifier).toggleSource(id);
       return createSuccessResponse(updatedSourceModel.toJson());
     } catch (e) {
       return createErrorResponse(e.toString(), 400, e);
@@ -216,7 +216,7 @@ class ShelfApi with ShelfApiL10nMixin implements ShelfApiL10n {
       final String? id = request.url.queryParameters['id'];
       if (id == null) throw Exception(idRequiredL10n);
 
-      await $ref.read(sourcesStorageProvider.notifier).deleteSource(id);
+      await $ref.read(sourcesProvider.notifier).deleteSource(id);
       return createSuccessResponse(null);
     } catch (e) {
       return createErrorResponse(e.toString(), 400, e);
@@ -410,7 +410,7 @@ class ShelfApi with ShelfApiL10nMixin implements ShelfApiL10n {
 
     try {
       final List<SourceModel> sources =
-          await $ref.read(sourcesStorageProvider.future);
+          await $ref.read(sourcesProvider.future);
       final List<SourceModel> activeSourceModels =
           sources.where((SourceModel s) => !s.disabled).toList();
 

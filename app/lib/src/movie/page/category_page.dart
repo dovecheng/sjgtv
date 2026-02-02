@@ -1,5 +1,8 @@
 import 'dart:io';
 
+import 'package:base/api.dart';
+import 'package:base/app.dart';
+import 'package:base/extension.dart';
 import 'package:base/log.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -10,21 +13,11 @@ import 'package:sjgtv/src/movie/model/movie_model.dart';
 import 'package:sjgtv/src/tag/model/tag_model.dart';
 import 'package:sjgtv/src/tag/provider/tags_provider.dart';
 import 'package:sjgtv/src/movie/page/search_page.dart';
-import 'package:sjgtv/src/app/theme/app_theme.dart';
 import 'package:sjgtv/src/app/widget/update_checker.dart';
 import 'package:sjgtv/src/source/page/source_manage_page.dart';
 import 'package:sjgtv/src/movie/widget/focusable_movie_card.dart';
 
 final Log _log = Log('MovieHomePage');
-
-/// 豆瓣请求用独立 Dio，不经过 base 拦截器，与 curl 行为一致避免 400
-final Dio _doubanDio = Dio();
-
-/// 仅加 User-Agent，与 curl 无头或简单头一致
-const Map<String, String> _doubanRequestHeaders = <String, String>{
-  'User-Agent':
-      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0',
-};
 
 /// 电影首页（分类浏览）
 ///
@@ -43,6 +36,7 @@ class MovieHomePage extends ConsumerStatefulWidget {
 }
 
 class _MovieHomePageState extends ConsumerState<MovieHomePage> {
+  Dio get _dio => ref.read(apiClientProvider);
   int _selectedTab = 0;
   bool _isLoading = false;
   bool _isRefreshing = false;
@@ -83,8 +77,11 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
     final double maxScroll = position.maxScrollExtent;
     final double currentScroll = position.pixels;
 
-    if (_tabs.isEmpty) return;
-    if (currentScroll >= maxScroll - 1.0 && _hasMore && !_isLoading) {
+    if (currentScroll >= maxScroll - 1.0 &&
+        _hasMore &&
+        !_isLoading &&
+        _tabs.isNotEmpty &&
+        _selectedTab < _tabs.length) {
       final DateTime now = DateTime.now();
       if (_lastLoadMoreTime == null ||
           now.difference(_lastLoadMoreTime!) > Duration(milliseconds: 100)) {
@@ -108,13 +105,10 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
 
   Future<void> _fetchTags() async {
     try {
-      final List<TagModel> tags =
-          await ref.read(tagsStorageProvider.future);
+      final List<TagModel> tags = await ref.read(tagsStorageProvider.future);
       if (!mounted) return;
       setState(() {
-        final List<String> names = tags.map((TagModel tag) => tag.name).toList();
-        _tabs = names.isEmpty ? ['暂无标签'] : names;
-        _selectedTab = 0;
+        _tabs = tags.map((TagModel tag) => tag.name).toList();
         for (String tag in _tabs) {
           _currentPageByTag[tag] = 0;
         }
@@ -129,6 +123,7 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
   }
 
   Future<void> _fetchMovies(String tag, {bool loadMore = false}) async {
+    if (tag == '加载中...' || tag == '获取标签失败') return;
     if (!loadMore && _loadedTags.contains(tag)) {
       return;
     }
@@ -139,44 +134,30 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
       final int currentPage = loadMore ? (_currentPageByTag[tag] ?? 0) : 0;
       final int startIndex = currentPage * _moviesPerPage;
 
-      const String path = 'https://movie.douban.com/j/search_subjects';
-      final String requestUrl =
-          '$path?type=movie&tag=${Uri.encodeComponent(tag)}&sort=recommend&page_limit=$_moviesPerPage&page_start=$startIndex';
-      debugPrint('[豆瓣API] 实际请求URL: $requestUrl');
-      debugPrint('[豆瓣API] 参数: tag=$tag, page_start=$startIndex');
-
-      final Response<dynamic> response = await _doubanDio.get<dynamic>(
-        requestUrl,
-        options: Options(headers: _doubanRequestHeaders),
+      final Response<dynamic> response = await _dio.get<dynamic>(
+        'https://movie.douban.com/j/search_subjects',
+        queryParameters: <String, String>{
+          'type': 'movie',
+          'tag': tag,
+          'sort': 'recommend',
+          'page_limit': _moviesPerPage.toString(),
+          'page_start': startIndex.toString(),
+        },
+        options: Options(headers: <String, String>{'Content-Type': ''}),
       );
 
-      debugPrint('[豆瓣API] 响应: statusCode=${response.statusCode}, data类型=${response.data?.runtimeType}');
-      if (response.data is Map) {
-        final Map<dynamic, dynamic> m = response.data as Map<dynamic, dynamic>;
-        debugPrint('[豆瓣API] 响应键: ${m.keys.toList()}');
-        if (m.containsKey('errorType')) {
-          debugPrint('[豆瓣API] 实际HTTP状态码: ${m['code']}, errorType: ${m['errorType']}, msg: ${m['msg']}, requestId: ${m['requestId']}');
-        } else if (m.containsKey('subjects')) {
-          final List<dynamic> sub = m['subjects'] as List<dynamic>;
-          debugPrint('[豆瓣API] subjects数量: ${sub.length}');
-        }
-      } else {
-        final String bodyStr = response.data?.toString() ?? 'null';
-        debugPrint('[豆瓣API] 响应体(前500字符): ${bodyStr.length > 500 ? bodyStr.substring(0, 500) : bodyStr}');
-      }
-      if (response.statusCode != null && response.statusCode != 200) {
-        debugPrint('[豆瓣API] 非200状态，可能被拦截或限流');
-      }
-
       if (!mounted) return;
+
       if (response.statusCode == 200) {
-        final List<dynamic> subjects = response.data['subjects'] ?? [];
-        if (subjects.isEmpty) {
-          debugPrint('[豆瓣API] 200但subjects为空，完整data: ${response.data}');
-        }
+        final ApiResultModel<Map<String, dynamic>> result =
+            ApiResultModel.fromJson(response.data);
+        final List<dynamic> subjects = result.data?['subjects'] ?? [];
+        log.d(() => 'subjects: $subjects');
         final List<MovieModel> movies = subjects
-            .map((dynamic s) =>
-                MovieModel.fromJson(Map<String, dynamic>.from(s as Map)))
+            .map(
+              (dynamic s) =>
+                  MovieModel.fromJson(Map<String, dynamic>.from(s as Map)),
+            )
             .toList();
 
         setState(() {
@@ -190,13 +171,7 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
           _hasMore = movies.length >= _moviesPerPage;
         });
       }
-    } catch (e, st) {
-      if (e is DioException && e.response != null) {
-        debugPrint('[豆瓣API] 实际HTTP状态码: ${e.response!.statusCode}, 响应: ${e.response!.data}');
-      } else {
-        debugPrint('[豆瓣API] 请求异常: $e');
-        debugPrint('[豆瓣API] 堆栈: $st');
-      }
+    } catch (e) {
       _log.e(() => '获取电影失败', e);
       if (mounted) setState(() => _hasMore = false);
     } finally {
@@ -212,7 +187,6 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
   Future<void> _handleRefresh() async {
     if (_isRefreshing) return;
     if (!mounted) return;
-    if (_tabs.isEmpty) return;
     setState(() {
       _isRefreshing = true;
       _currentPageByTag[_tabs[_selectedTab]] = 0;
@@ -228,7 +202,7 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
   }
 
   List<MovieModel> get _currentMovies =>
-      _tabs.isEmpty ? <MovieModel>[] : (_moviesByTag[_tabs[_selectedTab]] ?? []);
+      _moviesByTag[_tabs[_selectedTab]] ?? [];
 
   Future<String> _getLocalIp() async {
     try {
@@ -313,19 +287,21 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
               Navigator.push(
                 context,
                 MaterialPageRoute<void>(
-                  builder: (BuildContext context) =>
-                      const SourceManagePage(),
+                  builder: (BuildContext context) => const SourceManagePage(),
                 ),
               );
             },
             focusColor: Colors.red,
           ),
-          const SizedBox(width: 10),
-          IconButton(
-            icon: const Icon(Icons.settings, size: 20),
-            onPressed: _showQRCodeDialog,
-            focusColor: Colors.red,
-          ),
+          if ($platform.isMobileNative &&
+              context.mediaQuery.deviceType == DeviceType.tv) ...[
+            const SizedBox(width: 10),
+            IconButton(
+              icon: const Icon(Icons.settings, size: 20),
+              onPressed: _showQRCodeDialog,
+              focusColor: Colors.red,
+            ),
+          ],
         ],
       ),
     );
@@ -353,51 +329,45 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
                   _fetchMovies(_tabs[index]);
                 }
               },
-              child: GestureDetector(
-                onTap: () {
-                  setState(() {
-                    _selectedTab = index;
-                    _hasMore = true;
-                  });
-                  _fetchMovies(_tabs[index]);
-                },
-                child: Builder(
-                  builder: (context) {
-                    final bool isFocused = Focus.of(context).hasFocus;
-                    return AnimatedContainer(
-                      duration: const Duration(milliseconds: 200),
-                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                      constraints: const BoxConstraints(minWidth: 100),
-                      decoration: BoxDecoration(
-                        color: _selectedTab == index
-                            ? Colors.red
-                            : context.appThemeColors.surfaceVariant,
-                        borderRadius: BorderRadius.circular(35),
-                        border: isFocused
-                            ? Border.all(color: Colors.white, width: 2)
-                            : null,
-                      ),
-                      child: SizedBox(
-                        height: double.infinity,
-                        child: Center(
-                          child: Text(
-                            _tabs[index],
-                            style: TextStyle(
-                              color: _selectedTab == index
-                                  ? Colors.white
-                                  : Colors.grey,
-                              fontSize: 20,
-                              height: 1.0,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.visible,
+              child: Builder(
+                builder: (context) {
+                  final bool isFocused = Focus.of(context).hasFocus;
+                  return AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 12,
+                    ),
+                    constraints: const BoxConstraints(minWidth: 100),
+                    decoration: BoxDecoration(
+                      color: _selectedTab == index
+                          ? Colors.red
+                          : context.theme.colorScheme.surfaceContainerLow,
+                      borderRadius: BorderRadius.circular(35),
+                      border: isFocused
+                          ? Border.all(color: Colors.white, width: 2)
+                          : null,
+                    ),
+                    child: SizedBox(
+                      height: double.infinity,
+                      child: Center(
+                        child: Text(
+                          _tabs[index],
+                          style: TextStyle(
+                            color: _selectedTab == index
+                                ? Colors.white
+                                : Colors.grey,
+                            fontSize: 20,
+                            height: 1.0,
                           ),
+                          maxLines: 1,
+                          overflow: TextOverflow.visible,
                         ),
                       ),
-                    );
-                  },
+                    ),
+                  );
+                },
               ),
-            ),
             ),
           );
         },
@@ -427,29 +397,6 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    ref.listen<AsyncValue<List<TagModel>>>(tagsStorageProvider, (prev, next) {
-      if (!mounted) return;
-      next.when(
-        data: (List<TagModel> tags) {
-          if (tags.isEmpty) return;
-          if (_tabs.isEmpty ||
-              _tabs[0] == '暂无标签' ||
-              _tabs[0] == '加载中...' ||
-              _tabs[0] == '获取标签失败') {
-            setState(() {
-              _tabs = tags.map((TagModel t) => t.name).toList();
-              _selectedTab = 0;
-              for (String tag in _tabs) {
-                _currentPageByTag[tag] = 0;
-              }
-            });
-            _fetchMovies(_tabs[0]);
-          }
-        },
-        loading: () {},
-        error: (_, __) {},
-      );
-    });
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -463,6 +410,15 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
                 child: Center(
                   child: Text(
                     '无法加载标签，请检查网络连接',
+                    style: const TextStyle(color: Colors.white, fontSize: 24),
+                  ),
+                ),
+              )
+            else if (_tabs.isEmpty)
+              Expanded(
+                child: Center(
+                  child: Text(
+                    '暂无标签',
                     style: const TextStyle(color: Colors.white, fontSize: 24),
                   ),
                 ),

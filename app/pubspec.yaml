@@ -50,7 +50,6 @@ dependencies:
   isar_community: ^3.3.0
   isar_community_flutter_libs: ^3.3.0
   # app 独有
-  google_fonts: ^6.1.0
   open_file: ^3.5.10
   android_intent_plus: ^5.3.0
   shelf: ^1.4.2

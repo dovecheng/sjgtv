@@ -59,7 +59,6 @@ extension RequestOptionsCodecExt on RequestOptions {
 extension RequestToMapExt on RequestOptions {
   /// convert [RequestOptions] to [Map]
   Map<String, dynamic> toMap() => {
-    'request.id': requestId,
     'request.uri': uri,
     if (headers.isNotEmpty) 'request.headers': headers,
     'request.data': isLoggableData && requestBytes < 1024 * 32
@@ -75,22 +74,6 @@ extension RequestToMapExt on RequestOptions {
 }
 
 extension RequestExtraExt on RequestOptions {
-  /// 请求标识
-  String get requestId => extra['requestId'] ??= shortHash;
-
-  /// 是否为 mock 接口
-  bool get isMock => extra['isMock'] ??=
-      extra['isMock'] == true || path.startsWith('https://mock.apifox.cn/');
-
-  //region 令牌拦截器
-  /// 是否为重试请求
-  bool get isRetry => extra['isRetry'] == true;
-
-  /// 设置是否为重试请求
-  set isRetry(bool value) => extra['isRetry'] = value;
-
-  //endregion
-
   //region 数据转换器
 
   /// 请求数据大小 字节数

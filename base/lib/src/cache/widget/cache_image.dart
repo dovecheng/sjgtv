@@ -1,4 +1,3 @@
-import 'package:base/cache.dart';
 import 'package:base/env.dart';
 import 'package:base/log.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -35,8 +34,8 @@ class CachedImage extends CachedNetworkImage {
     super.filterQuality = FilterQuality.low,
     super.colorBlendMode,
     super.placeholderFadeInDuration,
-    int? memCacheWidth,
-    int? memCacheHeight,
+    super.memCacheWidth,
+    super.memCacheHeight,
     super.cacheKey,
     super.maxWidthDiskCache,
     super.maxHeightDiskCache,
@@ -46,12 +45,6 @@ class CachedImage extends CachedNetworkImage {
     /// 是否添加默认的memCache
     bool addDefaultMemCache = true,
   }) : super(
-         memCacheWidth:
-             memCacheWidth ??
-             (addDefaultMemCache ? (width?.toCachedImageSize()) : null),
-         memCacheHeight:
-             memCacheHeight ??
-             (addDefaultMemCache ? (height?.toCachedImageSize()) : null),
          errorWidget: errorWidget ?? _defaultErrorWidget(width, height),
          errorListener: _wrapErrorListener(
            imageUrl,
