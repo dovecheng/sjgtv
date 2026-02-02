@@ -848,7 +848,8 @@
       const response = await fetch(`${API_BASE_URL}/api/sources`);
       if (!response.ok) throw new Error(t('web_msg_source_list_load_fail'));
 
-      allSources = await response.json();
+      const json = await response.json();
+      allSources = json.data ?? [];
       renderSources(allSources);
       updateStats(allSources);
       showMessage(t('web_msg_source_list_loaded'), 'success');
@@ -1104,7 +1105,8 @@
   async function loadProxy() {
     try {
       const response = await fetch(`${API_BASE_URL}/api/proxies`);
-      const proxies = await response.json();
+      const json = await response.json();
+      const proxies = json.data ?? [];
       currentProxy = proxies.length > 0 ? proxies[0] : null;
       updateProxyUI();
       showMessage(t('web_msg_proxy_loaded'), 'success');
@@ -1239,7 +1241,8 @@
       const response = await fetch(`${API_BASE_URL}/api/tags`);
       if (!response.ok) throw new Error(t('web_msg_tag_list_load_fail'));
 
-      allTags = await response.json();
+      const json = await response.json();
+      allTags = json.data ?? [];
       renderTags(allTags);
       showMessage(t('web_msg_tag_list_loaded'), 'success');
 

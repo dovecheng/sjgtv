@@ -148,3 +148,6 @@ app/lib/src/
 
 ### 2026-02-02（update_checker 单例 + l10n）
 - **update_checker**：改为单例 `AppUpdater.instance`，混入 `UpdateCheckerL10nMixin` 使用 l10n 国际化；版本比较支持 `version+buildNumber` 拼接；发布页 URL 使用 API 返回的 `html_url`；调用方式 `AppUpdater.instance.checkForUpdate(ctx)`。
+
+### 2026-02-02（web 列表接口解析修复）
+- **index.html**：shelf API 返回 `{ code, data, msg }`，loadSources / loadProxy / loadTags 从 `json.data` 取数组，修复 `tags.forEach is not a function` 等错误。
