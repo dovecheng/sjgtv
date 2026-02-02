@@ -55,7 +55,7 @@ void consoleLog(
   // message = prefix + lines.join('\n[$levelName] $prefix');
 
   if (kIsApp) {
-    dev.log(message, name: levelName);
+    dev.log(message, name: levelName, level: level.value);
     // for (String line in lines) {
     //   dev.log(name: levelName, prefix + line);
     // }
