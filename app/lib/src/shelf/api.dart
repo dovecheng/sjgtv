@@ -26,6 +26,30 @@ import 'package:uuid/uuid.dart';
 
 final Log _log = Log('Api');
 
+/// 去掉重复的 vod/api.php/provide/，保证格式为 https://{domain}/api.php/provide/vod。
+String _normalizeSourceBase(String url) {
+  const String duplicate = '/vod/api.php/provide/';
+  if (url.contains(duplicate)) {
+    return url.replaceFirst(duplicate, '/');
+  }
+  return url;
+}
+
+/// 使用代理时：代理 origin + 规范化源 URL，格式为 /https://{domain}/api.php/provide/vod。
+String _resolveBaseUrl(ProxyModel? proxy, String sourceUrl) {
+  final String normalized = _normalizeSourceBase(sourceUrl);
+  if (proxy == null) return normalized;
+  final bool sourceIsAbsolute =
+      normalized.startsWith('http://') || normalized.startsWith('https://');
+  if (sourceIsAbsolute) {
+    final Uri uri = Uri.parse(proxy.url);
+    final String origin =
+        '${uri.scheme}://${uri.host}${uri.port != 80 && uri.port != 443 ? ':${uri.port}' : ''}/';
+    return origin + normalized;
+  }
+  return proxy.url;
+}
+
 /// shelf 本地 API 服务单例（混入 [ShelfApiL10nMixin]，方法内用 this.xxxL10n 获取翻译）
 class ShelfApi with ShelfApiL10nMixin implements ShelfApiL10n {
   ShelfApi._();
@@ -431,9 +455,8 @@ class ShelfApi with ShelfApiL10nMixin implements ShelfApiL10n {
 
       final List<dynamic> results = await Future.wait<dynamic>(
         activeSourceModels.map((SourceModel source) async {
-          final String baseUrl = activeProxyModel != null
-              ? '${activeProxyModel.url}/${source.url}'
-              : source.url;
+          final String baseUrl =
+              _resolveBaseUrl(activeProxyModel, source.url);
           final Map<String, String> queryParams = {'ac': 'videolist', 'wd': wd};
 
           try {
