@@ -779,23 +779,31 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
               ),
             ],
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Text(
-                  '换源',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+          child: SafeArea(
+            left: false,
+            top: false,
+            right: false,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                    '换源',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
-              ),
-              Expanded(
-                child: ListView.builder(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                Expanded(
+                  child: ListView.builder(
+                    padding: EdgeInsets.only(
+                      left: 12,
+                      right: 12,
+                      bottom: MediaQuery.paddingOf(context).bottom,
+                    ),
                   itemCount: _sources.length,
                   itemBuilder: (BuildContext context, int index) {
                     final Map<String, dynamic> source = _sources[index];
@@ -887,6 +895,7 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
                 ),
               ),
             ],
+            ),
           ),
         ),
       ),
