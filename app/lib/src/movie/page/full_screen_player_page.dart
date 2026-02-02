@@ -79,6 +79,7 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
   bool _showVolumeHUD = false;
   StreamSubscription? _playerStateSubscription;
   StreamSubscription? _bufferingSubscription;
+  StreamSubscription? _completedSubscription;
   final ValueNotifier<int> _seekDirection = ValueNotifier(0);
   final ValueNotifier<Duration?> _seekPosition = ValueNotifier<Duration?>(null);
   Timer? _seekHideTimer;
@@ -95,7 +96,7 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
   final Map<int, _SourceTestResult> _sourceTestResults = {};
   /// 正在测试的源下标
   final Set<int> _sourceTestingIndices = {};
-  /// 进度条节流：每 500ms 更新，避免 position 流高频触发重建导致丢帧
+  /// 进度条节流：每 1s 更新，减少 UI 重建对播放帧率的影响
   final ValueNotifier<Duration> _progressPosition = ValueNotifier(Duration.zero);
   Timer? _progressTimer;
 
@@ -141,8 +142,8 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
       _player,
       configuration: const VideoControllerConfiguration(
         enableHardwareAcceleration: true,
-        hwdec: 'auto-copy',
         androidAttachSurfaceAfterVideoParameters: true,
+        scale: 1.0,
       ),
     );
     final String? firstUrl = _episodes.isNotEmpty
@@ -207,24 +208,28 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
 
   void _startProgressTimer() {
     _progressTimer?.cancel();
-    _progressTimer = Timer.periodic(const Duration(milliseconds: 500), (_) {
+    _progressTimer = Timer.periodic(const Duration(seconds: 1), (_) {
       if (!mounted) return;
       _progressPosition.value = _player.state.position;
     });
   }
 
   void _setupPlayerListeners() {
-    _playerStateSubscription = _player.stream.playing.listen((isPlaying) {
+    _playerStateSubscription?.cancel();
+    _bufferingSubscription?.cancel();
+    _completedSubscription?.cancel();
+
+    _playerStateSubscription = _player.stream.playing.listen((bool isPlaying) {
       _controlWakelock(isPlaying);
     });
 
-    _bufferingSubscription = _player.stream.buffering.listen((isBuffering) {
+    _bufferingSubscription = _player.stream.buffering.listen((bool isBuffering) {
       if (_isBuffering.value != isBuffering) {
         _isBuffering.value = isBuffering;
       }
     });
 
-    _player.stream.completed.listen((completed) {
+    _completedSubscription = _player.stream.completed.listen((bool completed) {
       if (completed) {
         _playNextEpisode();
       }
@@ -251,6 +256,7 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
     _episodeProgress.clear();
     _playerStateSubscription?.cancel();
     _bufferingSubscription?.cancel();
+    _completedSubscription?.cancel();
     _player.dispose();
     _playerFocusNode.dispose();
     _sourcePanelFocusNode.dispose();
