@@ -655,6 +655,7 @@
 <script>
   // 配置API基础URL - 替换为你的Worker地址
   const API_BASE_URL = window.location.origin;
+  // 本页接口由 shelf/api.dart 提供，修改 api 时须同步维护本页的请求与解析逻辑
 
   /** 全局翻译表，供 showMessage 等 JS 使用 */
   let l10nMap = {};
@@ -832,6 +833,7 @@
   }
 
   // 加载源列表
+  // shelf api (shelf/api.dart) 返回 { code, data, msg }，须用 json.data ?? [] 取数组
   async function loadSources() {
     try {
       sourcesListEl.innerHTML = `

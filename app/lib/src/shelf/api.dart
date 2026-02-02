@@ -27,7 +27,10 @@ import 'package:uuid/uuid.dart';
 
 final Log _log = Log('Api');
 
-/// shelf 本地 API 服务单例（混入 [ShelfApiL10nMixin]，方法内用 this.xxxL10n 获取翻译）
+/// shelf 本地 API 服务单例，专为网页 app/assets/web/index.html 提供接口，
+/// 其他 Dart 代码不调用此处。混入 [ShelfApiL10nMixin]，方法内用 this.xxxL10n 获取翻译。
+///
+/// **修改/重构时**：必须同步维护 index.html，接口路径、请求体、响应格式变更都需对应修改。
 class ShelfApi with ShelfApiL10nMixin implements ShelfApiL10n {
   ShelfApi._();
 
@@ -556,6 +559,8 @@ class ShelfApi with ShelfApiL10nMixin implements ShelfApiL10n {
   // Helper
   // ============================================================================
 
+  /// 成功响应格式：{ code: 200, data: data, msg: msg }。
+  /// 网页 index.html 须用 json.data 取数据，不可直接把 response.json() 当数组用。
   Response createSuccessResponse(dynamic data, {String? msg}) {
     return Response(
       200,

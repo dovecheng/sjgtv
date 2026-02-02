@@ -151,3 +151,7 @@ app/lib/src/
 
 ### 2026-02-02（web 列表接口解析修复）
 - **index.html**：shelf API 返回 `{ code, data, msg }`，loadSources / loadProxy / loadTags 从 `json.data` 取数组，修复 `tags.forEach is not a function` 等错误。
+
+### 2026-02-02（shelf api 与 index.html 耦合说明）
+- **api.dart**：类注释标明专为 index.html 服务、修改/重构须同步维护 html；createSuccessResponse 注明响应格式与 json.data 取数约定。
+- **index.html**：脚本顶部注明接口由 shelf/api.dart 提供，修改 api 须同步维护本页。
