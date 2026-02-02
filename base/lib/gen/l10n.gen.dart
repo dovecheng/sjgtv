@@ -1,11 +1,11 @@
-// GENERATED CODE BY 2026-02-01 15:25:09 - DO NOT MODIFY BY HAND
+// GENERATED CODE BY 2026-02-02 02:15:48 - DO NOT MODIFY BY HAND
 // ignore_for_file: constant_identifier_names, prefer_single_quotes
 
 import 'package:base/l10n.dart';
 
 /// L10n keys and translations
 ///
-/// Has 14 keys
+/// Has 11 keys
 enum L10n with L10nMixin {
   /// key: api_bad_certificate
   ///
@@ -148,46 +148,7 @@ enum L10n with L10nMixin {
   /// keyDesc: Some other Error
   ///
   /// keyType: error
-  api_unknown_error,
-
-  /// key: api_version_upgrade_button
-  ///
-  /// en: Application Upgrade
-  ///
-  /// zh_CN: 应用更新
-  ///
-  /// zh_HK: 應用更新
-  ///
-  /// keyDesc: 点击跳转应用商店的更新按钮
-  ///
-  /// keyType: message
-  api_version_upgrade_button,
-
-  /// key: api_version_upgrade_message
-  ///
-  /// en: App must be updated to the latest version
-  ///
-  /// zh_CN: App必须更新为最新版本
-  ///
-  /// zh_HK: App必須更新為最新版本
-  ///
-  /// keyDesc: 版本过低提示内容
-  ///
-  /// keyType: message
-  api_version_upgrade_message,
-
-  /// key: api_version_upgrade_title
-  ///
-  /// en: New Version
-  ///
-  /// zh_CN: 新版本
-  ///
-  /// zh_HK: 新版本
-  ///
-  /// keyDesc: 版本过低提示内容
-  ///
-  /// keyType: message
-  api_version_upgrade_title;
+  api_unknown_error;
 
   static final Set<L10nTranslationModel> translations = <L10nTranslationModel>{
     L10nTranslationModel(
@@ -204,10 +165,6 @@ enum L10n with L10nMixin {
         'api_receive_timeout': 'Receive data timeout, Please try again',
         'api_send_timeout': 'Send data timeout, Please try again',
         'api_unknown_error': 'Unknown fault',
-        'api_version_upgrade_button': 'Application Upgrade',
-        'api_version_upgrade_message':
-            'App must be updated to the latest version',
-        'api_version_upgrade_title': 'New Version',
       },
     ),
     L10nTranslationModel(
@@ -224,9 +181,6 @@ enum L10n with L10nMixin {
         'api_receive_timeout': '接收数据超时, 请重试',
         'api_send_timeout': '发送数据超时, 请重试',
         'api_unknown_error': '未知错误',
-        'api_version_upgrade_button': '应用更新',
-        'api_version_upgrade_message': 'App必须更新为最新版本',
-        'api_version_upgrade_title': '新版本',
       },
     ),
     L10nTranslationModel(
@@ -243,9 +197,6 @@ enum L10n with L10nMixin {
         'api_receive_timeout': '接收數據超時, 請重試',
         'api_send_timeout': '發送數據超時, 請重試',
         'api_unknown_error': '未知錯誤',
-        'api_version_upgrade_button': '應用更新',
-        'api_version_upgrade_message': 'App必須更新為最新版本',
-        'api_version_upgrade_title': '新版本',
       },
     ),
   };

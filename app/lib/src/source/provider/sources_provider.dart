@@ -3,13 +3,13 @@ import 'package:isar_community/isar.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sjgtv/src/source/model/source_model.dart';
 
-part 'sources_storage_provider.g.dart';
+part 'sources_provider.g.dart';
 
-/// 源列表提供者 [sourcesStorageProvider]
+/// 源列表提供者 [sourcesProvider]
 ///
 /// build 为从 Isar 获取列表；增删改通过 notifier 方法，写库后 invalidate 自身刷新。
 @Riverpod(keepAlive: true)
-class SourcesStorageProvider extends _$SourcesStorageProvider {
+class SourcesProvider extends _$SourcesProvider {
   @override
   Future<List<SourceModel>> build() async {
     final List<SourceModel> list = await $isar.sources
@@ -23,6 +23,12 @@ class SourcesStorageProvider extends _$SourcesStorageProvider {
     await $isar.writeTxn(() async => $isar.sources.put(source));
     ref.invalidateSelf();
     return source;
+  }
+
+  Future<List<SourceModel>> addSources(List<SourceModel> sources) async {
+    await $isar.writeTxn(() async => $isar.sources.putAll(sources));
+    ref.invalidateSelf();
+    return sources;
   }
 
   Future<SourceModel> updateSource(SourceModel source) async {

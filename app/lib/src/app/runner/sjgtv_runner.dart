@@ -4,18 +4,17 @@ import 'package:base/base.dart';
 import 'package:sjgtv/gen/l10n.gen.dart';
 import 'package:sjgtv/src/app/provider/config_api_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter/services.dart';
 import 'package:sjgtv/src/proxy/model/proxy_model.dart';
 import 'package:sjgtv/src/source/model/source_model.dart';
 import 'package:sjgtv/src/tag/model/tag_model.dart';
 import 'package:sjgtv/src/source/provider/source_count_provider.dart';
 import 'package:sjgtv/src/proxy/provider/proxy_count_provider.dart';
+import 'package:sjgtv/src/tag/provider/tag_count_provider.dart';
 import 'package:sjgtv/src/proxy/provider/proxies_provider.dart';
-import 'package:sjgtv/src/source/provider/sources_storage_provider.dart';
+import 'package:sjgtv/src/source/provider/sources_provider.dart';
 import 'package:sjgtv/src/tag/provider/tags_provider.dart';
 import 'package:sjgtv/src/app/provider/json_adapter_provider.dart';
-import 'package:sjgtv/src/app/theme/app_colors.dart';
-import 'package:sjgtv/src/app/theme/app_theme.dart';
 import 'package:sjgtv/src/shelf/api.dart';
 import 'package:sjgtv/src/movie/page/category_page.dart';
 import 'package:uuid/uuid.dart';
@@ -33,28 +32,23 @@ final class SjgtvRunner extends AppRunner {
   @override
   JsonAdapterProvider get jsonAdapter => JsonAdapterImpl();
 
-  /// API 客户端配置
-  @override
-  ApiClientProvider get apiClient => ApiClientProvider(
-        interceptors: [
-          ApiResultInterceptor(),
-        ],
-      );
-
   /// 注入 app 的 L10n.translations，与 base 的 L10n.translations 在 provider 内合并
   @override
   L10nTranslationProvider? get l10nTranslation =>
       L10nTranslationProvider(L10n.translations);
 
+  /// 仅支持横屏
+  @override
+  List<DeviceOrientation> get preferredOrientations => const [
+    DeviceOrientation.landscapeLeft,
+    DeviceOrientation.landscapeRight,
+  ];
+
   /// 使用 base 同一 Isar 实例，并注册 app 的 sources/proxies/tags schema
   @override
   IsarProvider? get isar => IsarProvider(
-        schemas: [
-          SourceModelSchema,
-          ProxyModelSchema,
-          TagModelSchema,
-        ],
-      );
+    schemas: [SourceModelSchema, ProxyModelSchema, TagModelSchema],
+  );
 
   @override
   Future<void> init() async {
@@ -70,98 +64,18 @@ final class SjgtvRunner extends AppRunner {
     });
   }
 
-  /// 构建应用
+  /// 构建应用（仅支持暗黑模式，使用原生暗黑主题；title 来自 L10n app_title）
   @override
   Future<Widget> buildApp() async {
+    final L10nTranslationModel tr = await $ref.read(
+      l10nTranslationProvider.future,
+    );
+    final String title = tr['app_title'] ?? '苹果CMS电影播放器';
     return MaterialApp(
-      title: '苹果CMS电影播放器',
+      title: title,
       debugShowCheckedModeBanner: false,
-      theme: _buildTheme(),
-      home: PopScope(
-        canPop: false,
-        child: const MovieHomePage(),
-      ),
-    );
-  }
-
-  /// 构建主题（色板来自 [AppColors]，UI 使用 [Theme.of].colorScheme 或 [AppThemeColors]）
-  ThemeData _buildTheme() {
-    final AppThemeColors appColors = AppThemeColors.fromAppColors();
-    final ColorScheme colorScheme = ColorScheme.dark(
-      primary: appColors.primary,
-      onPrimary: Colors.black87,
-      primaryContainer: appColors.primary.withAlpha((255 * 0.2).toInt()),
-      onPrimaryContainer: appColors.primary,
-      secondary: appColors.seedColor,
-      onSecondary: Colors.black87,
-      surface: appColors.background,
-      onSurface: Colors.white,
-      surfaceContainerHighest: appColors.cardBackground,
-      surfaceContainer: appColors.cardSurface,
-      surfaceContainerLow: appColors.surfaceVariant,
-      onSurfaceVariant: appColors.hint,
-      outline: Colors.white24,
-      outlineVariant: appColors.surfaceVariant,
-      error: appColors.error,
-      onError: Colors.white,
-    );
-    return ThemeData(
-      colorScheme: colorScheme,
-      useMaterial3: true,
-      extensions: <ThemeExtension<dynamic>>[appColors],
-      textTheme: GoogleFonts.poppinsTextTheme(
-        const TextTheme(
-          displayLarge: TextStyle(
-            fontSize: 32,
-            fontWeight: FontWeight.w700,
-            letterSpacing: -0.5,
-          ),
-          displayMedium: TextStyle(
-            fontSize: 28,
-            fontWeight: FontWeight.w600,
-            letterSpacing: -0.5,
-          ),
-          displaySmall: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.w600,
-            letterSpacing: -0.5,
-          ),
-          headlineMedium: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.w600,
-            letterSpacing: -0.5,
-          ),
-          headlineSmall: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w600,
-            letterSpacing: -0.5,
-          ),
-          titleLarge: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-            letterSpacing: -0.5,
-          ),
-          bodyLarge: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-          bodyMedium: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-        ),
-      ).apply(displayColor: Colors.white, bodyColor: Colors.white),
-      appBarTheme: const AppBarTheme(
-        elevation: 0,
-        centerTitle: false,
-        scrolledUnderElevation: 4,
-        surfaceTintColor: Colors.transparent,
-      ),
-      cardTheme: CardThemeData(
-        elevation: 0,
-        color: colorScheme.surfaceContainerHighest,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-          side: BorderSide(color: colorScheme.outline, width: 1),
-        ),
-        surfaceTintColor: Colors.transparent,
-        margin: EdgeInsets.zero,
-        clipBehavior: Clip.antiAlias,
-      ),
+      theme: ThemeData.dark(),
+      home: const MovieHomePage(),
     );
   }
 }
@@ -177,24 +91,23 @@ class _ConfigLoader {
         await $ref.read(sourceCountStorageProvider.future) == 0;
     final bool needProxies =
         await $ref.read(proxyCountStorageProvider.future) == 0;
+    final bool needTags = await $ref.read(tagCountStorageProvider.future) == 0;
+
+    if (!needSources && !needProxies && !needTags) {
+      log.d(() => 'sources/proxies/tags 已有数据，跳过初始化');
+      return;
+    }
 
     try {
-      $ref.invalidate(configApiProvider);
-      debugPrint('[Config] 开始加载远程配置: https://ktv.aini.us.kg/config.json');
-      log.d(() => '开始加载远程配置: https://ktv.aini.us.kg/config.json');
-      final Map<String, dynamic>? config =
-          await $ref.read(configApiProvider.future);
+      log.d(() => '开始加载远程配置...');
+      final Map<String, dynamic>? config = await $ref.read(
+        configApiProvider.future,
+      );
 
-      if (config == null) {
-        debugPrint('[Config] 远程配置拉取失败');
-        log.w(() => '远程配置拉取失败');
+      if (config == null || config.isEmpty) {
+        log.w(() => '配置格式异常');
         return;
       }
-
-      debugPrint(
-          '[Config] 远程配置拉取成功: sources=${config['sources']?.length ?? 0}, tags=${config['tags']?.length ?? 0}');
-      log.d(() =>
-          '远程配置拉取成功: sources=${config['sources']?.length ?? 0}, tags=${config['tags']?.length ?? 0}');
 
       if (needSources) {
         await _initializeSourceModels(uuid, config);
@@ -208,34 +121,22 @@ class _ConfigLoader {
         log.d(() => 'proxies 已有数据，跳过初始化');
       }
 
-      final List<dynamic>? tags = config['tags'] as List<dynamic>?;
-      if (tags != null && tags.isNotEmpty) {
-        debugPrint('[Config] 即将用远程 ${tags.length} 个 tag 覆盖本地');
-        try {
-          await $ref
-              .read(tagsStorageProvider.notifier)
-              .replaceAllTagsFromConfig(tags, () => uuid.v4());
-          $ref.invalidate(tagsStorageProvider);
-          debugPrint('[Config] 已用远程 config 同步标签: ${tags.length} 个');
-          log.d(() => '已用远程 config 同步标签: ${tags.length} 个');
-        } catch (e, s) {
-          log.e(() => 'replaceAllTagsFromConfig 失败: $e', e, s);
-          debugPrint('[Config] 同步标签失败: $e');
-        }
+      if (needTags) {
+        await _initializeTagModels(uuid, config);
       } else {
-        log.d(() => '远程无 tags 或 tags 已有数据，跳过');
+        log.d(() => 'tags 已有数据，跳过初始化');
       }
     } catch (e, s) {
       log.e(() => '加载远程配置失败: $e', e, s);
-      debugPrint('[Config] 加载远程配置失败: $e');
     }
   }
 
   Future<void> _initializeSourceModels(
-      Uuid uuid, Map<String, dynamic> config) async {
+    Uuid uuid,
+    Map<String, dynamic> config,
+  ) async {
     try {
-      log.d(
-          () => '成功获取 sources 配置，共${config['sources']?.length ?? 0}个源');
+      log.d(() => '成功获取 sources 配置，共${config['sources']?.length ?? 0}个源');
 
       int savedCount = 0;
       for (final dynamic source in config['sources'] ?? <dynamic>[]) {
@@ -255,7 +156,7 @@ class _ConfigLoader {
             tagIds: List<String>.from(source['tagIds'] ?? []),
           );
           await $ref
-              .read(sourcesStorageProvider.notifier)
+              .read(sourcesProvider.notifier)
               .addSource(newSourceModel);
           savedCount++;
           log.d(() => '成功保存源: ${source['name']}');
@@ -269,7 +170,10 @@ class _ConfigLoader {
     }
   }
 
-  Future<void> _initializeProxies(Uuid uuid, Map<String, dynamic> config) async {
+  Future<void> _initializeProxies(
+    Uuid uuid,
+    Map<String, dynamic> config,
+  ) async {
     try {
       log.d(() => '成功获取 proxies 配置');
       final dynamic proxy = config['proxy'];
@@ -290,4 +194,27 @@ class _ConfigLoader {
     }
   }
 
+  Future<void> _initializeTagModels(
+    Uuid uuid,
+    Map<String, dynamic> config,
+  ) async {
+    try {
+      log.d(() => '成功获取 tags 配置，共${config['tags']?.length ?? 0}个标签');
+      int tagCount = 0;
+      for (final dynamic tag in config['tags'] ?? <dynamic>[]) {
+        final TagModel newTagModel = TagModel(
+          uuid: uuid.v4(),
+          name: (tag['name']?.toString() ?? '').trim(),
+          color: tag['color']?.toString() ?? '#4285F4',
+          order: tagCount,
+        );
+        await $ref.read(tagsStorageProvider.notifier).addTagModel(newTagModel);
+        tagCount++;
+        log.d(() => '成功保存标签: ${tag['name']}');
+      }
+      log.d(() => '实际保存标签数量: $tagCount');
+    } catch (e, s) {
+      log.e(() => '加载 tags 初始配置失败: $e', e, s);
+    }
+  }
 }

@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sjgtv/src/proxy/model/proxy_model.dart';
 import 'package:sjgtv/src/proxy/provider/proxies_provider.dart';
 import 'package:sjgtv/src/source/model/source_model.dart';
-import 'package:sjgtv/src/source/provider/sources_storage_provider.dart';
+import 'package:sjgtv/src/source/provider/sources_provider.dart';
 
 final Log _log = Log('MovieSearch');
 
@@ -25,7 +25,7 @@ class MovieSearchService {
   /// 搜索电影，返回 { total, list }
   Future<Map<String, dynamic>> search(String keyword, {int? limit}) async {
     final List<SourceModel> sources =
-        await _ref.read(sourcesStorageProvider.future);
+        await _ref.read(sourcesProvider.future);
     final List<SourceModel> activeSources =
         sources.where((SourceModel s) => !s.disabled).toList();
 

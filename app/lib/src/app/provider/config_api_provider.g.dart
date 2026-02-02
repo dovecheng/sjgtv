@@ -42,7 +42,7 @@ final class ConfigApiProviderProvider
   ConfigApiProvider create() => ConfigApiProvider();
 }
 
-String _$configApiProviderHash() => r'744fecc3b1386a73cbffa2d67cade50d9ace5aca';
+String _$configApiProviderHash() => r'8bf17d8fc72beda39c36d742efc4c76ffebd16a7';
 
 /// 远程配置 API 请求结果提供者
 ///
