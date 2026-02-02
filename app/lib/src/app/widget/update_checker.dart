@@ -2,9 +2,10 @@ import 'dart:io';
 
 import 'package:android_intent_plus/android_intent.dart';
 import 'package:android_intent_plus/flag.dart';
-import 'package:base/base.dart';
+import 'package:base/converter.dart';
+import 'package:base/extension.dart';
+import 'package:base/log.dart';
 import 'package:dio/dio.dart';
-import 'package:pub_semver/pub_semver.dart';
 import 'package:flutter/material.dart';
 import 'package:open_file/open_file.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -20,17 +21,16 @@ import 'package:url_launcher/url_launcher.dart';
 /// - 比较当前版本与最新版本（支持 26.02.02+2 主版本+build 号）
 /// - 显示更新对话框（含更新说明）
 /// - 支持自动下载 APK 并安装（Android）
-/// - 支持手动跳转到 GitHub tag 发布页
+/// - 支持手动跳转到 GitHub 发布页
 class AppUpdater with UpdateCheckerL10nMixin implements UpdateCheckerL10n {
   AppUpdater._();
 
   static final AppUpdater instance = AppUpdater._();
 
+  final Log _log = Log('AppUpdater');
   final Dio _dio = Dio();
   static const String _githubReleasesUrl =
       'https://api.github.com/repos/dovecheng/sjgtv/releases/latest';
-  static const String _githubReleasesTagBase =
-      'https://github.com/dovecheng/sjgtv/releases/tag/';
 
   bool _isDownloading = false;
   double _downloadProgress = 0;
@@ -39,28 +39,27 @@ class AppUpdater with UpdateCheckerL10nMixin implements UpdateCheckerL10n {
   Future<void> checkForUpdate(BuildContext context) async {
     try {
       final PackageInfo packageInfo = await PackageInfo.fromPlatform();
-      // PackageInfo.version 不含 + 后内容，需与 buildNumber 拼接后再与远程 tag（如 26.02.02+2）比较
       final String currentVersion = packageInfo.buildNumber.isNotEmpty
           ? '${packageInfo.version}+${packageInfo.buildNumber}'
           : packageInfo.version;
 
-      final Response<dynamic> response =
-          await _dio.get<dynamic>(_githubReleasesUrl);
+      final Response<dynamic> response = await _dio.get<dynamic>(_githubReleasesUrl);
       final dynamic latestRelease = response.data;
 
+      // 检查响应是否有效
       if (latestRelease == null || latestRelease['tag_name'] == null) {
-        log.d(() => '检查更新: 无有效的发布版本');
+        _log.d(() => '检查更新: 无有效的发布版本');
         return;
       }
 
       final String tagName = latestRelease['tag_name'] as String;
       final String latestVersion = tagName.replaceAll('v', '').trim();
-      final String releaseUrl = '$_githubReleasesTagBase$tagName';
+      final String releaseUrl = latestRelease['html_url'] as String;
       final String? releaseNotes = latestRelease['body'] as String?;
       final String? apkUrl = _findApkDownloadUrl(latestRelease['assets'] ?? []);
 
-      final bool hasUpdate = _isNewerVersion(latestVersion, currentVersion);
-      if (hasUpdate && context.mounted) {
+      if (_compareVersions(currentVersion, latestVersion) < 0 &&
+          context.mounted) {
         _showUpdateDialog(
           context,
           releaseUrl,
@@ -70,41 +69,56 @@ class AppUpdater with UpdateCheckerL10nMixin implements UpdateCheckerL10n {
         );
       }
     } on DioException catch (e) {
+      // 404 表示没有发布版本，静默处理
       if (e.response?.statusCode == 404) {
-        log.d(() => '检查更新: 仓库暂无发布版本');
+        _log.d(() => '检查更新: 仓库暂无发布版本');
         return;
       }
-      log.e(() => '检查更新失败', e);
+      _log.e(() => '检查更新失败', e);
     } catch (e) {
-      log.e(() => '检查更新失败', e);
+      _log.e(() => '检查更新失败', e);
     }
-  }
-
-  /// 比较版本字符串（支持 26.02.02+4 格式），返回 [latestVersion] 是否比 [currentVersion] 新。
-  /// 显式解析主版本与 build 号，避免依赖 pub_semver 对 build 的排序差异。
-  bool _isNewerVersion(String latestVersion, String currentVersion) {
-    final List<String> curParts = currentVersion.split('+');
-    final List<String> latParts = latestVersion.split('+');
-    final String curBase = curParts[0].trim();
-    final String latBase = latParts[0].trim();
-    final int curBuild = curParts.length > 1 ? int.tryParse(curParts[1].trim()) ?? 0 : 0;
-    final int latBuild = latParts.length > 1 ? int.tryParse(latParts[1].trim()) ?? 0 : 0;
-
-    final Version curV = Version.parse(curBase);
-    final Version latV = Version.parse(latBase);
-    if (curV.compareTo(latV) != 0) {
-      return curV.compareTo(latV) < 0;
-    }
-    return curBuild < latBuild;
   }
 
   String? _findApkDownloadUrl(List<dynamic> assets) {
     for (final dynamic asset in assets) {
       if (asset['name']?.toString().endsWith('.apk') ?? false) {
-        return asset['browser_download_url'];
+        return asset['browser_download_url'] as String?;
       }
     }
     return null;
+  }
+
+  /// 解析版本号，支持 26.02.02+2 格式（主版本 + build 号）
+  List<int> _parseVersion(String version) {
+    final String raw = version.replaceAll('v', '').trim();
+    final List<String> mainAndBuild = raw.split('+');
+    final String mainPart = mainAndBuild[0].trim();
+    final String buildPart =
+        mainAndBuild.length > 1 ? mainAndBuild[1].trim() : '0';
+    final List<int> mainParts = mainPart
+        .split('.')
+        .map((String e) => IntConverter.toIntOrZero(e))
+        .toList();
+    mainParts.add(IntConverter.toIntOrZero(buildPart));
+    return mainParts;
+  }
+
+  int _compareVersions(String current, String latest) {
+    final List<int> currentParts = _parseVersion(current);
+    final List<int> latestParts = _parseVersion(latest);
+    final int maxLen = currentParts.length > latestParts.length
+        ? currentParts.length
+        : latestParts.length;
+
+    for (var i = 0; i < maxLen; i++) {
+      final int currentPart = i < currentParts.length ? currentParts[i] : 0;
+      final int latestPart = i < latestParts.length ? latestParts[i] : 0;
+
+      if (currentPart < latestPart) return -1;
+      if (currentPart > latestPart) return 1;
+  }
+    return 0;
   }
 
   void _showUpdateDialog(
@@ -143,8 +157,7 @@ class AppUpdater with UpdateCheckerL10nMixin implements UpdateCheckerL10n {
                     LinearProgressIndicator(
                       value: _downloadProgress,
                       backgroundColor: colorScheme.surfaceContainerHighest,
-                      valueColor:
-                          AlwaysStoppedAnimation<Color>(colorScheme.primary),
+                      valueColor: AlwaysStoppedAnimation<Color>(colorScheme.primary),
                     ),
                     const SizedBox(height: 8),
                     Text(
@@ -177,7 +190,7 @@ class AppUpdater with UpdateCheckerL10nMixin implements UpdateCheckerL10n {
                       );
                     }
                   },
-                  child: Text(manualUpdateL10n),
+                  child: const Text('手动更新'),
                 ),
               ] else ...[
                 TextButton(
@@ -199,6 +212,7 @@ class AppUpdater with UpdateCheckerL10nMixin implements UpdateCheckerL10n {
   ) async {
     if (!$platform.isAndroidNative) return;
     try {
+      // 请求存储权限
       final PermissionStatus status = await Permission.storage.request();
       if (!status.isGranted) {
         if (context.mounted) {
@@ -209,17 +223,10 @@ class AppUpdater with UpdateCheckerL10nMixin implements UpdateCheckerL10n {
         return;
       }
 
+      // 请求安装未知来源应用的权限
       if ($platform.isAndroidNative) {
         if (!await Permission.requestInstallPackages.isGranted) {
           await Permission.requestInstallPackages.request();
-          if (!await Permission.requestInstallPackages.isGranted) {
-            if (context.mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(installPermissionRequiredL10n)),
-              );
-            }
-            return;
-          }
         }
       }
 
@@ -234,7 +241,7 @@ class AppUpdater with UpdateCheckerL10nMixin implements UpdateCheckerL10n {
           '${dir.path}/update_${DateTime.now().millisecondsSinceEpoch}.apk';
 
       await _dio.download(
-        'https://proxy.aini.us.kg/$apkUrl',
+        "https://proxy.aini.us.kg/$apkUrl",
         savePath,
         cancelToken: _cancelToken,
         onReceiveProgress: (received, total) {
@@ -254,21 +261,12 @@ class AppUpdater with UpdateCheckerL10nMixin implements UpdateCheckerL10n {
         Navigator.pop(context);
       }
 
+      // 安装APK
       if ($platform.isAndroidNative) {
-        if (!await Permission.requestInstallPackages.isGranted) {
-          if (context.mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(installPermissionRequiredL10n)),
-            );
-          }
-          return;
-        }
-        if (context.mounted) {
-          await _installApk(context, savePath);
-        }
+        await _installApk(savePath);
       }
     } catch (e) {
-      log.e(() => '下载失败', e);
+      _log.e(() => '下载失败', e);
       setState(() {
         _isDownloading = false;
       });
@@ -281,41 +279,22 @@ class AppUpdater with UpdateCheckerL10nMixin implements UpdateCheckerL10n {
     }
   }
 
-  /// 安装 APK。Android 7+ 必须通过 FileProvider 提供 content URI，不能使用 file://，
-  /// 故优先使用 [OpenFile.open]（内部使用 FileProvider），失败时再尝试 [AndroidIntent]。
-  Future<void> _installApk(BuildContext? context, String apkPath) async {
-    if (!await File(apkPath).exists()) return;
-    if (!$platform.isAndroidNative) return;
-    try {
-      final OpenResult result = await OpenFile.open(apkPath);
-      if (result.type != ResultType.done &&
-          context != null &&
-          context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              result.message.isEmpty ? installFailL10n : result.message,
-            ),
-          ),
-        );
-      }
-    } catch (e) {
-      log.e(() => '安装失败', e);
+  Future<void> _installApk(String apkPath) async {
+    if (await File(apkPath).exists()) {
       try {
-        final AndroidIntent intent = AndroidIntent(
-          action: 'action_view',
-          type: 'application/vnd.android.package-archive',
-          data: Uri.file(apkPath).toString(),
-          flags: <int>[Flag.FLAG_ACTIVITY_NEW_TASK],
-        );
-        await intent.launch();
-      } catch (e2) {
-        log.e(() => '安装失败（备用 intent）', e2);
-        if (context != null && context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('$installFailL10n: ${e.toString()}')),
+        if ($platform.isAndroidNative) {
+          final AndroidIntent intent = AndroidIntent(
+            action: 'action_view',
+            type: 'application/vnd.android.package-archive',
+            data: Uri.file(apkPath).toString(), // 使用 Uri.file 替代 Uri.fromFile
+            flags: <int>[Flag.FLAG_ACTIVITY_NEW_TASK],
           );
+          await intent.launch();
         }
+      } catch (e) {
+        _log.e(() => '安装失败', e);
+        // 如果使用intent失败，尝试使用open_file
+        await OpenFile.open(apkPath);
       }
     }
   }

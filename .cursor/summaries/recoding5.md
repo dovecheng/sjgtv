@@ -145,3 +145,6 @@ app/lib/src/
 ### 2026-02-02（update_checker 与 category_page 小调整）
 - **update_checker**：平台判断改为 base 的 `$platform.isAndroidNative`，日志改为 base 扩展的 `log`（移除 `defaultTargetPlatform` 与实例 `_log`）；依赖 base 导出 extension。
 - **category_page**：移除未使用的 `package:base/extension.dart` 导入。
+
+### 2026-02-02（update_checker 单例 + l10n）
+- **update_checker**：改为单例 `AppUpdater.instance`，混入 `UpdateCheckerL10nMixin` 使用 l10n 国际化；版本比较支持 `version+buildNumber` 拼接；发布页 URL 使用 API 返回的 `html_url`；调用方式 `AppUpdater.instance.checkForUpdate(ctx)`。
