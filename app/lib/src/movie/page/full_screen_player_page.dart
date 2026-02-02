@@ -95,6 +95,9 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
   final Map<int, _SourceTestResult> _sourceTestResults = {};
   /// 正在测试的源下标
   final Set<int> _sourceTestingIndices = {};
+  /// 进度条节流：每 500ms 更新，避免 position 流高频触发重建导致丢帧
+  final ValueNotifier<Duration> _progressPosition = ValueNotifier(Duration.zero);
+  Timer? _progressTimer;
 
   _FullScreenPlayerPageState()
       : _currentSourceIndex = 0,
@@ -129,11 +132,17 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
         widget.initialIndex.clamp(0, _episodes.isEmpty ? 0 : _episodes.length - 1);
     _sourcePanelFocusedIndex = _currentSourceIndex;
     _sourceItemKeys = List.generate(_sources.length, (_) => GlobalKey());
-    _player = Player();
+    _player = Player(
+      configuration: const PlayerConfiguration(
+        bufferSize: 64 * 1024 * 1024,
+      ),
+    );
     _videoController = VideoController(
       _player,
       configuration: const VideoControllerConfiguration(
         enableHardwareAcceleration: true,
+        hwdec: 'auto-copy',
+        androidAttachSurfaceAfterVideoParameters: true,
       ),
     );
     final String? firstUrl = _episodes.isNotEmpty
@@ -196,6 +205,14 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
     }
   }
 
+  void _startProgressTimer() {
+    _progressTimer?.cancel();
+    _progressTimer = Timer.periodic(const Duration(milliseconds: 500), (_) {
+      if (!mounted) return;
+      _progressPosition.value = _player.state.position;
+    });
+  }
+
   void _setupPlayerListeners() {
     _playerStateSubscription = _player.stream.playing.listen((isPlaying) {
       _controlWakelock(isPlaying);
@@ -243,6 +260,8 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
     _isBuffering.dispose();
     _seekDirection.dispose();
     _seekPosition.dispose();
+    _progressTimer?.cancel();
+    _progressPosition.dispose();
     _volumeHUDTimer?.cancel();
     WakelockPlus.disable().ignore();
     super.dispose();
@@ -266,6 +285,7 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
       }
 
       if (mounted) {
+        _startProgressTimer();
         setState(() => _isLoading = false);
         _preloadNextEpisode();
       }
@@ -1132,10 +1152,12 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
                   ),
                 ],
               )
-            : Video(
-                controller: _videoController,
-                controls: null,
-                wakelock: false,
+            : RepaintBoundary(
+                child: Video(
+                  controller: _videoController,
+                  controls: null,
+                  wakelock: false,
+                ),
               ),
       ),
     );
@@ -1178,10 +1200,9 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: StreamBuilder<Duration>(
-                stream: _player.stream.position,
-                builder: (context, snapshot) {
-                  final Duration position = snapshot.data ?? Duration.zero;
+              child: ValueListenableBuilder<Duration>(
+                valueListenable: _progressPosition,
+                builder: (BuildContext context, Duration position, Widget? child) {
                   final Duration duration = _player.state.duration;
                   return LinearProgressIndicator(
                     value: duration.inMilliseconds > 0
