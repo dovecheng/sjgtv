@@ -5,7 +5,6 @@ import 'package:android_intent_plus/flag.dart';
 import 'package:base/base.dart';
 import 'package:dio/dio.dart';
 import 'package:pub_semver/pub_semver.dart';
-import 'package:flutter/foundation.dart' show defaultTargetPlatform;
 import 'package:flutter/material.dart';
 import 'package:open_file/open_file.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -27,7 +26,6 @@ class AppUpdater with UpdateCheckerL10nMixin implements UpdateCheckerL10n {
 
   static final AppUpdater instance = AppUpdater._();
 
-  final Log _log = Log('AppUpdater');
   final Dio _dio = Dio();
   static const String _githubReleasesUrl =
       'https://api.github.com/repos/dovecheng/sjgtv/releases/latest';
@@ -51,7 +49,7 @@ class AppUpdater with UpdateCheckerL10nMixin implements UpdateCheckerL10n {
       final dynamic latestRelease = response.data;
 
       if (latestRelease == null || latestRelease['tag_name'] == null) {
-        _log.d(() => '检查更新: 无有效的发布版本');
+        log.d(() => '检查更新: 无有效的发布版本');
         return;
       }
 
@@ -74,12 +72,12 @@ class AppUpdater with UpdateCheckerL10nMixin implements UpdateCheckerL10n {
       }
     } on DioException catch (e) {
       if (e.response?.statusCode == 404) {
-        _log.d(() => '检查更新: 仓库暂无发布版本');
+        log.d(() => '检查更新: 仓库暂无发布版本');
         return;
       }
-      _log.e(() => '检查更新失败', e);
+      log.e(() => '检查更新失败', e);
     } catch (e) {
-      _log.e(() => '检查更新失败', e);
+      log.e(() => '检查更新失败', e);
     }
   }
 
@@ -146,7 +144,7 @@ class AppUpdater with UpdateCheckerL10nMixin implements UpdateCheckerL10n {
                   onPressed: () => Navigator.pop(context),
                   child: Text(laterL10n),
                 ),
-                if (defaultTargetPlatform.isAndroidNative && apkUrl != null)
+                if ($platform.isAndroidNative && apkUrl != null)
                   TextButton(
                     onPressed: () =>
                         _downloadAndInstallApk(context, apkUrl, setState),
@@ -182,7 +180,7 @@ class AppUpdater with UpdateCheckerL10nMixin implements UpdateCheckerL10n {
     String apkUrl,
     StateSetter setState,
   ) async {
-    if (!defaultTargetPlatform.isAndroidNative) return;
+    if (!$platform.isAndroidNative) return;
     try {
       final PermissionStatus status = await Permission.storage.request();
       if (!status.isGranted) {
@@ -194,7 +192,7 @@ class AppUpdater with UpdateCheckerL10nMixin implements UpdateCheckerL10n {
         return;
       }
 
-      if (defaultTargetPlatform.isAndroidNative) {
+      if ($platform.isAndroidNative) {
         if (!await Permission.requestInstallPackages.isGranted) {
           await Permission.requestInstallPackages.request();
           if (!await Permission.requestInstallPackages.isGranted) {
@@ -239,7 +237,7 @@ class AppUpdater with UpdateCheckerL10nMixin implements UpdateCheckerL10n {
         Navigator.pop(context);
       }
 
-      if (defaultTargetPlatform.isAndroidNative) {
+      if ($platform.isAndroidNative) {
         if (!await Permission.requestInstallPackages.isGranted) {
           if (context.mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -253,7 +251,7 @@ class AppUpdater with UpdateCheckerL10nMixin implements UpdateCheckerL10n {
         }
       }
     } catch (e) {
-      _log.e(() => '下载失败', e);
+      log.e(() => '下载失败', e);
       setState(() {
         _isDownloading = false;
       });
@@ -270,7 +268,7 @@ class AppUpdater with UpdateCheckerL10nMixin implements UpdateCheckerL10n {
   /// 故优先使用 [OpenFile.open]（内部使用 FileProvider），失败时再尝试 [AndroidIntent]。
   Future<void> _installApk(BuildContext? context, String apkPath) async {
     if (!await File(apkPath).exists()) return;
-    if (!defaultTargetPlatform.isAndroidNative) return;
+    if (!$platform.isAndroidNative) return;
     try {
       final OpenResult result = await OpenFile.open(apkPath);
       if (result.type != ResultType.done &&
@@ -285,7 +283,7 @@ class AppUpdater with UpdateCheckerL10nMixin implements UpdateCheckerL10n {
         );
       }
     } catch (e) {
-      _log.e(() => '安装失败', e);
+      log.e(() => '安装失败', e);
       try {
         final AndroidIntent intent = AndroidIntent(
           action: 'action_view',
@@ -295,7 +293,7 @@ class AppUpdater with UpdateCheckerL10nMixin implements UpdateCheckerL10n {
         );
         await intent.launch();
       } catch (e2) {
-        _log.e(() => '安装失败（备用 intent）', e2);
+        log.e(() => '安装失败（备用 intent）', e2);
         if (context != null && context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('$installFailL10n: ${e.toString()}')),

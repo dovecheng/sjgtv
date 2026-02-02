@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:base/api.dart';
 import 'package:base/app.dart';
-import 'package:base/extension.dart';
 import 'package:base/log.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
