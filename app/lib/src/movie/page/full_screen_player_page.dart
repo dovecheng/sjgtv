@@ -133,7 +133,7 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
     _videoController = VideoController(
       _player,
       configuration: const VideoControllerConfiguration(
-        enableHardwareAcceleration: false, // 禁用硬解，避免部分设备解码超时
+        enableHardwareAcceleration: true,
       ),
     );
     final String? firstUrl = _episodes.isNotEmpty
