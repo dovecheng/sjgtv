@@ -43,3 +43,6 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Snap 打包未使用，忽略避免误提交
+/snap/
