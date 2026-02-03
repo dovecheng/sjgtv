@@ -133,20 +133,18 @@ flutter_gen:
   fonts:
     enabled: false
 
-# 应用启动图标生成：从 assets/icon/icon.png 生成各平台图标
+# 应用启动图标生成
 # 文档: https://pub.dev/packages/icons_launcher
-# Android：传统图标 + Adaptive（前景/深色底）+ 圆角 + 单色 + 通知栏
+# assets/icon: icon.png 原图 | icon_transparent_bg.png 透明背景 | icon_circle.png 圆形+阴影
 icons_launcher:
   image_path: assets/icon/icon.png
   platforms:
     android:
       enable: true
       image_path: assets/icon/icon.png
-      adaptive_foreground_image: assets/icon/icon.png
-      adaptive_background_color: "#0D0D0D"
-      adaptive_round_image: assets/icon/icon.png
-      adaptive_monochrome_image: assets/icon/icon.png
-      notification_image: assets/icon/icon.png
+      adaptive_foreground_image: assets/icon/icon_transparent_bg.png
+      adaptive_background_color: "#020524"
+      adaptive_round_image: assets/icon/icon_circle.png
     ios:
       enable: true
     web:
