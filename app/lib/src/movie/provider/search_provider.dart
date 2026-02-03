@@ -162,7 +162,7 @@ class MovieSearchService {
   }
 
   /// 按「片名+年份」合并多源结果，同一条目下收集多个源到 sources 列表。
-  /// 默认展示与播放使用第一个有效源（vod_play_url 非空），避免默认源不兼容。
+  /// 默认展示与播放使用第一个可播放源（vod_play_url 可解析出剧集），避免默认源无集数或不兼容。
   List<dynamic> _mergeResults(
       List<dynamic> results, List<SourceModel> sources) {
     // key: 规范化(片名+年份)，value: 该组下的所有源条目（保持发现顺序）
@@ -193,11 +193,30 @@ class MovieSearchService {
       }
     }
 
+    /// 是否存在至少一个可解析的剧集（与全屏播放器逻辑保持一致）
+    bool _hasEpisodes(String? playUrl) {
+      if (playUrl == null || playUrl.trim().isEmpty) {
+        return false;
+      }
+      final List<String> parts = playUrl.split('#');
+      for (final String part in parts) {
+        final List<String> episodeParts = part.split(r'$');
+        if (episodeParts.length == 2 &&
+            episodeParts[0].trim().isNotEmpty &&
+            episodeParts[1].trim().isNotEmpty) {
+          return true;
+        }
+      }
+      return false;
+    }
+
     final List<dynamic> merged = <dynamic>[];
     for (final List<Map<String, dynamic>> list in groups.values) {
       final List<Map<String, dynamic>> validSources = list
-          .where((Map<String, dynamic> e) =>
-              (e['vod_play_url']?.toString() ?? '').trim().isNotEmpty)
+          .where((Map<String, dynamic> e) {
+            final String play = (e['vod_play_url']?.toString() ?? '').trim();
+            return play.isNotEmpty && _hasEpisodes(play);
+          })
           .toList();
       if (validSources.isEmpty) continue;
 
