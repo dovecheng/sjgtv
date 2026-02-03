@@ -158,3 +158,13 @@ app/lib/src/
 
 ### 2026-02-03 16:37（Android 全套图标 + icons_launcher）
 - **icons_launcher**：Android 配置补全为 adaptive_foreground_image、adaptive_background_color (#0D0D0D)、adaptive_round_image、adaptive_monochrome_image、notification_image；生成 mipmap-anydpi-v26 的 ic_launcher.xml / ic_launcher_round.xml，各密度前景/圆角/单色图，drawable 通知图标，values/colors.xml。
+
+### 2026-02-03（图标与启动页收尾）
+- **启动页**：launch_background.xml / drawable-v21 背景色改为 @color/ic_launcher_background（#020524）。
+- **round 图标**：新增 drawable/ic_launcher_background_circle.xml（oval 圆形背景），ic_launcher_round.xml 的 background 改为引用该 drawable。
+- **脚本**：icon_transparent_bg.py 改为通用脚本（--input 必填、仅抠与边缘连通的背景）；新增 icon_circle_shadow.py（圆形裁剪 + 轻微阴影，不覆盖原图）。资源 icon_transparent_bg.png、icon_circle.png 已生成。
+- **icons_launcher**：pubspec 配置更新为 icon_transparent_bg / icon_circle；adaptive_round_image 使用 icon_circle.png；移除 monochrome 与 notification 图标；重新生成各平台图标并已推送。
+
+### 2026-02-03（移除透明抠图，统一用圆形图）
+- **移除**：script/icon_transparent_bg.py、app/assets/icon/icon_transparent_bg.png。
+- **icons_launcher**：Android image_path 用 icon.png（Play 商店与普通图标为方图），adaptive_foreground_image / adaptive_round_image 用 icon_circle.png；重新生成图标。
