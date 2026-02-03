@@ -155,3 +155,6 @@ app/lib/src/
 ### 2026-02-02（shelf api 与 index.html 耦合说明）
 - **api.dart**：类注释标明专为 index.html 服务、修改/重构须同步维护 html；createSuccessResponse 注明响应格式与 json.data 取数约定。
 - **index.html**：脚本顶部注明接口由 shelf/api.dart 提供，修改 api 须同步维护本页。
+
+### 2026-02-03 16:37（Android 全套图标 + icons_launcher）
+- **icons_launcher**：Android 配置补全为 adaptive_foreground_image、adaptive_background_color (#0D0D0D)、adaptive_round_image、adaptive_monochrome_image、notification_image；生成 mipmap-anydpi-v26 的 ic_launcher.xml / ic_launcher_round.xml，各密度前景/圆角/单色图，drawable 通知图标，values/colors.xml。
