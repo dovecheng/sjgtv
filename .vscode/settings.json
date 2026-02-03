@@ -1,52 +1,126 @@
 {
-    "cSpell.words": [
-        "appbundle",
-        "Artboard",
-        "Azblob",
-        "bssid",
-        "checkedlist",
-        "dchs",
-        "dovecheng",
-        "geolocator",
-        "jvmargs",
-        "kaifa",
-        "Loggable",
-        "microlearning",
-        "pdfx",
-        "pointycastle",
-        "posthog",
-        "println",
-        "pubspec",
-        "recase",
-        "reorderables",
-        "riverpod",
-        "sjgtv",
-        "syncfusion",
-        "xlider"
-    ],
-    "files.eol": "\n",
-    "files.insertFinalNewline": true,
-    "files.trimTrailingWhitespace": true,
-    "files.exclude": {
-        "**/.DS_Store": true
-    },
-    "todo-tree.general.tags": [
-        "BUG",
-        "HACK",
-        "FIXME",
-        "TODO",
-        "XXX",
-        "[ ]",
-        "[x]",
-        "MARK"
-    ],
-    // Git 配置：像 IntelliJ IDEA 一样直接提交变更，不使用暂存区
-    // 启用智能提交：当没有手动暂存文件时，自动暂存所有变更并提交
-    "git.enableSmartCommit": true,
-    "todo-tree.tree.showBadges": true,
-    "todo-tree.tree.showCountsInTree": true,
-    "todo-tree.tree.disableCompactFolders": false,
-    "commentTranslate.browse.mode": "inplace",
-    "commentTranslate.targetLanguage": "zh-CN",
-    "commentTranslate.source": "Bing"
+  "cSpell.words": [
+    "appbundle",
+    "Artboard",
+    "Azblob",
+    "bssid",
+    "checkedlist",
+    "dchs",
+    "dovecheng",
+    "geolocator",
+    "jvmargs",
+    "kaifa",
+    "Loggable",
+    "microlearning",
+    "pdfx",
+    "pointycastle",
+    "posthog",
+    "println",
+    "pubspec",
+    "recase",
+    "reorderables",
+    "riverpod",
+    "sjgtv",
+    "syncfusion",
+    "xlider"
+  ],
+
+  // ========== 工作台 ==========
+  "workbench.startupEditor": "none",
+  "workbench.commandPalette.preserveInput": true,
+  "workbench.activityBar.orientation": "vertical",
+  "workbench.colorTheme": "Visual Studio Dark",
+  "workbench.preferredDarkColorTheme": "Visual Studio Dark",
+  "workbench.preferredLightColorTheme": "Visual Studio Light",
+  "workbench.editorAssociations": {
+    "*.md": "default"
+  },
+
+  // ========== Git（按 IntelliJ IDEA 习惯） ==========
+  "git.enabled": true,
+  "git.confirmSync": false,
+  "git.autofetch": true,
+  "git.detectSubmodules": true,
+  "git.enableSmartCommit": true,
+  "git.autoStash": true,
+  "git.mergeEditor": true,
+  "git.blame.editorDecoration.enabled": true,
+  "git.autoRepositoryDetection": "subFolders",
+  "gitlens.currentLine.enabled": false,
+
+  // ========== 编辑器 ==========
+  "editor.mouseWheelZoom": true,
+  "editor.minimap.enabled": true,
+  "editor.minimap.size": "fill",
+  "editor.minimap.showSlider": "always",
+  "editor.minimap.renderCharacters": false,
+  "editor.accessibilitySupport": "off",
+  "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?_",
+
+  // ========== 终端 ==========
+  "terminal.integrated.mouseWheelZoom": true,
+  "terminal.integrated.fontSize": 13,
+  "terminal.integrated.enableMultiLinePasteWarning": "never",
+
+  // ========== 文件 ==========
+  "files.eol": "\n",
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+  "files.exclude": {
+    "**/.DS_Store": true
+  },
+
+  // ========== Diff 与调试 ==========
+  "diffEditor.ignoreTrimWhitespace": true,
+  "debug.console.wordWrap": false,
+
+  // ========== 资源管理器 ==========
+  "explorer.confirmPasteNative": false,
+  "explorer.confirmDragAndDrop": false,
+  "explorer.autoReveal": false,
+
+  // ========== Dart / Flutter ==========
+  "dart.showTodos": false,
+  "dart.debugExternalPackageLibraries": true,
+  "dart.debugSdkLibraries": true,
+  "dart.flutterHotReloadOnSave": "never",
+  "dart.inlayHints": true,
+
+  // ========== Android (avdmanager) ==========
+  "avdmanager.executable": "/data/home/dove/android-sdk/cmdline-tools/latest/bin/avdmanager",
+  "avdmanager.sdkPath": "/data/home/dove/android-sdk",
+
+  // ========== TODO 与注释 ==========
+  "todo-tree.general.tags": [
+    "BUG",
+    "HACK",
+    "FIXME",
+    "TODO",
+    "XXX",
+    "[ ]",
+    "[x]",
+    "MARK"
+  ],
+  "todo-tree.tree.showBadges": true,
+  "todo-tree.tree.showCountsInTree": true,
+  "todo-tree.tree.disableCompactFolders": false,
+  "commentTranslate.browse.mode": "inplace",
+  "commentTranslate.targetLanguage": "zh-CN",
+  "commentTranslate.source": "Bing",
+
+  // ========== 拼写检查 ==========
+  "cSpell.diagnosticLevel": "Hint",
+
+  // ========== 语言与格式化 ==========
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[yaml]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+
+  // ========== 扩展与其它 ==========
+  "vscode-office.editorTheme": "Auto",
+  "hediet.vscode-drawio.resizeImages": null,
+  "redhat.telemetry.enabled": true
 }

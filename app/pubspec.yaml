@@ -136,15 +136,17 @@ flutter_gen:
 # 应用启动图标生成：从 assets/icon/icon.png 生成各平台图标
 # 文档: https://pub.dev/packages/flutter_launcher_icons
 flutter_launcher_icons:
-  image_path: assets/icon/icon.png
+  image_path: assets/icon/icon.jpg
   android: true
   ios: true
   web:
     generate: true
-    background_color: "#0175C2"
-    theme_color: "#0175C2"
   windows:
     generate: true
     icon_size: 256
   macos:
     generate: true
+    icon_size: 256
+  linux:
+    generate: true
+    icon_size: 256

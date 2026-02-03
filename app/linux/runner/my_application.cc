@@ -47,7 +47,15 @@ static void my_application_activate(GApplication* application) {
     gtk_window_set_title(window, "sjgtv");
   }
 
-  gtk_window_set_default_size(window, 1280, 720);
+  // 与 Windows 一致：初始 800×600、居中、最小尺寸 800×600
+  const int kWindowWidth = 800;
+  const int kWindowHeight = 600;
+  gtk_window_set_default_size(window, kWindowWidth, kWindowHeight);
+  gtk_window_set_position(window, GTK_WIN_POS_CENTER);
+  GdkGeometry geometry;
+  geometry.min_width = kWindowWidth;
+  geometry.min_height = kWindowHeight;
+  gtk_window_set_geometry_hints(window, nullptr, &geometry, GDK_HINT_MIN_SIZE);
   gtk_widget_show(GTK_WIDGET(window));
 
   g_autoptr(FlDartProject) project = fl_dart_project_new();
