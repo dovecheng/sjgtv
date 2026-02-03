@@ -75,7 +75,7 @@ dev_dependencies:
   riverpod_generator: ^3.0.3
   flutter_gen_runner: ^5.11.0
   # app 独有
-  flutter_launcher_icons: ^0.14.4
+  icons_launcher: ^3.0.3
   flutter_test:
     sdk: flutter
 
@@ -134,20 +134,26 @@ flutter_gen:
     enabled: false
 
 # 应用启动图标生成：从 assets/icon/icon.png 生成各平台图标
-# 文档: https://pub.dev/packages/flutter_launcher_icons
-# todo: 换成这个库生成图标: https://pub.dev/packages/icons_launcher
-flutter_launcher_icons:
+# 文档: https://pub.dev/packages/icons_launcher
+# Android：传统图标 + Adaptive（前景/深色底）+ 圆角 + 单色 + 通知栏
+icons_launcher:
   image_path: assets/icon/icon.png
-  android: true
-  ios: true
-  web:
-    generate: true
-  windows:
-    generate: true
-    icon_size: 256
-  macos:
-    generate: true
-    icon_size: 256
-  linux:
-    generate: true
-    icon_size: 256
+  platforms:
+    android:
+      enable: true
+      image_path: assets/icon/icon.png
+      adaptive_foreground_image: assets/icon/icon.png
+      adaptive_background_color: "#0D0D0D"
+      adaptive_round_image: assets/icon/icon.png
+      adaptive_monochrome_image: assets/icon/icon.png
+      notification_image: assets/icon/icon.png
+    ios:
+      enable: true
+    web:
+      enable: true
+    macos:
+      enable: true
+    windows:
+      enable: true
+    linux:
+      enable: true
