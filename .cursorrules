@@ -40,6 +40,10 @@
 - 生成的代码要有适当的错误处理机制
 - 遵循最佳实践和设计模式原则
 
+## 与 build_runner / 代码生成器相关的规则
+- **不主动引入或依赖需生成的代码**：除非用户明确要求，否则不主动使用 Freezed、Retrofit、json_serializable、riverpod_generator、flutter_gen_runner 等需要 `dart run build_runner build` 的写法；优先手写实现（如手写 model、手写 Dio 请求、手写 Provider）。
+- **完成后提示用户**：当本次修改涉及或适合用代码生成器时（例如新增/改动了 API、模型、资源等），在回复末尾可询问用户「要不要现在生成代码？」或简短建议执行生成命令（如「如需生成代码，可执行：dart run build_runner build --delete-conflicting-outputs」）；不要由 AI 主动执行 build_runner，等用户确认后再协助。
+
 ## 需求审查与指正规则
 - 当用户提出需求或操作时，如果方向不对，必须先指正再执行
 - 执行前评估：需求合理性、方案风险、替代方案、是否符合项目架构
