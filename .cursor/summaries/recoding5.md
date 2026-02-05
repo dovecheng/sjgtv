@@ -39,7 +39,7 @@ app/lib/src/
 ├── proxy/      # 代理：model、provider
 ├── tag/        # 标签：model、provider
 ├── movie/      # 电影：model、page（category、search、detail、full_screen_player）、service（m3u8_ad_remover）、widget
-├── shelf/      # ShelfApi 单例、HTTP 服务、web_l10n / api_l10n
+├── shelf/      # ShelfApi 单例、HTTP 服务、app_localizations_web（GET /api/l10n）
 └── app/        # 应用级：api（ConfigApi）、provider、runner（sjgtv_runner）、theme、widget（update_checker）
 ```
 
@@ -63,7 +63,7 @@ app/lib/src/
 
 **质量与其它**
 
-- [ ] **app 改为官方国际化**：将 app 从当前 L10n enum + l10nTranslationProvider 改为 Flutter 官方 gen-l10n（ARB + AppLocalizations）；需处理 Flutter UI 与 shelf 网页接口 GET /api/l10n 的文案来源（shelf 当前用 provider 的 key-value Map）。
+- [x] **app 改为官方国际化**：将 app 从当前 L10n enum + l10nTranslationProvider 改为 Flutter 官方 gen-l10n（ARB + AppLocalizations）；Flutter UI 使用 AppLocalizations，shelf 网页 GET /api/l10n 使用 app_localizations_web 提供 key-value。（已完成）
 - [ ] **ApiResultInterceptor 与直接 Dio 解析**：使用 apiClientProvider / $dio 时，ApiResultInterceptor 会将 response.data 包装为 `{ code, data, msg }`，真实 body 在 `data` 中。直接 `response.data['xxx']` 会取不到；需用 `ApiResultModel.fromJson(response.data)` 再取 `result.data?['xxx']`。其他直接使用 Dio 的地方（如 update_checker、search_provider 等）若走 $dio，需同样处理。
 - [ ] **页面数据逻辑改用 Riverpod**：部分页面（如 category_page）的数据获取与状态仍在 State 中维护，应抽成 Provider（FutureProvider/AsyncNotifier 等），便于复用与测试。
 - [ ] **Retrofit API 未覆盖**：仍有接口用裸 Dio 调用，未声明为 Retrofit API（如 category_page 豆瓣 search_subjects、update_checker 的 GitHub releases、search_provider 的源 videolist 等），可逐步抽成 @GET/@POST 接口。
@@ -178,3 +178,7 @@ app/lib/src/
 
 ### 2026-02-05 13:49（计划：app 官方国际化）
 - 下一步计划：把 app 也改成官方国际化（Flutter gen-l10n / ARB），已记入待办「app 改为官方国际化」。
+
+### 2026-02-05 14:52（app 官方国际化 + base 收尾）
+- **app 官方国际化**：删除 app 侧旧 l10n（gen/l10n.gen.dart、各模块 app_l10n/source_l10n/update_checker_l10n/api_l10n/web_l10n 及 gen、app/tool 下 gen_l10n_* / scan_*）；新增 l10n.yaml、l10n_arb/、l10n_gen/（AppLocalizations）；sjgtv_runner、update_checker、source 页面、shelf/api 改为使用 AppLocalizations；shelf 网页文案由 app_localizations_web 提供 GET /api/l10n。pubspec 增加 flutter_localizations、flutter gen-l10n 配置。
+- **base**：enum_ext 从 converter/extension 移至 src/extension/enum_ext.dart，converter.dart 移除该导出、extension.dart 导出；新增 bytes_ext；其余为配合 base 官方 l10n 的删除与修改（l10n 旧实现与 base/tool 已在此前或本次一并清理）。待办「app 改为官方国际化」已勾选。
