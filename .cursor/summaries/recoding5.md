@@ -63,6 +63,7 @@ app/lib/src/
 
 **质量与其它**
 
+- [ ] **app 改为官方国际化**：将 app 从当前 L10n enum + l10nTranslationProvider 改为 Flutter 官方 gen-l10n（ARB + AppLocalizations）；需处理 Flutter UI 与 shelf 网页接口 GET /api/l10n 的文案来源（shelf 当前用 provider 的 key-value Map）。
 - [ ] **ApiResultInterceptor 与直接 Dio 解析**：使用 apiClientProvider / $dio 时，ApiResultInterceptor 会将 response.data 包装为 `{ code, data, msg }`，真实 body 在 `data` 中。直接 `response.data['xxx']` 会取不到；需用 `ApiResultModel.fromJson(response.data)` 再取 `result.data?['xxx']`。其他直接使用 Dio 的地方（如 update_checker、search_provider 等）若走 $dio，需同样处理。
 - [ ] **页面数据逻辑改用 Riverpod**：部分页面（如 category_page）的数据获取与状态仍在 State 中维护，应抽成 Provider（FutureProvider/AsyncNotifier 等），便于复用与测试。
 - [ ] **Retrofit API 未覆盖**：仍有接口用裸 Dio 调用，未声明为 Retrofit API（如 category_page 豆瓣 search_subjects、update_checker 的 GitHub releases、search_provider 的源 videolist 等），可逐步抽成 @GET/@POST 接口。
@@ -173,4 +174,7 @@ app/lib/src/
 - **ok 命令**：`.cursor/commands/ok.md` 从 subagent 改为命令格式（去 frontmatter、加执行逻辑）；原 `.cursor/agents/ok.md` 移除。
 - **base**：删除 app_config、gen/l10n.gen.dart、api/l10n（api_l10n.dart、api_l10n.gen.dart）；新增官方 gen-l10n（l10n.yaml、l10n_arb/、l10n_gen/、BaseLocalizations）；恢复 AppNavigator；theme 扩展移至 `src/extension/`（context_ext、media_query_ext）；ApiErrorType 改为 BaseLocalizations + message getter（switch 分支）；api_result_model 适配（无 messageFallback、parseError 固定文案）；L10nTranslationProvider 不再依赖 base gen；Isar version 6。
 - **收尾**：dart analyze 通过；拆分提交（chore: ok 命令格式；refactor(base): 官方 gen-l10n 与上述变更）。
-- **摘要**：ok 命令与收尾内容并入本文件（recoding5），删除 .cursor/summaries/ok命令与收尾.md；app 适配 base 的变更待提交。
+- **摘要**：ok 命令与收尾内容并入本文件（recoding5），删除 .cursor/summaries/ok命令与收尾.md；app 适配 base 的变更已提交并推送。
+
+### 2026-02-05 13:49（计划：app 官方国际化）
+- 下一步计划：把 app 也改成官方国际化（Flutter gen-l10n / ARB），已记入待办「app 改为官方国际化」。
