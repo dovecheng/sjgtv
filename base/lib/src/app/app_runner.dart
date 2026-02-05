@@ -15,9 +15,6 @@ abstract base class AppRunner {
       (ApiClientProvider it) => apiClientProvider.overrideWith(() => it),
     ),
     ?isar?.let((IsarProvider it) => isarProvider.overrideWith(() => it)),
-    ?jsonAdapter?.let(
-      (JsonAdapterProvider it) => jsonAdapterProvider.overrideWith(() => it),
-    ),
   ];
 
   /// 接口客户端
@@ -31,10 +28,6 @@ abstract base class AppRunner {
   /// isar存储
   @protected
   IsarProvider? get isar => null;
-
-  /// json转换
-  @protected
-  JsonAdapterProvider? get jsonAdapter => null;
 
   /// 预设屏幕方向
   List<DeviceOrientation> get preferredOrientations => const [
@@ -90,8 +83,6 @@ abstract base class AppRunner {
 
     // 接口请求配置, 在调用接口前, 需要先初始化
     $ref.read(apiClientProvider);
-    // Json解析方法, 在调用接口前, 需要先初始化
-    $ref.read(jsonAdapterProvider);
 
     log.d(() => 'end');
   }

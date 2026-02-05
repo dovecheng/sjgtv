@@ -7,7 +7,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:sjgtv/l10n_gen/app_localizations.dart';
 import 'package:sjgtv/src/app/provider/config_api_provider.dart';
-import 'package:sjgtv/src/app/provider/json_adapter_provider.dart';
 import 'package:sjgtv/src/app/widget/update_checker.dart';
 import 'package:sjgtv/src/movie/page/category_page.dart';
 import 'package:sjgtv/src/proxy/model/proxy_model.dart';
@@ -31,10 +30,6 @@ final class SjgtvRunner extends AppRunner {
 
   SjgtvRunner();
 
-  /// JSON 转换器配置
-  @override
-  JsonAdapterProvider get jsonAdapter => JsonAdapterImpl();
-
   /// 仅支持横屏
   @override
   List<DeviceOrientation> get preferredOrientations => const [
@@ -50,6 +45,11 @@ final class SjgtvRunner extends AppRunner {
 
   @override
   Future<void> init() async {
+    // 在 base initProvider 前注册 JSON 转换，供 Isar/API 等使用
+    JSONConverter.registerFromJson(SourceModel.fromJson);
+    JSONConverter.registerFromJson(ProxyModel.fromJson);
+    JSONConverter.registerFromJson(TagModel.fromJson);
+
     await super.init();
 
     // 加载初始配置（Isar 由 base initProvider 通过 isarProvider 初始化）
