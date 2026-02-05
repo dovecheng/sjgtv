@@ -28,8 +28,8 @@
 
 **base**（公共库）
 
-- `api/`、`app/`（runner、config、theme 扩展）、`cache/`、`converter/`、`extension/`（平台、时长、字符串等）、`isar/`、`l10n/`、`log/`、`provider/` 等。
-- 扩展方法集中在 `src/extension/` 与 `app/theme/extension/`（如 `context_ext`、`media_query_ext`、`target_platform_ext`）。
+- `api/`、`app/`（runner、app_navigator）、`cache/`、`converter/`、`extension/`（平台、时长、字符串等）、`isar/`、`l10n/`、`log/`、`provider/` 等；扩展方法在 `src/extension/`（如 `context_ext`、`media_query_ext`、`target_platform_ext`）。
+- **官方 l10n**：`l10n_arb/`（ARB）、`l10n_gen/`（flutter gen-l10n 生成 BaseLocalizations）；API 错误文案由 ApiErrorType.message + BaseLocalizations 提供。
 
 **app**（应用层，按业务）
 
@@ -168,3 +168,9 @@ app/lib/src/
 ### 2026-02-03（移除透明抠图，统一用圆形图）
 - **移除**：script/icon_transparent_bg.py、app/assets/icon/icon_transparent_bg.png。
 - **icons_launcher**：Android image_path 用 icon.png（Play 商店与普通图标为方图），adaptive_foreground_image / adaptive_round_image 用 icon_circle.png；重新生成图标。
+
+### 2026-02-05 13:30（ok 命令改版 + base l10n/API 收尾）
+- **ok 命令**：`.cursor/commands/ok.md` 从 subagent 改为命令格式（去 frontmatter、加执行逻辑）；原 `.cursor/agents/ok.md` 移除。
+- **base**：删除 app_config、gen/l10n.gen.dart、api/l10n（api_l10n.dart、api_l10n.gen.dart）；新增官方 gen-l10n（l10n.yaml、l10n_arb/、l10n_gen/、BaseLocalizations）；恢复 AppNavigator；theme 扩展移至 `src/extension/`（context_ext、media_query_ext）；ApiErrorType 改为 BaseLocalizations + message getter（switch 分支）；api_result_model 适配（无 messageFallback、parseError 固定文案）；L10nTranslationProvider 不再依赖 base gen；Isar version 6。
+- **收尾**：dart analyze 通过；拆分提交（chore: ok 命令格式；refactor(base): 官方 gen-l10n 与上述变更）。
+- **摘要**：ok 命令与收尾内容并入本文件（recoding5），删除 .cursor/summaries/ok命令与收尾.md；app 适配 base 的变更待提交。
