@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:base/extension.dart';
-import 'package:base/l10n.dart';
 import 'package:base/log.dart';
 import 'package:dio/dio.dart';
 
@@ -63,7 +62,7 @@ extension RequestToMapExt on RequestOptions {
     if (headers.isNotEmpty) 'request.headers': headers,
     'request.data': isLoggableData && requestBytes < 1024 * 32
         ? data
-        : '${L10nFileExt.formatBytesSize(requestBytes)} ${data.runtimeType}',
+        : '${formatBytesSize(requestBytes)} ${data.runtimeType}',
     if (extra.isNotEmpty) 'request.extra': extra,
     if (hasResponse) 'request.elapsed': '${elapsedTime?.inMilliseconds}ms',
     'request.cancelToken': cancelToken?.let(

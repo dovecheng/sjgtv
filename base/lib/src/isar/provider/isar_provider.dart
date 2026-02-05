@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:base/env.dart';
 import 'package:base/isar.dart';
-import 'package:base/l10n.dart';
 import 'package:base/log.dart';
 import 'package:isar_community/isar.dart';
 import 'package:path_provider/path_provider.dart';
@@ -36,10 +35,7 @@ class IsarProvider extends _$IsarProvider {
   @override
   Future<Isar> build() async {
     Isar isar = await Isar.open(
-      <CollectionSchema<dynamic>>[
-        L10nLanguageModelSchema,
-        ...?schemas,
-      ],
+      <CollectionSchema<dynamic>>[...?schemas],
       directory: await getApplicationDocumentsDirectory().then(
         (Directory dir) => dir.path,
       ),

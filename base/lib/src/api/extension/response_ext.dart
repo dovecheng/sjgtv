@@ -1,5 +1,5 @@
 import 'package:base/api.dart';
-import 'package:base/l10n.dart';
+import 'package:base/extension.dart';
 import 'package:dio/dio.dart';
 
 extension ResponseExt<T> on Response<T> {
@@ -14,7 +14,7 @@ extension ResponseExt<T> on Response<T> {
             requestOptions.responseBytes < 1024 * 32
         ? data
         : [
-            L10nFileExt.formatBytesSize(requestOptions.responseBytes),
+            formatBytesSize(requestOptions.responseBytes),
             if (requestOptions.isLoggableData)
               switch (data) {
                 Map<String, dynamic> data => {

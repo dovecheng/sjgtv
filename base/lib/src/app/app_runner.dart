@@ -18,13 +18,6 @@ abstract base class AppRunner {
     ?jsonAdapter?.let(
       (JsonAdapterProvider it) => jsonAdapterProvider.overrideWith(() => it),
     ),
-    ?l10nLanguage?.let(
-      (L10nLanguageProvider it) => l10nLanguageProvider.overrideWith(() => it),
-    ),
-    ?l10nTranslation?.let(
-      (L10nTranslationProvider it) =>
-          l10nTranslationProvider.overrideWith(() => it),
-    ),
   ];
 
   /// 接口客户端
@@ -42,14 +35,6 @@ abstract base class AppRunner {
   /// json转换
   @protected
   JsonAdapterProvider? get jsonAdapter => null;
-
-  /// 国际化语言
-  @protected
-  L10nLanguageProvider? get l10nLanguage => null;
-
-  /// 国际化翻译
-  @protected
-  L10nTranslationProvider? get l10nTranslation => null;
 
   /// 预设屏幕方向
   List<DeviceOrientation> get preferredOrientations => const [
@@ -85,7 +70,6 @@ abstract base class AppRunner {
     log.d(() => 'end');
   }
 
-
   /// 初始化提供者
   @protected
   @mustCallSuper
@@ -108,13 +92,6 @@ abstract base class AppRunner {
     $ref.read(apiClientProvider);
     // Json解析方法, 在调用接口前, 需要先初始化
     $ref.read(jsonAdapterProvider);
-
-    // 国际化翻译
-    $ref.read(l10nTranslationProvider);
-    // 国际化语言
-    $ref.read(l10nLanguageProvider);
-    // 相对日期
-    $ref.listen(l10nTimeagoProvider, (previous, next) {});
 
     log.d(() => 'end');
   }

@@ -1,8 +1,14 @@
+import 'dart:ui';
+
 import 'package:intl/intl.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
-import 'package:base/l10n.dart';
-import 'package:base/provider.dart';
+String get _systemLocaleTag {
+  final Locale loc = PlatformDispatcher.instance.locale;
+  return (loc.countryCode != null && loc.countryCode!.isNotEmpty)
+      ? '${loc.languageCode}_${loc.countryCode}'
+      : loc.languageCode;
+}
 
 extension L10nDateTimeFormatExt on DateTime {
   /// 本地时区偏移分钟数
@@ -13,13 +19,11 @@ extension L10nDateTimeFormatExt on DateTime {
   ///
   /// [style] 格式化的样式
   ///
-  /// [locale] 本地化
+  /// [useLocale] 为 true 时使用系统 locale 的 languageTag
   String format({String style = 'yyyy/MM/dd HH:mm', bool useLocale = false}) =>
       DateFormat(
         style,
-        useLocale
-            ? $ref.read(l10nLanguageProvider).value?.$1.languageTag
-            : null,
+        useLocale ? _systemLocaleTag : null,
       ).format(this);
 
   /// 日期格式化

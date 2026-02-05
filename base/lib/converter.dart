@@ -1,4 +1,3 @@
-export 'src/converter/extension/enum_ext.dart';
 export 'src/converter/provider/json_adapter_provider.dart';
 export 'src/converter/bool_converter.dart';
 export 'src/converter/datetime_converter.dart';

@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:base/app.dart';
-import 'package:base/l10n.dart';
+import 'package:base/l10n_gen/base_localizations.dart';
 import 'package:dio/dio.dart';
 
 /// Api错误类型

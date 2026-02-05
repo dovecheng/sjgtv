@@ -1,21 +1,7 @@
-// Flutter 官方 gen-l10n 生成（ARB 在 lib/l10n_arb/，与下方旧 l10n 并存）
 export 'l10n_gen/base_localizations.dart';
-
-export 'src/l10n/annotation/l10n_key.dart';
-export 'src/l10n/annotation/l10n_key_type.dart';
-export 'src/l10n/annotation/l10n_keys.dart';
 export 'src/l10n/extension/l10n_date_time_ext.dart';
 export 'src/l10n/extension/l10n_file_ext.dart';
 export 'src/l10n/extension/l10n_num_ext.dart';
 export 'src/l10n/extension/l10n_string_ext.dart';
 export 'src/l10n/messages/zh_cn_messages.dart';
 export 'src/l10n/messages/zh_messages.dart';
-export 'src/l10n/mixin/l10n_mixin.dart';
-export 'src/l10n/model/l10n_translation_model.dart';
-export 'src/l10n/model/l10n_language_model.dart';
-export 'src/l10n/provider/l10n_language_provider.dart';
-export 'src/l10n/provider/l10n_timeago_provider.dart';
-export 'src/l10n/provider/l10n_translation_provider.dart';
-export 'src/l10n/widget/l10n_key_tips.dart';
-export 'src/l10n/widget/l10n_language_consumer.dart';
-export 'src/l10n/widget/l10n_translation_consumer.dart';
