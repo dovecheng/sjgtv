@@ -64,6 +64,8 @@ dependencies:
   media_kit_libs_video: ^1.0.6
   cupertino_icons: ^1.0.8
   flutter_gen: ^5.11.0
+  flutter_localizations:
+    sdk: flutter
 
 dev_dependencies:
   # 与 base 版本一致

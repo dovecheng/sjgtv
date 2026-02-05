@@ -43,7 +43,7 @@ final class TagsStorageProviderProvider
 }
 
 String _$tagsStorageProviderHash() =>
-    r'5146adfc68d126cb76c489885128fa9b1e437816';
+    r'a8ee19f08f48ba5484706c1d55e9a7492481937b';
 
 /// 标签列表提供者 [tagsStorageProvider]
 ///

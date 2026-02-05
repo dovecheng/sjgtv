@@ -194,7 +194,7 @@ class MovieSearchService {
     }
 
     /// 是否存在至少一个可解析的剧集（与全屏播放器逻辑保持一致）
-    bool _hasEpisodes(String? playUrl) {
+    bool hasEpisodes(String? playUrl) {
       if (playUrl == null || playUrl.trim().isEmpty) {
         return false;
       }
@@ -215,7 +215,7 @@ class MovieSearchService {
       final List<Map<String, dynamic>> validSources = list
           .where((Map<String, dynamic> e) {
             final String play = (e['vod_play_url']?.toString() ?? '').trim();
-            return play.isNotEmpty && _hasEpisodes(play);
+            return play.isNotEmpty && hasEpisodes(play);
           })
           .toList();
       if (validSources.isEmpty) continue;

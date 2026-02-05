@@ -1,11 +1,11 @@
-import 'package:base/cache.dart';
+import 'package:base/base.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sjgtv/src/movie/provider/search_provider.dart';
-import 'package:base/app.dart';
 import 'package:sjgtv/src/movie/widget/network_image_placeholders.dart';
+
 import 'movie_detail_page.dart';
 
 /// 电影搜索页

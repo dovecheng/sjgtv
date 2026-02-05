@@ -1,19 +1,17 @@
 import 'dart:io';
 
-import 'package:base/api.dart';
-import 'package:base/app.dart';
-import 'package:base/log.dart';
+import 'package:base/base.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:sjgtv/src/movie/model/movie_model.dart';
+import 'package:sjgtv/src/movie/page/search_page.dart';
+import 'package:sjgtv/src/movie/widget/focusable_movie_card.dart';
+import 'package:sjgtv/src/source/page/source_manage_page.dart';
 import 'package:sjgtv/src/tag/model/tag_model.dart';
 import 'package:sjgtv/src/tag/provider/tags_provider.dart';
-import 'package:sjgtv/src/movie/page/search_page.dart';
-import 'package:sjgtv/src/source/page/source_manage_page.dart';
-import 'package:sjgtv/src/movie/widget/focusable_movie_card.dart';
 
 final Log _log = Log('MovieHomePage');
 
@@ -314,12 +312,12 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
           // FIXME(dove): 2026-02-02 判断的不对, 实际设备是 TV, 但是也没显示二维码
           // if ($platform.isMobileNative &&
           //     context.mediaQuery.deviceType == DeviceType.tv) ...[
-            const SizedBox(width: 10),
-            IconButton(
-              icon: const Icon(Icons.settings, size: 20),
-              onPressed: _showQRCodeDialog,
-              focusColor: Colors.red,
-            ),
+          const SizedBox(width: 10),
+          IconButton(
+            icon: const Icon(Icons.settings, size: 20),
+            onPressed: _showQRCodeDialog,
+            focusColor: Colors.red,
+          ),
           // ],
         ],
       ),

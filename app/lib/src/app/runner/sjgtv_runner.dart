@@ -1,23 +1,24 @@
 import 'dart:io';
 
 import 'package:base/base.dart';
-import 'package:sjgtv/gen/l10n.gen.dart';
-import 'package:sjgtv/src/app/provider/config_api_provider.dart';
-import 'package:sjgtv/src/app/widget/update_checker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:sjgtv/src/proxy/model/proxy_model.dart';
-import 'package:sjgtv/src/source/model/source_model.dart';
-import 'package:sjgtv/src/tag/model/tag_model.dart';
-import 'package:sjgtv/src/source/provider/source_count_provider.dart';
-import 'package:sjgtv/src/proxy/provider/proxy_count_provider.dart';
-import 'package:sjgtv/src/tag/provider/tag_count_provider.dart';
-import 'package:sjgtv/src/proxy/provider/proxies_provider.dart';
-import 'package:sjgtv/src/source/provider/sources_provider.dart';
-import 'package:sjgtv/src/tag/provider/tags_provider.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:sjgtv/gen/l10n.gen.dart';
+import 'package:sjgtv/src/app/provider/config_api_provider.dart';
 import 'package:sjgtv/src/app/provider/json_adapter_provider.dart';
-import 'package:sjgtv/src/shelf/api.dart';
+import 'package:sjgtv/src/app/widget/update_checker.dart';
 import 'package:sjgtv/src/movie/page/category_page.dart';
+import 'package:sjgtv/src/proxy/model/proxy_model.dart';
+import 'package:sjgtv/src/proxy/provider/proxies_provider.dart';
+import 'package:sjgtv/src/proxy/provider/proxy_count_provider.dart';
+import 'package:sjgtv/src/shelf/api.dart';
+import 'package:sjgtv/src/source/model/source_model.dart';
+import 'package:sjgtv/src/source/provider/source_count_provider.dart';
+import 'package:sjgtv/src/source/provider/sources_provider.dart';
+import 'package:sjgtv/src/tag/model/tag_model.dart';
+import 'package:sjgtv/src/tag/provider/tag_count_provider.dart';
+import 'package:sjgtv/src/tag/provider/tags_provider.dart';
 import 'package:uuid/uuid.dart';
 
 /// sjgtv 应用启动器
@@ -92,8 +93,6 @@ class _AppWithUpdateCheck extends StatefulWidget {
 }
 
 class _AppWithUpdateCheckState extends State<_AppWithUpdateCheck> {
-  final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
-
   @override
   void initState() {
     super.initState();
@@ -102,7 +101,7 @@ class _AppWithUpdateCheckState extends State<_AppWithUpdateCheck> {
 
   Future<void> _runUpdateCheck() async {
     await Future.delayed(const Duration(milliseconds: 1500));
-    final BuildContext? ctx = _navigatorKey.currentContext;
+    final BuildContext? ctx = AppNavigator.navigatorKey.currentContext;
     if (ctx != null && ctx.mounted) {
       await AppUpdater.instance.checkForUpdate(ctx);
     }
@@ -111,11 +110,17 @@ class _AppWithUpdateCheckState extends State<_AppWithUpdateCheck> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      navigatorKey: _navigatorKey,
+      navigatorKey: AppNavigator.navigatorKey,
       title: widget.title,
       debugShowCheckedModeBanner: false,
       theme: ThemeData.dark(),
       home: const MovieHomePage(),
+      localizationsDelegates: [
+        BaseLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
     );
   }
 }

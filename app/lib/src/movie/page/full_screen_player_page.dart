@@ -1,15 +1,13 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:base/extension.dart';
-import 'package:base/log.dart';
+import 'package:base/base.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:base/app.dart';
 import 'package:sjgtv/src/movie/page/player_intents.dart';
 import 'package:sjgtv/src/movie/service/m3u8_ad_remover.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';

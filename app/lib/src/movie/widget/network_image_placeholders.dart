@@ -1,4 +1,4 @@
-import 'package:base/app.dart';
+import 'package:base/base.dart';
 import 'package:flutter/material.dart';
 
 /// 网络图片加载占位（与 [networkImageErrorWidget] 配套使用）

@@ -1,7 +1,6 @@
-import 'package:base/cache.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:base/app.dart';
+import 'package:base/base.dart';
 import 'package:sjgtv/src/movie/model/movie_model.dart';
 import 'package:sjgtv/src/movie/page/search_page.dart';
 import 'package:sjgtv/src/movie/widget/network_image_placeholders.dart';

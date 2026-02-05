@@ -11,6 +11,7 @@ part of 'config_api_provider.dart';
 /// 远程配置 API 请求结果提供者
 ///
 /// build 为调用 [ConfigApi].getConfig() 的返回结果（Map）。
+/// 兼容服务端返回裸 config（直接 sources/proxy/tags）或 ApiResultModel 包装格式。
 
 @ProviderFor(ConfigApiProvider)
 const configApiProvider = ConfigApiProviderProvider._();
@@ -18,11 +19,13 @@ const configApiProvider = ConfigApiProviderProvider._();
 /// 远程配置 API 请求结果提供者
 ///
 /// build 为调用 [ConfigApi].getConfig() 的返回结果（Map）。
+/// 兼容服务端返回裸 config（直接 sources/proxy/tags）或 ApiResultModel 包装格式。
 final class ConfigApiProviderProvider
     extends $AsyncNotifierProvider<ConfigApiProvider, Map<String, dynamic>?> {
   /// 远程配置 API 请求结果提供者
   ///
   /// build 为调用 [ConfigApi].getConfig() 的返回结果（Map）。
+  /// 兼容服务端返回裸 config（直接 sources/proxy/tags）或 ApiResultModel 包装格式。
   const ConfigApiProviderProvider._()
     : super(
         from: null,
@@ -42,11 +45,12 @@ final class ConfigApiProviderProvider
   ConfigApiProvider create() => ConfigApiProvider();
 }
 
-String _$configApiProviderHash() => r'8bf17d8fc72beda39c36d742efc4c76ffebd16a7';
+String _$configApiProviderHash() => r'9790a9c3b6cbc3ca493d2022444a6edd6494cede';
 
 /// 远程配置 API 请求结果提供者
 ///
 /// build 为调用 [ConfigApi].getConfig() 的返回结果（Map）。
+/// 兼容服务端返回裸 config（直接 sources/proxy/tags）或 ApiResultModel 包装格式。
 
 abstract class _$ConfigApiProvider
     extends $AsyncNotifier<Map<String, dynamic>?> {
