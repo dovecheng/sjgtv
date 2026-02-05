@@ -3,9 +3,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:base/converter.dart';
-import 'package:base/l10n.dart';
 import 'package:base/log.dart';
 import 'package:dio/dio.dart' hide Response;
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart' as shelf_io;
@@ -13,7 +13,8 @@ import 'package:shelf_cors_headers/shelf_cors_headers.dart';
 import 'package:shelf_router/shelf_router.dart' as shelf_router;
 import 'package:shelf_static/shelf_static.dart';
 import 'package:sjgtv/gen/assets.gen.dart';
-import 'package:sjgtv/src/shelf/l10n/api_l10n.gen.dart';
+import 'package:sjgtv/l10n_gen/app_localizations.dart';
+import 'package:sjgtv/src/shelf/l10n/app_localizations_web.dart';
 import 'package:sjgtv/src/proxy/model/proxy_model.dart';
 import 'package:sjgtv/src/source/model/source_model.dart';
 import 'package:sjgtv/src/tag/model/tag_model.dart';
@@ -28,15 +29,18 @@ import 'package:uuid/uuid.dart';
 final Log _log = Log('Api');
 
 /// shelf 本地 API 服务单例，专为网页 app/assets/web/index.html 提供接口，
-/// 其他 Dart 代码不调用此处。混入 [ShelfApiL10nMixin]，方法内用 this.xxxL10n 获取翻译。
+/// 其他 Dart 代码不调用此处。文案使用 [AppLocalizations]，按请求 Accept-Language 解析 Locale。
 ///
 /// **修改/重构时**：必须同步维护 index.html，接口路径、请求体、响应格式变更都需对应修改。
-class ShelfApi with ShelfApiL10nMixin implements ShelfApiL10n {
+class ShelfApi {
   ShelfApi._();
 
   static ShelfApi? _instance;
 
   static ShelfApi get instance => _instance ??= ShelfApi._();
+
+  AppLocalizations _l10n(Request request) =>
+      lookupAppLocalizations(parseLocaleFromAcceptLanguage(request.headers['Accept-Language']));
 
   /// 复制 assets 到文档目录
   Future<Directory> _copyAssetsToDocuments() async {
@@ -105,27 +109,29 @@ class ShelfApi with ShelfApiL10nMixin implements ShelfApiL10n {
   // ============================================================================
 
   Future<Response> handleGetSourceModels(Request request) async {
+    final AppLocalizations l10n = _l10n(request);
     try {
       final List<SourceModel> sources =
           await $ref.read(sourcesProvider.future);
       return createSuccessResponse(sources.map((SourceModel s) => s.toJson()).toList());
     } catch (e) {
-      return createErrorResponse(getSourceListFailL10n, 500, e);
+      return createErrorResponse(l10n.shelfApiGetSourceListFail, 500, e);
     }
   }
 
   Future<Response> handleAddSourceModel(Request request) async {
+    final AppLocalizations l10n = _l10n(request);
     try {
       final String body = await request.readAsString();
       final dynamic data = jsonDecode(body);
 
       if (data['name'] == null || data['url'] == null) {
-        throw Exception(nameAndUrlRequiredL10n);
+        throw Exception(l10n.shelfApiNameAndUrlRequired);
       }
 
       final String urlInput = (data['url']?.toString() ?? '').trim();
       if (!isValidUrl(urlInput)) {
-        throw Exception(invalidUrlL10n);
+        throw Exception(l10n.shelfApiInvalidUrl);
       }
 
       String url = urlInput;
@@ -145,25 +151,26 @@ class ShelfApi with ShelfApiL10nMixin implements ShelfApiL10n {
       final SourceModel newSourceModel =
           await $ref.read(sourcesProvider.notifier).addSource(source);
 
-      return createSuccessResponse(newSourceModel.toJson(), msg: sourceAddSuccessL10n);
+      return createSuccessResponse(newSourceModel.toJson(), msg: l10n.shelfApiSourceAddSuccess);
     } catch (e) {
       return createErrorResponse(e.toString(), 400, e);
     }
   }
 
   Future<Response> handleUpdateSourceModel(Request request) async {
+    final AppLocalizations l10n = _l10n(request);
     try {
       final String body = await request.readAsString();
       final dynamic data = jsonDecode(body);
 
-      if (data['id'] == null) throw Exception(idRequiredL10n);
+      if (data['id'] == null) throw Exception(l10n.shelfApiIdRequired);
       if (data['name'] == null || data['url'] == null) {
-        throw Exception(nameAndUrlRequiredL10n);
+        throw Exception(l10n.shelfApiNameAndUrlRequired);
       }
 
       final String urlInput = (data['url']?.toString() ?? '').trim();
       if (!isValidUrl(urlInput)) {
-        throw Exception(invalidUrlL10n);
+        throw Exception(l10n.shelfApiInvalidUrl);
       }
 
       String url = urlInput;
@@ -181,7 +188,7 @@ class ShelfApi with ShelfApiL10nMixin implements ShelfApiL10n {
           break;
         }
       }
-      if (src == null) throw Exception(sourceNotFoundL10n);
+      if (src == null) throw Exception(l10n.shelfApiSourceNotFound);
 
       final SourceModel updated = SourceModel(
         uuid: src.uuid,
@@ -196,16 +203,17 @@ class ShelfApi with ShelfApiL10nMixin implements ShelfApiL10n {
 
       final SourceModel result =
           await $ref.read(sourcesProvider.notifier).updateSource(updated);
-      return createSuccessResponse(result.toJson(), msg: sourceUpdateSuccessL10n);
+      return createSuccessResponse(result.toJson(), msg: l10n.shelfApiSourceUpdateSuccess);
     } catch (e) {
       return createErrorResponse(e.toString(), 400, e);
     }
   }
 
   Future<Response> handleToggleSourceModel(Request request) async {
+    final AppLocalizations l10n = _l10n(request);
     try {
       final String? id = request.url.queryParameters['id'];
-      if (id == null) throw Exception(idRequiredL10n);
+      if (id == null) throw Exception(l10n.shelfApiIdRequired);
 
       final SourceModel updatedSourceModel =
           await $ref.read(sourcesProvider.notifier).toggleSource(id);
@@ -216,9 +224,10 @@ class ShelfApi with ShelfApiL10nMixin implements ShelfApiL10n {
   }
 
   Future<Response> handleDeleteSourceModel(Request request) async {
+    final AppLocalizations l10n = _l10n(request);
     try {
       final String? id = request.url.queryParameters['id'];
-      if (id == null) throw Exception(idRequiredL10n);
+      if (id == null) throw Exception(l10n.shelfApiIdRequired);
 
       await $ref.read(sourcesProvider.notifier).deleteSource(id);
       return createSuccessResponse(null);
@@ -232,31 +241,33 @@ class ShelfApi with ShelfApiL10nMixin implements ShelfApiL10n {
   // ============================================================================
 
   Future<Response> handleGetProxies(Request request) async {
+    final AppLocalizations l10n = _l10n(request);
     try {
       final List<ProxyModel> proxies =
           await $ref.read(proxiesStorageProvider.future);
       return createSuccessResponse(proxies.map((ProxyModel p) => p.toJson()).toList());
     } catch (e) {
-      return createErrorResponse(getProxyListFailL10n, 500, e);
+      return createErrorResponse(l10n.shelfApiGetProxyListFail, 500, e);
     }
   }
 
   Future<Response> handleAddProxyModel(Request request) async {
+    final AppLocalizations l10n = _l10n(request);
     try {
       final String body = await request.readAsString();
       final dynamic data = jsonDecode(body);
 
       if (data['url'] == null) {
-        throw Exception(urlRequiredL10n);
+        throw Exception(l10n.shelfApiUrlRequired);
       }
 
       if (data['name'] == null) {
-        throw Exception(proxyNameRequiredL10n);
+        throw Exception(l10n.shelfApiProxyNameRequired);
       }
 
       final String url = (data['url']?.toString() ?? '').trim();
       if (!isValidUrl(url)) {
-        throw Exception(invalidUrlL10n);
+        throw Exception(l10n.shelfApiInvalidUrl);
       }
 
       final ProxyModel proxy = ProxyModel(
@@ -268,16 +279,17 @@ class ShelfApi with ShelfApiL10nMixin implements ShelfApiL10n {
       final ProxyModel newProxyModel =
           await $ref.read(proxiesStorageProvider.notifier).addProxyModel(proxy);
 
-      return createSuccessResponse(newProxyModel.toJson(), msg: proxyAddSuccessL10n);
+      return createSuccessResponse(newProxyModel.toJson(), msg: l10n.shelfApiProxyAddSuccess);
     } catch (e) {
       return createErrorResponse(e.toString(), 400, e);
     }
   }
 
   Future<Response> handleToggleProxyModel(Request request) async {
+    final AppLocalizations l10n = _l10n(request);
     try {
       final String? id = request.url.queryParameters['id'];
-      if (id == null) throw Exception(idRequiredL10n);
+      if (id == null) throw Exception(l10n.shelfApiIdRequired);
 
       final ProxyModel updatedProxyModel =
           await $ref.read(proxiesStorageProvider.notifier).toggleProxyModel(id);
@@ -288,9 +300,10 @@ class ShelfApi with ShelfApiL10nMixin implements ShelfApiL10n {
   }
 
   Future<Response> handleDeleteProxyModel(Request request) async {
+    final AppLocalizations l10n = _l10n(request);
     try {
       final String? id = request.url.queryParameters['id'];
-      if (id == null) throw Exception(idRequiredL10n);
+      if (id == null) throw Exception(l10n.shelfApiIdRequired);
 
       await $ref.read(proxiesStorageProvider.notifier).deleteProxyModel(id);
       return createSuccessResponse(null);
@@ -304,21 +317,23 @@ class ShelfApi with ShelfApiL10nMixin implements ShelfApiL10n {
   // ============================================================================
 
   Future<Response> handleGetTagModels(Request request) async {
+    final AppLocalizations l10n = _l10n(request);
     try {
       final List<TagModel> tags = await $ref.read(tagsStorageProvider.future);
       return createSuccessResponse(tags.map((TagModel t) => t.toJson()).toList());
     } catch (e) {
-      return createErrorResponse(getTagListFailL10n, 500, e);
+      return createErrorResponse(l10n.shelfApiGetTagListFail, 500, e);
     }
   }
 
   Future<Response> handleAddTagModel(Request request) async {
+    final AppLocalizations l10n = _l10n(request);
     try {
       final String body = await request.readAsString();
       final dynamic data = jsonDecode(body);
 
       if (data['name'] == null) {
-        throw Exception(tagNameRequiredL10n);
+        throw Exception(l10n.shelfApiTagNameRequired);
       }
 
       final List<TagModel> tags = await $ref.read(tagsStorageProvider.future);
@@ -336,25 +351,26 @@ class ShelfApi with ShelfApiL10nMixin implements ShelfApiL10n {
       final TagModel newTagModel =
           await $ref.read(tagsStorageProvider.notifier).addTagModel(tag);
 
-      return createSuccessResponse(newTagModel.toJson(), msg: tagAddSuccessL10n);
+      return createSuccessResponse(newTagModel.toJson(), msg: l10n.shelfApiTagAddSuccess);
     } catch (e) {
       return createErrorResponse(e.toString(), 400, e);
     }
   }
 
   Future<Response> handleUpdateTagModel(Request request) async {
+    final AppLocalizations l10n = _l10n(request);
     try {
       final String body = await request.readAsString();
       final dynamic data = jsonDecode(body);
 
       if (data['id'] == null || data['name'] == null) {
-        throw Exception(idAndNameRequiredL10n);
+        throw Exception(l10n.shelfApiIdAndNameRequired);
       }
 
       final List<TagModel> tags = await $ref.read(tagsStorageProvider.future);
       final TagModel existingTagModel = tags.firstWhere(
         (TagModel t) => t.uuid == data['id'],
-        orElse: () => throw Exception(tagNotFoundL10n),
+        orElse: () => throw Exception(l10n.shelfApiTagNotFound),
       );
 
       final TagModel updatedTagModel = TagModel(
@@ -368,34 +384,36 @@ class ShelfApi with ShelfApiL10nMixin implements ShelfApiL10n {
 
       await $ref.read(tagsStorageProvider.notifier).updateTagModel(updatedTagModel);
 
-      return createSuccessResponse(updatedTagModel.toJson(), msg: tagUpdateSuccessL10n);
+      return createSuccessResponse(updatedTagModel.toJson(), msg: l10n.shelfApiTagUpdateSuccess);
     } catch (e) {
       return createErrorResponse(e.toString(), 400, e);
     }
   }
 
   Future<Response> handleUpdateTagModelOrder(Request request) async {
+    final AppLocalizations l10n = _l10n(request);
     try {
       final String body = await request.readAsString();
       final dynamic data = jsonDecode(body);
 
       if (data['tagIds'] == null || data['tagIds'] is! List) {
-        throw Exception(tagIdsArrayRequiredL10n);
+        throw Exception(l10n.shelfApiTagIdsArrayRequired);
       }
 
       final List<String> tagIds = List<String>.from(data['tagIds']);
       await $ref.read(tagsStorageProvider.notifier).updateTagModelOrder(tagIds);
 
-      return createSuccessResponse(null, msg: tagOrderUpdateSuccessL10n);
+      return createSuccessResponse(null, msg: l10n.shelfApiTagOrderUpdateSuccess);
     } catch (e) {
       return createErrorResponse(e.toString(), 400, e);
     }
   }
 
   Future<Response> handleDeleteTagModel(Request request) async {
+    final AppLocalizations l10n = _l10n(request);
     try {
       final String? id = request.url.queryParameters['id'];
-      if (id == null) throw Exception(idRequiredL10n);
+      if (id == null) throw Exception(l10n.shelfApiIdRequired);
 
       await $ref.read(tagsStorageProvider.notifier).deleteTagModel(id);
       return createSuccessResponse(null);
@@ -409,6 +427,7 @@ class ShelfApi with ShelfApiL10nMixin implements ShelfApiL10n {
   // ============================================================================
 
   Future<Response> handleSearchRequest(Request request) async {
+    final AppLocalizations l10n = _l10n(request);
     final String wd = request.url.queryParameters['wd'] ?? '';
     Dio? dio;
 
@@ -419,7 +438,7 @@ class ShelfApi with ShelfApiL10nMixin implements ShelfApiL10n {
           sources.where((SourceModel s) => !s.disabled).toList();
 
       if (activeSourceModels.isEmpty) {
-        return createSuccessResponse({'list': <dynamic>[]}, msg: noAvailableSourcesL10n);
+        return createSuccessResponse({'list': <dynamic>[]}, msg: l10n.shelfApiNoAvailableSources);
       }
 
       final List<ProxyModel> proxies =
@@ -477,17 +496,17 @@ class ShelfApi with ShelfApiL10nMixin implements ShelfApiL10n {
           .toList();
 
       if (validResults.isEmpty) {
-        return createSuccessResponse({'list': <dynamic>[]}, msg: noSearchResultsL10n);
+        return createSuccessResponse({'list': <dynamic>[]}, msg: l10n.shelfApiNoSearchResults);
       }
 
       final List<dynamic> mergedList = _mergeResults(validResults, activeSourceModels);
 
       return createSuccessResponse(
         {'total': mergedList.length, 'list': mergedList},
-        msg: dataListL10n,
+        msg: l10n.shelfApiDataList,
       );
     } catch (e) {
-      return createErrorResponse('$searchFailL10n: $e', 500, e);
+      return createErrorResponse('${l10n.shelfApiSearchFail}: $e', 500, e);
     } finally {
       dio?.close();
     }
@@ -535,12 +554,10 @@ class ShelfApi with ShelfApiL10nMixin implements ShelfApiL10n {
   // ============================================================================
 
   Future<Response> handleGetL10n(Request request) async {
+    final AppLocalizations l10n = _l10n(request);
     try {
-      final L10nTranslationModel tr =
-          $ref.read(l10nTranslationProvider).requireValue;
-      final Map<String, String> map = Map.fromEntries(
-        tr.entries.where((MapEntry<String, String> e) => e.key.startsWith('web_')),
-      );
+      final Locale locale = parseLocaleFromAcceptLanguage(request.headers['Accept-Language']);
+      final Map<String, String> map = appLocalizationsToWebMap(locale);
       return Response(
         200,
         body: jsonEncode(map),
@@ -551,7 +568,7 @@ class ShelfApi with ShelfApiL10nMixin implements ShelfApiL10n {
       );
     } catch (e, s) {
       _log.e(() => '获取网页翻译失败: $e', e, s);
-      return createErrorResponse(getL10nFailL10n, 500, e);
+      return createErrorResponse(l10n.shelfApiGetL10nFail, 500, e);
     }
   }
 

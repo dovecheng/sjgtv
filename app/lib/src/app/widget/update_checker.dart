@@ -11,10 +11,10 @@ import 'package:open_file/open_file.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:sjgtv/src/app/widget/l10n/update_checker_l10n.gen.dart';
+import 'package:sjgtv/l10n_gen/app_localizations.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-/// 应用更新检查器（单例，混入 [UpdateCheckerL10nMixin] 使用 l10n）
+/// 应用更新检查器（单例）
 ///
 /// 功能：
 /// - 从 GitHub Releases 检查最新版本
@@ -22,7 +22,7 @@ import 'package:url_launcher/url_launcher.dart';
 /// - 显示更新对话框（含更新说明）
 /// - 支持自动下载 APK 并安装（Android）
 /// - 支持手动跳转到 GitHub 发布页
-class AppUpdater with UpdateCheckerL10nMixin implements UpdateCheckerL10n {
+class AppUpdater {
   AppUpdater._();
 
   static final AppUpdater instance = AppUpdater._();
@@ -133,12 +133,13 @@ class AppUpdater with UpdateCheckerL10nMixin implements UpdateCheckerL10n {
       barrierDismissible: false,
       builder: (BuildContext context) => StatefulBuilder(
         builder: (BuildContext context, StateSetter setState) {
+          final AppLocalizations l10n = AppLocalizations.of(context);
           final ThemeData theme = Theme.of(context);
           final ColorScheme colorScheme = theme.colorScheme;
           final TextTheme textTheme = theme.textTheme;
           return AlertDialog(
             title: Text(
-              '$newVersionTitleL10n v$version',
+              '${l10n.updateCheckerNewVersionTitle} v$version',
               style: textTheme.titleLarge,
             ),
             content: SingleChildScrollView(
@@ -146,10 +147,10 @@ class AppUpdater with UpdateCheckerL10nMixin implements UpdateCheckerL10n {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text(updateContentL10n, style: textTheme.titleSmall),
+                  Text(l10n.updateCheckerUpdateContent, style: textTheme.titleSmall),
                   const SizedBox(height: 8),
                   Text(
-                    notes.isNotEmpty ? notes : noNotesL10n,
+                    notes.isNotEmpty ? notes : l10n.updateCheckerNoNotes,
                     style: textTheme.bodyMedium,
                   ),
                   if (_isDownloading) ...[
@@ -161,7 +162,7 @@ class AppUpdater with UpdateCheckerL10nMixin implements UpdateCheckerL10n {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      '$downloadingL10n: ${(_downloadProgress * 100).toStringAsFixed(1)}%',
+                      '${l10n.updateCheckerDownloading}: ${(_downloadProgress * 100).toStringAsFixed(1)}%',
                       style: textTheme.bodySmall,
                     ),
                   ],
@@ -172,13 +173,13 @@ class AppUpdater with UpdateCheckerL10nMixin implements UpdateCheckerL10n {
               if (!_isDownloading) ...[
                 TextButton(
                   onPressed: () => Navigator.pop(context),
-                  child: Text(laterL10n),
+                  child: Text(l10n.updateCheckerLater),
                 ),
                 if ($platform.isAndroidNative && apkUrl != null)
                   TextButton(
                     onPressed: () =>
                         _downloadAndInstallApk(context, apkUrl, setState),
-                    child: Text(autoUpdateL10n),
+                    child: Text(l10n.updateCheckerAutoUpdate),
                   ),
                 TextButton(
                   onPressed: () async {
@@ -190,12 +191,12 @@ class AppUpdater with UpdateCheckerL10nMixin implements UpdateCheckerL10n {
                       );
                     }
                   },
-                  child: const Text('手动更新'),
+                  child: Text(l10n.updateCheckerManualUpdate),
                 ),
               ] else ...[
                 TextButton(
-                  onPressed: _cancelDownload,
-                  child: Text(cancelDownloadL10n),
+                  onPressed: () => _cancelDownload(l10n.updateCheckerUserCancelDownload),
+                  child: Text(l10n.updateCheckerCancelDownload),
                 ),
               ],
             ],
@@ -216,8 +217,9 @@ class AppUpdater with UpdateCheckerL10nMixin implements UpdateCheckerL10n {
       final PermissionStatus status = await Permission.storage.request();
       if (!status.isGranted) {
         if (context.mounted) {
+          final String msg = AppLocalizations.of(context).updateCheckerStorageRequired;
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(storageRequiredL10n)),
+            SnackBar(content: Text(msg)),
           );
         }
         return;
@@ -272,8 +274,9 @@ class AppUpdater with UpdateCheckerL10nMixin implements UpdateCheckerL10n {
       });
 
       if (context.mounted) {
+        final String msg = AppLocalizations.of(context).updateCheckerDownloadFail;
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('$downloadFailL10n: ${e.toString()}')),
+          SnackBar(content: Text('$msg: ${e.toString()}')),
         );
       }
     }
@@ -299,8 +302,8 @@ class AppUpdater with UpdateCheckerL10nMixin implements UpdateCheckerL10n {
     }
   }
 
-  void _cancelDownload() {
-    _cancelToken?.cancel(userCancelDownloadL10n);
+  void _cancelDownload(String message) {
+    _cancelToken?.cancel(message);
     _isDownloading = false;
     _downloadProgress = 0;
   }

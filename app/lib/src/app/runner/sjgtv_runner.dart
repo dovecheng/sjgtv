@@ -2,9 +2,10 @@ import 'dart:io';
 
 import 'package:base/base.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:sjgtv/gen/l10n.gen.dart';
+import 'package:sjgtv/l10n_gen/app_localizations.dart';
 import 'package:sjgtv/src/app/provider/config_api_provider.dart';
 import 'package:sjgtv/src/app/provider/json_adapter_provider.dart';
 import 'package:sjgtv/src/app/widget/update_checker.dart';
@@ -34,11 +35,6 @@ final class SjgtvRunner extends AppRunner {
   @override
   JsonAdapterProvider get jsonAdapter => JsonAdapterImpl();
 
-  /// 注入 app 的 L10n.translations，与 base 的 L10n.translations 在 provider 内合并
-  @override
-  L10nTranslationProvider? get l10nTranslation =>
-      L10nTranslationProvider(L10n.translations);
-
   /// 仅支持横屏
   @override
   List<DeviceOrientation> get preferredOrientations => const [
@@ -66,33 +62,25 @@ final class SjgtvRunner extends AppRunner {
     });
   }
 
-  /// 构建应用（仅支持暗黑模式，使用原生暗黑主题；title 来自 L10n app_title）
+  /// 构建应用（仅支持暗黑模式，使用原生暗黑主题；title 来自 AppLocalizations）
   @override
-  Future<Widget> buildApp() async {
-    final L10nTranslationModel tr = await $ref.read(
-      l10nTranslationProvider.future,
-    );
-    final String title = tr['app_title'] ?? '苹果CMS电影播放器';
-    return _AppWithUpdateCheck(
-      title: title,
-    );
-  }
+  Future<Widget> buildApp() async => _AppWithUpdateCheck();
 }
 
 /// 带启动时更新检查的根 Widget
 ///
 /// 使用 [GlobalKey<NavigatorState>] 保证任意页面下都能弹出更新对话框；
 /// 仅在每次启动时首帧后延迟执行一次检查。
-class _AppWithUpdateCheck extends StatefulWidget {
-  const _AppWithUpdateCheck({required this.title});
-
-  final String title;
+/// title 与 locale 跟随系统语言。
+class _AppWithUpdateCheck extends ConsumerStatefulWidget {
+  const _AppWithUpdateCheck();
 
   @override
-  State<_AppWithUpdateCheck> createState() => _AppWithUpdateCheckState();
+  ConsumerState<_AppWithUpdateCheck> createState() =>
+      _AppWithUpdateCheckState();
 }
 
-class _AppWithUpdateCheckState extends State<_AppWithUpdateCheck> {
+class _AppWithUpdateCheckState extends ConsumerState<_AppWithUpdateCheck> {
   @override
   void initState() {
     super.initState();
@@ -109,18 +97,24 @@ class _AppWithUpdateCheckState extends State<_AppWithUpdateCheck> {
 
   @override
   Widget build(BuildContext context) {
+    final Locale systemLocale =
+        WidgetsBinding.instance.platformDispatcher.locale;
+    final String title =
+        lookupAppLocalizations(systemLocale).appTitle;
     return MaterialApp(
       navigatorKey: AppNavigator.navigatorKey,
-      title: widget.title,
+      title: title,
       debugShowCheckedModeBanner: false,
       theme: ThemeData.dark(),
       home: const MovieHomePage(),
-      localizationsDelegates: [
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
         BaseLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
       ],
+      supportedLocales: AppLocalizations.supportedLocales,
     );
   }
 }

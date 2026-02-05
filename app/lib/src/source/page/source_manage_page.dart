@@ -2,7 +2,7 @@ import 'package:base/base.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sjgtv/src/source/l10n/source_l10n.gen.dart';
+import 'package:sjgtv/l10n_gen/app_localizations.dart';
 import 'package:sjgtv/src/source/model/source_model.dart';
 import 'package:sjgtv/src/source/page/source_form_page.dart';
 import 'package:sjgtv/src/source/provider/sources_provider.dart';
@@ -19,8 +19,7 @@ class SourceManagePage extends ConsumerStatefulWidget {
   ConsumerState<SourceManagePage> createState() => _SourceManagePageState();
 }
 
-class _SourceManagePageState extends ConsumerState<SourceManagePage>
-    with SourceL10nMixin {
+class _SourceManagePageState extends ConsumerState<SourceManagePage> {
   Future<void> _toggleSource(SourceModel source) async {
     try {
       await ref.read(sourcesProvider.notifier).toggleSource(source.uuid);
@@ -28,24 +27,28 @@ class _SourceManagePageState extends ConsumerState<SourceManagePage>
     } catch (e) {
       _log.e(() => '切换源状态失败', e);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('操作失败: $e')),
-        );
+        final String msg = AppLocalizations.of(context).sourceOperationFail;
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('$msg: $e')));
       }
     }
   }
 
   Future<void> _deleteSource(SourceModel source) async {
+    final AppLocalizations l10n = AppLocalizations.of(context);
     final ColorScheme colorScheme = context.theme.colorScheme;
+    final String content =
+        '${l10n.webMsgConfirmDeleteSource(source.name)} ${l10n.webCannotUndo}';
     final bool? confirm = await showDialog<bool>(
       context: context,
       builder: (BuildContext ctx) => AlertDialog(
-        title: const Text('删除源'),
-        content: Text('确定要删除源「${source.name}」吗？此操作无法撤销。'),
+        title: Text(l10n.sourceDeleteTitle),
+        content: Text(content),
         actions: <Widget>[
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),
-            child: Text(cancelL10n),
+            child: Text(l10n.sourceCancel),
           ),
           FilledButton(
             onPressed: () => Navigator.of(ctx).pop(true),
@@ -53,7 +56,7 @@ class _SourceManagePageState extends ConsumerState<SourceManagePage>
               backgroundColor: colorScheme.error,
               foregroundColor: Colors.white,
             ),
-            child: const Text('确认删除'),
+            child: Text(l10n.sourceConfirmDelete),
           ),
         ],
       ),
@@ -64,32 +67,31 @@ class _SourceManagePageState extends ConsumerState<SourceManagePage>
       if (!mounted) return;
       ref.invalidate(sourcesProvider);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('已删除')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(l10n.sourceDeleted)));
       }
     } catch (e) {
       _log.e(() => '删除源失败', e);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('删除失败: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('${l10n.sourceDeleteFail}: $e')));
       }
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations l10n = AppLocalizations.of(context);
     final ColorScheme colorScheme = context.theme.colorScheme;
-    final AsyncValue<List<SourceModel>> sourcesAsync =
-        ref.watch(sourcesProvider);
+    final AsyncValue<List<SourceModel>> sourcesAsync = ref.watch(
+      sourcesProvider,
+    );
     return Scaffold(
       backgroundColor: colorScheme.surface,
       appBar: AppBar(
-        title: L10nKeyTips(
-          keyTips: manageTitleL10nKey,
-          child: Text(manageTitleL10n),
-        ),
+        title: Text(l10n.sourceManageTitle),
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
@@ -98,24 +100,20 @@ class _SourceManagePageState extends ConsumerState<SourceManagePage>
           focusColor: Colors.red,
         ),
         actions: <Widget>[
-          L10nKeyTips(
-            keyTips: addTitleL10nKey,
-            child: IconButton(
-              icon: const Icon(Icons.add),
-              tooltip: addTitleL10n,
-              onPressed: () async {
-                final bool? added = await Navigator.of(context).push<bool>(
-                  MaterialPageRoute<bool>(
-                    builder: (BuildContext context) =>
-                        const SourceFormPage(),
-                  ),
-                );
-                if (added == true && mounted) {
-                  ref.invalidate(sourcesProvider);
-                }
-              },
-              focusColor: Colors.red,
-            ),
+          IconButton(
+            icon: const Icon(Icons.add),
+            tooltip: l10n.sourceAddTitle,
+            onPressed: () async {
+              final bool? added = await Navigator.of(context).push<bool>(
+                MaterialPageRoute<bool>(
+                  builder: (BuildContext context) => const SourceFormPage(),
+                ),
+              );
+              if (added == true && mounted) {
+                ref.invalidate(sourcesProvider);
+              }
+            },
+            focusColor: Colors.red,
           ),
         ],
       ),
@@ -135,10 +133,7 @@ class _SourceManagePageState extends ConsumerState<SourceManagePage>
                 const SizedBox(height: 16),
                 TextButton(
                   onPressed: () => ref.invalidate(sourcesProvider),
-                  child: L10nKeyTips(
-                    keyTips: retryL10nKey,
-                    child: Text(retryL10n),
-                  ),
+                  child: Text(l10n.sourceRetry),
                 ),
               ],
             ),
@@ -147,21 +142,14 @@ class _SourceManagePageState extends ConsumerState<SourceManagePage>
         data: (List<SourceModel> sources) {
           if (sources.isEmpty) {
             return Center(
-              child: L10nKeyTips(
-                keyTips: noSourcesL10nKey,
-                child: Text(
-                  noSourcesL10n,
-                  style: const TextStyle(
-                      color: Colors.white70, fontSize: 18),
-                ),
+              child: Text(
+                l10n.sourceNoSources,
+                style: const TextStyle(color: Colors.white70, fontSize: 18),
               ),
             );
           }
           return ListView.builder(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 24,
-              vertical: 16,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
             itemCount: sources.length,
             itemBuilder: (BuildContext context, int index) {
               final SourceModel source = sources[index];
@@ -180,9 +168,7 @@ class _SourceManagePageState extends ConsumerState<SourceManagePage>
                     title: Text(
                       source.name,
                       style: TextStyle(
-                        color: source.disabled
-                            ? Colors.white54
-                            : Colors.white,
+                        color: source.disabled ? Colors.white54 : Colors.white,
                         fontSize: 18,
                         fontWeight: FontWeight.w500,
                       ),
@@ -205,17 +191,15 @@ class _SourceManagePageState extends ConsumerState<SourceManagePage>
                         IconButton(
                           icon: const Icon(Icons.edit),
                           onPressed: () async {
-                            final bool? updated =
-                                await Navigator.of(context).push<bool>(
-                              MaterialPageRoute<bool>(
-                                builder: (BuildContext context) =>
-                                    SourceFormPage(
-                                  sourceToEdit: source,
-                                ),
-                              ),
-                            );
+                            final bool? updated = await Navigator.of(context)
+                                .push<bool>(
+                                  MaterialPageRoute<bool>(
+                                    builder: (BuildContext context) =>
+                                        SourceFormPage(sourceToEdit: source),
+                                  ),
+                                );
                             if (updated == true && mounted) {
-                                ref.invalidate(sourcesProvider);
+                              ref.invalidate(sourcesProvider);
                             }
                           },
                           focusColor: Colors.red,
@@ -226,9 +210,7 @@ class _SourceManagePageState extends ConsumerState<SourceManagePage>
                           focusColor: Colors.red,
                         ),
                         Icon(
-                          source.disabled
-                              ? Icons.toggle_off
-                              : Icons.toggle_on,
+                          source.disabled ? Icons.toggle_off : Icons.toggle_on,
                           color: source.disabled
                               ? Colors.white38
                               : colorScheme.primary,

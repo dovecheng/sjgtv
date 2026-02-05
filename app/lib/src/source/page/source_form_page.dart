@@ -1,7 +1,7 @@
 import 'package:base/base.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sjgtv/src/source/l10n/source_l10n.gen.dart';
+import 'package:sjgtv/l10n_gen/app_localizations.dart';
 import 'package:sjgtv/src/source/model/source_model.dart';
 import 'package:sjgtv/src/source/provider/sources_provider.dart';
 import 'package:uuid/uuid.dart';
@@ -20,9 +20,7 @@ class SourceFormPage extends ConsumerStatefulWidget {
   ConsumerState<SourceFormPage> createState() => _SourceFormPageState();
 }
 
-class _SourceFormPageState extends ConsumerState<SourceFormPage>
-    with SourceL10nMixin {
-
+class _SourceFormPageState extends ConsumerState<SourceFormPage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _urlController = TextEditingController();
   final FocusNode _nameFocus = FocusNode();
@@ -131,15 +129,13 @@ class _SourceFormPageState extends ConsumerState<SourceFormPage>
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations l10n = AppLocalizations.of(context);
     final ColorScheme colorScheme = context.theme.colorScheme;
     return Scaffold(
       backgroundColor: colorScheme.surface,
       appBar: AppBar(
-        title: L10nKeyTips(
-          keyTips: addTitleL10nKey,
-          child: Text(
-            widget.sourceToEdit != null ? '编辑源' : addTitleL10n,
-          ),
+        title: Text(
+          widget.sourceToEdit != null ? l10n.sourceEditTitle : l10n.sourceAddTitle,
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -154,15 +150,13 @@ class _SourceFormPageState extends ConsumerState<SourceFormPage>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            L10nKeyTips(
-              keyTips: nameL10nKey,
-              child: TextField(
+            TextField(
                 controller: _nameController,
                 focusNode: _nameFocus,
                 enabled: !_isSubmitting,
                 style: const TextStyle(color: Colors.white, fontSize: 18),
                 decoration: InputDecoration(
-                  labelText: nameL10n,
+                  labelText: l10n.sourceName,
                   labelStyle: TextStyle(color: colorScheme.onSurfaceVariant),
                   filled: true,
                   fillColor: colorScheme.surfaceContainerHighest,
@@ -181,11 +175,8 @@ class _SourceFormPageState extends ConsumerState<SourceFormPage>
                 onSubmitted: (_) =>
                     FocusScope.of(context).requestFocus(_urlFocus),
               ),
-            ),
             const SizedBox(height: 24),
-            L10nKeyTips(
-              keyTips: urlHintL10nKey,
-              child: TextField(
+            TextField(
                 controller: _urlController,
                 focusNode: _urlFocus,
                 enabled: !_isSubmitting,
@@ -193,7 +184,7 @@ class _SourceFormPageState extends ConsumerState<SourceFormPage>
                 autocorrect: false,
                 style: const TextStyle(color: Colors.white, fontSize: 18),
                 decoration: InputDecoration(
-                  labelText: urlHintL10n,
+                  labelText: l10n.sourceUrlHint,
                   labelStyle: TextStyle(color: colorScheme.onSurfaceVariant),
                   hintText: 'https://example.com/',
                   hintStyle: TextStyle(color: colorScheme.onSurfaceVariant),
@@ -214,7 +205,6 @@ class _SourceFormPageState extends ConsumerState<SourceFormPage>
                 onSubmitted: (_) =>
                     FocusScope.of(context).requestFocus(_saveFocus),
               ),
-            ),
             if (_errorText != null) ...<Widget>[
               const SizedBox(height: 16),
               Text(
@@ -230,10 +220,7 @@ class _SourceFormPageState extends ConsumerState<SourceFormPage>
                   onPressed: _isSubmitting
                       ? null
                       : () => Navigator.maybePop(context),
-                  child: L10nKeyTips(
-                    keyTips: cancelL10nKey,
-                    child: Text(cancelL10n),
-                  ),
+                  child: Text(l10n.sourceCancel),
                 ),
                 const SizedBox(width: 16),
                 Focus(
@@ -250,10 +237,7 @@ class _SourceFormPageState extends ConsumerState<SourceFormPage>
                             height: 24,
                             child: CircularProgressIndicator(strokeWidth: 2),
                           )
-                        : L10nKeyTips(
-                            keyTips: saveL10nKey,
-                            child: Text(saveL10n),
-                          ),
+                        : Text(l10n.sourceSave),
                   ),
                 ),
               ],
