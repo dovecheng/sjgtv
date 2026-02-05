@@ -182,3 +182,7 @@ app/lib/src/
 ### 2026-02-05 14:52（app 官方国际化 + base 收尾）
 - **app 官方国际化**：删除 app 侧旧 l10n（gen/l10n.gen.dart、各模块 app_l10n/source_l10n/update_checker_l10n/api_l10n/web_l10n 及 gen、app/tool 下 gen_l10n_* / scan_*）；新增 l10n.yaml、l10n_arb/、l10n_gen/（AppLocalizations）；sjgtv_runner、update_checker、source 页面、shelf/api 改为使用 AppLocalizations；shelf 网页文案由 app_localizations_web 提供 GET /api/l10n。pubspec 增加 flutter_localizations、flutter gen-l10n 配置。
 - **base**：enum_ext 从 converter/extension 移至 src/extension/enum_ext.dart，converter.dart 移除该导出、extension.dart 导出；新增 bytes_ext；其余为配合 base 官方 l10n 的删除与修改（l10n 旧实现与 base/tool 已在此前或本次一并清理）。待办「app 改为官方国际化」已勾选。
+
+### 2026-02-05 16:10（恢复 timeago 提供者 + JSON 适配移入 runner）
+- **timeago**：恢复 base 的 `L10nTimeagoProvider`（@Riverpod 生成、l10n_timeago_provider.g.dart）；按系统 locale 设置 timeago；l10n.dart 导出、app_runner.initProvider 中读取；messages 使用 package:base 包路径导入。
+- **JSON 适配**：注册逻辑从 app 的 JsonAdapterImpl 提供者移至 SjgtvRunner.init()，直接调用 JSONConverter.registerFromJson；删除 app 的 json_adapter_provider、base 的 JsonAdapterProvider 及 json_adapter_provider(.g).dart，app_runner 移除 jsonAdapter 覆盖与 jsonAdapterProvider 读取。
