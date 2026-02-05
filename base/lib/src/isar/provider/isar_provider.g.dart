@@ -42,7 +42,7 @@ final class IsarProviderProvider
   IsarProvider create() => IsarProvider();
 }
 
-String _$isarProviderHash() => r'b68360e2c0f9444cf336eb66745c567df36c30ee';
+String _$isarProviderHash() => r'3bcf26420f5214b47e682d1148d483fbdb33ecfa';
 
 /// 数据库实例 [isarProvider]
 ///

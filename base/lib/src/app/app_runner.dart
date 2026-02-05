@@ -83,6 +83,8 @@ abstract base class AppRunner {
 
     // 接口请求配置, 在调用接口前, 需要先初始化
     $ref.read(apiClientProvider);
+    // timeago 文案语言, 在 formatTimeAgo 前需要先初始化
+    $ref.read(l10nTimeagoProvider);
 
     log.d(() => 'end');
   }
