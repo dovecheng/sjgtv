@@ -41,7 +41,7 @@ final class L10nLanguageProviderProvider
 }
 
 String _$l10nLanguageProviderHash() =>
-    r'f38fb2a2b37f94ae659b683d97181b5ee929c2ef';
+    r'5f7cb30bee7289efc3cb528f6a31893644253642';
 
 /// 国际化语言 [l10nLanguageProvider]（仅本地预设，切换结果持久化）
 

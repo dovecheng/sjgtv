@@ -1,0 +1,8 @@
+# Flutter 官方 gen-l10n 配置（与旧 l10n 并存，旧实现未删）
+arb-dir: lib/l10n_arb
+template-arb-file: base_zh_CN.arb
+output-localization-file: base_localizations.dart
+output-class: BaseLocalizations
+output-dir: lib/l10n_gen
+nullable-getter: false
+preferred-supported-locales: ['zh_CN', 'en', 'zh_HK']

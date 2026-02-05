@@ -1,4 +1,3 @@
-import 'package:base/gen/l10n.gen.dart';
 import 'package:base/l10n.dart';
 import 'package:base/log.dart';
 import 'package:collection/collection.dart';
@@ -15,7 +14,7 @@ class L10nTranslationProvider extends _$L10nTranslationProvider {
   final Set<L10nTranslationModel> presetTranslations;
 
   L10nTranslationProvider([Set<L10nTranslationModel>? presetTranslations])
-    : presetTranslations = presetTranslations ?? L10n.translations,
+    : presetTranslations = presetTranslations ?? {},
       assert(presetTranslations == null || presetTranslations.isNotEmpty);
 
   @override
@@ -44,18 +43,9 @@ class L10nTranslationProvider extends _$L10nTranslationProvider {
       languageTag: 'en',
       translations: <String, String>{},
     );
-    final L10nTranslationModel result = tr;
 
-    if (presetTranslations != L10n.translations &&
-        L10n.translations.isNotEmpty) {
-      L10nTranslationModel? baseTr = L10n.translations.firstWhereOrNull(
-        (L10nTranslationModel e) => e.languageTag == result.languageTag,
-      );
-      baseTr ??= L10n.translations.first;
-      result.translations = {...?baseTr.translations, ...?result.translations};
-    }
+    log.d(() => '本地国际化翻译: ${tr?.translations?.length}');
 
-    log.d(() => '本地国际化翻译: ${result.translations?.length}');
-    return _tr = result;
+    return tr;
   }
 }

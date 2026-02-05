@@ -42,7 +42,7 @@ final class L10nTranslationProviderProvider
 }
 
 String _$l10nTranslationProviderHash() =>
-    r'777d08815097d08a49b82b7aea9af5c38a3d7c34';
+    r'a0d901430a83f8c9cdda9887eaa8cff05157a4dc';
 
 /// 国际化翻译 [l10nTranslationProvider]（仅本地预设）
 

@@ -132,7 +132,7 @@ class ApiResultModel<T extends Object> {
       String? message = node['msg'];
       message = message?.trim();
       if (message == null || message.isEmpty) {
-        message = errorType?.l10n.value;
+        message = errorType?.message;
       }
 
       return constructor(
@@ -156,8 +156,8 @@ class ApiResultModel<T extends Object> {
         code: -1,
         errorType: ApiErrorType.parseError,
         message: !kReleaseMode
-            ? '${ApiErrorType.parseError.l10n.value}\n#$requestId, $diagnosisPath, ${e.runtimeType}: $e'
-            : '${ApiErrorType.parseError.l10n.value}\n#$requestId',
+            ? '${ApiErrorType.parseError.message}\n#$requestId, $diagnosisPath, ${e.runtimeType}: $e'
+            : '${ApiErrorType.parseError.message}\n#$requestId',
       );
     }
   }

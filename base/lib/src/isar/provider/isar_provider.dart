@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:base/app.dart';
 import 'package:base/env.dart';
 import 'package:base/isar.dart';
 import 'package:base/l10n.dart';
@@ -28,7 +27,7 @@ class IsarProvider extends _$IsarProvider {
 
   IsarProvider({
     this.name = 'isar',
-    this.version = 5,
+    this.version = 6,
     this.schemas,
     this.inspector = !kReleaseMode,
     this.maxSizeMiB = 256,
@@ -38,7 +37,6 @@ class IsarProvider extends _$IsarProvider {
   Future<Isar> build() async {
     Isar isar = await Isar.open(
       <CollectionSchema<dynamic>>[
-        AppConfigModelSchema,
         L10nLanguageModelSchema,
         ...?schemas,
       ],

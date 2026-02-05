@@ -1,0 +1,13 @@
+{
+  "apiBadCertificate": "SSL安全證書驗證失敗",
+  "apiBadResponse": "伺服器內部錯誤",
+  "apiCancel": "已取消加載",
+  "apiConnectionError": "連接到伺服器时发生錯誤",
+  "apiConnectionTimeout": "連接超時, 請重試",
+  "apiFormatError": "無效的數據格式",
+  "apiHandshakeError": "建立安全網絡連接時發生錯誤",
+  "apiParseError": "無效的數據格式",
+  "apiReceiveTimeout": "接收數據超時, 請重試",
+  "apiSendTimeout": "發送數據超時, 請重試",
+  "apiUnknownError": "未知錯誤"
+}

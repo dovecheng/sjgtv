@@ -85,7 +85,7 @@ dependency_overrides:
   retrofit: 4.9.0 # 4.9.1 的ParseErrorLogger.logError多了个参数, 需要retrofit_generator: ^10.2.0, 但是又需要analyzer: ^9.0.0
 
 flutter:
-  # generate: true # flutter-l10n
+  generate: true
   uses-material-design: true
 
 # 配置参考: https://github.com/FlutterGen/flutter_gen/blob/main/examples/example/pubspec.yaml#L114
