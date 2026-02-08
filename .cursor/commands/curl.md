@@ -1,3 +1,0 @@
-# curl
-
-curl curlip.me
