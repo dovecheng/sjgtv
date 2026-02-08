@@ -7,8 +7,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:sjgtv/l10n_gen/app_localizations.dart';
 import 'package:sjgtv/src/app/provider/config_api_provider.dart';
+import 'package:sjgtv/src/app/router/app_router.dart';
+import 'package:sjgtv/src/app/theme/app_theme.dart';
 import 'package:sjgtv/src/app/widget/update_checker.dart';
-import 'package:sjgtv/src/movie/page/category_page.dart';
 import 'package:sjgtv/src/proxy/model/proxy_model.dart';
 import 'package:sjgtv/src/proxy/provider/proxies_provider.dart';
 import 'package:sjgtv/src/proxy/provider/proxy_count_provider.dart';
@@ -101,12 +102,12 @@ class _AppWithUpdateCheckState extends ConsumerState<_AppWithUpdateCheck> {
         WidgetsBinding.instance.platformDispatcher.locale;
     final String title =
         lookupAppLocalizations(systemLocale).appTitle;
-    return MaterialApp(
-      navigatorKey: AppNavigator.navigatorKey,
+
+    return MaterialApp.router(
       title: title,
       debugShowCheckedModeBanner: false,
-      theme: ThemeData.dark(),
-      home: const MovieHomePage(),
+      theme: _buildDarkTheme(),
+      routerConfig: AppRouter.router,
       localizationsDelegates: const [
         AppLocalizations.delegate,
         BaseLocalizations.delegate,
@@ -116,6 +117,11 @@ class _AppWithUpdateCheckState extends ConsumerState<_AppWithUpdateCheck> {
       ],
       supportedLocales: AppLocalizations.supportedLocales,
     );
+  }
+
+  /// 构建 YouTube TV 风格的深色主题
+  ThemeData _buildDarkTheme() {
+    return AppTheme.darkTheme;
   }
 }
 

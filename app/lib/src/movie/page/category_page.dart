@@ -7,9 +7,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:sjgtv/src/movie/model/movie_model.dart';
-import 'package:sjgtv/src/movie/page/search_page.dart';
-import 'package:sjgtv/src/movie/widget/focusable_movie_card.dart';
-import 'package:sjgtv/src/source/page/source_manage_page.dart';
+import 'package:sjgtv/src/movie/widget/youtube_tv_movie_card.dart';
+import 'package:sjgtv/src/movie/widget/youtube_tv_category_bar.dart';
+import 'package:sjgtv/src/app/router/app_router.dart';
 import 'package:sjgtv/src/tag/model/tag_model.dart';
 import 'package:sjgtv/src/tag/provider/tags_provider.dart';
 
@@ -286,27 +286,13 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
         children: [
           IconButton(
             icon: const Icon(Icons.search, size: 20),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute<void>(
-                  builder: (BuildContext context) => const SearchPage(),
-                ),
-              );
-            },
+            onPressed: () => context.goToSearch(),
             focusColor: Colors.red,
           ),
           const SizedBox(width: 10),
           IconButton(
             icon: const Icon(Icons.source, size: 20),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute<void>(
-                  builder: (BuildContext context) => const SourceManagePage(),
-                ),
-              );
-            },
+            onPressed: () => context.goToSourceManage(),
             focusColor: Colors.red,
           ),
           // FIXME(dove): 2026-02-02 判断的不对, 实际设备是 TV, 但是也没显示二维码
@@ -325,70 +311,18 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
   }
 
   Widget _buildTabBar() {
-    return Container(
-      height: 70,
-      padding: const EdgeInsets.symmetric(vertical: 12),
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 30),
-        itemCount: _tabs.length,
-        itemBuilder: (context, index) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Focus(
-              autofocus: index == _selectedTab,
-              onFocusChange: (hasFocus) {
-                if (hasFocus) {
-                  setState(() {
-                    _selectedTab = index;
-                    _hasMore = true;
-                  });
-                  _fetchMovies(_tabs[index]);
-                }
-              },
-              child: Builder(
-                builder: (context) {
-                  final bool isFocused = Focus.of(context).hasFocus;
-                  return AnimatedContainer(
-                    duration: const Duration(milliseconds: 200),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 12,
-                    ),
-                    constraints: const BoxConstraints(minWidth: 100),
-                    decoration: BoxDecoration(
-                      color: _selectedTab == index
-                          ? Colors.red
-                          : context.theme.colorScheme.surfaceContainerLow,
-                      borderRadius: BorderRadius.circular(35),
-                      border: isFocused
-                          ? Border.all(color: Colors.white, width: 2)
-                          : null,
-                    ),
-                    child: SizedBox(
-                      height: double.infinity,
-                      child: Center(
-                        child: Text(
-                          _tabs[index],
-                          style: TextStyle(
-                            color: _selectedTab == index
-                                ? Colors.white
-                                : Colors.grey,
-                            fontSize: 20,
-                            height: 1.0,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.visible,
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-          );
-        },
-      ),
+    return YouTubeTVCategoryBar(
+      categories: _tabs,
+      selectedIndex: _selectedTab,
+      onCategorySelected: (int index) {
+        if (_selectedTab != index) {
+          setState(() {
+            _selectedTab = index;
+            _hasMore = true;
+          });
+          _fetchMovies(_tabs[index]);
+        }
+      },
     );
   }
 
@@ -423,7 +357,7 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
         ),
         itemCount: itemCount,
         itemBuilder: (BuildContext context, int index) {
-          return FocusableMovieCard(
+          return YouTubeTVMovieCard(
             key: _cardKeys[index],
             movie: _currentMovies[index],
             focusNode: index < _cardFocusNodes.length
