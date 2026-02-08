@@ -6,14 +6,14 @@ import 'package:sjgtv/src/app/errors/result.dart';
 /// Use Case 是业务逻辑的封装，代表应用程序中的单个用例。
 /// 每个 Use Case 应该：
 /// - 接收一个输入参数（params）
-/// - 返回一个 Result<Output, Failure>
+/// - 返回一个 Result&lt;Output, Failure&gt;
 /// - 不包含任何 UI 逻辑
 /// - 不直接依赖于 Provider
 abstract class UseCase<Params, Output> {
   /// 执行用例
   ///
   /// [params] - 输入参数
-  /// 返回 Result<Output, Failure>
+  /// 返回 Result&lt;Output, Failure&gt;
   Future<Result<Output, Failure>> call(Params params);
 }
 

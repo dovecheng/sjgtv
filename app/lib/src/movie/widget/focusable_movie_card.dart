@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:base/base.dart';
+import 'package:go_router/go_router.dart';
+import 'package:sjgtv/src/app/router/app_routes.dart';
 import 'package:sjgtv/src/movie/model/movie_model.dart';
-import 'package:sjgtv/src/movie/page/search_page.dart';
 import 'package:sjgtv/src/movie/widget/network_image_placeholders.dart';
 
 /// 可聚焦的电影卡片组件（TV 遥控器适配）
@@ -58,13 +59,7 @@ class _FocusableMovieCardState extends State<FocusableMovieCard> {
         if (event is KeyDownEvent) {
           if (event.logicalKey == LogicalKeyboardKey.select ||
               event.logicalKey == LogicalKeyboardKey.enter) {
-            Navigator.push(
-              context,
-              MaterialPageRoute<void>(
-                builder: (BuildContext context) =>
-                    SearchPage(initialQuery: widget.movie.title),
-              ),
-            );
+            GoRouter.of(context).push('${AppRoutes.search}?q=${widget.movie.title}');
             return KeyEventResult.handled;
           }
           if (canMoveInGrid) {

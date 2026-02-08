@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:base/base.dart';
 import 'package:flutter/services.dart';
-import 'package:sjgtv/src/movie/page/full_screen_player_page.dart';
+import 'package:go_router/go_router.dart';
+import 'package:sjgtv/src/app/router/app_routes.dart';
 import 'package:sjgtv/src/movie/widget/network_image_placeholders.dart';
 
 /// 电影详情页
@@ -88,17 +89,15 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
   void _playEpisode(int index) {
     final List<Map<String, dynamic>>? sources =
         widget.movie['sources'] as List<Map<String, dynamic>>?;
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => FullScreenPlayerPage(
-          movie: widget.movie,
-          episodes: _episodes,
-          initialIndex: index,
-          sources: sources,
-          currentSourceIndex: 0,
-        ),
-      ),
+    GoRouter.of(context).push(
+      AppRoutes.player,
+      extra: {
+        'movie': widget.movie,
+        'episodes': _episodes,
+        'initialIndex': index,
+        'sources': sources,
+        'currentSourceIndex': 0,
+      },
     );
   }
 

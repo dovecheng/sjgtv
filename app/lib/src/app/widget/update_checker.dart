@@ -7,6 +7,7 @@ import 'package:base/extension.dart';
 import 'package:base/log.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:open_file/open_file.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
@@ -172,7 +173,7 @@ class AppUpdater {
             actions: [
               if (!_isDownloading) ...[
                 TextButton(
-                  onPressed: () => Navigator.pop(context),
+                  onPressed: () => context.pop(),
                   child: Text(l10n.updateCheckerLater),
                 ),
                 if ($platform.isAndroidNative && apkUrl != null)
@@ -183,7 +184,7 @@ class AppUpdater {
                   ),
                 TextButton(
                   onPressed: () async {
-                    Navigator.pop(context);
+                    context.pop();
                     if (await canLaunchUrl(Uri.parse(url))) {
                       await launchUrl(
                         Uri.parse(url),
@@ -260,7 +261,7 @@ class AppUpdater {
       });
 
       if (context.mounted) {
-        Navigator.pop(context);
+        context.pop();
       }
 
       // 安装APK

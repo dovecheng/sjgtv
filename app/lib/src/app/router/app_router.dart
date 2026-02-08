@@ -65,29 +65,23 @@ class AppRouter {
             path: AppRoutes.player,
             name: 'player',
             pageBuilder: (context, state) {
-              final Map<String, dynamic> movie =
+              final Map<String, dynamic> extra =
                   state.extra as Map<String, dynamic>? ?? {};
-              final int initialIndex = int.tryParse(
-                  state.uri.queryParameters['index'] ?? '0') ?? 0;
+              final Map<String, dynamic> movie = extra['movie'] as Map<String, dynamic>? ?? {};
+              final int initialIndex = extra['initialIndex'] as int? ?? 0;
               final List<Map<String, String>> episodes =
-                  state.uri.queryParameters['episodes'] != null
-                      ? (state.uri.queryParameters['episodes'] as String)
-                          .split('|')
-                          .map((e) {
-                            final parts = e.split(',');
-                            return <String, String>{
-                              'name': parts[0],
-                              'url': parts[1],
-                            };
-                          })
-                          .toList()
-                      : [];
+                  extra['episodes'] as List<Map<String, String>>? ?? [];
+              final List<Map<String, dynamic>>? sources =
+                  extra['sources'] as List<Map<String, dynamic>>?;
+              final int currentSourceIndex = extra['currentSourceIndex'] as int? ?? 0;
               return PlayerPageTransition(
                 key: state.pageKey,
                 child: FullScreenPlayerPage(
                   movie: movie,
                   episodes: episodes,
                   initialIndex: initialIndex,
+                  sources: sources,
+                  currentSourceIndex: currentSourceIndex,
                 ),
               );
             },

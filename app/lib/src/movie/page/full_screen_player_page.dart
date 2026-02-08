@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:base/base.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
@@ -597,7 +598,7 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
           setState(() => _showSourcePanel = false);
           return KeyEventResult.handled;
         }
-        Navigator.pop(context);
+        context.pop();
         return KeyEventResult.handled;
       case LogicalKeyboardKey.contextMenu:
         _stopSeek(Duration.zero);
@@ -688,7 +689,7 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
                     setState(() => _showSourcePanel = false);
                     return null;
                   }
-                  Navigator.pop(context);
+                  context.pop();
                   return null;
                 },
               ),

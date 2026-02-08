@@ -3,10 +3,10 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:sjgtv/src/app/router/app_routes.dart';
 import 'package:sjgtv/src/movie/provider/search_provider.dart';
 import 'package:sjgtv/src/movie/widget/network_image_placeholders.dart';
-
-import 'movie_detail_page.dart';
 
 /// 电影搜索页
 ///
@@ -381,12 +381,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
         if (event is KeyDownEvent &&
             (event.logicalKey == LogicalKeyboardKey.select ||
                 event.logicalKey == LogicalKeyboardKey.enter)) {
-          Navigator.push(
-            context,
-            MaterialPageRoute<void>(
-              builder: (BuildContext ctx) => MovieDetailPage(movie: movie),
-            ),
-          );
+          GoRouter.of(context).push(AppRoutes.movieDetail, extra: movie);
           return KeyEventResult.handled;
         }
         return KeyEventResult.ignored;
@@ -428,12 +423,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
               child: InkWell(
                 borderRadius: BorderRadius.circular(12),
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => MovieDetailPage(movie: movie),
-                    ),
-                  );
+                  GoRouter.of(context).push(AppRoutes.movieDetail, extra: movie);
                 },
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
