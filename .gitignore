@@ -47,4 +47,3 @@ Thumbs.db
 
 # Snap 打包未使用，忽略避免误提交
 /snap/
-.tmp/
