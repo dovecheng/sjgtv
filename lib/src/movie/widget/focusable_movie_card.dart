@@ -53,6 +53,21 @@ class _FocusableMovieCardState extends State<FocusableMovieCard> {
         widget.itemCount != null &&
         widget.onMoveFocus != null;
 
+    // 响应式布局参数
+    final bool isTV = context.isTV;
+    final bool shouldShowFocus = isTV && _isFocused;
+    final double infoHeight = context.whenLayout<double>(
+      phonePortrait: () => 70.0,
+      phoneLandscape: () => 60.0,
+      tabletPortrait: () => 80.0,
+      tabletLandscape: () => 70.0,
+      tv: () => 90.0,
+    );
+    final double titleFontSize = 18 * context.fontScale;
+    final double metaFontSize = 16 * context.fontScale;
+    final double iconSize = 16 * context.iconScale;
+    final double placeholderFontSize = 24 * context.fontScale;
+
     return Focus(
       focusNode: widget.focusNode,
       onKeyEvent: (FocusNode node, KeyEvent event) {
@@ -88,114 +103,122 @@ class _FocusableMovieCardState extends State<FocusableMovieCard> {
       onFocusChange: (bool hasFocus) {
         setState(() => _isFocused = hasFocus);
       },
-      child: AnimatedScale(
-        duration: const Duration(milliseconds: 150),
-        scale: _isFocused ? 1.02 : 1.0,
-        child: AnimatedContainer(
+      child: GestureDetector(
+        onTap: () {
+          // 非TV设备支持点击
+          if (!isTV) {
+            GoRouter.of(context).push('${AppRoutes.search}?q=${widget.movie.title}');
+          }
+        },
+        child: AnimatedScale(
           duration: const Duration(milliseconds: 150),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            border: _isFocused
-                ? Border.all(color: Colors.white, width: 2.0)
-                : null,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Expanded(
-                flex: 4,
-                child: ClipRRect(
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(12),
-                    topRight: Radius.circular(12),
-                  ),
-                  child: Container(
-                    decoration: BoxDecoration(color: colorScheme.surfaceContainer),
-                    child: widget.movie.coverUrl != null
-                        ? CachedImage(
-                            imageUrl: widget.movie.coverUrl!,
-                            httpHeaders: const {
-                              'User-Agent':
-                                  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-                              'Accept':
-                                  'image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8',
-                              'Referer': 'https://movie.douban.com/',
-                            },
-                            fit: BoxFit.cover,
-                            width: double.infinity,
-                            placeholder: (BuildContext ctx, String url) =>
-                                networkImagePlaceholder(ctx),
-                            errorWidget: (BuildContext ctx, String url,
-                                    Object error) =>
-                                networkImageErrorWidget(ctx),
-                          )
-                        : Container(
-                            color: colorScheme.surfaceContainerLow,
-                            child: Center(
-                              child: Text(
-                                widget.movie.title.split(' ').first,
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
+          scale: shouldShowFocus ? 1.02 : 1.0,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 150),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              border: shouldShowFocus
+                  ? Border.all(color: Colors.white, width: 2.0)
+                  : null,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
+                  flex: 4,
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(12),
+                      topRight: Radius.circular(12),
+                    ),
+                    child: Container(
+                      decoration: BoxDecoration(color: colorScheme.surfaceContainer),
+                      child: widget.movie.coverUrl != null
+                          ? CachedImage(
+                              imageUrl: widget.movie.coverUrl!,
+                              httpHeaders: const {
+                                'User-Agent':
+                                    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                                'Accept':
+                                    'image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8',
+                                'Referer': 'https://movie.douban.com/',
+                              },
+                              fit: BoxFit.cover,
+                              width: double.infinity,
+                              placeholder: (BuildContext ctx, String url) =>
+                                  networkImagePlaceholder(ctx),
+                              errorWidget: (BuildContext ctx, String url,
+                                      Object error) =>
+                                  networkImageErrorWidget(ctx),
+                            )
+                          : Container(
+                              color: colorScheme.surfaceContainerLow,
+                              child: Center(
+                                child: Text(
+                                  widget.movie.title.split(' ').first,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: placeholderFontSize,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
+                    ),
                   ),
                 ),
-              ),
-              Container(
-                height: 70,
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                decoration: BoxDecoration(
-                  color: colorScheme.surfaceContainer,
-                  borderRadius: const BorderRadius.vertical(
-                    bottom: Radius.circular(12),
+                Container(
+                  height: infoHeight,
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: colorScheme.surfaceContainer,
+                    borderRadius: const BorderRadius.vertical(
+                      bottom: Radius.circular(12),
+                    ),
                   ),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      widget.movie.title,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.movie.title,
+                        style: TextStyle(
+                          fontSize: titleFontSize,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          '${widget.movie.year}',
-                          style: const TextStyle(fontSize: 16, color: Colors.grey),
-                        ),
-                        Row(
-                          children: [
-                            const Icon(Icons.star, size: 16, color: Colors.amber),
-                            const SizedBox(width: 4),
-                            Text(
-                              '${widget.movie.rating}',
-                              style: const TextStyle(
-                                fontSize: 16,
-                                color: Colors.amber,
-                                fontWeight: FontWeight.bold,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            '${widget.movie.year}',
+                            style: TextStyle(fontSize: metaFontSize, color: Colors.grey),
+                          ),
+                          Row(
+                            children: [
+                              Icon(Icons.star, size: iconSize, color: Colors.amber),
+                              const SizedBox(width: 4),
+                              Text(
+                                '${widget.movie.rating}',
+                                style: TextStyle(
+                                  fontSize: metaFontSize,
+                                  color: Colors.amber,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ],
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

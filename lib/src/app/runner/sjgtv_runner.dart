@@ -33,9 +33,11 @@ final class SjgtvRunner extends AppRunner {
 
   SjgtvRunner();
 
-  /// 仅支持横屏
+  /// 支持所有屏幕方向（TV 将通过 FullScreenManager 自动设置为横屏）
   @override
   List<DeviceOrientation> get preferredOrientations => const [
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
     DeviceOrientation.landscapeLeft,
     DeviceOrientation.landscapeRight,
   ];
@@ -118,6 +120,13 @@ class _AppWithUpdateCheckState extends ConsumerState<_AppWithUpdateCheck> {
         GlobalWidgetsLocalizations.delegate,
       ],
       supportedLocales: AppLocalizations.supportedLocales,
+      builder: (BuildContext context, Widget? child) {
+        // 根据设备类型自动设置全屏
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          FullScreenManager.setupForDevice(context);
+        });
+        return child ?? const SizedBox.shrink();
+      },
     );
   }
 
