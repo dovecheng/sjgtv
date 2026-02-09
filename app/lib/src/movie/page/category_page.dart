@@ -13,7 +13,6 @@ import 'package:sjgtv/src/movie/widget/youtube_tv_category_bar.dart';
 import 'package:sjgtv/src/app/router/app_router.dart';
 import 'package:sjgtv/src/tag/model/tag_model.dart';
 import 'package:sjgtv/src/tag/provider/tags_provider.dart';
-import 'package:sjgtv/src/app/utils/focus_helper.dart';
 import 'package:sjgtv/src/app/utils/tv_mode.dart';
 
 final Log _log = Log('MovieHomePage');

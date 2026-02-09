@@ -4,7 +4,6 @@ import 'package:base/base.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:sjgtv/src/movie/model/movie_model.dart';
 import 'package:sjgtv/src/movie/widget/network_image_placeholders.dart';
-import 'package:sjgtv/src/app/theme/app_theme.dart';
 import 'package:sjgtv/src/app/constants/app_constants.dart';
 import 'package:sjgtv/src/app/router/app_router.dart';
 

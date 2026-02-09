@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:base/base.dart';
-import 'package:sjgtv/src/app/theme/app_theme.dart';
 
 final Log _log = Log('TVMode');
 

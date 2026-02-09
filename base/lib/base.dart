@@ -1,10 +1,14 @@
 export 'env.dart';
 export 'api.dart';
 export 'app.dart';
+export 'arch.dart';
 export 'cache.dart';
 export 'converter.dart';
+export 'core.dart';
 export 'extension.dart';
 export 'isar.dart';
 export 'l10n.dart';
 export 'log.dart';
 export 'provider.dart';
+export 'theme.dart';
+export 'utils.dart';

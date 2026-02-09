@@ -9,7 +9,6 @@ import 'package:go_router/go_router.dart';
 import 'package:sjgtv/src/app/router/app_routes.dart';
 import 'package:sjgtv/src/movie/provider/search_provider.dart';
 import 'package:sjgtv/src/movie/widget/network_image_placeholders.dart';
-import 'package:sjgtv/src/app/utils/focus_helper.dart';
 import 'package:sjgtv/src/app/utils/tv_mode.dart';
 import 'package:sjgtv/src/app/widget/focus_indicator.dart';
 

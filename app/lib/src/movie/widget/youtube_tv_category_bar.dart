@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:sjgtv/src/app/theme/app_theme.dart';
+import 'package:base/base.dart';
 import 'package:sjgtv/src/app/constants/app_constants.dart';
 
 /// YouTube TV 风格的横向滚动分类导航栏

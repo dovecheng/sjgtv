@@ -1,7 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:sjgtv/src/app/errors/failures.dart';
-import 'package:sjgtv/src/app/errors/result.dart';
-import 'package:sjgtv/src/core/usecase/use_case.dart';
+import 'package:base/base.dart';
 import 'package:sjgtv/src/proxy/model/proxy_model.dart';
 import 'package:sjgtv/src/source/model/source_model.dart';
 import 'package:sjgtv/src/source/util/source_url_util.dart';

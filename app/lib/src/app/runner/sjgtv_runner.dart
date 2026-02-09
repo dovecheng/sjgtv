@@ -8,7 +8,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:sjgtv/l10n_gen/app_localizations.dart';
 import 'package:sjgtv/src/app/provider/config_api_provider.dart';
 import 'package:sjgtv/src/app/router/app_router.dart';
-import 'package:sjgtv/src/app/theme/app_theme.dart';
 import 'package:sjgtv/src/app/widget/update_checker.dart';
 import 'package:sjgtv/src/proxy/model/proxy_model.dart';
 import 'package:sjgtv/src/proxy/provider/proxies_provider.dart';

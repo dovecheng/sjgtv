@@ -1,4 +1,4 @@
-import 'package:sjgtv/src/app/errors/failures.dart';
+import 'package:base/src/arch/errors/failures.dart';
 
 /// Result 类型 - 函数式错误处理
 ///
@@ -40,7 +40,7 @@ class Result<T, E extends Failure> {
     if (isSuccess && value != null) {
       return value as T;
     }
-    throw error ?? UnknownFailure('Unknown error');
+    throw error ?? const UnknownFailure('Unknown error');
   }
 
   /// 获取值，失败时返回默认值
@@ -83,6 +83,15 @@ class Result<T, E extends Failure> {
       return onFailure(error as E);
     }
     return onFailure(error as E);
+  }
+
+  /// when 方法，类似 fold 但不返回值（副作用处理）
+  void when(void Function(E error) onFailure, void Function(T value) onSuccess) {
+    if (isSuccess && value != null) {
+      onSuccess(value as T);
+    } else if (error != null) {
+      onFailure(error as E);
+    }
   }
 
   /// 成功时执行回调

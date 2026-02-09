@@ -37,6 +37,31 @@ class DatabaseFailure extends Failure {
   const DatabaseFailure(super.message);
 }
 
+/// 超时错误
+class TimeoutFailure extends Failure {
+  const TimeoutFailure([super.message = '请求超时']);
+}
+
+/// 未授权错误
+class UnauthorizedFailure extends Failure {
+  const UnauthorizedFailure([super.message = '未授权访问']);
+}
+
+/// 禁止访问错误
+class ForbiddenFailure extends Failure {
+  const ForbiddenFailure([super.message = '禁止访问']);
+}
+
+/// 未找到错误
+class NotFoundFailure extends Failure {
+  const NotFoundFailure([super.message = '资源未找到']);
+}
+
+/// 验证错误
+class ValidationFailure extends Failure {
+  const ValidationFailure(super.message);
+}
+
 /// 未知的错误
 class UnknownFailure extends Failure {
   const UnknownFailure(super.message);
