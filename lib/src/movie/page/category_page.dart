@@ -53,7 +53,9 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage>
   final List<FocusNode> _cardFocusNodes = [];
   final List<GlobalKey> _cardKeys = [];
   DateTime? _lastLoadMoreTime;
+  DateTime? _lastBackPressedTime;
   static const String _focusMemoryKey = 'category_page_focus';
+  static const Duration _exitTimeLimit = Duration(seconds: 2);
 
   @override
   void initState() {
@@ -436,72 +438,100 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: [
-            _buildAppBar(),
-            _buildTabBar(),
-            if (_isLoading && _tabs.isEmpty)
-              Expanded(child: _buildSkeletonGrid())
-            else if (_tabs.isNotEmpty && _tabs[0] == '获取标签失败')
-              const Expanded(
-                child: EmptyState(
-                  title: '网络连接失败',
-                  message: '请检查您的网络连接后重试',
-                  icon: Icons.cloud_off,
-                ),
-              )
-            else if (_tabs.isEmpty)
-              const Expanded(
-                child: EmptyState(
-                  title: '暂无标签',
-                  message: '请先添加标签分类',
-                  icon: Icons.label,
-                ),
-              )
-            else if (_isLoading && _currentMovies.isEmpty)
-              Expanded(child: _buildSkeletonGrid())
-            else if (_currentMovies.isEmpty)
-              const Expanded(
-                child: EmptyState(
-                  title: '没有找到电影',
-                  message: '当前分类下没有电影数据，尝试切换其他分类',
-                  icon: Icons.movie_filter,
-                ),
-              )
-            else
-              Expanded(
-                child: Focus(
-                  focusNode: _refreshFocusNode,
-                  onKeyEvent: (FocusNode node, KeyEvent event) {
-                    if (event is KeyDownEvent &&
-                        event.logicalKey == LogicalKeyboardKey.pageUp) {
-                      _handleRefresh();
-                      return KeyEventResult.handled;
-                    }
-                    return KeyEventResult.ignored;
-                  },
-                  child: SingleChildScrollView(
-                    controller: _scrollController,
-                    child: Column(
-                      children: [
-                        // Hero 区域
-                        if (_currentMovies.isNotEmpty)
-                          HeroSection(
-                            movie: _currentMovies.first,
-                            onTap: () {
-                              context.goToSearch(_currentMovies.first.title);
-                            },
-                          ),
-                        // 电影网格
-                        _buildMovieGrid(),
-                      ],
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (bool didPop, Object? result) {
+        if (didPop) return;
+
+        final DateTime now = DateTime.now();
+        if (_lastBackPressedTime == null ||
+            now.difference(_lastBackPressedTime!) > _exitTimeLimit) {
+          // 第一次按返回键或距离上次超过 2 秒
+          _lastBackPressedTime = now;
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: const Text('再按一次返回键退出应用'),
+              duration: _exitTimeLimit,
+              behavior: SnackBarBehavior.floating,
+              margin: EdgeInsets.only(
+                bottom: context.mediaQuery.size.height - 100,
+                left: 20,
+                right: 20,
+              ),
+            ),
+          );
+        } else {
+          // 2 秒内再次按返回键，退出应用
+          SystemNavigator.pop();
+        }
+      },
+      child: Scaffold(
+        body: SafeArea(
+          child: Column(
+            children: [
+              _buildAppBar(),
+              _buildTabBar(),
+              if (_isLoading && _tabs.isEmpty)
+                Expanded(child: _buildSkeletonGrid())
+              else if (_tabs.isNotEmpty && _tabs[0] == '获取标签失败')
+                const Expanded(
+                  child: EmptyState(
+                    title: '网络连接失败',
+                    message: '请检查您的网络连接后重试',
+                    icon: Icons.cloud_off,
+                  ),
+                )
+              else if (_tabs.isEmpty)
+                const Expanded(
+                  child: EmptyState(
+                    title: '暂无标签',
+                    message: '请先添加标签分类',
+                    icon: Icons.label,
+                  ),
+                )
+              else if (_isLoading && _currentMovies.isEmpty)
+                Expanded(child: _buildSkeletonGrid())
+              else if (_currentMovies.isEmpty)
+                const Expanded(
+                  child: EmptyState(
+                    title: '没有找到电影',
+                    message: '当前分类下没有电影数据，尝试切换其他分类',
+                    icon: Icons.movie_filter,
+                  ),
+                )
+              else
+                Expanded(
+                  child: Focus(
+                    focusNode: _refreshFocusNode,
+                    onKeyEvent: (FocusNode node, KeyEvent event) {
+                      if (event is KeyDownEvent &&
+                          event.logicalKey == LogicalKeyboardKey.pageUp) {
+                        _handleRefresh();
+                        return KeyEventResult.handled;
+                      }
+                      return KeyEventResult.ignored;
+                    },
+                    child: SingleChildScrollView(
+                      controller: _scrollController,
+                      child: Column(
+                        children: [
+                          // Hero 区域
+                          if (_currentMovies.isNotEmpty)
+                            HeroSection(
+                              movie: _currentMovies.first,
+                              onTap: () {
+                                context.goToSearch(_currentMovies.first.title);
+                              },
+                            ),
+                          // 电影网格
+                          _buildMovieGrid(),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-          ],
+            ],
+          ),
         ),
       ),
     );
