@@ -189,5 +189,29 @@
   "themeLight": "淺色",
   "themeDark": "深色",
   "themeSystem": "跟隨系統",
-  "language": "語言"
+  "language": "語言",
+  "offlineTitle": "網絡連接已斷開",
+  "offlineMessage": "當前無網絡連接，請檢查網絡設置",
+  "offlineSuggestion": "部分功能可能無法使用",
+  "offlineMode": "離線模式",
+  "onlineMode": "在線模式",
+  "cachedItems": "已緩存 {count} 項內容",
+  "@cachedItems": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "apiUnknownError": "未知錯誤",
+  "apiConnectionError": "連接到伺服器時發生錯誤",
+  "apiHandshakeError": "建立安全網絡連接時發生錯誤",
+  "apiBadCertificate": "SSL安全證書驗證失敗",
+  "apiConnectionTimeout": "連接超時, 請重試",
+  "apiSendTimeout": "發送數據超時, 請重試",
+  "apiReceiveTimeout": "接收數據超時, 請重試",
+  "apiBadResponse": "伺服器內部錯誤",
+  "apiCancel": "已取消加載",
+  "apiFormatError": "無效的數據格式",
+  "apiParseError": "無效的數據格式"
 }

@@ -1113,6 +1113,108 @@ abstract class AppLocalizations {
   /// In zh_CN, this message translates to:
   /// **'语言'**
   String get language;
+
+  /// No description provided for @offlineTitle.
+  ///
+  /// In zh_CN, this message translates to:
+  /// **'网络连接已断开'**
+  String get offlineTitle;
+
+  /// No description provided for @offlineMessage.
+  ///
+  /// In zh_CN, this message translates to:
+  /// **'当前无网络连接，请检查网络设置'**
+  String get offlineMessage;
+
+  /// No description provided for @offlineSuggestion.
+  ///
+  /// In zh_CN, this message translates to:
+  /// **'部分功能可能无法使用'**
+  String get offlineSuggestion;
+
+  /// No description provided for @offlineMode.
+  ///
+  /// In zh_CN, this message translates to:
+  /// **'离线模式'**
+  String get offlineMode;
+
+  /// No description provided for @onlineMode.
+  ///
+  /// In zh_CN, this message translates to:
+  /// **'在线模式'**
+  String get onlineMode;
+
+  /// No description provided for @cachedItems.
+  ///
+  /// In zh_CN, this message translates to:
+  /// **'已缓存 {count} 项内容'**
+  String cachedItems(int count);
+
+  /// No description provided for @apiUnknownError.
+  ///
+  /// In zh_CN, this message translates to:
+  /// **'未知错误'**
+  String get apiUnknownError;
+
+  /// No description provided for @apiConnectionError.
+  ///
+  /// In zh_CN, this message translates to:
+  /// **'服务器连接失败'**
+  String get apiConnectionError;
+
+  /// No description provided for @apiHandshakeError.
+  ///
+  /// In zh_CN, this message translates to:
+  /// **'建立安全网络连接时发生错误'**
+  String get apiHandshakeError;
+
+  /// No description provided for @apiBadCertificate.
+  ///
+  /// In zh_CN, this message translates to:
+  /// **'SSL安全证书验证失败'**
+  String get apiBadCertificate;
+
+  /// No description provided for @apiConnectionTimeout.
+  ///
+  /// In zh_CN, this message translates to:
+  /// **'连接超时, 请重试'**
+  String get apiConnectionTimeout;
+
+  /// No description provided for @apiSendTimeout.
+  ///
+  /// In zh_CN, this message translates to:
+  /// **'发送数据超时, 请重试'**
+  String get apiSendTimeout;
+
+  /// No description provided for @apiReceiveTimeout.
+  ///
+  /// In zh_CN, this message translates to:
+  /// **'接收数据超时, 请重试'**
+  String get apiReceiveTimeout;
+
+  /// No description provided for @apiBadResponse.
+  ///
+  /// In zh_CN, this message translates to:
+  /// **'服务器响应错误'**
+  String get apiBadResponse;
+
+  /// No description provided for @apiCancel.
+  ///
+  /// In zh_CN, this message translates to:
+  /// **'已取消加载'**
+  String get apiCancel;
+
+  /// No description provided for @apiFormatError.
+  ///
+  /// In zh_CN, this message translates to:
+  /// **'无效的数据格式'**
+  String get apiFormatError;
+
+  /// No description provided for @apiParseError.
+  ///
+  /// In zh_CN, this message translates to:
+  /// **'无效的数据格式'**
+  String get apiParseError;
 }
 
 class _AppLocalizationsDelegate

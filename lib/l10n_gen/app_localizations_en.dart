@@ -526,4 +526,58 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get language => 'Language';
+
+  @override
+  String get offlineTitle => 'Network disconnected';
+
+  @override
+  String get offlineMessage =>
+      'No network connection, please check network settings';
+
+  @override
+  String get offlineSuggestion => 'Some features may not be available';
+
+  @override
+  String get offlineMode => 'Offline mode';
+
+  @override
+  String get onlineMode => 'Online mode';
+
+  @override
+  String cachedItems(int count) {
+    return '$count cached items';
+  }
+
+  @override
+  String get apiUnknownError => 'Unknown error';
+
+  @override
+  String get apiConnectionError => 'Connection host error';
+
+  @override
+  String get apiHandshakeError => 'Connection terminated during handshake';
+
+  @override
+  String get apiBadCertificate => 'SSL certificate verification failures';
+
+  @override
+  String get apiConnectionTimeout => 'Connection timeout, Please try again';
+
+  @override
+  String get apiSendTimeout => 'Send data timeout, Please try again';
+
+  @override
+  String get apiReceiveTimeout => 'Receive data timeout, Please try again';
+
+  @override
+  String get apiBadResponse => 'Internal server error';
+
+  @override
+  String get apiCancel => 'Request canceled';
+
+  @override
+  String get apiFormatError => 'Invalid data format';
+
+  @override
+  String get apiParseError => 'Invalid data format';
 }

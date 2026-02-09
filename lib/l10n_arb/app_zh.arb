@@ -179,16 +179,40 @@
   "noFavorites": "暂无收藏",
   "deleteFavorite": "删除收藏",
   "deleteFavoriteConfirm": "确认删除此收藏？",
-  "settings": "設置",
-  "playbackSettings": "播放設置",
-  "defaultVolume": "默認音量",
-  "defaultPlaybackSpeed": "默認播放速度",
-  "autoPlayNext": "自動播放下一集",
-  "autoPlayNextDescription": "播放完當前集數後自動播放下一集",
-  "displaySettings": "顯示設置",
-  "themeMode": "主題模式",
-  "themeLight": "淺色",
+  "settings": "设置",
+  "playbackSettings": "播放设置",
+  "defaultVolume": "默认音量",
+  "defaultPlaybackSpeed": "默认播放速度",
+  "autoPlayNext": "自动播放下一集",
+  "autoPlayNextDescription": "播放完当前集数后自动播放下一集",
+  "displaySettings": "显示设置",
+  "themeMode": "主题模式",
+  "themeLight": "浅色",
   "themeDark": "深色",
-  "themeSystem": "跟隨系統",
-  "language": "語言"
+  "themeSystem": "跟随系统",
+  "language": "语言",
+  "offlineTitle": "网络连接已断开",
+  "offlineMessage": "当前无网络连接，请检查网络设置",
+  "offlineSuggestion": "部分功能可能无法使用",
+  "offlineMode": "离线模式",
+  "onlineMode": "在线模式",
+  "cachedItems": "已缓存 {count} 项内容",
+  "@cachedItems": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "apiUnknownError": "未知错误",
+  "apiConnectionError": "服务器连接失败",
+  "apiHandshakeError": "建立安全网络连接时发生错误",
+  "apiBadCertificate": "SSL安全证书验证失败",
+  "apiConnectionTimeout": "连接超时, 请重试",
+  "apiSendTimeout": "发送数据超时, 请重试",
+  "apiReceiveTimeout": "接收数据超时, 请重试",
+  "apiBadResponse": "服务器响应错误",
+  "apiCancel": "已取消加载",
+  "apiFormatError": "无效的数据格式",
+  "apiParseError": "无效的数据格式"
 }

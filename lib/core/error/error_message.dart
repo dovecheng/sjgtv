@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sjgtv/core/app/app.dart';
-import 'package:sjgtv/core/l10n_gen/base_localizations.dart';
+import 'package:sjgtv/l10n_gen/app_localizations.dart';
 import 'package:sjgtv/core/network/network_status.dart';
 
 /// 错误信息数据类
@@ -19,11 +19,16 @@ class ErrorInfo {
 }
 
 /// 错误提示工具类
+
 ///
+
 /// 提供统一的错误消息格式和用户友好的错误说明
+
 class ErrorMessage {
+
   /// 获取本地化实例
-  static BaseLocalizations get _l10n => BaseLocalizations.of(AppNavigator.context);
+
+  static AppLocalizations get _l10n => AppLocalizations.of(AppNavigator.context);
 
   /// 获取网络状态实例
   static NetworkStatus get _network => NetworkStatus.instance;
@@ -45,9 +50,7 @@ class ErrorMessage {
         return ErrorInfo(
           title: _l10n.apiConnectionTimeout,
           message: _l10n.apiConnectionTimeout,
-          suggestion: _network.isOnline
-              ? '请检查网络连接后重试'
-              : '请检查网络连接',
+          suggestion: _network.isOnline ? '请检查网络连接后重试' : '请检查网络连接',
           icon: Icons.timer,
         );
 
@@ -177,9 +180,9 @@ class ErrorMessage {
   /// 获取离线提示信息
   static ErrorInfo getOfflineInfo() {
     return ErrorInfo(
-      title: '网络连接已断开',
-      message: '当前无网络连接，请检查网络设置',
-      suggestion: '部分功能可能无法使用',
+      title: _l10n.offlineTitle,
+      message: _l10n.offlineMessage,
+      suggestion: _l10n.offlineSuggestion,
       icon: Icons.wifi_off,
     );
   }

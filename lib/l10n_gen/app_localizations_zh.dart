@@ -487,40 +487,93 @@ class AppLocalizationsZh extends AppLocalizations {
   String get deleteFavoriteConfirm => '确认删除此收藏？';
 
   @override
-  String get settings => '設置';
+  String get settings => '设置';
 
   @override
-  String get playbackSettings => '播放設置';
+  String get playbackSettings => '播放设置';
 
   @override
-  String get defaultVolume => '默認音量';
+  String get defaultVolume => '默认音量';
 
   @override
-  String get defaultPlaybackSpeed => '默認播放速度';
+  String get defaultPlaybackSpeed => '默认播放速度';
 
   @override
-  String get autoPlayNext => '自動播放下一集';
+  String get autoPlayNext => '自动播放下一集';
 
   @override
-  String get autoPlayNextDescription => '播放完當前集數後自動播放下一集';
+  String get autoPlayNextDescription => '播放完当前集数后自动播放下一集';
 
   @override
-  String get displaySettings => '顯示設置';
+  String get displaySettings => '显示设置';
 
   @override
-  String get themeMode => '主題模式';
+  String get themeMode => '主题模式';
 
   @override
-  String get themeLight => '淺色';
+  String get themeLight => '浅色';
 
   @override
   String get themeDark => '深色';
 
   @override
-  String get themeSystem => '跟隨系統';
+  String get themeSystem => '跟随系统';
 
   @override
-  String get language => '語言';
+  String get language => '语言';
+
+  @override
+  String get offlineTitle => '网络连接已断开';
+
+  @override
+  String get offlineMessage => '当前无网络连接，请检查网络设置';
+
+  @override
+  String get offlineSuggestion => '部分功能可能无法使用';
+
+  @override
+  String get offlineMode => '离线模式';
+
+  @override
+  String get onlineMode => '在线模式';
+
+  @override
+  String cachedItems(int count) {
+    return '已缓存 $count 项内容';
+  }
+
+  @override
+  String get apiUnknownError => '未知错误';
+
+  @override
+  String get apiConnectionError => '服务器连接失败';
+
+  @override
+  String get apiHandshakeError => '建立安全网络连接时发生错误';
+
+  @override
+  String get apiBadCertificate => 'SSL安全证书验证失败';
+
+  @override
+  String get apiConnectionTimeout => '连接超时, 请重试';
+
+  @override
+  String get apiSendTimeout => '发送数据超时, 请重试';
+
+  @override
+  String get apiReceiveTimeout => '接收数据超时, 请重试';
+
+  @override
+  String get apiBadResponse => '服务器响应错误';
+
+  @override
+  String get apiCancel => '已取消加载';
+
+  @override
+  String get apiFormatError => '无效的数据格式';
+
+  @override
+  String get apiParseError => '无效的数据格式';
 }
 
 /// The translations for Chinese, as used in China (`zh_CN`).
@@ -1040,6 +1093,59 @@ class AppLocalizationsZhCn extends AppLocalizationsZh {
 
   @override
   String get language => '语言';
+
+  @override
+  String get offlineTitle => '网络连接已断开';
+
+  @override
+  String get offlineMessage => '当前无网络连接，请检查网络设置';
+
+  @override
+  String get offlineSuggestion => '部分功能可能无法使用';
+
+  @override
+  String get offlineMode => '离线模式';
+
+  @override
+  String get onlineMode => '在线模式';
+
+  @override
+  String cachedItems(int count) {
+    return '已缓存 $count 项内容';
+  }
+
+  @override
+  String get apiUnknownError => '未知错误';
+
+  @override
+  String get apiConnectionError => '服务器连接失败';
+
+  @override
+  String get apiHandshakeError => '建立安全网络连接时发生错误';
+
+  @override
+  String get apiBadCertificate => 'SSL安全证书验证失败';
+
+  @override
+  String get apiConnectionTimeout => '连接超时, 请重试';
+
+  @override
+  String get apiSendTimeout => '发送数据超时, 请重试';
+
+  @override
+  String get apiReceiveTimeout => '接收数据超时, 请重试';
+
+  @override
+  String get apiBadResponse => '服务器响应错误';
+
+  @override
+  String get apiCancel => '已取消加载';
+
+  @override
+  String get apiFormatError => '无效的数据格式';
+
+  @override
+  String get apiParseError => '无效的数据格式';
 }
 
 /// The translations for Chinese, as used in Hong Kong (`zh_HK`).
@@ -1559,4 +1665,57 @@ class AppLocalizationsZhHk extends AppLocalizationsZh {
 
   @override
   String get language => '語言';
+
+  @override
+  String get offlineTitle => '網絡連接已斷開';
+
+  @override
+  String get offlineMessage => '當前無網絡連接，請檢查網絡設置';
+
+  @override
+  String get offlineSuggestion => '部分功能可能無法使用';
+
+  @override
+  String get offlineMode => '離線模式';
+
+  @override
+  String get onlineMode => '在線模式';
+
+  @override
+  String cachedItems(int count) {
+    return '已緩存 $count 項內容';
+  }
+
+  @override
+  String get apiUnknownError => '未知錯誤';
+
+  @override
+  String get apiConnectionError => '連接到伺服器時發生錯誤';
+
+  @override
+  String get apiHandshakeError => '建立安全網絡連接時發生錯誤';
+
+  @override
+  String get apiBadCertificate => 'SSL安全證書驗證失敗';
+
+  @override
+  String get apiConnectionTimeout => '連接超時, 請重試';
+
+  @override
+  String get apiSendTimeout => '發送數據超時, 請重試';
+
+  @override
+  String get apiReceiveTimeout => '接收數據超時, 請重試';
+
+  @override
+  String get apiBadResponse => '伺服器內部錯誤';
+
+  @override
+  String get apiCancel => '已取消加載';
+
+  @override
+  String get apiFormatError => '無效的數據格式';
+
+  @override
+  String get apiParseError => '無效的數據格式';
 }
