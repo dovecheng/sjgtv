@@ -2,8 +2,6 @@ import 'dart:convert';
 import 'dart:developer' as dev;
 
 import '../../core/env.dart';
-// ignore: implementation_imports
-import 'package:flutter/src/foundation/print.dart';
 import 'package:logging/logging.dart';
 import 'package:stack_trace/stack_trace.dart';
 

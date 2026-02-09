@@ -2,7 +2,6 @@ import '../../../core/api.dart';
 import '../../../core/converter.dart';
 import '../../../core/env.dart';
 import '../../../core/log.dart';
-import 'package:meta/meta.dart';
 import 'package:quiver/core.dart' as quiver;
 
 /// 接口请求结果

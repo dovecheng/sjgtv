@@ -1,5 +1,4 @@
 import '../../core/env.dart';
-import 'package:flutter/foundation.dart';
 
 /// see also: [defaultTargetPlatform]
 TargetPlatform get $platform => defaultTargetPlatform;

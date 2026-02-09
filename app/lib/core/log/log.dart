@@ -3,7 +3,6 @@ import 'dart:async';
 import '../../core/env.dart';
 import '../../core/log.dart';
 import 'package:logging/logging.dart';
-import 'package:meta/meta.dart';
 import 'package:stack_trace/stack_trace.dart';
 
 /// 日志记录器
