@@ -23,7 +23,7 @@ class NetworkStatus {
   Stream<NetworkResult> get statusStream => _statusController.stream;
 
   /// 当前网络状态
-  NetworkResult _currentStatus = NetworkResult.online;
+  NetworkResult _currentStatus = NetworkResult.wifi;
 
   NetworkResult get currentStatus => _currentStatus;
 

@@ -1,5 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sjgtv/src/app/widget/update_checker.dart';
 
 void main() {
   group('AppUpdater 版本号解析', () {

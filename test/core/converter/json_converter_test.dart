@@ -142,7 +142,7 @@ void main() {
 
     group('register 和 findConverterOrNull', () {
       test('应该注册和查找转换器', () {
-        final converter = (Object? value) => value.toString().toUpperCase();
+        String converter(Object? value) => value.toString().toUpperCase();
         JSONConverter.register<String>(converter);
 
         final found = JSONConverter.findConverterOrNull<String>();
