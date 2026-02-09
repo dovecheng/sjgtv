@@ -1,6 +1,3 @@
-# Temporary files
-.tmp/
-*.tmp
 
 # Flutter/Dart
 .dart_tool/

@@ -13,7 +13,6 @@ build/
 
 # Git
 .git/
-.gitignore
 
 # Node modules
 node_modules/
@@ -29,7 +28,6 @@ Thumbs.db
 *.log
 
 # Temporary files
-*.tmp
 *.swp
 *~
 
