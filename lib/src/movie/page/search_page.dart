@@ -97,7 +97,10 @@ class _SearchPageState extends ConsumerState<SearchPage> with FocusHelperMixin {
   }
 
   Future<void> _searchMovies(String keyword) async {
-    if (keyword.isEmpty) return;
+    if (keyword.isEmpty) {
+      log.w(() => '搜索关键词为空，跳过搜索');
+      return;
+    }
 
     log.i(() => '开始搜索电影: keyword="$keyword"');
     setState(() {

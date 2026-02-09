@@ -441,6 +441,7 @@ class _FullScreenPlayerPageState extends ConsumerState<FullScreenPlayerPage> {
 
     final String? url = _episodes[index]['url'];
     if (url == null || url.isEmpty) {
+      log.w(() => '无效的视频URL，集数: $index');
       setState(() {
         _errorMessage = '无效的视频URL';
         _isLoading = false;
@@ -480,6 +481,7 @@ class _FullScreenPlayerPageState extends ConsumerState<FullScreenPlayerPage> {
   /// 切换到指定播放源，保留当前播放进度
   Future<void> _switchToSource(int index) async {
     if (index < 0 || index >= _sources.length || index == _currentSourceIndex) {
+      log.w(() => '源索引无效或已是当前源，跳过切换: $index/${_sources.length}');
       return;
     }
     log.d(() => '切换播放源: $index/${_sources.length}');
@@ -503,6 +505,7 @@ class _FullScreenPlayerPageState extends ConsumerState<FullScreenPlayerPage> {
         ? null
         : _episodes[_currentEpisodeIndex]['url'];
     if (url == null || url.isEmpty) {
+      log.w(() => '该源无有效剧集，当前集数: $_currentEpisodeIndex');
       setState(() {
         _isLoading = false;
         _errorMessage = '该源无有效剧集';

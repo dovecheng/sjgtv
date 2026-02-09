@@ -72,10 +72,12 @@ class _SourceFormPageState extends ConsumerState<SourceFormPage> {
     final String url = _urlController.text.trim();
 
     if (name.isEmpty) {
+      log.w(() => '源名称为空，提交失败');
       setState(() => _errorText = '请输入名称');
       return;
     }
     if (!_isValidUrl(url)) {
+      log.w(() => '源URL无效: $url');
       setState(() => _errorText = '请输入有效的 http(s) 地址');
       return;
     }

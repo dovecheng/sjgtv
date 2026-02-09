@@ -163,7 +163,10 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage>
   }
 
   Future<void> _fetchMovies(String tag, {bool loadMore = false}) async {
-    if (tag == '加载中...' || tag == '获取标签失败') return;
+    if (tag == '加载中...' || tag == '获取标签失败') {
+      _log.w(() => '标签状态无效，跳过加载: $tag');
+      return;
+    }
     if (!loadMore && _loadedTags.contains(tag)) {
       return;
     }
