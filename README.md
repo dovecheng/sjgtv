@@ -19,47 +19,45 @@
 
 ```
 sjgtv/
-├── app/                           # 主应用目录
-│   ├── lib/
-│   │   ├── core/                   # 核心层（基础设施）
-│   │   │   ├── api/                # API 客户端、结果类型
-│   │   │   ├── arch/               # 架构层（错误处理、Result 模式）
-│   │   │   ├── cache/              # 缓存策略
-│   │   │   ├── converter/          # 数据转换器
-│   │   │   ├── extension/          # 扩展方法
-│   │   │   ├── isar/               # Isar 数据库
-│   │   │   ├── l10n/               # 国际化
-│   │   │   ├── log/                # 日志
-│   │   │   ├── provider/           # Provider 基础类
-│   │   │   ├── theme/              # 主题配置
-│   │   │   └── utils/              # 工具类
-│   │   ├── data/                    # 数据层
-│   │   │   ├── datasources/        # 数据源接口和实现
-│   │   │   ├── models/             # 数据模型（Isar）
-│   │   │   └── repositories/       # 仓库实现
-│   │   ├── domain/                  # 领域层
-│   │   │   ├── entities/           # 实体
-│   │   │   ├── repositories/       # 仓库接口
-│   │   │   └── usecases/           # 用例
-│   │   ├── di/                     # 依赖注入
-│   │   └── src/                    # 表现层
-│   │       ├── app/                 # 应用入口、路由、配置
-│   │       ├── movie/               # 电影模块
-│   │       ├── source/              # 视频源模块
-│   │       ├── proxy/               # 代理模块
-│   │       ├── tag/                 # 标签模块
-│   │       ├── favorite/            # 收藏模块
-│   │       ├── watch_history/       # 观看历史模块
-│   │       └── settings/            # 设置模块
-│   ├── assets/                     # 资源文件
-│   ├── test/                       # 测试文件
-│   ├── web/                        # Web 平台
-│   ├── android/                    # Android 平台
-│   ├── ios/                        # iOS 平台
-│   ├── linux/                      # Linux 平台
-│   ├── macos/                      # macOS 平台
-│   └── windows/                    # Windows 平台
-└── AGENTS.md                       # AI 智能体配置
+├── lib/
+│   ├── core/                   # 核心层（基础设施）
+│   │   ├── api/                # API 客户端、结果类型
+│   │   ├── arch/               # 架构层（错误处理、Result 模式）
+│   │   ├── cache/              # 缓存策略
+│   │   ├── converter/          # 数据转换器
+│   │   ├── extension/          # 扩展方法
+│   │   ├── isar/               # Isar 数据库
+│   │   ├── l10n/               # 国际化
+│   │   ├── log/                # 日志
+│   │   ├── provider/           # Provider 基础类
+│   │   ├── theme/              # 主题配置
+│   │   └── utils/              # 工具类
+│   ├── data/                    # 数据层
+│   │   ├── datasources/        # 数据源接口和实现
+│   │   ├── models/             # 数据模型（Isar）
+│   │   └── repositories/       # 仓库实现
+│   ├── domain/                  # 领域层
+│   │   ├── entities/           # 实体
+│   │   ├── repositories/       # 仓库接口
+│   │   └── usecases/           # 用例
+│   ├── di/                     # 依赖注入
+│   └── src/                    # 表现层
+│       ├── app/                 # 应用入口、路由、配置
+│       ├── movie/               # 电影模块
+│       ├── source/              # 视频源模块
+│       ├── proxy/               # 代理模块
+│       ├── tag/                 # 标签模块
+│       ├── favorite/            # 收藏模块
+│       ├── watch_history/       # 观看历史模块
+│       └── settings/            # 设置模块
+├── assets/                     # 资源文件
+├── test/                       # 测试文件
+├── web/                        # Web 平台
+├── android/                    # Android 平台
+├── ios/                        # iOS 平台
+├── linux/                      # Linux 平台
+├── macos/                      # macOS 平台
+└── windows/                    # Windows 平台
 ```
 
 ### 架构说明
@@ -159,7 +157,7 @@ sjgtv/
 
 ```bash
 # 1. 安装依赖
-cd app && flutter pub get
+flutter pub get
 
 # 2. 生成代码（Isar 模型、Riverpod Provider）
 flutter pub run build_runner build --delete-conflicting-outputs

@@ -25,8 +25,8 @@ permissions:
   contents: write
 
 env:
-  FLUTTER_VERSION: '3.38.9'
-  ANDROID_BUILD_TOOLS: "36.0.0"
+  FLUTTER_VERSION: '3.32.0'
+  ANDROID_BUILD_TOOLS: "34.0.0"
   GRADLE_OPTS: "-Dorg.gradle.daemon=true -Dorg.gradle.parallel=true -Dorg.gradle.caching=true"
   FLUTTER_HOME: /opt/hostedtoolcache/flutter
 
@@ -34,9 +34,6 @@ jobs:
   build-and-release:
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    defaults:
-      run:
-        working-directory: app
 
     steps:
       - name: Checkout code
@@ -62,8 +59,8 @@ jobs:
         with:
           path: |
             ~/.pub-cache
-            app/.dart_tool
-          key: pub-${{ runner.os }}-${{ hashFiles('app/pubspec.yaml', 'base/pubspec.yaml') }}
+            .dart_tool
+          key: pub-${{ runner.os }}-${{ hashFiles('pubspec.yaml') }}
           restore-keys: |
             pub-${{ runner.os }}-
 
@@ -110,7 +107,7 @@ jobs:
           export PATH="$ANDROID_HOME/build-tools/${{ env.ANDROID_BUILD_TOOLS }}:$PATH"
 
           KEYSTORE_FILE=$(mktemp)
-          echo "${{ secrets.ANDROID_KEYSTORE }}" | tr -d '\n\r\t ' | base64 --decode > "$KEYSTORE_FILE"
+          echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > "$KEYSTORE_FILE"
 
           find build/app/outputs/flutter-apk -name '*.apk' | xargs -P 4 -I {} \
             apksigner sign \
@@ -141,7 +138,7 @@ jobs:
           prerelease: ${{ github.event.inputs.is-prerelease || false }}
           generate_release_notes: true
           files: |
-            app/build/app/outputs/flutter-apk/*.apk
-            app/build/app/outputs/bundle/release/*.aab
+            build/app/outputs/flutter-apk/*.apk
+            build/app/outputs/bundle/release/*.aab
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
