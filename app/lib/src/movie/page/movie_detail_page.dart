@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sjgtv/core/core.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sjgtv/src/app/router/app_routes.dart';
 import 'package:sjgtv/src/movie/widget/network_image_placeholders.dart';
+import 'package:sjgtv/di/domain_di.dart';
+import 'package:sjgtv/src/favorite/provider/favorites_provider.dart';
 
 /// 电影详情页
 ///
@@ -13,16 +16,17 @@ import 'package:sjgtv/src/movie/widget/network_image_placeholders.dart';
 /// - 解析播放地址并显示选集列表
 /// - 支持 TV 遥控器导航（上下切换区域、左右切换选集）
 /// - 点击选集跳转到全屏播放器
-class MovieDetailPage extends StatefulWidget {
+/// - 支持收藏/取消收藏
+class MovieDetailPage extends ConsumerStatefulWidget {
   final dynamic movie;
 
   const MovieDetailPage({super.key, required this.movie});
 
   @override
-  State<MovieDetailPage> createState() => _MovieDetailPageState();
+  ConsumerState<MovieDetailPage> createState() => _MovieDetailPageState();
 }
 
-class _MovieDetailPageState extends State<MovieDetailPage> {
+class _MovieDetailPageState extends ConsumerState<MovieDetailPage> {
   final List<Map<String, String>> _episodes = [];
   final List<GlobalKey> _episodeKeys = [];
   final FocusNode _episodesFocusNode = FocusNode();
@@ -30,6 +34,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
   int _focusedIndex = 0;
   final FocusNode _mainContentFocusNode = FocusNode();
   bool _isEpisodesFocused = false;
+  bool _isFavorite = false;
 
   @override
   void initState() {
@@ -46,6 +51,26 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
     });
 
     _episodesScrollController.addListener(_handleScroll);
+    _checkFavoriteStatus();
+  }
+
+  void _checkFavoriteStatus() async {
+    final movieId = widget.movie['vod_id']?.toString() ?? '';
+    final isFav = await ref.read(favoritesProvider.notifier).isFavorite(movieId);
+    if (mounted) {
+      setState(() {
+        _isFavorite = isFav;
+      });
+    }
+  }
+
+  void _toggleFavorite() async {
+    await ref.read(favoritesProvider.notifier).toggleFavorite(widget.movie);
+    if (mounted) {
+      setState(() {
+        _isFavorite = !_isFavorite;
+      });
+    }
   }
 
   void _handleScroll() {
@@ -175,9 +200,23 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    widget.movie['vod_name'] ?? '未知标题',
-                                    style: textTheme.displayMedium,
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          widget.movie['vod_name'] ?? '未知标题',
+                                          style: textTheme.displayMedium,
+                                        ),
+                                      ),
+                                      IconButton(
+                                        icon: Icon(
+                                          _isFavorite ? Icons.favorite : Icons.favorite_border,
+                                          color: _isFavorite ? Colors.red : null,
+                                        ),
+                                        onPressed: _toggleFavorite,
+                                        iconSize: 32,
+                                      ),
+                                    ],
                                   ),
                                   const SizedBox(height: 8),
                                   Wrap(

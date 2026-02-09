@@ -467,6 +467,24 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get webWeightLabel => '权重 (1-10)';
+
+  @override
+  String get favorites => '收藏';
+
+  @override
+  String get clearAllFavorites => '清空收藏';
+
+  @override
+  String get clearAllFavoritesConfirm => '确认清空所有收藏？';
+
+  @override
+  String get noFavorites => '暂无收藏';
+
+  @override
+  String get deleteFavorite => '删除收藏';
+
+  @override
+  String get deleteFavoriteConfirm => '确认删除此收藏？';
 }
 
 /// The translations for Chinese, as used in China (`zh_CN`).
@@ -932,6 +950,24 @@ class AppLocalizationsZhCn extends AppLocalizationsZh {
 
   @override
   String get webWeightLabel => '权重 (1-10)';
+
+  @override
+  String get favorites => '收藏';
+
+  @override
+  String get clearAllFavorites => '清空收藏';
+
+  @override
+  String get clearAllFavoritesConfirm => '确认清空所有收藏？';
+
+  @override
+  String get noFavorites => '暂无收藏';
+
+  @override
+  String get deleteFavorite => '删除收藏';
+
+  @override
+  String get deleteFavoriteConfirm => '确认删除此收藏？';
 }
 
 /// The translations for Chinese, as used in Hong Kong (`zh_HK`).
@@ -1397,4 +1433,22 @@ class AppLocalizationsZhHk extends AppLocalizationsZh {
 
   @override
   String get webWeightLabel => '權重 (1-10)';
+
+  @override
+  String get favorites => '收藏';
+
+  @override
+  String get clearAllFavorites => '清空收藏';
+
+  @override
+  String get clearAllFavoritesConfirm => '確認清空所有收藏？';
+
+  @override
+  String get noFavorites => '暫無收藏';
+
+  @override
+  String get deleteFavorite => '刪除收藏';
+
+  @override
+  String get deleteFavoriteConfirm => '確認刪除此收藏？';
 }

@@ -1005,6 +1005,42 @@ abstract class AppLocalizations {
   /// In zh_CN, this message translates to:
   /// **'权重 (1-10)'**
   String get webWeightLabel;
+
+  /// No description provided for @favorites.
+  ///
+  /// In zh_CN, this message translates to:
+  /// **'收藏'**
+  String get favorites;
+
+  /// No description provided for @clearAllFavorites.
+  ///
+  /// In zh_CN, this message translates to:
+  /// **'清空收藏'**
+  String get clearAllFavorites;
+
+  /// No description provided for @clearAllFavoritesConfirm.
+  ///
+  /// In zh_CN, this message translates to:
+  /// **'确认清空所有收藏？'**
+  String get clearAllFavoritesConfirm;
+
+  /// No description provided for @noFavorites.
+  ///
+  /// In zh_CN, this message translates to:
+  /// **'暂无收藏'**
+  String get noFavorites;
+
+  /// No description provided for @deleteFavorite.
+  ///
+  /// In zh_CN, this message translates to:
+  /// **'删除收藏'**
+  String get deleteFavorite;
+
+  /// No description provided for @deleteFavoriteConfirm.
+  ///
+  /// In zh_CN, this message translates to:
+  /// **'确认删除此收藏？'**
+  String get deleteFavoriteConfirm;
 }
 
 class _AppLocalizationsDelegate

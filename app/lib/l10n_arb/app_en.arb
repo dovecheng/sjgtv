@@ -164,12 +164,18 @@
   "webSourceName": "Source Name",
   "webSourceNamePlaceholder": "e.g. Movie Heaven",
   "webStatus": "Status",
-  "webTagColor": "Tag Color",
-  "webTagManageTitle": "Tag Manage",
-  "webTagName": "Tag Name",
+"webTagColor": "Tag color",
+  "webTagManageTitle": "Tag manage",
+  "webTagName": "Tag name",
   "webTagNamePlaceholder": "e.g. Movie",
-  "webTotalSources": "Total Sources",
+  "webTotalSources": "Total sources",
   "webWeight": "Weight",
   "webWeightHint": "Higher weight ranks first",
-  "webWeightLabel": "Weight (1-10)"
+  "webWeightLabel": "Weight (1-10)",
+  "favorites": "Favorites",
+  "clearAllFavorites": "Clear all favorites",
+  "clearAllFavoritesConfirm": "Clear all favorites?",
+  "noFavorites": "No favorites",
+  "deleteFavorite": "Delete favorite",
+  "deleteFavoriteConfirm": "Delete this favorite?"
 }

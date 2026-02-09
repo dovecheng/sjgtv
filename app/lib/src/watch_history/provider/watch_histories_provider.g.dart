@@ -43,7 +43,7 @@ final class WatchHistoriesProviderProvider
 }
 
 String _$watchHistoriesProviderHash() =>
-    r'68cfee575870cdc211e2ed7313f0be5a375c677a';
+    r'c7ed58f3de89c7915234c3e155f6cbdf9c7af43c';
 
 /// 观看历史提供者
 ///

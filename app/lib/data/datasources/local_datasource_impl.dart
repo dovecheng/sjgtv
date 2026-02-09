@@ -9,12 +9,14 @@ import '../../domain/entities/source.dart';
 import '../../domain/entities/proxy.dart';
 import '../../domain/entities/tag.dart';
 import '../../domain/entities/watch_history.dart';
+import '../../domain/entities/favorite.dart';
 import '../datasources/local_datasource.dart';
 import '../../../core/isar/isar.dart';
 import '../../../src/source/model/source_model.dart';
 import '../../../src/proxy/model/proxy_model.dart';
 import '../../../src/tag/model/tag_model.dart';
 import '../../../src/watch_history/model/watch_history_model.dart';
+import '../../../src/favorite/model/favorite_model.dart';
 
 part 'local_datasource_impl.g.dart';
 
@@ -341,6 +343,93 @@ class LocalDataSourceImpl extends _$LocalDataSourceImpl
       return Result.success(null);
     } catch (e) {
       return Result.failure(CacheFailure('清除观看历史失败: ${e.toString()}'));
+    }
+  }
+
+  @override
+  Future<Result<List<Favorite>, Failure>> getAllFavorites() async {
+    try {
+      final List<FavoriteModel> models = await $isar.favorites
+          .where()
+          .sortByCreatedAtDesc()
+          .findAll();
+      final List<Favorite> favorites = models.map((m) => m.toEntity()).toList();
+      return Result.success(favorites);
+    } catch (e) {
+      return Result.failure(CacheFailure('获取收藏失败: ${e.toString()}'));
+    }
+  }
+
+  @override
+  Future<Result<Favorite, Failure>> addFavorite(Favorite favorite) async {
+    try {
+      final now = DateTime.now();
+      final model = FavoriteModel(
+        uuid: favorite.uuid.isEmpty ? _uuid.v4() : favorite.uuid,
+        movieId: favorite.movieId,
+        movieTitle: favorite.movieTitle,
+        movieCoverUrl: favorite.movieCoverUrl,
+        movieYear: favorite.movieYear,
+        movieRating: favorite.movieRating,
+        sourceName: favorite.sourceName,
+        createdAt: favorite.createdAt ?? now,
+      );
+      await $isar.writeTxn(() async => $isar.favorites.put(model));
+      return Result.success(model.toEntity());
+    } catch (e) {
+      return Result.failure(CacheFailure('添加收藏失败: ${e.toString()}'));
+    }
+  }
+
+  @override
+  Future<Result<void, Failure>> deleteFavorite(String uuid) async {
+    try {
+      await $isar.writeTxn(() async {
+        final List<FavoriteModel> models = await $isar.favorites
+            .where()
+            .filter()
+            .uuidEqualTo(uuid)
+            .findAll();
+        for (final FavoriteModel e in models) {
+          if (e.id != null) await $isar.favorites.delete(e.id!);
+        }
+      });
+      return Result.success(null);
+    } catch (e) {
+      return Result.failure(CacheFailure('删除收藏失败: ${e.toString()}'));
+    }
+  }
+
+  @override
+  Future<Result<bool, Failure>> isFavorite(String movieId) async {
+    try {
+      final List<FavoriteModel> models = await $isar.favorites
+          .where()
+          .filter()
+          .movieIdEqualTo(movieId)
+          .findAll();
+      return Result.success(models.isNotEmpty);
+    } catch (e) {
+      return Result.failure(CacheFailure('检查收藏失败: ${e.toString()}'));
+    }
+  }
+
+  @override
+  Future<Result<void, Failure>> unfavorite(String movieId) async {
+    try {
+      await $isar.writeTxn(() async {
+        final List<FavoriteModel> models = await $isar.favorites
+            .where()
+            .filter()
+            .movieIdEqualTo(movieId)
+            .findAll();
+        for (final FavoriteModel e in models) {
+          if (e.id != null) await $isar.favorites.delete(e.id!);
+        }
+      });
+      return Result.success(null);
+    } catch (e) {
+      return Result.failure(CacheFailure('取消收藏失败: ${e.toString()}'));
     }
   }
 }

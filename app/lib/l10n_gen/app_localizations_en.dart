@@ -449,19 +449,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get webStatus => 'Status';
 
   @override
-  String get webTagColor => 'Tag Color';
+  String get webTagColor => 'Tag color';
 
   @override
-  String get webTagManageTitle => 'Tag Manage';
+  String get webTagManageTitle => 'Tag manage';
 
   @override
-  String get webTagName => 'Tag Name';
+  String get webTagName => 'Tag name';
 
   @override
   String get webTagNamePlaceholder => 'e.g. Movie';
 
   @override
-  String get webTotalSources => 'Total Sources';
+  String get webTotalSources => 'Total sources';
 
   @override
   String get webWeight => 'Weight';
@@ -471,4 +471,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get webWeightLabel => 'Weight (1-10)';
+
+  @override
+  String get favorites => 'Favorites';
+
+  @override
+  String get clearAllFavorites => 'Clear all favorites';
+
+  @override
+  String get clearAllFavoritesConfirm => 'Clear all favorites?';
+
+  @override
+  String get noFavorites => 'No favorites';
+
+  @override
+  String get deleteFavorite => 'Delete favorite';
+
+  @override
+  String get deleteFavoriteConfirm => 'Delete this favorite?';
 }

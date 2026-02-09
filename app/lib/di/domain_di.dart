@@ -5,6 +5,7 @@ import '../../domain/repositories/source_repository.dart';
 import '../../domain/repositories/proxy_repository.dart';
 import '../../domain/repositories/tag_repository.dart';
 import '../../domain/repositories/watch_history_repository.dart';
+import '../../domain/repositories/favorite_repository.dart';
 import '../../domain/usecases/add_source_usecase.dart';
 import '../../domain/usecases/get_all_sources_usecase.dart';
 import '../../domain/usecases/get_movies_by_category_usecase.dart';
@@ -12,6 +13,11 @@ import '../../domain/usecases/search_movies_usecase.dart';
 import '../../domain/usecases/save_watch_history_usecase.dart';
 import '../../domain/usecases/get_all_watch_histories_usecase.dart';
 import '../../domain/usecases/delete_watch_history_usecase.dart';
+import '../../domain/usecases/add_favorite_usecase.dart';
+import '../../domain/usecases/get_all_favorites_usecase.dart';
+import '../../domain/usecases/delete_favorite_usecase.dart';
+import '../../domain/usecases/is_favorite_usecase.dart';
+import '../../domain/usecases/unfavorite_usecase.dart';
 import '../../data/datasources/local_datasource.dart';
 import '../../data/datasources/local_datasource_impl.dart';
 import '../../data/repositories/movie_repository_impl.dart';
@@ -19,6 +25,7 @@ import '../../data/repositories/source_repository_impl.dart';
 import '../../data/repositories/proxy_repository_impl.dart';
 import '../../data/repositories/tag_repository_impl.dart';
 import '../../data/repositories/watch_history_repository_impl.dart';
+import '../../data/repositories/favorite_repository_impl.dart';
 
 /// 本地数据源 Provider
 final localDataSourceProvider = Provider<LocalDataSource>((ref) {
@@ -107,5 +114,47 @@ final saveWatchHistoryUseCaseProvider = Provider<SaveWatchHistoryUseCase>((ref) 
 final deleteWatchHistoryUseCaseProvider = Provider<DeleteWatchHistoryUseCase>((ref) {
   return DeleteWatchHistoryUseCase(
     ref.watch(watchHistoryRepositoryProvider),
+  );
+});
+
+/// 收藏仓库 Provider
+final favoriteRepositoryProvider = Provider<FavoriteRepository>((ref) {
+  return FavoriteRepositoryImpl(
+    localDataSource: ref.watch(localDataSourceProvider),
+  );
+});
+
+/// 添加收藏 Use Case Provider
+final addFavoriteUseCaseProvider = Provider<AddFavoriteUseCase>((ref) {
+  return AddFavoriteUseCase(
+    ref.watch(favoriteRepositoryProvider),
+  );
+});
+
+/// 获取所有收藏 Use Case Provider
+final getAllFavoritesUseCaseProvider = Provider<GetAllFavoritesUseCase>((ref) {
+  return GetAllFavoritesUseCase(
+    ref.watch(favoriteRepositoryProvider),
+  );
+});
+
+/// 删除收藏 Use Case Provider
+final deleteFavoriteUseCaseProvider = Provider<DeleteFavoriteUseCase>((ref) {
+  return DeleteFavoriteUseCase(
+    ref.watch(favoriteRepositoryProvider),
+  );
+});
+
+/// 检查是否已收藏 Use Case Provider
+final isFavoriteUseCaseProvider = Provider<IsFavoriteUseCase>((ref) {
+  return IsFavoriteUseCase(
+    ref.watch(favoriteRepositoryProvider),
+  );
+});
+
+/// 取消收藏 Use Case Provider
+final unfavoriteUseCaseProvider = Provider<UnfavoriteUseCase>((ref) {
+  return UnfavoriteUseCase(
+    ref.watch(favoriteRepositoryProvider),
   );
 });

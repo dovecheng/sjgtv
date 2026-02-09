@@ -171,5 +171,11 @@
   "webTotalSources": "總源數量",
   "webWeight": "權重",
   "webWeightHint": "權重越高，排序越靠前",
-  "webWeightLabel": "權重 (1-10)"
+  "webWeightLabel": "權重 (1-10)",
+  "favorites": "收藏",
+  "clearAllFavorites": "清空收藏",
+  "clearAllFavoritesConfirm": "確認清空所有收藏？",
+  "noFavorites": "暫無收藏",
+  "deleteFavorite": "刪除收藏",
+  "deleteFavoriteConfirm": "確認刪除此收藏？"
 }
