@@ -3,7 +3,6 @@ import '../../../core/arch/errors/result.dart';
 import '../../domain/entities/favorite.dart';
 import '../../domain/repositories/favorite_repository.dart';
 import '../datasources/local_datasource.dart';
-import '../../src/favorite/model/favorite_model.dart';
 
 /// 收藏仓库实现
 ///

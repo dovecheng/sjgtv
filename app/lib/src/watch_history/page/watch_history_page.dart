@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sjgtv/core/core.dart';
 import 'package:sjgtv/src/watch_history/provider/watch_histories_provider.dart';
 import 'package:sjgtv/l10n_gen/app_localizations.dart';
-
-final Log _log = Log('WatchHistory');
 
 /// 观看历史页面
 class WatchHistoryPage extends ConsumerStatefulWidget {
@@ -26,7 +23,7 @@ class _WatchHistoryPageState extends ConsumerState<WatchHistoryPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -91,7 +88,7 @@ class _WatchHistoryPageState extends ConsumerState<WatchHistoryPage> {
   }
 
   Future<void> _showClearAllDialog(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     return showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
@@ -128,7 +125,7 @@ class _HistoryItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
 
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
@@ -247,7 +244,7 @@ class _HistoryItem extends StatelessWidget {
   }
 
   Future<void> _showDeleteDialog(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     return showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(

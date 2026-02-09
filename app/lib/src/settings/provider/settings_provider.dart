@@ -1,7 +1,4 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:sjgtv/domain/usecases/get_settings_usecase.dart';
-import 'package:sjgtv/domain/usecases/save_settings_usecase.dart';
 import 'package:sjgtv/domain/entities/settings.dart';
 import 'package:sjgtv/di/domain_di.dart';
 

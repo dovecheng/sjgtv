@@ -19,7 +19,6 @@ import '../../../src/tag/model/tag_model.dart';
 import '../../../src/watch_history/model/watch_history_model.dart';
 import '../../../src/favorite/model/favorite_model.dart';
 import '../../../src/settings/model/settings_model.dart';
-import 'package:flutter/material.dart' hide ThemeMode;
 
 part 'local_datasource_impl.g.dart';
 

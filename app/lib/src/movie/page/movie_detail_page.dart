@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sjgtv/src/app/router/app_routes.dart';
 import 'package:sjgtv/src/movie/widget/network_image_placeholders.dart';
-import 'package:sjgtv/di/domain_di.dart';
 import 'package:sjgtv/src/favorite/provider/favorites_provider.dart';
 
 /// 电影详情页

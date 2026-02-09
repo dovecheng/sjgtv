@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sjgtv/core/core.dart';
-import 'package:sjgtv/src/app/router/app_routes.dart';
 import 'package:sjgtv/src/movie/widget/network_image_placeholders.dart';
 import 'package:sjgtv/src/favorite/provider/favorites_provider.dart';
 import 'package:sjgtv/l10n_gen/app_localizations.dart';
@@ -15,7 +14,7 @@ class FavoritesPage extends ConsumerWidget {
     final theme = context.theme;
     final colorScheme = theme.colorScheme;
     final textTheme = theme.textTheme;
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
 
     final favoritesAsync = ref.watch(favoritesProvider);
 
@@ -98,7 +97,7 @@ class FavoritesPage extends ConsumerWidget {
   }
 
   void _showClearAllDialog(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -122,7 +121,7 @@ class FavoritesPage extends ConsumerWidget {
   }
 
   void _showDeleteDialog(BuildContext context, WidgetRef ref, dynamic favorite) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     showDialog(
       context: context,
       builder: (context) => AlertDialog(

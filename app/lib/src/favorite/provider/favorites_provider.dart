@@ -1,13 +1,6 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:sjgtv/domain/usecases/add_favorite_usecase.dart';
-import 'package:sjgtv/domain/usecases/get_all_favorites_usecase.dart';
-import 'package:sjgtv/domain/usecases/delete_favorite_usecase.dart';
-import 'package:sjgtv/domain/usecases/is_favorite_usecase.dart';
-import 'package:sjgtv/domain/usecases/unfavorite_usecase.dart';
 import 'package:sjgtv/domain/entities/favorite.dart';
 import 'package:uuid/uuid.dart';
-import 'package:sjgtv/src/favorite/model/favorite_model.dart';
 import 'package:sjgtv/di/domain_di.dart';
 
 part 'favorites_provider.g.dart';
