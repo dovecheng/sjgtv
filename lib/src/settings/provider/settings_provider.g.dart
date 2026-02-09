@@ -36,7 +36,7 @@ final class SettingsProviderProvider
   SettingsProvider create() => SettingsProvider();
 }
 
-String _$settingsProviderHash() => r'c0e1a62fea2e8c861859418b6a0ff6e24eaa779c';
+String _$settingsProviderHash() => r'd0bc970869293a403ea77645f7185d8c9a2b0228';
 
 /// 设置提供者
 
