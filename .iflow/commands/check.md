@@ -88,6 +88,13 @@ grep -rE 'password|secret|api[_-]?key|token' lib/ --include="*.dart" | grep -v "
 ```
 检查代码中是否有硬编码的敏感信息。
 
+### 13. 导入路径检查
+```bash
+# 检查是否使用了相对路径导入（不建议使用）
+grep -r "^import.*'\.\./" lib/ --include="*.dart"
+```
+检查是否使用了相对路径导入，建议使用包路径（`package:`）代替相对路径。
+
 ## 快速检查
 
 快速检查（仅代码分析）：
@@ -97,7 +104,7 @@ flutter analyze && dart format --set-exit-if-changed .
 
 完整检查（所有项）：
 ```bash
-flutter analyze && dart format . && flutter test
+flutter analyze && dart format . && flutter test && grep -r "^import.*'\.\./" lib/ --include="*.dart"
 ```
 
 ## 检查结果
