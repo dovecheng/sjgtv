@@ -162,29 +162,21 @@ class _YouTubeTVMovieCardState extends State<YouTubeTVMovieCard>
             scale: _scaleAnimation.value,
             child: Container(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(8),
                 boxShadow: [
                   BoxShadow(
-                    color: AppTheme.focus.withValues(
-                        alpha: _glowAnimation.value * 0.3),
-                    blurRadius: 20 * _glowAnimation.value,
-                    spreadRadius: 5 * _glowAnimation.value,
-                  ),
-                  BoxShadow(
-                    color: Colors.black.withValues(
-                        alpha: _elevationAnimation.value * 0.1),
-                    blurRadius: 10 * _elevationAnimation.value / 2,
-                    offset: Offset(0, 5 * _elevationAnimation.value / 2),
+                    color: AppTheme.focusGlow,
+                    blurRadius: 8.0 * _glowAnimation.value,
+                    spreadRadius: 0,
                   ),
                 ],
                 border: Border.all(
-                  color: AppTheme.focus.withValues(
-                      alpha: 0.3 + _glowAnimation.value * 0.7),
+                  color: AppTheme.focus.withValues(alpha: _borderAnimation.value / 2),
                   width: _borderAnimation.value,
                 ),
               ),
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(8),
                 child: _buildCardContent(colorScheme),
               ),
             ),
@@ -278,6 +270,7 @@ class _YouTubeTVMovieCardState extends State<YouTubeTVMovieCard>
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
+          // 标题
           Text(
             widget.movie.title,
             style: const TextStyle(
@@ -288,6 +281,31 @@ class _YouTubeTVMovieCardState extends State<YouTubeTVMovieCard>
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
+          // 焦点状态下显示更多信息
+          if (_isFocused) ...[
+            const SizedBox(height: 4),
+            Text(
+              widget.movie.directors ?? '',
+              style: const TextStyle(
+                fontSize: 11,
+                color: Colors.white70,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            const SizedBox(height: 2),
+            Text(
+              widget.movie.casts ?? '',
+              style: const TextStyle(
+                fontSize: 11,
+                color: Colors.white60,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+          const SizedBox(height: 4),
+          // 年份和评分
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

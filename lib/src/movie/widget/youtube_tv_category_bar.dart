@@ -188,7 +188,7 @@ class _CategoryItemState extends State<_CategoryItem>
             child: Container(
               height: 40,
               padding:
-                  const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
                 color: widget.isSelected
                     ? AppTheme.accent
@@ -206,7 +206,7 @@ class _CategoryItemState extends State<_CategoryItem>
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
                         color: widget.isSelected ? Colors.white : null,
                         fontWeight: widget.isSelected
-                            ? FontWeight.w600
+                            ? FontWeight.w500
                             : FontWeight.w500,
                       ),
                 ),

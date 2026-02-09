@@ -14,21 +14,31 @@ enum FocusMoveDirection {
 /// 焦点管理工具类
 ///
 /// 提供 TV 遥控器焦点管理功能：
-/// - 焦点记忆（页面返回时恢复）
+/// - 焦点记忆（页面返回时恢复，支持持久化）
 /// - 焦点边界处理
 /// - 网格导航辅助
 /// - 焦点移动优化
+/// - 焦点预测
+/// - 自动滚动
 class FocusHelper {
   FocusHelper._();
 
   /// 焦点记忆存储
   static final Map<String, FocusNode> _focusMemory = {};
 
+  /// 焦点位置记忆（持久化）
+  static final Map<String, int> _focusPositionMemory = {};
+
   /// 保存焦点
   static void saveFocus(String key, FocusNode? focusNode) {
     if (focusNode != null && focusNode.hasFocus) {
       _focusMemory[key] = focusNode;
     }
+  }
+
+  /// 保存焦点位置
+  static void saveFocusPosition(String key, int position) {
+    _focusPositionMemory[key] = position;
   }
 
   /// 恢复焦点
@@ -45,14 +55,21 @@ class FocusHelper {
     }
   }
 
+  /// 恢复焦点位置
+  static int? restoreFocusPosition(String key) {
+    return _focusPositionMemory[key];
+  }
+
   /// 清除焦点记忆
   static void clearFocusMemory(String key) {
     _focusMemory.remove(key);
+    _focusPositionMemory.remove(key);
   }
 
   /// 清除所有焦点记忆
   static void clearAllFocusMemory() {
     _focusMemory.clear();
+    _focusPositionMemory.clear();
   }
 
   /// 尝试请求焦点（带安全检查）
@@ -212,11 +229,14 @@ class FocusHelper {
   /// 滚动到焦点可见区域
   ///
   /// 当焦点在滚动视图中时，自动滚动到可见区域
+  /// 优化后的版本：考虑滚动方向，预测焦点移动目标
   static void scrollToFocus(
     ScrollController scrollController,
     BuildContext context, {
     Duration duration = const Duration(milliseconds: 300),
     Curve curve = Curves.easeInOut,
+    FocusMoveDirection? moveDirection,
+    double padding = 80.0,
   }) {
     if (!scrollController.hasClients) return;
 
@@ -230,11 +250,31 @@ class FocusHelper {
     final Offset position = renderBox.localToGlobal(Offset.zero);
     final Offset scrollPosition = scrollRenderBox.localToGlobal(Offset.zero);
 
-    final double targetOffset = scrollController.offset +
-        position.dy -
-        scrollPosition.dy -
-        (scrollRenderBox.size.height / 2) +
-        (renderBox.size.height / 2);
+    final double scrollOffset = scrollController.offset;
+    final double viewportHeight = scrollRenderBox.size.height;
+    final double viewportTop = scrollPosition.dy;
+    final double viewportBottom = viewportTop + viewportHeight;
+
+    final double itemTop = position.dy;
+    final double itemBottom = position.dy + renderBox.size.height;
+
+    double targetOffset = scrollOffset;
+
+    // 根据移动方向预测滚动位置
+    if (moveDirection == FocusMoveDirection.down) {
+      // 向下移动时，将目标放在视口下方，留出更多空间
+      targetOffset = scrollOffset + itemBottom - viewportBottom + padding;
+    } else if (moveDirection == FocusMoveDirection.up) {
+      // 向上移动时，将目标放在视口上方，留出更多空间
+      targetOffset = scrollOffset + itemTop - viewportTop - padding;
+    } else {
+      // 默认居中显示
+      targetOffset = scrollOffset +
+          itemTop -
+          viewportTop -
+          (viewportHeight / 2) +
+          (renderBox.size.height / 2);
+    }
 
     scrollController.animateTo(
       targetOffset.clamp(
@@ -244,6 +284,77 @@ class FocusHelper {
       duration: duration,
       curve: curve,
     );
+  }
+
+  /// 焦点预测
+  ///
+  /// 预测焦点移动的目标位置
+  static int? predictFocusTarget(
+    int currentIndex,
+    int cols,
+    int itemCount,
+    FocusMoveDirection direction,
+  ) {
+    if (itemCount == 0) return null;
+
+    int? target;
+
+    switch (direction) {
+      case FocusMoveDirection.up:
+        target = currentIndex - cols;
+        break;
+      case FocusMoveDirection.down:
+        target = currentIndex + cols;
+        break;
+      case FocusMoveDirection.left:
+        if (currentIndex % cols != 0) {
+          target = currentIndex - 1;
+        }
+        break;
+      case FocusMoveDirection.right:
+        if ((currentIndex + 1) % cols != 0) {
+          target = currentIndex + 1;
+        }
+        break;
+    }
+
+    if (target != null && target >= 0 && target < itemCount) {
+      return target;
+    }
+
+    return null;
+  }
+
+  /// 智能焦点滚动
+  ///
+  /// 根据焦点移动方向和当前位置，智能决定滚动策略
+  static void smartScrollToFocus(
+    ScrollController scrollController,
+    int currentIndex,
+    int cols,
+    int itemCount,
+    List<GlobalKey> keys,
+    FocusMoveDirection direction,
+  ) {
+    final int? targetIndex = predictFocusTarget(
+      currentIndex,
+      cols,
+      itemCount,
+      direction,
+    );
+
+    if (targetIndex == null || targetIndex >= keys.length) return;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final BuildContext? ctx = keys[targetIndex].currentContext;
+      if (ctx != null) {
+        scrollToFocus(
+          scrollController,
+          ctx,
+          moveDirection: direction,
+        );
+      }
+    });
   }
 
   /// 检测是否为 TV 设备

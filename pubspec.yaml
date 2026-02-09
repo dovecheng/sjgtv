@@ -84,6 +84,7 @@ dependencies:
   google_fonts: ^6.2.1
   cupertino_icons: ^1.0.8
   flutter_gen: ^5.11.0
+  shimmer: ^3.0.0
 
 dev_dependencies:
   # 与 base 版本一致

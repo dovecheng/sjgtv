@@ -85,10 +85,10 @@ class TVModeConfig {
   static bool get enableShortcuts => _isEnabled;
 
   /// TV 模式下的焦点边框宽度
-  static double get focusBorderWidth => _isEnabled ? 3.0 : 0.0;
+  static double get focusBorderWidth => _isEnabled ? 2.0 : 0.0;
 
   /// TV 模式下的焦点缩放因子
-  static double get focusScaleFactor => _isEnabled ? 1.08 : 1.0;
+  static double get focusScaleFactor => _isEnabled ? 1.05 : 1.0;
 
   /// TV 模式下的动画时长
   static Duration get animationDuration => _isEnabled
@@ -102,10 +102,10 @@ class TVModeConfig {
   static double get minTouchTarget => _isEnabled ? 48.0 : 44.0;
 
   /// TV 模式下的卡片间距
-  static double get cardSpacing => _isEnabled ? 16.0 : 12.0;
+  static double get cardSpacing => _isEnabled ? 24.0 : 12.0;
 
   /// TV 模式下的页面边距
-  static double get pagePadding => _isEnabled ? 24.0 : 16.0;
+  static double get pagePadding => _isEnabled ? 32.0 : 16.0;
 
   /// TV 模式下是否启用防抖
   static bool get enableDebounce => _isEnabled;
@@ -244,9 +244,9 @@ class TVModeFocusDecoration {
     if (TVModeConfig.isEnabled) {
       return [
         BoxShadow(
-          color: AppTheme.focus.withValues(alpha: 0.4),
-          blurRadius: 12.0,
-          spreadRadius: 2.0,
+          color: AppTheme.focusGlow,
+          blurRadius: 8.0,
+          spreadRadius: 0,
         ),
       ];
     }

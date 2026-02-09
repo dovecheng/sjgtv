@@ -13,9 +13,9 @@ class AppConstants {
 
   // UI 相关
   static const double defaultBorderRadius = 8.0;
-  static const double cardBorderRadius = 12.0;
-  static const double focusBorderWidth = 3.0;
-  static const double focusScaleFactor = 1.08;
+  static const double cardBorderRadius = 8.0;
+  static const double focusBorderWidth = 2.0;
+  static const double focusScaleFactor = 1.05;
 
   // 布局相关
   static const double horizontalPadding = 24.0;

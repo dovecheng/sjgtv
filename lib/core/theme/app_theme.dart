@@ -5,18 +5,20 @@ import 'package:google_fonts/google_fonts.dart';
 class AppTheme {
   AppTheme._();
 
-  // 颜色定义 - YouTube TV 深色主题
+  // 颜色定义 - YouTube TV 深色主题（更接近真实 YouTube TV）
   static const Color _primaryColor = Color(0xFFFFFFFF);
-  static const Color _secondaryColor = Color(0xFFAAAAAA);
-  static const Color _backgroundColor = Color(0xFF0F0F0F);
-  static const Color _surfaceColor = Color(0xFF1F1F1F);
-  static const Color _surfaceVariantColor = Color(0xFF282828);
+  static const Color _secondaryColor = Color(0xFF909090);
+  static const Color _backgroundColor = Color(0xFF000000); // 纯黑背景
+  static const Color _surfaceColor = Color(0xFF1A1A1A);
+  static const Color _surfaceVariantColor = Color(0xFF2A2A2A);
+  static const Color _cardColor = Color(0xFF212121);
   static const Color _errorColor = Color(0xFFFF3B3B);
   static const Color _successColor = Color(0xFF4CAF50);
   static const Color _warningColor = Color(0xFFFFC107);
   static const Color _infoColor = Color(0xFF2196F3);
-  static const Color _accentColor = Color(0xFFCC0000); // YouTube Red
-  static const Color _focusColor = Color(0xFF3EA6FF);
+  static const Color _accentColor = Color(0xFFFF0000); // YouTube 红色
+  static const Color _focusColor = Color(0xFFFFFFFF); // 白色焦点边框
+  static const Color _focusGlowColor = Color(0x33FFFFFF); // 焦点发光
 
   static ThemeData get darkTheme => ThemeData(
         useMaterial3: true,
@@ -39,21 +41,21 @@ class AppTheme {
           centerTitle: false,
           titleTextStyle: TextStyle(
             color: _primaryColor,
-            fontSize: 24,
-            fontWeight: FontWeight.w600,
+            fontSize: 28,
+            fontWeight: FontWeight.w500,
           ),
-          iconTheme: IconThemeData(color: _primaryColor),
+          iconTheme: IconThemeData(color: _primaryColor, size: 28),
           scrolledUnderElevation: 0,
         ),
         cardTheme: const CardThemeData(
-          color: _surfaceColor,
-          elevation: 2,
-          shadowColor: Colors.black26,
+          color: _cardColor,
+          elevation: 0,
+          shadowColor: Colors.transparent,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(16)),
+            borderRadius: BorderRadius.all(Radius.circular(8)),
             side: BorderSide(
-              color: _surfaceVariantColor,
-              width: 1,
+              color: Colors.transparent,
+              width: 0,
             ),
           ),
           margin: EdgeInsets.zero,
@@ -65,15 +67,15 @@ class AppTheme {
             foregroundColor: _primaryColor,
             elevation: 0,
             padding: const EdgeInsets.symmetric(
-              horizontal: 28,
-              vertical: 14,
+              horizontal: 32,
+              vertical: 16,
             ),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(8),
             ),
             textStyle: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
             ),
           ),
         ),
@@ -83,15 +85,15 @@ class AppTheme {
             foregroundColor: Colors.white,
             elevation: 0,
             padding: const EdgeInsets.symmetric(
-              horizontal: 28,
-              vertical: 14,
+              horizontal: 32,
+              vertical: 16,
             ),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(8),
             ),
             textStyle: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
             ),
           ),
         ),
@@ -100,82 +102,82 @@ class AppTheme {
             foregroundColor: _primaryColor,
             elevation: 0,
             padding: const EdgeInsets.symmetric(
-              horizontal: 28,
-              vertical: 14,
+              horizontal: 32,
+              vertical: 16,
             ),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(8),
             ),
             side: const BorderSide(
-              color: _secondaryColor,
-              width: 1.5,
+              color: _surfaceVariantColor,
+              width: 2,
             ),
             textStyle: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
             ),
           ),
         ),
         iconButtonTheme: IconButtonThemeData(
           style: IconButton.styleFrom(
             foregroundColor: _primaryColor,
-            padding: const EdgeInsets.all(12),
-            backgroundColor: _surfaceVariantColor,
+            padding: const EdgeInsets.all(16),
+            backgroundColor: Colors.transparent,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(8),
             ),
           ),
         ),
         textButtonTheme: TextButtonThemeData(
           style: TextButton.styleFrom(
-            foregroundColor: _focusColor,
+            foregroundColor: _primaryColor,
             padding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 8,
+              horizontal: 20,
+              vertical: 12,
             ),
             textStyle: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
             ),
           ),
         ),
         iconTheme: const IconThemeData(
           color: _primaryColor,
-          size: 24,
+          size: 28,
         ),
         textTheme: _textTheme,
         navigationBarTheme: NavigationBarThemeData(
           backgroundColor: _surfaceColor.withValues(alpha: 0.95),
           elevation: 0,
           height: 80,
-          indicatorColor: _focusColor.withValues(alpha: 0.2),
+          indicatorColor: _focusColor.withValues(alpha: 0.1),
           labelTextStyle: WidgetStateProperty.resolveWith((states) {
             if (states.contains(WidgetState.selected)) {
               return const TextStyle(
-                color: _focusColor,
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
+                color: _primaryColor,
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
               );
             }
             return const TextStyle(
               color: _secondaryColor,
-              fontSize: 12,
+              fontSize: 14,
             );
           }),
           iconTheme: WidgetStateProperty.resolveWith((states) {
             if (states.contains(WidgetState.selected)) {
               return const IconThemeData(
-                color: _focusColor,
-                size: 28,
+                color: _primaryColor,
+                size: 32,
               );
             }
             return const IconThemeData(
               color: _secondaryColor,
-              size: 24,
+              size: 28,
             );
           }),
         ),
-        focusColor: _focusColor.withValues(alpha: 0.3),
+        focusColor: _focusGlowColor,
         highlightColor: Colors.transparent,
         splashColor: Colors.transparent,
         dividerTheme: const DividerThemeData(
@@ -187,152 +189,152 @@ class AppTheme {
           filled: true,
           fillColor: _surfaceVariantColor,
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(8),
             borderSide: BorderSide.none,
           ),
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(8),
             borderSide: BorderSide.none,
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(8),
             borderSide: const BorderSide(
               color: _focusColor,
               width: 2,
             ),
           ),
           errorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(8),
             borderSide: const BorderSide(
               color: _errorColor,
               width: 2,
             ),
           ),
           focusedErrorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(8),
             borderSide: const BorderSide(
               color: _errorColor,
               width: 2,
             ),
           ),
           contentPadding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 14,
+            horizontal: 20,
+            vertical: 16,
           ),
           hintStyle: const TextStyle(
             color: _secondaryColor,
-            fontSize: 14,
+            fontSize: 16,
           ),
         ),
         chipTheme: const ChipThemeData(
           backgroundColor: _surfaceVariantColor,
-          selectedColor: _focusColor,
+          selectedColor: _accentColor,
           labelStyle: TextStyle(
             color: _primaryColor,
-            fontSize: 14,
+            fontSize: 16,
           ),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(20)),
+            borderRadius: BorderRadius.all(Radius.circular(16)),
           ),
           side: BorderSide.none,
         ),
         dialogTheme: const DialogThemeData(
           backgroundColor: _surfaceColor,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(20)),
+            borderRadius: BorderRadius.all(Radius.circular(12)),
           ),
-          elevation: 8,
+          elevation: 0,
           titleTextStyle: TextStyle(
             color: _primaryColor,
-            fontSize: 20,
-            fontWeight: FontWeight.w600,
+            fontSize: 24,
+            fontWeight: FontWeight.w500,
           ),
           contentTextStyle: TextStyle(
             color: _secondaryColor,
-            fontSize: 14,
+            fontSize: 16,
           ),
         ),
         bottomSheetTheme: const BottomSheetThemeData(
           backgroundColor: _surfaceColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
-              top: Radius.circular(20),
+              top: Radius.circular(16),
             ),
           ),
-          elevation: 8,
+          elevation: 0,
         ),
       );
 
   static TextTheme get _textTheme => GoogleFonts.robotoTextTheme(
         const TextTheme(
           displayLarge: TextStyle(
-            fontSize: 57,
+            fontSize: 64,
             fontWeight: FontWeight.w400,
-            letterSpacing: -0.25,
+            letterSpacing: -0.5,
           ),
           displayMedium: TextStyle(
-            fontSize: 45,
+            fontSize: 52,
             fontWeight: FontWeight.w400,
           ),
           displaySmall: TextStyle(
-            fontSize: 36,
+            fontSize: 44,
             fontWeight: FontWeight.w400,
           ),
           headlineLarge: TextStyle(
-            fontSize: 32,
-            fontWeight: FontWeight.w600,
+            fontSize: 40,
+            fontWeight: FontWeight.w500,
           ),
           headlineMedium: TextStyle(
-            fontSize: 28,
-            fontWeight: FontWeight.w600,
+            fontSize: 32,
+            fontWeight: FontWeight.w500,
           ),
           headlineSmall: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.w600,
+            fontSize: 28,
+            fontWeight: FontWeight.w500,
           ),
           titleLarge: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.w600,
+            fontSize: 26,
+            fontWeight: FontWeight.w500,
           ),
           titleMedium: TextStyle(
-            fontSize: 16,
+            fontSize: 18,
             fontWeight: FontWeight.w500,
-            letterSpacing: 0.15,
+            letterSpacing: 0.0,
           ),
           titleSmall: TextStyle(
-            fontSize: 14,
+            fontSize: 16,
             fontWeight: FontWeight.w500,
             letterSpacing: 0.1,
           ),
           bodyLarge: TextStyle(
-            fontSize: 16,
+            fontSize: 18,
             fontWeight: FontWeight.w400,
-            letterSpacing: 0.5,
+            letterSpacing: 0.0,
           ),
           bodyMedium: TextStyle(
-            fontSize: 14,
+            fontSize: 16,
             fontWeight: FontWeight.w400,
-            letterSpacing: 0.25,
+            letterSpacing: 0.0,
           ),
           bodySmall: TextStyle(
-            fontSize: 12,
+            fontSize: 14,
             fontWeight: FontWeight.w400,
-            letterSpacing: 0.4,
+            letterSpacing: 0.0,
           ),
           labelLarge: TextStyle(
-            fontSize: 14,
+            fontSize: 16,
             fontWeight: FontWeight.w500,
             letterSpacing: 0.1,
           ),
           labelMedium: TextStyle(
-            fontSize: 12,
+            fontSize: 14,
             fontWeight: FontWeight.w500,
-            letterSpacing: 0.5,
+            letterSpacing: 0.2,
           ),
           labelSmall: TextStyle(
-            fontSize: 11,
+            fontSize: 12,
             fontWeight: FontWeight.w500,
-            letterSpacing: 0.5,
+            letterSpacing: 0.2,
           ),
         ),
       ).apply(
@@ -343,9 +345,11 @@ class AppTheme {
   // 自定义颜色扩展
   static const Color accent = _accentColor;
   static const Color focus = _focusColor;
+  static const Color focusGlow = _focusGlowColor;
   static const Color background = _backgroundColor;
   static const Color surface = _surfaceColor;
   static const Color surfaceVariant = _surfaceVariantColor;
+  static const Color card = _cardColor;
   static const Color onBackground = _primaryColor;
   static const Color onSurface = _primaryColor;
   static const Color error = _errorColor;
@@ -356,7 +360,7 @@ class AppTheme {
   // UI 颜色别名
   static const Color darkBackground = _backgroundColor;
   static const Color darkSurface = _surfaceColor;
-  static const Color darkCard = _surfaceColor;
+  static const Color darkCard = _cardColor;
   static const Color darkBorder = _surfaceVariantColor;
   static const Color primaryColor = _primaryColor;
   static const Color textPrimary = _primaryColor;

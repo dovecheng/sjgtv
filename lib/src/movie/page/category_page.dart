@@ -10,10 +10,13 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:sjgtv/src/movie/model/movie_model.dart';
 import 'package:sjgtv/src/movie/widget/youtube_tv_movie_card.dart';
 import 'package:sjgtv/src/movie/widget/youtube_tv_category_bar.dart';
+import 'package:sjgtv/src/movie/widget/hero_section.dart';
+import 'package:sjgtv/src/movie/widget/empty_state.dart';
 import 'package:sjgtv/src/app/router/app_router.dart';
 import 'package:sjgtv/src/tag/model/tag_model.dart';
 import 'package:sjgtv/src/tag/provider/tags_provider.dart';
 import 'package:sjgtv/src/app/utils/tv_mode.dart';
+import 'package:sjgtv/src/movie/widget/skeleton_movie_card.dart';
 
 final Log _log = Log('MovieHomePage');
 
@@ -364,15 +367,16 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage>
     final int itemCount = _currentMovies.length;
     _ensureCardFocusNodes(itemCount);
     _ensureCardKeys(itemCount);
-    
+
     // 根据 TV 模式调整布局
     final double spacing = TVModeLayout.getRecommendedCardSpacing();
     final double padding = TVModeLayout.getRecommendedPagePadding();
-    
+
     return RefreshIndicator(
       onRefresh: _handleRefresh,
       child: GridView.builder(
-        controller: _scrollController,
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: _gridCrossAxisCount,
           childAspectRatio: TVModeLayout.getRecommendedCardAspectRatio(),
@@ -404,7 +408,32 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage>
           left: padding,
           top: padding,
           right: padding,
+          bottom: padding,
         ),
+      ),
+    );
+  }
+
+  Widget _buildSkeletonGrid() {
+    final double spacing = TVModeLayout.getRecommendedCardSpacing();
+    final double padding = TVModeLayout.getRecommendedPagePadding();
+
+    return GridView.builder(
+      controller: _scrollController,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: _gridCrossAxisCount,
+        childAspectRatio: TVModeLayout.getRecommendedCardAspectRatio(),
+        mainAxisSpacing: spacing,
+        crossAxisSpacing: spacing,
+      ),
+      itemCount: 10, // 显示 10 个骨架屏卡片
+      itemBuilder: (BuildContext context, int index) {
+        return const SkeletonMovieCard();
+      },
+      padding: EdgeInsets.only(
+        left: padding,
+        top: padding,
+        right: padding,
       ),
     );
   }
@@ -417,34 +446,21 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage>
           children: [
             _buildAppBar(),
             _buildTabBar(),
-            if (_isLoading)
-              const Expanded(child: Center(child: CircularProgressIndicator()))
+            if (_isLoading && _tabs.isEmpty)
+              const Expanded(child: _buildSkeletonGrid())
             else if (_tabs.isNotEmpty && _tabs[0] == '获取标签失败')
-              Expanded(
-                child: Center(
-                  child: Text(
-                    '无法加载标签，请检查网络连接',
-                    style: const TextStyle(color: Colors.white, fontSize: 24),
-                  ),
-                ),
+              const Expanded(
+                child: EmptyStates.networkError,
               )
             else if (_tabs.isEmpty)
-              Expanded(
-                child: Center(
-                  child: Text(
-                    '暂无标签',
-                    style: const TextStyle(color: Colors.white, fontSize: 24),
-                  ),
-                ),
+              const Expanded(
+                child: EmptyStates.noTags,
               )
+            else if (_isLoading && _currentMovies.isEmpty)
+              const Expanded(child: _buildSkeletonGrid())
             else if (_currentMovies.isEmpty)
-              Expanded(
-                child: Center(
-                  child: Text(
-                    '没有找到电影数据',
-                    style: const TextStyle(color: Colors.white, fontSize: 24),
-                  ),
-                ),
+              const Expanded(
+                child: EmptyStates.noMovies,
               )
             else
               Expanded(
@@ -458,7 +474,23 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage>
                     }
                     return KeyEventResult.ignored;
                   },
-                  child: _buildMovieGrid(),
+                  child: SingleChildScrollView(
+                    controller: _scrollController,
+                    child: Column(
+                      children: [
+                        // Hero 区域
+                        if (_currentMovies.isNotEmpty)
+                          HeroSection(
+                            movie: _currentMovies.first,
+                            onTap: () {
+                              context.goToSearch(_currentMovies.first.title);
+                            },
+                          ),
+                        // 电影网格
+                        _buildMovieGrid(),
+                      ],
+                    ),
+                  ),
                 ),
               ),
           ],
