@@ -42,7 +42,7 @@ class SettingsPage extends ConsumerWidget {
           );
         },
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (_, __) => Center(
+        error: (_, error) => Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -209,15 +209,21 @@ class SettingsPage extends ConsumerWidget {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: AppThemeMode.values.map((mode) {
-            return RadioListTile<AppThemeMode>(
+            return ListTile(
               title: Text(_getThemeModeText(mode, l10n)),
-              value: mode,
-              groupValue: settings.themeMode,
-              onChanged: (value) {
-                if (value != null) {
-                  ref.read(settingsProvider.notifier).updateThemeMode(value);
-                  Navigator.pop(context);
-                }
+              leading: Radio<AppThemeMode>(
+                value: mode,
+                groupValue: settings.themeMode,
+                onChanged: (value) {
+                  if (value != null) {
+                    ref.read(settingsProvider.notifier).updateThemeMode(value);
+                    Navigator.pop(context);
+                  }
+                },
+              ),
+              onTap: () {
+                ref.read(settingsProvider.notifier).updateThemeMode(mode);
+                Navigator.pop(context);
               },
             );
           }).toList(),
@@ -251,15 +257,21 @@ class SettingsPage extends ConsumerWidget {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: languages.map((lang) {
-            return RadioListTile<String>(
+            return ListTile(
               title: Text(lang['name']!),
-              value: lang['code']!,
-              groupValue: settings.language,
-              onChanged: (value) {
-                if (value != null) {
-                  ref.read(settingsProvider.notifier).updateLanguage(value);
-                  Navigator.pop(context);
-                }
+              leading: Radio<String>(
+                value: lang['code']!,
+                groupValue: settings.language,
+                onChanged: (value) {
+                  if (value != null) {
+                    ref.read(settingsProvider.notifier).updateLanguage(value);
+                    Navigator.pop(context);
+                  }
+                },
+              ),
+              onTap: () {
+                ref.read(settingsProvider.notifier).updateLanguage(lang['code']!);
+                Navigator.pop(context);
               },
             );
           }).toList(),

@@ -30,7 +30,7 @@ class FavoritesPage extends ConsumerWidget {
                 return () => _showClearAllDialog(context, ref);
               },
               loading: () => null,
-              error: (_, __) => null,
+              error: (_, error) => null,
             ),
             tooltip: l10n.clearAll,
           ),
@@ -79,7 +79,7 @@ class FavoritesPage extends ConsumerWidget {
           );
         },
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (_, __) => Center(
+        error: (_, error) => Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

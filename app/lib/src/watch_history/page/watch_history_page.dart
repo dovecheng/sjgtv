@@ -46,13 +46,13 @@ class _WatchHistoryPageState extends ConsumerState<WatchHistoryPage> {
                   Icon(
                     Icons.history,
                     size: 80,
-                    color: theme.colorScheme.onSurface.withOpacity(0.3),
+                    color: theme.colorScheme.onSurface.withValues(alpha: 0.3),
                   ),
                   const SizedBox(height: 16),
                   Text(
                     l10n.noWatchHistory,
                     style: theme.textTheme.titleLarge?.copyWith(
-                      color: theme.colorScheme.onSurface.withOpacity(0.5),
+                      color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
                     ),
                   ),
                 ],
@@ -152,7 +152,7 @@ class _HistoryItem extends StatelessWidget {
                       color: theme.colorScheme.surfaceContainerHighest,
                       child: Icon(
                         Icons.movie,
-                        color: theme.colorScheme.onSurface.withOpacity(0.3),
+                        color: theme.colorScheme.onSurface.withValues(alpha: 0.3),
                       ),
                     );
                   },
@@ -174,7 +174,7 @@ class _HistoryItem extends StatelessWidget {
                     Text(
                       '${history.episodeName} · ${history.sourceName}',
                       style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.onSurface.withOpacity(0.7),
+                        color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -196,7 +196,7 @@ class _HistoryItem extends StatelessWidget {
                         Text(
                           '${history.progressPercent.toStringAsFixed(0)}%',
                           style: theme.textTheme.bodySmall?.copyWith(
-                            color: theme.colorScheme.onSurface.withOpacity(0.7),
+                            color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
                           ),
                         ),
                       ],
@@ -208,7 +208,7 @@ class _HistoryItem extends StatelessWidget {
               Text(
                 _formatWatchedTime(history.watchedAt),
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.onSurface.withOpacity(0.5),
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
                 ),
               ),
               const SizedBox(width: 8),
@@ -216,7 +216,7 @@ class _HistoryItem extends StatelessWidget {
               IconButton(
                 icon: Icon(
                   Icons.delete_outline,
-                  color: theme.colorScheme.onSurface.withOpacity(0.5),
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
                 ),
                 onPressed: () => _showDeleteDialog(context),
                 tooltip: l10n.delete,
