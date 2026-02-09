@@ -204,37 +204,40 @@ class SettingsPage extends ConsumerWidget {
   ) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.themeMode),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: AppThemeMode.values.map((mode) {
-            return ListTile(
-              title: Text(_getThemeModeText(mode, l10n)),
-              leading: Radio<AppThemeMode>(
-                value: mode,
-                groupValue: settings.themeMode,
-                onChanged: (value) {
-                  if (value != null) {
-                    ref.read(settingsProvider.notifier).updateThemeMode(value);
-                    Navigator.pop(context);
-                  }
-                },
-              ),
-              onTap: () {
-                ref.read(settingsProvider.notifier).updateThemeMode(mode);
+      builder: (context) {
+        return AlertDialog(
+          title: Text(l10n.themeMode),
+          content: RadioGroup<AppThemeMode>(
+            onChanged: (value) {
+              if (value != null) {
+                ref.read(settingsProvider.notifier).updateThemeMode(value);
                 Navigator.pop(context);
-              },
-            );
-          }).toList(),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(l10n.cancel),
+              }
+            },
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: AppThemeMode.values.map((mode) {
+                return ListTile(
+                  title: Text(_getThemeModeText(mode, l10n)),
+                  leading: Radio<AppThemeMode>(
+                    value: mode,
+                  ),
+                  onTap: () {
+                    ref.read(settingsProvider.notifier).updateThemeMode(mode);
+                    Navigator.pop(context);
+                  },
+                );
+              }).toList(),
+            ),
           ),
-        ],
-      ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(l10n.cancel),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -252,37 +255,40 @@ class SettingsPage extends ConsumerWidget {
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.language),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: languages.map((lang) {
-            return ListTile(
-              title: Text(lang['name']!),
-              leading: Radio<String>(
-                value: lang['code']!,
-                groupValue: settings.language,
-                onChanged: (value) {
-                  if (value != null) {
-                    ref.read(settingsProvider.notifier).updateLanguage(value);
-                    Navigator.pop(context);
-                  }
-                },
-              ),
-              onTap: () {
-                ref.read(settingsProvider.notifier).updateLanguage(lang['code']!);
+      builder: (context) {
+        return AlertDialog(
+          title: Text(l10n.language),
+          content: RadioGroup<String>(
+            onChanged: (value) {
+              if (value != null) {
+                ref.read(settingsProvider.notifier).updateLanguage(value);
                 Navigator.pop(context);
-              },
-            );
-          }).toList(),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(l10n.cancel),
+              }
+            },
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: languages.map((lang) {
+                return ListTile(
+                  title: Text(lang['name']!),
+                  leading: Radio<String>(
+                    value: lang['code']!,
+                  ),
+                  onTap: () {
+                    ref.read(settingsProvider.notifier).updateLanguage(lang['code']!);
+                    Navigator.pop(context);
+                  },
+                );
+              }).toList(),
+            ),
           ),
-        ],
-      ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(l10n.cancel),
+            ),
+          ],
+        );
+      },
     );
   }
 }
