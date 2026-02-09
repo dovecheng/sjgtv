@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:base/base.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +9,9 @@ import 'package:go_router/go_router.dart';
 import 'package:sjgtv/src/app/router/app_routes.dart';
 import 'package:sjgtv/src/movie/provider/search_provider.dart';
 import 'package:sjgtv/src/movie/widget/network_image_placeholders.dart';
+import 'package:sjgtv/src/app/utils/focus_helper.dart';
+import 'package:sjgtv/src/app/utils/tv_mode.dart';
+import 'package:sjgtv/src/app/widget/focus_indicator.dart';
 
 /// 电影搜索页
 ///
@@ -23,18 +28,25 @@ class SearchPage extends ConsumerStatefulWidget {
   ConsumerState<SearchPage> createState() => _SearchPageState();
 }
 
-class _SearchPageState extends ConsumerState<SearchPage> {
+class _SearchPageState extends ConsumerState<SearchPage>
+    with FocusHelperMixin {
   MovieSearchService get _searchService => ref.read(movieSearchProvider);
   final CancelToken _cancelToken = CancelToken();
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _searchFocusNode = FocusNode();
+  final FocusNode _searchButtonFocusNode = FocusNode();
+  final ScrollController _gridScrollController = ScrollController();
   List<dynamic> _movies = [];
   bool _isLoading = false;
   bool _showSearchHint = true;
+  Timer? _searchDebounceTimer;
+  static const String _focusMemoryKey = 'search_page_focus';
 
   @override
   void initState() {
     super.initState();
+    // 初始化 TV 模式
+    TVModeConfig.init(context);
 
     if (widget.initialQuery != null) {
       _searchController.text = widget.initialQuery!;
@@ -42,6 +54,9 @@ class _SearchPageState extends ConsumerState<SearchPage> {
     }
     _searchFocusNode.addListener(_onFocusChange);
     _searchController.addListener(_onSearchTextChange);
+    
+    // 恢复焦点记忆
+    restoreSavedFocus(_focusMemoryKey);
   }
 
   void _onFocusChange() {
@@ -52,13 +67,31 @@ class _SearchPageState extends ConsumerState<SearchPage> {
     setState(() {
       _showSearchHint = _searchController.text.isEmpty;
     });
+
+    // 防抖搜索
+    if (TVModeConfig.enableDebounce) {
+      _searchDebounceTimer?.cancel();
+      _searchDebounceTimer = Timer(
+        TVModeConfig.debounceDuration,
+        () {
+          if (_searchController.text.isNotEmpty) {
+            _searchMovies(_searchController.text.trim());
+          }
+        },
+      );
+    }
   }
 
   @override
   void dispose() {
+    // 保存当前焦点
+    saveCurrentFocus(_focusMemoryKey);
     _searchController.dispose();
     _searchFocusNode.dispose();
+    _searchButtonFocusNode.dispose();
+    _gridScrollController.dispose();
     _cancelToken.cancel();
+    _searchDebounceTimer?.cancel();
     super.dispose();
   }
 
@@ -171,65 +204,50 @@ class _SearchPageState extends ConsumerState<SearchPage> {
 
   Widget _buildSearchButton(BuildContext context) {
     final ColorScheme colorScheme = context.theme.colorScheme;
-    return Row(
-      children: [
-        Focus(
-          onKeyEvent: (node, event) {
-            if (event is KeyDownEvent &&
-                event.logicalKey == LogicalKeyboardKey.select) {
-              _searchMovies(_searchController.text.trim());
-              return KeyEventResult.handled;
-            }
-            return KeyEventResult.ignored;
-          },
-          child: Builder(
-            builder: (BuildContext ctx) {
-              final bool hasFocus = Focus.of(ctx).hasFocus;
-              return AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                margin: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                color: hasFocus ? colorScheme.primary : colorScheme.surfaceContainerLow,
-                borderRadius: BorderRadius.circular(24),
-                boxShadow: hasFocus
-                    ? [
-                        BoxShadow(
-                          color: colorScheme.primary.withAlpha(255 ~/ 2),
-                            blurRadius: 12,
-                            spreadRadius: 2,
-                          ),
-                        ]
-                      : null,
-                ),
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(24),
-                  onTap: () => _searchMovies(_searchController.text.trim()),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 16,
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.search, size: 32, color: Colors.white),
-                        const SizedBox(width: 8),
-                        const Text(
-                          '搜索',
-                          style: TextStyle(
-                            fontSize: 22,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
+    return Focus(
+      focusNode: _searchButtonFocusNode,
+      onKeyEvent: (node, event) {
+        if (event is KeyDownEvent &&
+            event.logicalKey == LogicalKeyboardKey.select) {
+          _searchMovies(_searchController.text.trim());
+          return KeyEventResult.handled;
+        }
+        return KeyEventResult.ignored;
+      },
+      child: FocusIndicator(
+        decoration: const FocusIndicatorDecoration(
+          hasScale: true,
+          scaleFactor: 1.05,
+        ),
+        onTap: () => _searchMovies(_searchController.text.trim()),
+        child: Container(
+          margin: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: colorScheme.surfaceContainerLow,
+            borderRadius: BorderRadius.circular(24),
+          ),
+          child: Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 24,
+              vertical: 16,
+            ),
+            child: Row(
+              children: [
+                const Icon(Icons.search, size: 32, color: Colors.white),
+                const SizedBox(width: 8),
+                const Text(
+                  '搜索',
+                  style: TextStyle(
+                    fontSize: 22,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-              );
-            },
+              ],
+            ),
           ),
         ),
-      ],
+      ),
     );
   }
 
@@ -331,12 +349,18 @@ class _SearchPageState extends ConsumerState<SearchPage> {
   Widget _buildMovieGrid(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final int crossAxisCount = (constraints.maxWidth / 200).floor().clamp(2, 6);
+        // 使用 TV 模式推荐的网格列数
+        final int crossAxisCount = TVModeLayout.getRecommendedGridColumns(
+          screenWidth: constraints.maxWidth,
+        );
 
         return Column(
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 16),
+              padding: EdgeInsets.symmetric(
+                horizontal: TVModeLayout.getRecommendedPagePadding(),
+                vertical: 16,
+              ),
               child: Row(
                 children: [
                   Text(
@@ -351,15 +375,16 @@ class _SearchPageState extends ConsumerState<SearchPage> {
             ),
             Expanded(
               child: GridView.builder(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 48,
+                controller: _gridScrollController,
+                padding: EdgeInsets.symmetric(
+                  horizontal: TVModeLayout.getRecommendedPagePadding(),
                   vertical: 8,
                 ),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: crossAxisCount,
-                  childAspectRatio: 0.7,
-                  crossAxisSpacing: 16,
-                  mainAxisSpacing: 16,
+                  childAspectRatio: TVModeLayout.getRecommendedCardAspectRatio(),
+                  crossAxisSpacing: TVModeLayout.getRecommendedCardSpacing(),
+                  mainAxisSpacing: TVModeLayout.getRecommendedCardSpacing(),
                 ),
                 itemCount: _movies.length,
                 itemBuilder: (BuildContext ctx, int index) {
@@ -375,7 +400,6 @@ class _SearchPageState extends ConsumerState<SearchPage> {
   }
 
   Widget _buildMovieCard(BuildContext context, Map<String, dynamic> movie) {
-    final ColorScheme colorScheme = context.theme.colorScheme;
     return Focus(
       onKeyEvent: (FocusNode node, KeyEvent event) {
         if (event is KeyDownEvent &&
@@ -386,153 +410,48 @@ class _SearchPageState extends ConsumerState<SearchPage> {
         }
         return KeyEventResult.ignored;
       },
-      child: Builder(
-        builder: (BuildContext ctx) {
-          final bool hasFocus = Focus.of(ctx).hasFocus;
-          return AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            margin: const EdgeInsets.all(4),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              boxShadow: hasFocus
-                  ? [
-                      BoxShadow(
-                        color: colorScheme.primary.withAlpha((255 * 0.4).toInt()),
-                        blurRadius: 16,
-                        spreadRadius: 4,
-                      ),
-                    ]
-                  : [
-                      BoxShadow(
-                        color: Colors.black.withAlpha((255 * 0.4).toInt()),
-                        blurRadius: 8,
-                        spreadRadius: 2,
-                      ),
-                    ],
-            ),
-            child: Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-                side: hasFocus
-                    ? BorderSide(color: colorScheme.primary, width: 3)
-                    : BorderSide.none,
-              ),
-              elevation: hasFocus ? 8 : 4,
-              color: colorScheme.surfaceContainerHighest,
-              clipBehavior: Clip.antiAlias,
-              child: InkWell(
-                borderRadius: BorderRadius.circular(12),
-                onTap: () {
-                  GoRouter.of(context).push(AppRoutes.movieDetail, extra: movie);
-                },
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Expanded(
-                      child: CachedImage(
-                        imageUrl: movie['vod_pic'] ?? '',
-                        fit: BoxFit.cover,
-                        width: double.infinity,
-                        placeholder: (BuildContext ctx, _) =>
-                            networkImagePlaceholder(ctx),
-                        errorWidget: (BuildContext ctx, _, _) =>
-                            networkImageErrorWidget(ctx),
-                        memCacheWidth: 200,
-                        memCacheHeight: 300,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            movie['vod_name'] ?? '未知标题',
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Row(
-                            children: [
-                              if (movie['vod_year']?.toString().isNotEmpty ??
-                                  false)
-                                Flexible(
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 6,
-                                      vertical: 2,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: colorScheme.primary.withAlpha(
-                                        (255 * 0.2).toInt(),
-                                      ),
-                                      borderRadius: BorderRadius.circular(4),
-                                    ),
-                                    child: Text(
-                                      movie['vod_year'].toString(),
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: colorScheme.primary,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              if (movie['type_name']?.toString().isNotEmpty ??
-                                  false) ...[
-                                const SizedBox(width: 6),
-                                Flexible(
-                                  child: Text(
-                                    movie['type_name'].toString(),
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: colorScheme.onSurfaceVariant,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                              if (movie['vod_play_from']
-                                      ?.toString()
-                                      .isNotEmpty ??
-                                  false) ...[
-                                const SizedBox(width: 6),
-                                Flexible(
-                                  child: Text(
-                                    '| ${movie['vod_play_from']}',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: colorScheme.onSurfaceVariant,
-                                    ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                              ],
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    if (hasFocus)
-                      Container(
-                        height: 4,
-                        decoration: BoxDecoration(
-                          color: colorScheme.primary,
-                          borderRadius: const BorderRadius.vertical(
-                            bottom: Radius.circular(12),
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-            ),
-          );
+      child: FocusIndicator(
+        decoration: const FocusIndicatorDecoration(
+          hasBorder: true,
+          hasShadow: true,
+          hasScale: true,
+          scaleFactor: 1.08,
+        ),
+        onTap: () {
+          GoRouter.of(context).push(AppRoutes.movieDetail, extra: movie);
         },
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Expanded(
+              child: CachedImage(
+                imageUrl: movie['vod_pic'] ?? '',
+                fit: BoxFit.cover,
+                width: double.infinity,
+                placeholder: (BuildContext ctx, _) =>
+                    networkImagePlaceholder(ctx),
+                errorWidget: (BuildContext ctx, _, _) =>
+                    networkImageErrorWidget(ctx),
+                memCacheWidth: 200,
+                memCacheHeight: 300,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8),
+              child: Text(
+                movie['vod_name'] ?? '未知标题',
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w500,
+                ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
