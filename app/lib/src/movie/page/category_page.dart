@@ -13,6 +13,8 @@ import 'package:sjgtv/src/movie/widget/youtube_tv_category_bar.dart';
 import 'package:sjgtv/src/app/router/app_router.dart';
 import 'package:sjgtv/src/tag/model/tag_model.dart';
 import 'package:sjgtv/src/tag/provider/tags_provider.dart';
+import 'package:sjgtv/src/app/utils/focus_helper.dart';
+import 'package:sjgtv/src/app/utils/tv_mode.dart';
 
 final Log _log = Log('MovieHomePage');
 
@@ -31,7 +33,8 @@ class MovieHomePage extends ConsumerStatefulWidget {
   ConsumerState<MovieHomePage> createState() => _MovieHomePageState();
 }
 
-class _MovieHomePageState extends ConsumerState<MovieHomePage> {
+class _MovieHomePageState extends ConsumerState<MovieHomePage>
+    with FocusHelperMixin {
   Dio get _dio => ref.read(apiClientProvider);
   int _selectedTab = 0;
   bool _isLoading = false;
@@ -42,22 +45,34 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
   final Set<String> _loadedTags = {};
   final Map<String, int> _currentPageByTag = {};
   static const int _moviesPerPage = 20;
-  static const int _gridCrossAxisCount = 5;
+  int _gridCrossAxisCount = 5;
   final ScrollController _scrollController = ScrollController();
   final FocusNode _refreshFocusNode = FocusNode();
   final List<FocusNode> _cardFocusNodes = [];
   final List<GlobalKey> _cardKeys = [];
   DateTime? _lastLoadMoreTime;
+  static const String _focusMemoryKey = 'category_page_focus';
 
   @override
   void initState() {
     super.initState();
+    // 初始化 TV 模式
+    TVModeConfig.init(context);
+    // 根据 TV 模式调整网格列数
+    _gridCrossAxisCount = TVModeLayout.getRecommendedGridColumns(
+      screenWidth: context.mediaQuery.size.width,
+    );
+    
     _scrollController.addListener(_onScroll);
     _loadInitialData();
+    // 恢复焦点记忆
+    restoreSavedFocus(_focusMemoryKey);
   }
 
   @override
   void dispose() {
+    // 保存当前焦点
+    saveCurrentFocus(_focusMemoryKey);
     _scrollController.dispose();
     _refreshFocusNode.dispose();
     for (final FocusNode node in _cardFocusNodes) {
@@ -346,15 +361,20 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
     final int itemCount = _currentMovies.length;
     _ensureCardFocusNodes(itemCount);
     _ensureCardKeys(itemCount);
+    
+    // 根据 TV 模式调整布局
+    final double spacing = TVModeLayout.getRecommendedCardSpacing();
+    final double padding = TVModeLayout.getRecommendedPagePadding();
+    
     return RefreshIndicator(
       onRefresh: _handleRefresh,
       child: GridView.builder(
         controller: _scrollController,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: _gridCrossAxisCount,
-          childAspectRatio: 0.65,
-          mainAxisSpacing: 30,
-          crossAxisSpacing: 30,
+          childAspectRatio: TVModeLayout.getRecommendedCardAspectRatio(),
+          mainAxisSpacing: spacing,
+          crossAxisSpacing: spacing,
         ),
         itemCount: itemCount,
         itemBuilder: (BuildContext context, int index) {
@@ -371,13 +391,17 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage> {
               if (targetIndex >= 0 &&
                   targetIndex < _cardFocusNodes.length &&
                   mounted) {
-                _cardFocusNodes[targetIndex].requestFocus();
+                FocusHelper.safeRequestFocus(_cardFocusNodes[targetIndex]);
                 _scrollToCard(targetIndex);
               }
             },
           );
         },
-        padding: const EdgeInsets.only(left: 20, top: 20, right: 20),
+        padding: EdgeInsets.only(
+          left: padding,
+          top: padding,
+          right: padding,
+        ),
       ),
     );
   }
