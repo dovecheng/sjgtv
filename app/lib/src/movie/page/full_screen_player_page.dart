@@ -1422,7 +1422,19 @@ Future<String> _processM3u8Url(String url) async {
   if (!url.toLowerCase().endsWith('.m3u8')) return url;
 
   try {
-    final String cleanM3u8 = await M3U8AdRemover.fixAdM3u8Ai(url);
+    final M3U8AdRemoverResult result = await M3U8AdRemover.removeAds(url);
+    
+    if (result.error != null) {
+      _log.e(() => 'M3U8处理失败: ${result.error}');
+      return url;
+    }
+
+    final String? cleanM3u8 = await M3U8AdRemover.getCleanedContent(url);
+    if (cleanM3u8 == null) {
+      _log.w(() => '无法获取清理后的M3U8内容');
+      return url;
+    }
+
     final Directory dir = await getTemporaryDirectory();
     final File file = File(
       '${dir.path}/cleaned_${DateTime.now().millisecondsSinceEpoch}.m3u8',
@@ -1433,7 +1445,8 @@ Future<String> _processM3u8Url(String url) async {
       throw Exception('Invalid M3U8: Missing #EXTM3U');
     }
 
-    _log.d(() => 'Cleaned M3U8 saved to: ${file.path}');
+    _log.d(() => 'Cleaned M3U8 saved to: ${file.path}, '
+        'ads=${result.adCount}, content=${result.contentCount}');
     return file.uri.toString();
   } catch (e) {
     _log.e(() => 'M3U8处理失败，使用原始URL', e);
