@@ -470,6 +470,7 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage>
           child: Column(
             children: [
               _buildAppBar(),
+              const OfflineBanner(),
               _buildTabBar(),
               if (_isLoading && _tabs.isEmpty)
                 Expanded(child: _buildSkeletonGrid())
