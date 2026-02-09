@@ -8,7 +8,7 @@ import '../../domain/repositories/proxy_repository.dart';
 import '../../domain/repositories/source_repository.dart';
 import '../../domain/entities/movie.dart';
 import '../../domain/repositories/movie_repository.dart';
-import '../models/movie_data_model.dart';
+import '../../../src/movie/model/movie_model.dart';
 
 /// 电影仓库实现
 ///
@@ -76,16 +76,68 @@ class MovieRepositoryImpl implements MovieRepository {
     int page = 1,
     int pageSize = 20,
   }) async {
-    // TODO: 实现按分类获取电影
-    // 目前返回空列表
-    return Result.success([]);
+    try {
+      final sourcesResult = await sourceRepository.getAllSources();
+      if (sourcesResult.isFailure) {
+        return Result.failure(sourcesResult.error!);
+      }
+
+      final sources = sourcesResult.value!;
+      final activeSources = sources.where((s) => !s.disabled).toList();
+
+      if (activeSources.isEmpty) {
+        return Result.success([]);
+      }
+
+      final proxiesResult = await proxyRepository.getEnabledProxies();
+      if (proxiesResult.isFailure) {
+        return Result.failure(proxiesResult.error!);
+      }
+
+      final proxies = proxiesResult.value!;
+      final activeProxy = proxies.isEmpty ? null : proxies.first;
+
+      final results = await _executeCategoryQuery(activeSources, activeProxy, categoryId, page: page, pageSize: pageSize);
+      final merged = _mergeResults(results, activeSources);
+
+      return Result.success(merged);
+    } catch (e) {
+      return Result.failure(NetworkFailure('获取分类电影失败: ${e.toString()}'));
+    }
   }
 
   @override
   Future<Result<Movie, Failure>> getMovieDetail(String movieId) async {
-    // TODO: 实现获取电影详情
-    // 目前返回空结果
-    return Result.failure(const NotFoundFailure('电影详情功能暂未实现'));
+    try {
+      final sourcesResult = await sourceRepository.getAllSources();
+      if (sourcesResult.isFailure) {
+        return Result.failure(sourcesResult.error!);
+      }
+
+      final sources = sourcesResult.value!;
+      final activeSources = sources.where((s) => !s.disabled).toList();
+
+      if (activeSources.isEmpty) {
+        return Result.failure(const NotFoundFailure('没有可用的视频源'));
+      }
+
+      final proxiesResult = await proxyRepository.getEnabledProxies();
+      if (proxiesResult.isFailure) {
+        return Result.failure(proxiesResult.error!);
+      }
+
+      final proxies = proxiesResult.value!;
+      final activeProxy = proxies.isEmpty ? null : proxies.first;
+
+      final movie = await _executeDetailQuery(activeSources, activeProxy, movieId);
+      if (movie != null) {
+        return Result.success(movie);
+      }
+
+      return Result.failure(const NotFoundFailure('电影详情未找到'));
+    } catch (e) {
+      return Result.failure(NetworkFailure('获取电影详情失败: ${e.toString()}'));
+    }
   }
 
   /// 执行搜索请求
@@ -187,7 +239,7 @@ class MovieRepositoryImpl implements MovieRepository {
   /// 解析为 Movie 实体
   Movie? _parseToMovie(Map<String, dynamic> data) {
     try {
-      return MovieDataModel(
+      return MovieModel(
         id: data['vod_id']?.toString() ?? DateTime.now().millisecondsSinceEpoch.toString(),
         title: data['vod_name']?.toString() ?? '',
         year: int.tryParse(data['vod_year']?.toString() ?? '') ?? DateTime.now().year,
@@ -238,5 +290,97 @@ class MovieRepositoryImpl implements MovieRepository {
   String _resolveSourceBaseUrl(dynamic proxy, String sourceUrl) {
     // 简化实现，直接返回源 URL
     return sourceUrl;
+  }
+
+  /// 执行分类查询请求
+  Future<List<dynamic>> _executeCategoryQuery(
+    List<dynamic> sources,
+    dynamic proxy,
+    String categoryId, {
+    required int page,
+    required int pageSize,
+  }) async {
+    final results = await Future.wait<dynamic>(
+      sources.map((source) async {
+        final baseUrl = _resolveSourceBaseUrl(proxy, source.url);
+        try {
+          final response = await _dio.get<dynamic>(
+            baseUrl,
+            queryParameters: {
+              'ac': 'list',
+              't': categoryId,
+              'pg': page,
+              'pagesize': pageSize,
+            },
+            options: Options(
+              headers: {
+                'User-Agent':
+                    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Accept': 'application/json, text/plain, */*',
+              },
+            ),
+          );
+
+          if (response.statusCode == 200) {
+            final data = response.data;
+            final decoded = data is String ? _parseJson(data) : data;
+            return decoded;
+          }
+          return null;
+        } catch (e) {
+          return null;
+        }
+      }),
+    );
+
+    return results
+        .where((r) =>
+            r != null &&
+            (r['code'] == 1 || r['code'] == '1') &&
+            r['list'] != null &&
+            (r['list'] as List<dynamic>).isNotEmpty)
+        .toList();
+  }
+
+  /// 执行详情查询请求
+  Future<Movie?> _executeDetailQuery(
+    List<dynamic> sources,
+    dynamic proxy,
+    String movieId,
+  ) async {
+    for (final source in sources) {
+      final baseUrl = _resolveSourceBaseUrl(proxy, source.url);
+      try {
+        final response = await _dio.get<dynamic>(
+          baseUrl,
+          queryParameters: {
+            'ac': 'detail',
+            'ids': movieId,
+          },
+          options: Options(
+            headers: {
+              'User-Agent':
+                  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+              'Accept': 'application/json, text/plain, */*',
+            },
+          ),
+        );
+
+        if (response.statusCode == 200) {
+          final data = response.data;
+          final decoded = data is String ? _parseJson(data) : data;
+          if (decoded != null &&
+              (decoded['code'] == 1 || decoded['code'] == '1') &&
+              decoded['list'] != null &&
+              (decoded['list'] as List<dynamic>).isNotEmpty) {
+            final movieData = decoded['list'][0];
+            return _parseToMovie(movieData);
+          }
+        }
+      } catch (e) {
+        continue;
+      }
+    }
+    return null;
   }
 }

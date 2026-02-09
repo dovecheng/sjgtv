@@ -1,3 +1,5 @@
+import 'package:dio/dio.dart';
+
 import '../../../core/arch/errors/failures.dart';
 import '../../../core/arch/errors/result.dart';
 import '../../domain/entities/source.dart';
@@ -10,9 +12,14 @@ import '../datasources/local_datasource.dart';
 class SourceRepositoryImpl implements SourceRepository {
   SourceRepositoryImpl({
     required this.localDataSource,
-  });
+    Dio? dio,
+  }) : _dio = dio ?? Dio(BaseOptions(
+          connectTimeout: const Duration(seconds: 10),
+          receiveTimeout: const Duration(seconds: 10),
+        ));
 
   final LocalDataSource localDataSource;
+  final Dio _dio;
 
   @override
   Future<Result<List<Source>, Failure>> getAllSources() async {
@@ -67,7 +74,41 @@ class SourceRepositoryImpl implements SourceRepository {
 
   @override
   Future<Result<bool, Failure>> testSource(String uuid) async {
-    // TODO: 实现测试视频源连接
-    return Result.success(true);
+    try {
+      final sourcesResult = await getAllSources();
+      if (sourcesResult.isFailure) {
+        return Result.failure(sourcesResult.error!);
+      }
+
+      final sources = sourcesResult.value!;
+      final source = sources.cast<Source?>().firstWhere((s) => s?.uuid == uuid, orElse: () => null);
+
+      if (source == null) {
+        return Result.failure(const NotFoundFailure('视频源不存在'));
+      }
+
+      // 发送测试请求
+      final response = await _dio.get<dynamic>(
+        source.url,
+        queryParameters: {'ac': 'list'},
+        options: Options(
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+            'Accept': 'application/json, text/plain, */*',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        final data = response.data;
+        if (data is Map && (data['code'] == 1 || data['code'] == '1')) {
+          return Result.success(true);
+        }
+      }
+
+      return Result.success(false);
+    } catch (e) {
+      return Result.failure(NetworkFailure('测试视频源连接失败: ${e.toString()}'));
+    }
   }
 }

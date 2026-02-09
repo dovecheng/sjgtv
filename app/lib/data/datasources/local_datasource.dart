@@ -23,6 +23,9 @@ abstract class LocalDataSource {
   /// 获取所有代理
   Future<Result<List<Proxy>, Failure>> getAllProxies();
 
+  /// 获取启用的代理
+  Future<Result<List<Proxy>, Failure>> getEnabledProxies();
+
   /// 添加代理
   Future<Result<Proxy, Failure>> addProxy(Proxy proxy);
 
