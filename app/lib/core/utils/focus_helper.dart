@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../core/base.dart';
+import 'package:sjgtv/core/core.dart';
 
 final Log _log = Log('FocusHelper');
 

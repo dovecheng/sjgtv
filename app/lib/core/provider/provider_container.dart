@@ -1,4 +1,4 @@
-import '../../core/provider.dart';
+import '../../core/provider/provider.dart';
 import 'package:riverpod/misc.dart';
 import 'package:riverpod/riverpod.dart';
 

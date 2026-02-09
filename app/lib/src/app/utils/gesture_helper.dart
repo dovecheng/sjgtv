@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../core/base.dart';
+import 'package:sjgtv/core/core.dart';
 import 'package:sjgtv/src/app/utils/tv_mode.dart';
 
 /// 手势方向枚举

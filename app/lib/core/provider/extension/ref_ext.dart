@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import '../../../core/log.dart';
+import '../../../core/log/log.dart';
 import 'package:dio/dio.dart';
 import 'package:riverpod/misc.dart';
 import 'package:riverpod/riverpod.dart';

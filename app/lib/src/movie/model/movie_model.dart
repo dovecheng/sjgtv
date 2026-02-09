@@ -1,4 +1,5 @@
-import '../../../core/converter.dart';
+import '../../../core/converter/converter.dart';
+import '../../../domain/entities/movie.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'movie_model.g.dart';
@@ -41,6 +42,34 @@ class MovieModel {
       _$MovieModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$MovieModelToJson(this);
+
+  /// 转换为领域实体
+  Movie toEntity() {
+    return Movie(
+      id: id,
+      title: title,
+      year: year,
+      rating: rating,
+      coverUrl: coverUrl ?? '',
+      playable: playable,
+      isNew: isNew,
+      url: url,
+    );
+  }
+
+  /// 从领域实体创建模型
+  factory MovieModel.fromEntity(Movie entity) {
+    return MovieModel(
+      id: entity.id,
+      title: entity.title,
+      year: entity.year,
+      rating: entity.rating,
+      coverUrl: entity.coverUrl,
+      playable: entity.playable,
+      isNew: entity.isNew,
+      url: entity.url,
+    );
+  }
 
   static int _readYear(dynamic json, String key) {
     final Object? title = (json as Map)['title'];

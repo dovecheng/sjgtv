@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import '../../../core/base.dart';
+import 'package:sjgtv/core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';

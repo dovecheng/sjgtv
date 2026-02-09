@@ -1,4 +1,4 @@
-import '../../../core/isar.dart';
+import '../../../core/isar/isar.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sjgtv/src/tag/model/tag_model.dart';
 

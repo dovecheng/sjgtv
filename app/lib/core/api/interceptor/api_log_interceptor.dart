@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import '../../../core/api.dart';
-import '../../../core/log.dart';
+import '../../../core/api/api.dart';
+import '../../../core/log/log.dart';
 import 'package:dio/dio.dart';
 
 /// 日志记录拦截器

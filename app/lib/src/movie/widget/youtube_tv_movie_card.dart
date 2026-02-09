@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../../../core/base.dart';
+import 'package:sjgtv/core/core.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:sjgtv/src/movie/model/movie_model.dart';
 import 'package:sjgtv/src/movie/widget/network_image_placeholders.dart';

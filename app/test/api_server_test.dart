@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:sjgtv/core/base.dart';
+import 'package:sjgtv/core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:sjgtv/src/shelf/api.dart';
 import 'package:sjgtv/src/proxy/model/proxy_model.dart';

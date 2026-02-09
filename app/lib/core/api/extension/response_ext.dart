@@ -1,5 +1,5 @@
-import '../../../core/api.dart';
-import '../../../core/extension.dart';
+import '../../../core/api/api.dart';
+import '../../../core/extension/extension.dart';
 import 'package:dio/dio.dart';
 
 extension ResponseExt<T> on Response<T> {

@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import '../../../core/api.dart';
-import '../../../core/log.dart';
+import '../../../core/api/api.dart';
+import '../../../core/log/log.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:dio/io.dart';

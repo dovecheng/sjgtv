@@ -1,5 +1,6 @@
 import 'package:isar_community/isar.dart';
 import 'package:json_annotation/json_annotation.dart';
+import '../../../domain/entities/source.dart';
 
 part 'source_model.g.dart';
 
@@ -38,4 +39,32 @@ class SourceModel {
       _$SourceModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$SourceModelToJson(this);
+
+  /// 转换为领域实体
+  Source toEntity() {
+    return Source(
+      uuid: uuid,
+      name: name,
+      url: url,
+      weight: weight,
+      disabled: disabled,
+      tagIds: tagIds,
+      createdAt: createdAt,
+      updatedAt: updatedAt,
+    );
+  }
+
+  /// 从领域实体创建模型
+  factory SourceModel.fromEntity(Source entity) {
+    return SourceModel(
+      uuid: entity.uuid,
+      name: entity.name,
+      url: entity.url,
+      weight: entity.weight,
+      disabled: entity.disabled,
+      tagIds: entity.tagIds,
+      createdAt: entity.createdAt,
+      updatedAt: entity.updatedAt,
+    );
+  }
 }

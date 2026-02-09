@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import '../../../core/app.dart';
+import '../../../core/app/app.dart';
 import '../../../core/l10n_gen/base_localizations.dart';
 import 'package:dio/dio.dart';
 

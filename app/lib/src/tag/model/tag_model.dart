@@ -1,5 +1,6 @@
 import 'package:isar_community/isar.dart';
 import 'package:json_annotation/json_annotation.dart';
+import '../../../domain/entities/tag.dart';
 
 part 'tag_model.g.dart';
 
@@ -34,4 +35,28 @@ class TagModel {
       _$TagModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$TagModelToJson(this);
+
+  /// 转换为领域实体
+  Tag toEntity() {
+    return Tag(
+      uuid: uuid,
+      name: name,
+      color: color,
+      order: order,
+      createdAt: createdAt,
+      updatedAt: updatedAt,
+    );
+  }
+
+  /// 从领域实体创建模型
+  factory TagModel.fromEntity(Tag entity) {
+    return TagModel(
+      uuid: entity.uuid,
+      name: entity.name,
+      color: entity.color,
+      order: entity.order,
+      createdAt: entity.createdAt,
+      updatedAt: entity.updatedAt,
+    );
+  }
 }

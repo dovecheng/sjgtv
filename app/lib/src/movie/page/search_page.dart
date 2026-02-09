@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import '../../../core/base.dart';
+import 'package:sjgtv/core/core.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

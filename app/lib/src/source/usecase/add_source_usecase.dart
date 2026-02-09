@@ -1,4 +1,4 @@
-import '../../../core/base.dart';
+import 'package:sjgtv/core/core.dart';
 import 'package:sjgtv/src/source/model/source_model.dart';
 
 /// 添加源参数

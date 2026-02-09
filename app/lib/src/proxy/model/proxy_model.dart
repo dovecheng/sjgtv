@@ -1,5 +1,6 @@
 import 'package:isar_community/isar.dart';
 import 'package:json_annotation/json_annotation.dart';
+import '../../../domain/entities/proxy.dart';
 
 part 'proxy_model.g.dart';
 
@@ -34,4 +35,28 @@ class ProxyModel {
       _$ProxyModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$ProxyModelToJson(this);
+
+  /// 转换为领域实体
+  Proxy toEntity() {
+    return Proxy(
+      uuid: uuid,
+      url: url,
+      name: name,
+      enabled: enabled,
+      createdAt: createdAt,
+      updatedAt: updatedAt,
+    );
+  }
+
+  /// 从领域实体创建模型
+  factory ProxyModel.fromEntity(Proxy entity) {
+    return ProxyModel(
+      uuid: entity.uuid,
+      url: entity.url,
+      name: entity.name,
+      enabled: entity.enabled,
+      createdAt: entity.createdAt,
+      updatedAt: entity.updatedAt,
+    );
+  }
 }

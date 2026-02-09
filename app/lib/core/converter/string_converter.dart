@@ -1,4 +1,4 @@
-import '../../core/extension.dart';
+import '../../core/extension/extension.dart';
 
 /// 字符串转换器
 ///

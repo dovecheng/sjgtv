@@ -1,5 +1,5 @@
-import '../../../core/converter.dart';
-import '../../../core/extension.dart';
+import '../../../core/converter/converter.dart';
+import '../../../core/extension/extension.dart';
 import 'package:collection/collection.dart';
 
 extension MapFormatExt on Map<String, dynamic> {

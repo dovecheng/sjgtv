@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import '../../../core/extension.dart';
-import '../../../core/log.dart';
+import '../../../core/extension/extension.dart';
+import '../../../core/log/log.dart';
 import 'package:dio/dio.dart';
 
 extension RequestOptionsCodecExt on RequestOptions {

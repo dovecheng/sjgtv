@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import '../../../core/base.dart';
+import 'package:sjgtv/core/core.dart';
 import 'package:sjgtv/src/proxy/model/proxy_model.dart';
 import 'package:sjgtv/src/source/model/source_model.dart';
 import 'package:sjgtv/src/source/util/source_url_util.dart';

@@ -1,4 +1,4 @@
-import '../../core/log.dart';
+import '../../core/log/log.dart';
 import 'package:riverpod/riverpod.dart';
 
 /// ProviderObserver listens to the changes of a ProviderContainer.

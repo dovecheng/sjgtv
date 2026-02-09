@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
-import '../../../core/api.dart';
+import '../../../core/api/api.dart';
 import 'package:dio/dio.dart';
 
 /// 接口请求结果转换拦截器

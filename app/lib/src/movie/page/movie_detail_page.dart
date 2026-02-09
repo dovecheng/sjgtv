@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../core/base.dart';
+import 'package:sjgtv/core/core.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sjgtv/src/app/router/app_routes.dart';

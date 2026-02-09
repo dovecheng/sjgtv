@@ -1,5 +1,5 @@
-import '../../../core/cache.dart';
-import '../../../core/log.dart';
+import '../../../core/cache/cache.dart';
+import '../../../core/log/log.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cached_network_image_platform_interface/cached_network_image_platform_interface.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';

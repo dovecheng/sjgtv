@@ -1,4 +1,4 @@
-import '../../core/extension.dart';
+import '../../core/extension/extension.dart';
 import 'package:collection/collection.dart';
 
 extension EnumByIndexExt<T extends Enum> on List<T> {
