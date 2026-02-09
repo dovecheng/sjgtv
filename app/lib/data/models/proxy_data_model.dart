@@ -1,0 +1,62 @@
+import 'package:isar_community/isar.dart';
+import 'package:json_annotation/json_annotation.dart';
+import '../../../domain/entities/proxy.dart';
+
+part 'proxy_data_model.g.dart';
+
+/// 代理模型（API + Isar 共用）
+@Name('Proxy')
+@Collection(accessor: 'proxies')
+@JsonSerializable()
+class ProxyDataModel {
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  Id? id;
+
+  @JsonKey(name: 'id')
+  String uuid;
+
+  String url;
+  String name;
+  bool enabled;
+  DateTime? createdAt;
+  DateTime? updatedAt;
+
+  ProxyDataModel({
+    this.id,
+    required this.uuid,
+    required this.url,
+    required this.name,
+    this.enabled = true,
+    this.createdAt,
+    this.updatedAt,
+  });
+
+  factory ProxyDataModel.fromJson(Map<String, dynamic> json) =>
+      _$ProxyDataModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ProxyDataModelToJson(this);
+
+  /// 转换为领域实体
+  Proxy toEntity() {
+    return Proxy(
+      uuid: uuid,
+      url: url,
+      name: name,
+      enabled: enabled,
+      createdAt: createdAt,
+      updatedAt: updatedAt,
+    );
+  }
+
+  /// 从领域实体创建模型
+  factory ProxyDataModel.fromEntity(Proxy entity) {
+    return ProxyDataModel(
+      uuid: entity.uuid,
+      url: entity.url,
+      name: entity.name,
+      enabled: entity.enabled,
+      createdAt: entity.createdAt,
+      updatedAt: entity.updatedAt,
+    );
+  }
+}

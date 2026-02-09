@@ -8,7 +8,7 @@ import '../../domain/repositories/proxy_repository.dart';
 import '../../domain/repositories/source_repository.dart';
 import '../../domain/entities/movie.dart';
 import '../../domain/repositories/movie_repository.dart';
-import '../../../src/movie/model/movie_model.dart';
+import '../models/movie_data_model.dart';
 
 /// 电影仓库实现
 ///
@@ -187,7 +187,7 @@ class MovieRepositoryImpl implements MovieRepository {
   /// 解析为 Movie 实体
   Movie? _parseToMovie(Map<String, dynamic> data) {
     try {
-      return MovieModel(
+      return MovieDataModel(
         id: data['vod_id']?.toString() ?? DateTime.now().millisecondsSinceEpoch.toString(),
         title: data['vod_name']?.toString() ?? '',
         year: int.tryParse(data['vod_year']?.toString() ?? '') ?? DateTime.now().year,

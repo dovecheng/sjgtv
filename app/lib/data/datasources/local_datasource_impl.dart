@@ -8,9 +8,9 @@ import '../../domain/entities/source.dart';
 import '../../domain/entities/proxy.dart';
 import '../../domain/entities/tag.dart';
 import '../datasources/local_datasource.dart';
-import '../../../src/source/model/source_model.dart';
-import '../../../src/proxy/model/proxy_model.dart';
-import '../../../src/tag/model/tag_model.dart';
+import '../models/source_data_model.dart';
+import '../models/proxy_data_model.dart';
+import '../models/tag_data_model.dart';
 
 part 'local_datasource_impl.g.dart';
 
@@ -43,7 +43,7 @@ class LocalDataSourceImpl extends _$LocalDataSourceImpl
     try {
       // TODO: 保存到 Isar
       final now = DateTime.now();
-      final model = SourceModel(
+      final model = SourceDataModel(
         uuid: source.uuid.isEmpty ? _uuid.v4() : source.uuid,
         name: source.name,
         url: source.url,
@@ -65,7 +65,7 @@ class LocalDataSourceImpl extends _$LocalDataSourceImpl
     try {
       // TODO: 更新到 Isar
       final now = DateTime.now();
-      final model = SourceModel(
+      final model = SourceDataModel(
         uuid: source.uuid,
         name: source.name,
         url: source.url,
@@ -108,7 +108,7 @@ class LocalDataSourceImpl extends _$LocalDataSourceImpl
     try {
       // TODO: 保存到 Isar
       final now = DateTime.now();
-      final model = ProxyModel(
+      final model = ProxyDataModel(
         uuid: proxy.uuid.isEmpty ? _uuid.v4() : proxy.uuid,
         url: proxy.url,
         name: proxy.name,
@@ -128,7 +128,7 @@ class LocalDataSourceImpl extends _$LocalDataSourceImpl
     try {
       // TODO: 更新到 Isar
       final now = DateTime.now();
-      final model = ProxyModel(
+      final model = ProxyDataModel(
         uuid: proxy.uuid,
         url: proxy.url,
         name: proxy.name,
@@ -169,7 +169,7 @@ class LocalDataSourceImpl extends _$LocalDataSourceImpl
     try {
       // TODO: 保存到 Isar
       final now = DateTime.now();
-      final model = TagModel(
+      final model = TagDataModel(
         uuid: tag.uuid.isEmpty ? _uuid.v4() : tag.uuid,
         name: tag.name,
         color: tag.color,
@@ -189,7 +189,7 @@ class LocalDataSourceImpl extends _$LocalDataSourceImpl
     try {
       // TODO: 更新到 Isar
       final now = DateTime.now();
-      final model = TagModel(
+      final model = TagDataModel(
         uuid: tag.uuid,
         name: tag.name,
         color: tag.color,

@@ -1,16 +1,16 @@
 import '../../../core/log/log.dart';
+import '../../../di/domain_di.dart';
+import '../../../domain/usecases/usecases.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sjgtv/src/movie/usecase/movie_usecase_factory.dart';
-import 'package:sjgtv/src/movie/usecase/search_movies_usecase.dart';
 
 final Log _log = Log('MovieSearch');
 
 /// 电影搜索提供者
 ///
-/// 使用 SearchMoviesUseCase 聚合各数据源 API 搜索结果。
+/// 使用 Domain 层的 SearchMoviesUseCase 聚合各数据源 API 搜索结果。
 final movieSearchProvider = Provider<MovieSearchService>((Ref ref) {
   return MovieSearchService(
-    MovieUseCaseFactory.createSearchMoviesUseCase(ref),
+    SearchMoviesUseCase(ref.read(movieRepositoryProvider)),
   );
 });
 
@@ -30,13 +30,13 @@ class MovieSearchService {
     return result.fold(
       (failure) {
         _log.e(() => '搜索失败: ${failure.message}');
-        return {'list': <dynamic>[]};
+        return {'list': <dynamic>[], 'total': 0};
       },
-      (success) {
-        _log.d(() => '搜索成功: 总数=${success.total}');
+      (movies) {
+        _log.d(() => '搜索成功: 总数=${movies.length}');
         return {
-          'total': success.total,
-          'list': success.movies,
+          'total': movies.length,
+          'list': movies,
         };
       },
     );
