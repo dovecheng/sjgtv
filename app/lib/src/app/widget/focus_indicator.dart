@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sjgtv/src/app/theme/app_theme.dart';
 import 'package:sjgtv/src/app/constants/app_constants.dart';
+import 'package:sjgtv/src/app/utils/gesture_helper.dart';
 
 /// 焦点指示器装饰
 ///
@@ -299,10 +300,26 @@ class _FocusIndicatorState extends State<FocusIndicator>
           );
 
           if (widget.onTap != null) {
-            result = GestureDetector(
-              onTap: widget.onTap,
-              child: result,
-            );
+            // 在触摸设备上使用 InkWell 提供触摸反馈
+            if (GestureHelper.isTouchDevice(context)) {
+              result = Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: widget.onTap,
+                  borderRadius: widget.decoration.borderRadius ??
+                      BorderRadius.circular(AppConstants.cardBorderRadius),
+                  splashColor: GestureHelper.getRecommendedRippleColor(context),
+                  highlightColor: GestureHelper.getRecommendedHighlightColor(context),
+                  child: result,
+                ),
+              );
+            } else {
+              // TV 设备上使用 GestureDetector
+              result = GestureDetector(
+                onTap: widget.onTap,
+                child: result,
+              );
+            }
           }
 
           return result;

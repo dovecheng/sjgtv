@@ -142,6 +142,19 @@ class TVModeConfig {
   /// 是否支持手势导航
   static bool get supportsGestures => !_isEnabled;
 
+  /// 是否为触摸设备
+  static bool get isTouchDevice => !_isEnabled;
+
+  /// 是否为 TV 设备
+  static bool isTVDevice(BuildContext context) {
+    return _deviceType == DeviceType.tv || _isEnabled;
+  }
+
+  /// 是否为移动设备
+  static bool isMobileDevice(BuildContext context) {
+    return _deviceType == DeviceType.phone || _deviceType == DeviceType.tablet || !_isEnabled;
+  }
+
   /// 获取 TV 模式下的建议文字大小
   static double get suggestedTextScale => _isEnabled ? 1.1 : 1.0;
 
