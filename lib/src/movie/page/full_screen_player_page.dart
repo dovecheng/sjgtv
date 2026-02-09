@@ -934,8 +934,9 @@ class _FullScreenPlayerPageState extends ConsumerState<FullScreenPlayerPage> {
     const Duration duration = Duration(milliseconds: 200);
     const Curve curve = Curves.easeInOut;
     void doEnsureVisible() {
-      if (!mounted || _sourcePanelFocusedIndex >= _sourceItemKeys.length)
+      if (!mounted || _sourcePanelFocusedIndex >= _sourceItemKeys.length) {
         return;
+      }
       final BuildContext? itemContext =
           _sourceItemKeys[_sourcePanelFocusedIndex].currentContext;
       if (itemContext != null) {
@@ -947,7 +948,9 @@ class _FullScreenPlayerPageState extends ConsumerState<FullScreenPlayerPage> {
         );
         return;
       }
-      if (!_sourcePanelScrollController.hasClients) return;
+      if (!_sourcePanelScrollController.hasClients) {
+        return;
+      }
       final double maxExtent =
           _sourcePanelScrollController.position.maxScrollExtent;
       final double estimatedOffset =
