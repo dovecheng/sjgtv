@@ -163,33 +163,39 @@ class _SourceManagePageState extends ConsumerState<SourceManagePage> {
                   return KeyEventResult.ignored;
                 },
                 child: Card(
-                  margin: const EdgeInsets.only(bottom: 12),
-                  child: ListTile(
-                    title: Text(
-                      source.name,
-                      style: TextStyle(
-                        color: source.disabled ? Colors.white54 : Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    subtitle: Padding(
-                      padding: const EdgeInsets.only(top: 4),
-                      child: Text(
-                        source.url,
-                        style: const TextStyle(
-                          color: Colors.white54,
-                          fontSize: 14,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
+                  margin: const EdgeInsets.only(bottom: 16),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    child: Row(
                       children: <Widget>[
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(
+                                source.name,
+                                style: TextStyle(
+                                  color: source.disabled ? Colors.white54 : Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                source.url,
+                                style: const TextStyle(
+                                  color: Colors.white70,
+                                  fontSize: 13,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 16),
                         IconButton(
-                          icon: const Icon(Icons.edit),
+                          icon: const Icon(Icons.edit, size: 24),
                           onPressed: () async {
                             final bool? updated = await Navigator.of(context)
                                 .push<bool>(
@@ -203,22 +209,34 @@ class _SourceManagePageState extends ConsumerState<SourceManagePage> {
                             }
                           },
                           focusColor: Colors.red,
+                          constraints: const BoxConstraints(
+                            minWidth: 48,
+                            minHeight: 48,
+                          ),
                         ),
+                        const SizedBox(width: 8),
                         IconButton(
-                          icon: const Icon(Icons.delete_outline),
+                          icon: const Icon(Icons.delete_outline, size: 24),
                           onPressed: () => _deleteSource(source),
                           focusColor: Colors.red,
+                          constraints: const BoxConstraints(
+                            minWidth: 48,
+                            minHeight: 48,
+                          ),
                         ),
-                        Icon(
-                          source.disabled ? Icons.toggle_off : Icons.toggle_on,
-                          color: source.disabled
-                              ? Colors.white38
-                              : colorScheme.primary,
-                          size: 36,
+                        const SizedBox(width: 8),
+                        GestureDetector(
+                          onTap: () => _toggleSource(source),
+                          child: Icon(
+                            source.disabled ? Icons.toggle_off : Icons.toggle_on,
+                            color: source.disabled
+                                ? Colors.white38
+                                : colorScheme.primary,
+                            size: 36,
+                          ),
                         ),
                       ],
                     ),
-                    onTap: () => _toggleSource(source),
                   ),
                 ),
               );

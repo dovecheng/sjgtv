@@ -1,0 +1,27 @@
+# Temporary files
+.tmp/
+*.tmp
+
+# Flutter/Dart
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+.metadata
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
