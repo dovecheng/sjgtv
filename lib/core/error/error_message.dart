@@ -25,10 +25,10 @@ class ErrorInfo {
 /// 提供统一的错误消息格式和用户友好的错误说明
 
 class ErrorMessage {
-
   /// 获取本地化实例
 
-  static AppLocalizations get _l10n => AppLocalizations.of(AppNavigator.context);
+  static AppLocalizations get _l10n =>
+      AppLocalizations.of(AppNavigator.context);
 
   /// 获取网络状态实例
   static NetworkStatus get _network => NetworkStatus.instance;
