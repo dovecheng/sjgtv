@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import '../../core/converter/converter.dart';
-import '../../core/log/log.dart';
+import 'package:sjgtv/core/converter/converter.dart';
+import 'package:sjgtv/core/log/log.dart';
 import 'package:dio/dio.dart' hide Response;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -22,7 +22,7 @@ import 'package:sjgtv/src/proxy/provider/proxies_provider.dart';
 import 'package:sjgtv/src/source/provider/sources_provider.dart';
 import 'package:sjgtv/src/tag/provider/tags_provider.dart';
 import 'package:sjgtv/src/source/util/source_url_util.dart';
-import '../../core/provider/provider.dart';
+import 'package:sjgtv/core/provider/provider.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 

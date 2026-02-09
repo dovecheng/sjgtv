@@ -1,8 +1,8 @@
 import 'dart:io';
 
-import '../../../core/env.dart';
-import '../../../core/isar/isar.dart';
-import '../../../core/log/log.dart';
+import 'package:sjgtv/core/env.dart';
+import 'package:sjgtv/core/isar/isar.dart';
+import 'package:sjgtv/core/log/log.dart';
 import 'package:isar_community/isar.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

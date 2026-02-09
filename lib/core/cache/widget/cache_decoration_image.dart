@@ -1,5 +1,5 @@
-import '../../../core/cache/cache.dart';
-import '../../../core/log/log.dart';
+import 'package:sjgtv/core/cache/cache.dart';
+import 'package:sjgtv/core/log/log.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:stack_trace/stack_trace.dart';

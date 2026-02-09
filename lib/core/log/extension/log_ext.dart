@@ -1,4 +1,4 @@
-import '../../../core/log/log.dart';
+import 'package:sjgtv/core/log/log.dart';
 
 extension ObjectLogExt on Object {
   /// 使用对象的类型作为名称返回日志记录器实例.

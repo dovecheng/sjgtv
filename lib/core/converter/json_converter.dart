@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import '../../core/converter/converter.dart';
-import '../../core/log/log.dart';
+import 'package:sjgtv/core/converter/converter.dart';
+import 'package:sjgtv/core/log/log.dart';
 import 'package:meta/meta.dart';
 
 /// Json转换器

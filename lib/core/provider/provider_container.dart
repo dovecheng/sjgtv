@@ -1,4 +1,4 @@
-import '../../core/provider/provider.dart';
+import 'package:sjgtv/core/provider/provider.dart';
 import 'package:riverpod/misc.dart';
 import 'package:riverpod/riverpod.dart';
 

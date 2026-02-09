@@ -1,4 +1,4 @@
-import '../../core/extension/extension.dart';
+import 'package:sjgtv/core/extension/extension.dart';
 
 /// 字符串转换器
 ///

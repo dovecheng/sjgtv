@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math' as math;
 
-import '../../../core/extension/extension.dart';
+import 'package:sjgtv/core/extension/extension.dart';
 
 extension L10nFileExt on FileSystemEntity {
   /// 文件大小单位

@@ -1,4 +1,4 @@
-import '../../../core/api/api.dart';
+import 'package:sjgtv/core/api/api.dart';
 
 /// ApiResultModel 的扩展，用于方便地复制对象并修改部分字段。
 ///

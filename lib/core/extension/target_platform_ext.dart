@@ -1,4 +1,4 @@
-import '../../core/env.dart';
+import 'package:sjgtv/core/env.dart';
 
 /// see also: [defaultTargetPlatform]
 TargetPlatform get $platform => defaultTargetPlatform;

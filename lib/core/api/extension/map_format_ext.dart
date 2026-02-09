@@ -1,5 +1,5 @@
-import '../../../core/converter/converter.dart';
-import '../../../core/extension/extension.dart';
+import 'package:sjgtv/core/converter/converter.dart';
+import 'package:sjgtv/core/extension/extension.dart';
 import 'package:collection/collection.dart';
 
 extension MapFormatExt on Map<String, dynamic> {

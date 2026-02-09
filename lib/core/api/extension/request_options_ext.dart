@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import '../../../core/extension/extension.dart';
-import '../../../core/log/log.dart';
+import 'package:sjgtv/core/extension/extension.dart';
+import 'package:sjgtv/core/log/log.dart';
 import 'package:dio/dio.dart';
 
 extension RequestOptionsCodecExt on RequestOptions {

@@ -1,5 +1,5 @@
-import '../../arch/errors/failures.dart';
-import '../../arch/errors/result.dart';
+import 'package:sjgtv/core/arch/errors/failures.dart';
+import 'package:sjgtv/core/arch/errors/result.dart';
 
 /// Use Case 抽象类
 ///

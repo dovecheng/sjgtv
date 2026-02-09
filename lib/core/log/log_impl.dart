@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:logging/logging.dart';
 import 'package:stack_trace/stack_trace.dart';
 
-import '../env.dart';
+import 'package:sjgtv/core/env.dart';
 import 'log_level.dart';
 import 'log_print.dart';
 

@@ -1,7 +1,7 @@
-import '../../../core/api/api.dart';
-import '../../../core/converter/converter.dart';
-import '../../../core/env.dart';
-import '../../../core/log/log.dart';
+import 'package:sjgtv/core/api/api.dart';
+import 'package:sjgtv/core/converter/converter.dart';
+import 'package:sjgtv/core/env.dart';
+import 'package:sjgtv/core/log/log.dart';
 import 'package:quiver/core.dart' as quiver;
 
 /// 接口请求结果

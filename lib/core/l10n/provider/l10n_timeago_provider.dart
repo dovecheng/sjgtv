@@ -3,8 +3,8 @@ import 'dart:ui';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
-import '../../l10n/messages/zh_cn_messages.dart';
-import '../../l10n/messages/zh_messages.dart';
+import 'package:sjgtv/core/l10n/messages/zh_cn_messages.dart';
+import 'package:sjgtv/core/l10n/messages/zh_messages.dart';
 
 part 'l10n_timeago_provider.g.dart';
 
