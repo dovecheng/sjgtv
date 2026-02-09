@@ -71,7 +71,7 @@ final class ApiClientProviderProvider
   }
 }
 
-String _$apiClientProviderHash() => r'724e847bdb8abf83692659a78656ef2778e644c3';
+String _$apiClientProviderHash() => r'8f32aa67ead225a77f1c623fd61e6e4ed99019f5';
 
 /// HTTP客户端 [apiClientProvider]
 ///

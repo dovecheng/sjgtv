@@ -72,7 +72,47 @@ const WatchHistoryModelSchema = CollectionSchema(
   deserialize: _watchHistoryModelDeserialize,
   deserializeProp: _watchHistoryModelDeserializeProp,
   idName: r'id',
-  indexes: {},
+  indexes: {
+    r'uuid': IndexSchema(
+      id: 2134397340427724972,
+      name: r'uuid',
+      unique: false,
+      replace: false,
+      properties: [
+        IndexPropertySchema(
+          name: r'uuid',
+          type: IndexType.hash,
+          caseSensitive: true,
+        ),
+      ],
+    ),
+    r'movieId': IndexSchema(
+      id: -1138826636860436442,
+      name: r'movieId',
+      unique: false,
+      replace: false,
+      properties: [
+        IndexPropertySchema(
+          name: r'movieId',
+          type: IndexType.hash,
+          caseSensitive: true,
+        ),
+      ],
+    ),
+    r'watchedAt': IndexSchema(
+      id: -6551046602970426944,
+      name: r'watchedAt',
+      unique: false,
+      replace: false,
+      properties: [
+        IndexPropertySchema(
+          name: r'watchedAt',
+          type: IndexType.value,
+          caseSensitive: false,
+        ),
+      ],
+    ),
+  },
   links: {},
   embeddedSchemas: {},
 
@@ -203,6 +243,15 @@ extension WatchHistoryModelQueryWhereSort
       return query.addWhereClause(const IdWhereClause.any());
     });
   }
+
+  QueryBuilder<WatchHistoryModel, WatchHistoryModel, QAfterWhere>
+  anyWatchedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        const IndexWhereClause.any(indexName: r'watchedAt'),
+      );
+    });
+  }
 }
 
 extension WatchHistoryModelQueryWhere
@@ -268,6 +317,210 @@ extension WatchHistoryModelQueryWhere
           lower: lowerId,
           includeLower: includeLower,
           upper: upperId,
+          includeUpper: includeUpper,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<WatchHistoryModel, WatchHistoryModel, QAfterWhereClause>
+  uuidEqualTo(String uuid) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        IndexWhereClause.equalTo(indexName: r'uuid', value: [uuid]),
+      );
+    });
+  }
+
+  QueryBuilder<WatchHistoryModel, WatchHistoryModel, QAfterWhereClause>
+  uuidNotEqualTo(String uuid) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(
+              IndexWhereClause.between(
+                indexName: r'uuid',
+                lower: [],
+                upper: [uuid],
+                includeUpper: false,
+              ),
+            )
+            .addWhereClause(
+              IndexWhereClause.between(
+                indexName: r'uuid',
+                lower: [uuid],
+                includeLower: false,
+                upper: [],
+              ),
+            );
+      } else {
+        return query
+            .addWhereClause(
+              IndexWhereClause.between(
+                indexName: r'uuid',
+                lower: [uuid],
+                includeLower: false,
+                upper: [],
+              ),
+            )
+            .addWhereClause(
+              IndexWhereClause.between(
+                indexName: r'uuid',
+                lower: [],
+                upper: [uuid],
+                includeUpper: false,
+              ),
+            );
+      }
+    });
+  }
+
+  QueryBuilder<WatchHistoryModel, WatchHistoryModel, QAfterWhereClause>
+  movieIdEqualTo(String movieId) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        IndexWhereClause.equalTo(indexName: r'movieId', value: [movieId]),
+      );
+    });
+  }
+
+  QueryBuilder<WatchHistoryModel, WatchHistoryModel, QAfterWhereClause>
+  movieIdNotEqualTo(String movieId) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(
+              IndexWhereClause.between(
+                indexName: r'movieId',
+                lower: [],
+                upper: [movieId],
+                includeUpper: false,
+              ),
+            )
+            .addWhereClause(
+              IndexWhereClause.between(
+                indexName: r'movieId',
+                lower: [movieId],
+                includeLower: false,
+                upper: [],
+              ),
+            );
+      } else {
+        return query
+            .addWhereClause(
+              IndexWhereClause.between(
+                indexName: r'movieId',
+                lower: [movieId],
+                includeLower: false,
+                upper: [],
+              ),
+            )
+            .addWhereClause(
+              IndexWhereClause.between(
+                indexName: r'movieId',
+                lower: [],
+                upper: [movieId],
+                includeUpper: false,
+              ),
+            );
+      }
+    });
+  }
+
+  QueryBuilder<WatchHistoryModel, WatchHistoryModel, QAfterWhereClause>
+  watchedAtEqualTo(DateTime watchedAt) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        IndexWhereClause.equalTo(indexName: r'watchedAt', value: [watchedAt]),
+      );
+    });
+  }
+
+  QueryBuilder<WatchHistoryModel, WatchHistoryModel, QAfterWhereClause>
+  watchedAtNotEqualTo(DateTime watchedAt) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(
+              IndexWhereClause.between(
+                indexName: r'watchedAt',
+                lower: [],
+                upper: [watchedAt],
+                includeUpper: false,
+              ),
+            )
+            .addWhereClause(
+              IndexWhereClause.between(
+                indexName: r'watchedAt',
+                lower: [watchedAt],
+                includeLower: false,
+                upper: [],
+              ),
+            );
+      } else {
+        return query
+            .addWhereClause(
+              IndexWhereClause.between(
+                indexName: r'watchedAt',
+                lower: [watchedAt],
+                includeLower: false,
+                upper: [],
+              ),
+            )
+            .addWhereClause(
+              IndexWhereClause.between(
+                indexName: r'watchedAt',
+                lower: [],
+                upper: [watchedAt],
+                includeUpper: false,
+              ),
+            );
+      }
+    });
+  }
+
+  QueryBuilder<WatchHistoryModel, WatchHistoryModel, QAfterWhereClause>
+  watchedAtGreaterThan(DateTime watchedAt, {bool include = false}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        IndexWhereClause.between(
+          indexName: r'watchedAt',
+          lower: [watchedAt],
+          includeLower: include,
+          upper: [],
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<WatchHistoryModel, WatchHistoryModel, QAfterWhereClause>
+  watchedAtLessThan(DateTime watchedAt, {bool include = false}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        IndexWhereClause.between(
+          indexName: r'watchedAt',
+          lower: [],
+          upper: [watchedAt],
+          includeUpper: include,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<WatchHistoryModel, WatchHistoryModel, QAfterWhereClause>
+  watchedAtBetween(
+    DateTime lowerWatchedAt,
+    DateTime upperWatchedAt, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        IndexWhereClause.between(
+          indexName: r'watchedAt',
+          lower: [lowerWatchedAt],
+          includeLower: includeLower,
+          upper: [upperWatchedAt],
           includeUpper: includeUpper,
         ),
       );
