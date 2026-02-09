@@ -4,16 +4,21 @@ import '../../domain/repositories/movie_repository.dart';
 import '../../domain/repositories/source_repository.dart';
 import '../../domain/repositories/proxy_repository.dart';
 import '../../domain/repositories/tag_repository.dart';
+import '../../domain/repositories/watch_history_repository.dart';
 import '../../domain/usecases/add_source_usecase.dart';
 import '../../domain/usecases/get_all_sources_usecase.dart';
 import '../../domain/usecases/get_movies_by_category_usecase.dart';
 import '../../domain/usecases/search_movies_usecase.dart';
+import '../../domain/usecases/save_watch_history_usecase.dart';
+import '../../domain/usecases/get_all_watch_histories_usecase.dart';
+import '../../domain/usecases/delete_watch_history_usecase.dart';
 import '../../data/datasources/local_datasource.dart';
 import '../../data/datasources/local_datasource_impl.dart';
 import '../../data/repositories/movie_repository_impl.dart';
 import '../../data/repositories/source_repository_impl.dart';
 import '../../data/repositories/proxy_repository_impl.dart';
 import '../../data/repositories/tag_repository_impl.dart';
+import '../../data/repositories/watch_history_repository_impl.dart';
 
 /// 本地数据源 Provider
 final localDataSourceProvider = Provider<LocalDataSource>((ref) {
@@ -74,5 +79,33 @@ final searchMoviesUseCaseProvider = Provider<SearchMoviesUseCase>((ref) {
 final getMoviesByCategoryUseCaseProvider = Provider<GetMoviesByCategoryUseCase>((ref) {
   return GetMoviesByCategoryUseCase(
     ref.watch(movieRepositoryProvider),
+  );
+});
+
+/// 观看历史仓库 Provider
+final watchHistoryRepositoryProvider = Provider<WatchHistoryRepository>((ref) {
+  return WatchHistoryRepositoryImpl(
+    localDataSource: ref.watch(localDataSourceProvider),
+  );
+});
+
+/// 获取所有观看历史 Use Case Provider
+final getAllWatchHistoriesUseCaseProvider = Provider<GetAllWatchHistoriesUseCase>((ref) {
+  return GetAllWatchHistoriesUseCase(
+    ref.watch(watchHistoryRepositoryProvider),
+  );
+});
+
+/// 保存观看历史 Use Case Provider
+final saveWatchHistoryUseCaseProvider = Provider<SaveWatchHistoryUseCase>((ref) {
+  return SaveWatchHistoryUseCase(
+    ref.watch(watchHistoryRepositoryProvider),
+  );
+});
+
+/// 删除观看历史 Use Case Provider
+final deleteWatchHistoryUseCaseProvider = Provider<DeleteWatchHistoryUseCase>((ref) {
+  return DeleteWatchHistoryUseCase(
+    ref.watch(watchHistoryRepositoryProvider),
   );
 });

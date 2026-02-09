@@ -12,6 +12,36 @@ class AppLocalizationsZh extends AppLocalizations {
   String get appTitle => '苹果CMS电影播放器';
 
   @override
+  String get watchHistory => '观看历史';
+
+  @override
+  String get noWatchHistory => '暂无观看历史';
+
+  @override
+  String get clearAll => '清空';
+
+  @override
+  String get clearAllHistory => '清空历史';
+
+  @override
+  String get clearAllHistoryConfirm => '确定要清空所有观看历史吗？';
+
+  @override
+  String get deleteHistory => '删除历史';
+
+  @override
+  String get deleteHistoryConfirm => '确定要删除这条观看历史吗？';
+
+  @override
+  String get confirm => '确定';
+
+  @override
+  String get cancel => '取消';
+
+  @override
+  String get delete => '删除';
+
+  @override
   String get shelfApiDataList => '数据列表';
 
   @override
@@ -447,6 +477,36 @@ class AppLocalizationsZhCn extends AppLocalizationsZh {
   String get appTitle => '苹果CMS电影播放器';
 
   @override
+  String get watchHistory => '观看历史';
+
+  @override
+  String get noWatchHistory => '暂无观看历史';
+
+  @override
+  String get clearAll => '清空';
+
+  @override
+  String get clearAllHistory => '清空历史';
+
+  @override
+  String get clearAllHistoryConfirm => '确定要清空所有观看历史吗？';
+
+  @override
+  String get deleteHistory => '删除历史';
+
+  @override
+  String get deleteHistoryConfirm => '确定要删除这条观看历史吗？';
+
+  @override
+  String get confirm => '确定';
+
+  @override
+  String get cancel => '取消';
+
+  @override
+  String get delete => '删除';
+
+  @override
   String get shelfApiDataList => '数据列表';
 
   @override
@@ -880,6 +940,36 @@ class AppLocalizationsZhHk extends AppLocalizationsZh {
 
   @override
   String get appTitle => '蘋果CMS電影播放器';
+
+  @override
+  String get watchHistory => '觀看歷史';
+
+  @override
+  String get noWatchHistory => '暫無觀看歷史';
+
+  @override
+  String get clearAll => '清空';
+
+  @override
+  String get clearAllHistory => '清空歷史';
+
+  @override
+  String get clearAllHistoryConfirm => '確定要清空所有觀看歷史嗎？';
+
+  @override
+  String get deleteHistory => '刪除歷史';
+
+  @override
+  String get deleteHistoryConfirm => '確定要刪除這條觀看歷史嗎？';
+
+  @override
+  String get confirm => '確定';
+
+  @override
+  String get cancel => '取消';
+
+  @override
+  String get delete => '刪除';
 
   @override
   String get shelfApiDataList => '數據列表';

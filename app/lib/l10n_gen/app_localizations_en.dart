@@ -12,6 +12,38 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appTitle => 'AppleCMS Movie Player';
 
   @override
+  String get watchHistory => 'Watch History';
+
+  @override
+  String get noWatchHistory => 'No watch history';
+
+  @override
+  String get clearAll => 'Clear All';
+
+  @override
+  String get clearAllHistory => 'Clear History';
+
+  @override
+  String get clearAllHistoryConfirm =>
+      'Are you sure you want to clear all watch history?';
+
+  @override
+  String get deleteHistory => 'Delete History';
+
+  @override
+  String get deleteHistoryConfirm =>
+      'Are you sure you want to delete this watch history?';
+
+  @override
+  String get confirm => 'Confirm';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get delete => 'Delete';
+
+  @override
   String get shelfApiDataList => 'Data list';
 
   @override

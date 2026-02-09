@@ -8,11 +8,13 @@ import '../../../core/arch/errors/result.dart';
 import '../../domain/entities/source.dart';
 import '../../domain/entities/proxy.dart';
 import '../../domain/entities/tag.dart';
+import '../../domain/entities/watch_history.dart';
 import '../datasources/local_datasource.dart';
 import '../../../core/isar/isar.dart';
 import '../../../src/source/model/source_model.dart';
 import '../../../src/proxy/model/proxy_model.dart';
 import '../../../src/tag/model/tag_model.dart';
+import '../../../src/watch_history/model/watch_history_model.dart';
 
 part 'local_datasource_impl.g.dart';
 
@@ -269,6 +271,76 @@ class LocalDataSourceImpl extends _$LocalDataSourceImpl
       return Result.success(null);
     } catch (e) {
       return Result.failure(CacheFailure('删除标签失败: ${e.toString()}'));
+    }
+  }
+
+  @override
+  Future<Result<WatchHistory, Failure>> addOrUpdateWatchHistory(
+      WatchHistory history) async {
+    try {
+      final model = WatchHistoryModel.fromEntity(history);
+      await $isar.writeTxn(() async => $isar.watchHistories.put(model));
+      return Result.success(history);
+    } catch (e) {
+      return Result.failure(CacheFailure('添加观看历史失败: ${e.toString()}'));
+    }
+  }
+
+  @override
+  Future<Result<List<WatchHistory>, Failure>> getAllWatchHistories() async {
+    try {
+      final List<WatchHistoryModel> list = await $isar.watchHistories
+          .where()
+          .sortByWatchedAtDesc()
+          .findAll();
+      return Result.success(list.map((m) => m.toEntity()).toList());
+    } catch (e) {
+      return Result.failure(CacheFailure('获取观看历史失败: ${e.toString()}'));
+    }
+  }
+
+  @override
+  Future<Result<List<WatchHistory>, Failure>> getWatchHistoriesByMovie(
+      String movieId) async {
+    try {
+      final List<WatchHistoryModel> list = await $isar.watchHistories
+          .where()
+          .filter()
+          .movieIdEqualTo(movieId)
+          .sortByWatchedAtDesc()
+          .findAll();
+      return Result.success(list.map((m) => m.toEntity()).toList());
+    } catch (e) {
+      return Result.failure(CacheFailure('获取观看历史失败: ${e.toString()}'));
+    }
+  }
+
+  @override
+  Future<Result<void, Failure>> deleteWatchHistory(String id) async {
+    try {
+      await $isar.writeTxn(() async {
+        final List<WatchHistoryModel> list = await $isar.watchHistories
+            .where()
+            .filter()
+            .uuidEqualTo(id)
+            .findAll();
+        for (final WatchHistoryModel e in list) {
+          if (e.id != null) await $isar.watchHistories.delete(e.id!);
+        }
+      });
+      return Result.success(null);
+    } catch (e) {
+      return Result.failure(CacheFailure('删除观看历史失败: ${e.toString()}'));
+    }
+  }
+
+  @override
+  Future<Result<void, Failure>> clearAllWatchHistories() async {
+    try {
+      await $isar.writeTxn(() async => $isar.watchHistories.clear());
+      return Result.success(null);
+    } catch (e) {
+      return Result.failure(CacheFailure('清除观看历史失败: ${e.toString()}'));
     }
   }
 }

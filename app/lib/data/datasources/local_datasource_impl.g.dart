@@ -51,7 +51,7 @@ final class LocalDataSourceImplProvider
 }
 
 String _$localDataSourceImplHash() =>
-    r'76a535e07eeb8cabbeeb43075710e79f3c75235c';
+    r'0776d20c15952d8d4c1e9f6acc6d64c78903defb';
 
 /// 本地数据源实现
 ///

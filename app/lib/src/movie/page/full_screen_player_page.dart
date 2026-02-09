@@ -11,6 +11,10 @@ import 'package:media_kit_video/media_kit_video.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sjgtv/src/movie/page/player_intents.dart';
 import 'package:sjgtv/src/movie/service/m3u8_ad_remover.dart';
+import 'package:sjgtv/src/watch_history/provider/watch_histories_provider.dart';
+import 'package:sjgtv/domain/entities/watch_history.dart';
+import 'package:uuid/uuid.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 final Log _log = Log('FullScreenPlayer');
@@ -27,7 +31,8 @@ final Log _log = Log('FullScreenPlayer');
 /// - 记录每集播放进度
 /// - 屏幕常亮
 /// - 多源时：菜单键打开换源面板，可切换播放源并保留进度
-class FullScreenPlayerPage extends StatefulWidget {
+/// - 自动保存观看历史
+class FullScreenPlayerPage extends ConsumerStatefulWidget {
   final dynamic movie;
   final List<Map<String, String>> episodes;
   final int initialIndex;
@@ -45,10 +50,10 @@ class FullScreenPlayerPage extends StatefulWidget {
   });
 
   @override
-  State<FullScreenPlayerPage> createState() => _FullScreenPlayerPageState();
+  ConsumerState<FullScreenPlayerPage> createState() => _FullScreenPlayerPageState();
 }
 
-class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
+class _FullScreenPlayerPageState extends ConsumerState<FullScreenPlayerPage> {
   late final Player _player;
   late final VideoController _videoController;
   /// 当前使用的播放源列表（sources ?? [movie]）
@@ -98,6 +103,8 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
   /// 进度条节流：每 1s 更新，减少 UI 重建对播放帧率的影响
   final ValueNotifier<Duration> _progressPosition = ValueNotifier(Duration.zero);
   Timer? _progressTimer;
+  /// 观看历史保存定时器（每 30 秒保存一次）
+  Timer? _historySaveTimer;
 
   _FullScreenPlayerPageState()
       : _currentSourceIndex = 0,
@@ -161,6 +168,8 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
         _toggleControlsVisibility(true);
       }
     });
+    // 启动历史保存定时器
+    _startHistorySaveTimer();
   }
 
   /// 从源的 vod_play_url 解析剧集列表
@@ -213,6 +222,45 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
     });
   }
 
+  void _startHistorySaveTimer() {
+    _historySaveTimer?.cancel();
+    _historySaveTimer = Timer.periodic(const Duration(seconds: 30), (_) {
+      if (!mounted) return;
+      _saveWatchHistory();
+    });
+  }
+
+  /// 保存观看历史
+  Future<void> _saveWatchHistory() async {
+    try {
+      if (_episodes.isEmpty) return;
+
+      final currentEpisode = _episodes[_currentEpisodeIndex];
+      final movie = widget.movie as Map<String, dynamic>;
+      final source = _sources[_currentSourceIndex];
+
+      final history = WatchHistory(
+        id: const Uuid().v4(),
+        movieId: (movie['vod_id']?.toString() ?? DateTime.now().millisecondsSinceEpoch.toString()),
+        movieTitle: (movie['vod_name']?.toString() ?? '').trim(),
+        movieCoverUrl: (movie['vod_pic']?.toString() ?? '').trim(),
+        movieYear: int.tryParse(movie['vod_year']?.toString() ?? '') ?? DateTime.now().year,
+        episodeIndex: _currentEpisodeIndex,
+        episodeName: currentEpisode['title']?.toString() ?? '',
+        playUrl: currentEpisode['url']?.toString() ?? '',
+        progress: _player.state.position,
+        duration: _player.state.duration,
+        watchedAt: DateTime.now(),
+        sourceName: (source['source']?.toString() ?? source['vod_name']?.toString() ?? '默认'),
+      );
+
+      await ref.read(watchHistoriesProvider.notifier).addOrUpdateHistory(history);
+      _log.d(() => '保存观看历史: ${history.movieTitle} - ${history.episodeName}');
+    } catch (e) {
+      _log.e(() => '保存观看历史失败', e);
+    }
+  }
+
   void _setupPlayerListeners() {
     _playerStateSubscription?.cancel();
     _bufferingSubscription?.cancel();
@@ -251,6 +299,10 @@ class _FullScreenPlayerPageState extends State<FullScreenPlayerPage> {
 
   @override
   void dispose() {
+    // 保存观看历史
+    _saveWatchHistory();
+    // 取消定时器
+    _historySaveTimer?.cancel();
     _cleanupSeek();
     _episodeProgress.clear();
     _playerStateSubscription?.cancel();

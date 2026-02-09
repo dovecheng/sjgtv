@@ -3,6 +3,7 @@ import '../../../core/arch/errors/result.dart';
 import '../../domain/entities/source.dart';
 import '../../domain/entities/proxy.dart';
 import '../../domain/entities/tag.dart';
+import '../../domain/entities/watch_history.dart';
 
 /// 本地数据源接口
 ///
@@ -46,4 +47,21 @@ abstract class LocalDataSource {
 
   /// 删除标签
   Future<Result<void, Failure>> deleteTag(String uuid);
+
+  /// 添加或更新观看历史
+  Future<Result<WatchHistory, Failure>> addOrUpdateWatchHistory(
+      WatchHistory history);
+
+  /// 获取所有观看历史
+  Future<Result<List<WatchHistory>, Failure>> getAllWatchHistories();
+
+  /// 获取指定电影的观看历史
+  Future<Result<List<WatchHistory>, Failure>> getWatchHistoriesByMovie(
+      String movieId);
+
+  /// 删除观看历史
+  Future<Result<void, Failure>> deleteWatchHistory(String id);
+
+  /// 清除所有观看历史
+  Future<Result<void, Failure>> clearAllWatchHistories();
 }

@@ -106,6 +106,66 @@ abstract class AppLocalizations {
   /// **'苹果CMS电影播放器'**
   String get appTitle;
 
+  /// No description provided for @watchHistory.
+  ///
+  /// In zh_CN, this message translates to:
+  /// **'观看历史'**
+  String get watchHistory;
+
+  /// No description provided for @noWatchHistory.
+  ///
+  /// In zh_CN, this message translates to:
+  /// **'暂无观看历史'**
+  String get noWatchHistory;
+
+  /// No description provided for @clearAll.
+  ///
+  /// In zh_CN, this message translates to:
+  /// **'清空'**
+  String get clearAll;
+
+  /// No description provided for @clearAllHistory.
+  ///
+  /// In zh_CN, this message translates to:
+  /// **'清空历史'**
+  String get clearAllHistory;
+
+  /// No description provided for @clearAllHistoryConfirm.
+  ///
+  /// In zh_CN, this message translates to:
+  /// **'确定要清空所有观看历史吗？'**
+  String get clearAllHistoryConfirm;
+
+  /// No description provided for @deleteHistory.
+  ///
+  /// In zh_CN, this message translates to:
+  /// **'删除历史'**
+  String get deleteHistory;
+
+  /// No description provided for @deleteHistoryConfirm.
+  ///
+  /// In zh_CN, this message translates to:
+  /// **'确定要删除这条观看历史吗？'**
+  String get deleteHistoryConfirm;
+
+  /// No description provided for @confirm.
+  ///
+  /// In zh_CN, this message translates to:
+  /// **'确定'**
+  String get confirm;
+
+  /// No description provided for @cancel.
+  ///
+  /// In zh_CN, this message translates to:
+  /// **'取消'**
+  String get cancel;
+
+  /// No description provided for @delete.
+  ///
+  /// In zh_CN, this message translates to:
+  /// **'删除'**
+  String get delete;
+
   /// No description provided for @shelfApiDataList.
   ///
   /// In zh_CN, this message translates to:
