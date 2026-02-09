@@ -21,6 +21,7 @@ import 'package:sjgtv/src/tag/provider/tag_count_provider.dart';
 import 'package:sjgtv/src/tag/provider/tags_provider.dart';
 import 'package:sjgtv/src/favorite/model/favorite_model.dart';
 import 'package:sjgtv/src/watch_history/model/watch_history_model.dart';
+import 'package:sjgtv/src/settings/model/settings_model.dart';
 import 'package:uuid/uuid.dart';
 
 /// sjgtv 应用启动器
@@ -39,10 +40,10 @@ final class SjgtvRunner extends AppRunner {
     DeviceOrientation.landscapeRight,
   ];
 
-  /// 使用 base 同一 Isar 实例，并注册 app 的 sources/proxies/tags/favorites/watchHistories schema
+  /// 使用 base 同一 Isar 实例，并注册 app 的 sources/proxies/tags/favorites/watchHistories/settings schema
   @override
   IsarProvider? get isar => IsarProvider(
-    schemas: [SourceModelSchema, ProxyModelSchema, TagModelSchema, FavoriteModelSchema, WatchHistoryModelSchema],
+    schemas: [SourceModelSchema, ProxyModelSchema, TagModelSchema, FavoriteModelSchema, WatchHistoryModelSchema, SettingsModelSchema],
   );
 
   @override

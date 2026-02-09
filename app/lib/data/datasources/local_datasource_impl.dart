@@ -10,6 +10,7 @@ import '../../domain/entities/proxy.dart';
 import '../../domain/entities/tag.dart';
 import '../../domain/entities/watch_history.dart';
 import '../../domain/entities/favorite.dart';
+import '../../domain/entities/settings.dart';
 import '../datasources/local_datasource.dart';
 import '../../../core/isar/isar.dart';
 import '../../../src/source/model/source_model.dart';
@@ -17,6 +18,8 @@ import '../../../src/proxy/model/proxy_model.dart';
 import '../../../src/tag/model/tag_model.dart';
 import '../../../src/watch_history/model/watch_history_model.dart';
 import '../../../src/favorite/model/favorite_model.dart';
+import '../../../src/settings/model/settings_model.dart';
+import 'package:flutter/material.dart' hide ThemeMode;
 
 part 'local_datasource_impl.g.dart';
 
@@ -430,6 +433,84 @@ class LocalDataSourceImpl extends _$LocalDataSourceImpl
       return Result.success(null);
     } catch (e) {
       return Result.failure(CacheFailure('取消收藏失败: ${e.toString()}'));
+    }
+  }
+
+  @override
+  Future<Result<Settings, Failure>> getSettings() async {
+    try {
+      final List<SettingsModel> models = await $isar.settings.where().findAll();
+      if (models.isEmpty) {
+        // 返回默认设置
+        final now = DateTime.now();
+        final defaultSettings = Settings(
+          uuid: 'default',
+          defaultVolume: 100.0,
+          defaultPlaybackSpeed: 1.0,
+          autoPlayNext: true,
+          themeMode: AppThemeMode.system,
+          language: 'zh_CN',
+          createdAt: now,
+          updatedAt: now,
+        );
+        return Result.success(defaultSettings);
+      }
+      return Result.success(models.first.toEntity());
+    } catch (e) {
+      return Result.failure(CacheFailure('获取设置失败: ${e.toString()}'));
+    }
+  }
+
+  @override
+  Future<Result<Settings, Failure>> saveSettings(Settings settings) async {
+    try {
+      final now = DateTime.now();
+      final model = SettingsModel(
+        uuid: settings.uuid,
+        defaultVolume: settings.defaultVolume,
+        defaultPlaybackSpeed: settings.defaultPlaybackSpeed,
+        autoPlayNext: settings.autoPlayNext,
+        themeMode: _themeModeToString(settings.themeMode),
+        language: settings.language,
+        createdAt: settings.createdAt ?? now,
+        updatedAt: now,
+      );
+      await $isar.writeTxn(() async => $isar.settings.put(model));
+      return Result.success(model.toEntity());
+    } catch (e) {
+      return Result.failure(CacheFailure('保存设置失败: ${e.toString()}'));
+    }
+  }
+
+  @override
+  Future<Result<Settings, Failure>> updateSettings(Settings settings) async {
+    try {
+      final now = DateTime.now();
+      final model = SettingsModel(
+        uuid: settings.uuid,
+        defaultVolume: settings.defaultVolume,
+        defaultPlaybackSpeed: settings.defaultPlaybackSpeed,
+        autoPlayNext: settings.autoPlayNext,
+        themeMode: _themeModeToString(settings.themeMode),
+        language: settings.language,
+        createdAt: settings.createdAt,
+        updatedAt: now,
+      );
+      await $isar.writeTxn(() async => $isar.settings.put(model));
+      return Result.success(model.toEntity());
+    } catch (e) {
+      return Result.failure(CacheFailure('更新设置失败: ${e.toString()}'));
+    }
+  }
+
+  String _themeModeToString(AppThemeMode mode) {
+    switch (mode) {
+      case AppThemeMode.light:
+        return 'light';
+      case AppThemeMode.dark:
+        return 'dark';
+      default:
+        return 'system';
     }
   }
 }

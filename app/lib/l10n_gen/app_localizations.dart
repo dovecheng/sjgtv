@@ -1041,6 +1041,78 @@ abstract class AppLocalizations {
   /// In zh_CN, this message translates to:
   /// **'确认删除此收藏？'**
   String get deleteFavoriteConfirm;
+
+  /// No description provided for @settings.
+  ///
+  /// In zh_CN, this message translates to:
+  /// **'设置'**
+  String get settings;
+
+  /// No description provided for @playbackSettings.
+  ///
+  /// In zh_CN, this message translates to:
+  /// **'播放设置'**
+  String get playbackSettings;
+
+  /// No description provided for @defaultVolume.
+  ///
+  /// In zh_CN, this message translates to:
+  /// **'默认音量'**
+  String get defaultVolume;
+
+  /// No description provided for @defaultPlaybackSpeed.
+  ///
+  /// In zh_CN, this message translates to:
+  /// **'默认播放速度'**
+  String get defaultPlaybackSpeed;
+
+  /// No description provided for @autoPlayNext.
+  ///
+  /// In zh_CN, this message translates to:
+  /// **'自动播放下一集'**
+  String get autoPlayNext;
+
+  /// No description provided for @autoPlayNextDescription.
+  ///
+  /// In zh_CN, this message translates to:
+  /// **'播放完当前集数后自动播放下一集'**
+  String get autoPlayNextDescription;
+
+  /// No description provided for @displaySettings.
+  ///
+  /// In zh_CN, this message translates to:
+  /// **'显示设置'**
+  String get displaySettings;
+
+  /// No description provided for @themeMode.
+  ///
+  /// In zh_CN, this message translates to:
+  /// **'主题模式'**
+  String get themeMode;
+
+  /// No description provided for @themeLight.
+  ///
+  /// In zh_CN, this message translates to:
+  /// **'浅色'**
+  String get themeLight;
+
+  /// No description provided for @themeDark.
+  ///
+  /// In zh_CN, this message translates to:
+  /// **'深色'**
+  String get themeDark;
+
+  /// No description provided for @themeSystem.
+  ///
+  /// In zh_CN, this message translates to:
+  /// **'跟随系统'**
+  String get themeSystem;
+
+  /// No description provided for @language.
+  ///
+  /// In zh_CN, this message translates to:
+  /// **'语言'**
+  String get language;
 }
 
 class _AppLocalizationsDelegate

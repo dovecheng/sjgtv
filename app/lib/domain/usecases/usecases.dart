@@ -15,3 +15,5 @@ export 'get_all_favorites_usecase.dart';
 export 'delete_favorite_usecase.dart';
 export 'is_favorite_usecase.dart';
 export 'unfavorite_usecase.dart';
+export 'get_settings_usecase.dart';
+export 'save_settings_usecase.dart';

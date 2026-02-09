@@ -489,4 +489,41 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get deleteFavoriteConfirm => 'Delete this favorite?';
+
+  @override
+  String get settings => 'Settings';
+
+  @override
+  String get playbackSettings => 'Playback Settings';
+
+  @override
+  String get defaultVolume => 'Default Volume';
+
+  @override
+  String get defaultPlaybackSpeed => 'Default Playback Speed';
+
+  @override
+  String get autoPlayNext => 'Auto Play Next';
+
+  @override
+  String get autoPlayNextDescription =>
+      'Automatically play next episode after current episode finishes';
+
+  @override
+  String get displaySettings => 'Display Settings';
+
+  @override
+  String get themeMode => 'Theme Mode';
+
+  @override
+  String get themeLight => 'Light';
+
+  @override
+  String get themeDark => 'Dark';
+
+  @override
+  String get themeSystem => 'System';
+
+  @override
+  String get language => 'Language';
 }

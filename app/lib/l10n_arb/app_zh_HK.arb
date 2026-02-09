@@ -177,5 +177,17 @@
   "clearAllFavoritesConfirm": "確認清空所有收藏？",
   "noFavorites": "暫無收藏",
   "deleteFavorite": "刪除收藏",
-  "deleteFavoriteConfirm": "確認刪除此收藏？"
+  "deleteFavoriteConfirm": "確認刪除此收藏？",
+  "settings": "設置",
+  "playbackSettings": "播放設置",
+  "defaultVolume": "默認音量",
+  "defaultPlaybackSpeed": "默認播放速度",
+  "autoPlayNext": "自動播放下一集",
+  "autoPlayNextDescription": "播放完當前集數後自動播放下一集",
+  "displaySettings": "顯示設置",
+  "themeMode": "主題模式",
+  "themeLight": "淺色",
+  "themeDark": "深色",
+  "themeSystem": "跟隨系統",
+  "language": "語言"
 }

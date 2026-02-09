@@ -485,6 +485,42 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get deleteFavoriteConfirm => '确认删除此收藏？';
+
+  @override
+  String get settings => '設置';
+
+  @override
+  String get playbackSettings => '播放設置';
+
+  @override
+  String get defaultVolume => '默認音量';
+
+  @override
+  String get defaultPlaybackSpeed => '默認播放速度';
+
+  @override
+  String get autoPlayNext => '自動播放下一集';
+
+  @override
+  String get autoPlayNextDescription => '播放完當前集數後自動播放下一集';
+
+  @override
+  String get displaySettings => '顯示設置';
+
+  @override
+  String get themeMode => '主題模式';
+
+  @override
+  String get themeLight => '淺色';
+
+  @override
+  String get themeDark => '深色';
+
+  @override
+  String get themeSystem => '跟隨系統';
+
+  @override
+  String get language => '語言';
 }
 
 /// The translations for Chinese, as used in China (`zh_CN`).
@@ -968,6 +1004,42 @@ class AppLocalizationsZhCn extends AppLocalizationsZh {
 
   @override
   String get deleteFavoriteConfirm => '确认删除此收藏？';
+
+  @override
+  String get settings => '设置';
+
+  @override
+  String get playbackSettings => '播放设置';
+
+  @override
+  String get defaultVolume => '默认音量';
+
+  @override
+  String get defaultPlaybackSpeed => '默认播放速度';
+
+  @override
+  String get autoPlayNext => '自动播放下一集';
+
+  @override
+  String get autoPlayNextDescription => '播放完当前集数后自动播放下一集';
+
+  @override
+  String get displaySettings => '显示设置';
+
+  @override
+  String get themeMode => '主题模式';
+
+  @override
+  String get themeLight => '浅色';
+
+  @override
+  String get themeDark => '深色';
+
+  @override
+  String get themeSystem => '跟随系统';
+
+  @override
+  String get language => '语言';
 }
 
 /// The translations for Chinese, as used in Hong Kong (`zh_HK`).
@@ -1451,4 +1523,40 @@ class AppLocalizationsZhHk extends AppLocalizationsZh {
 
   @override
   String get deleteFavoriteConfirm => '確認刪除此收藏？';
+
+  @override
+  String get settings => '設置';
+
+  @override
+  String get playbackSettings => '播放設置';
+
+  @override
+  String get defaultVolume => '默認音量';
+
+  @override
+  String get defaultPlaybackSpeed => '默認播放速度';
+
+  @override
+  String get autoPlayNext => '自動播放下一集';
+
+  @override
+  String get autoPlayNextDescription => '播放完當前集數後自動播放下一集';
+
+  @override
+  String get displaySettings => '顯示設置';
+
+  @override
+  String get themeMode => '主題模式';
+
+  @override
+  String get themeLight => '淺色';
+
+  @override
+  String get themeDark => '深色';
+
+  @override
+  String get themeSystem => '跟隨系統';
+
+  @override
+  String get language => '語言';
 }

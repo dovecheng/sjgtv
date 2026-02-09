@@ -36,7 +36,7 @@ final class FavoritesProviderProvider
   FavoritesProvider create() => FavoritesProvider();
 }
 
-String _$favoritesProviderHash() => r'f35b3ea5b887ea1ca0f5992dd4721a4b6775dcb1';
+String _$favoritesProviderHash() => r'ff2dbf6b05d251a1c62fbbbfe4156d5abd304b1d';
 
 /// 收藏列表提供者
 

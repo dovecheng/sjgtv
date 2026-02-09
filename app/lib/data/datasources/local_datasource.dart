@@ -5,6 +5,7 @@ import '../../domain/entities/proxy.dart';
 import '../../domain/entities/tag.dart';
 import '../../domain/entities/watch_history.dart';
 import '../../domain/entities/favorite.dart';
+import '../../domain/entities/settings.dart';
 
 /// 本地数据源接口
 ///
@@ -80,4 +81,13 @@ abstract class LocalDataSource {
 
   /// 取消收藏（通过电影ID）
   Future<Result<void, Failure>> unfavorite(String movieId);
+
+  /// 获取设置
+  Future<Result<Settings, Failure>> getSettings();
+
+  /// 保存设置
+  Future<Result<Settings, Failure>> saveSettings(Settings settings);
+
+  /// 更新设置
+  Future<Result<Settings, Failure>> updateSettings(Settings settings);
 }

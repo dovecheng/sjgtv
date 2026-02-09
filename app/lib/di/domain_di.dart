@@ -6,6 +6,7 @@ import '../../domain/repositories/proxy_repository.dart';
 import '../../domain/repositories/tag_repository.dart';
 import '../../domain/repositories/watch_history_repository.dart';
 import '../../domain/repositories/favorite_repository.dart';
+import '../../domain/repositories/settings_repository.dart';
 import '../../domain/usecases/add_source_usecase.dart';
 import '../../domain/usecases/get_all_sources_usecase.dart';
 import '../../domain/usecases/get_movies_by_category_usecase.dart';
@@ -18,6 +19,8 @@ import '../../domain/usecases/get_all_favorites_usecase.dart';
 import '../../domain/usecases/delete_favorite_usecase.dart';
 import '../../domain/usecases/is_favorite_usecase.dart';
 import '../../domain/usecases/unfavorite_usecase.dart';
+import '../../domain/usecases/get_settings_usecase.dart';
+import '../../domain/usecases/save_settings_usecase.dart';
 import '../../data/datasources/local_datasource.dart';
 import '../../data/datasources/local_datasource_impl.dart';
 import '../../data/repositories/movie_repository_impl.dart';
@@ -26,6 +29,7 @@ import '../../data/repositories/proxy_repository_impl.dart';
 import '../../data/repositories/tag_repository_impl.dart';
 import '../../data/repositories/watch_history_repository_impl.dart';
 import '../../data/repositories/favorite_repository_impl.dart';
+import '../../data/repositories/settings_repository_impl.dart';
 
 /// 本地数据源 Provider
 final localDataSourceProvider = Provider<LocalDataSource>((ref) {
@@ -156,5 +160,26 @@ final isFavoriteUseCaseProvider = Provider<IsFavoriteUseCase>((ref) {
 final unfavoriteUseCaseProvider = Provider<UnfavoriteUseCase>((ref) {
   return UnfavoriteUseCase(
     ref.watch(favoriteRepositoryProvider),
+  );
+});
+
+/// 设置仓库 Provider
+final settingsRepositoryProvider = Provider<SettingsRepository>((ref) {
+  return SettingsRepositoryImpl(
+    localDataSource: ref.watch(localDataSourceProvider),
+  );
+});
+
+/// 获取设置 Use Case Provider
+final getSettingsUseCaseProvider = Provider<GetSettingsUseCase>((ref) {
+  return GetSettingsUseCase(
+    ref.watch(settingsRepositoryProvider),
+  );
+});
+
+/// 保存设置 Use Case Provider
+final saveSettingsUseCaseProvider = Provider<SaveSettingsUseCase>((ref) {
+  return SaveSettingsUseCase(
+    ref.watch(settingsRepositoryProvider),
   );
 });
