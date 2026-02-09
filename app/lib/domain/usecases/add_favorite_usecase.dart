@@ -1,7 +1,7 @@
-import '../../../core/arch/errors/failures.dart';
-import '../../../core/arch/errors/result.dart';
-import '../entities/favorite.dart';
-import '../repositories/favorite_repository.dart';
+import 'package:sjgtv/core/arch/errors/failures.dart';
+import 'package:sjgtv/core/arch/errors/result.dart';
+import 'package:sjgtv/domain/entities/favorite.dart';
+import 'package:sjgtv/domain/repositories/favorite_repository.dart';
 
 /// 添加收藏 Use Case
 class AddFavoriteUseCase {

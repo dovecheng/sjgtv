@@ -1,6 +1,6 @@
 import 'package:isar_community/isar.dart';
 import 'package:json_annotation/json_annotation.dart';
-import '../../../domain/entities/settings.dart';
+import 'package:sjgtv/domain/entities/settings.dart';
 
 part 'settings_model.g.dart';
 

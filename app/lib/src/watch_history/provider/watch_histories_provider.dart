@@ -1,8 +1,8 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../domain/entities/watch_history.dart';
-import '../../../domain/usecases/usecases.dart';
-import '../../../di/domain_di.dart';
+import 'package:sjgtv/domain/entities/watch_history.dart';
+import 'package:sjgtv/domain/usecases/usecases.dart';
+import 'package:sjgtv/di/domain_di.dart';
 
 part 'watch_histories_provider.g.dart';
 

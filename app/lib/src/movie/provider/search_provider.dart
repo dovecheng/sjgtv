@@ -1,6 +1,6 @@
-import '../../../core/log/log.dart';
-import '../../../di/domain_di.dart';
-import '../../../domain/usecases/usecases.dart';
+import 'package:sjgtv/core/log/log.dart';
+import 'package:sjgtv/di/domain_di.dart';
+import 'package:sjgtv/domain/usecases/usecases.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final Log _log = Log('MovieSearch');

@@ -1,5 +1,5 @@
-import '../../../core/api/api.dart';
-import '../../../core/log/log.dart';
+import 'package:sjgtv/core/api/api.dart';
+import 'package:sjgtv/core/log/log.dart';
 import 'package:dio/dio.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'config_api_provider.g.dart';

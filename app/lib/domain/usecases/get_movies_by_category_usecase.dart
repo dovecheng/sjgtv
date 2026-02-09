@@ -1,7 +1,7 @@
-import '../../../core/arch/errors/failures.dart';
-import '../../../core/arch/errors/result.dart';
-import '../entities/movie.dart';
-import '../repositories/movie_repository.dart';
+import 'package:sjgtv/core/arch/errors/failures.dart';
+import 'package:sjgtv/core/arch/errors/result.dart';
+import 'package:sjgtv/domain/entities/movie.dart';
+import 'package:sjgtv/domain/repositories/movie_repository.dart';
 
 /// 获取分类电影参数
 class GetMoviesByCategoryParams {

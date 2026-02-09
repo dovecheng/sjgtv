@@ -1,6 +1,6 @@
-import '../../../core/arch/errors/failures.dart';
-import '../../../core/arch/errors/result.dart';
-import '../entities/movie.dart';
+import 'package:sjgtv/core/arch/errors/failures.dart';
+import 'package:sjgtv/core/arch/errors/result.dart';
+import 'package:sjgtv/domain/entities/movie.dart';
 
 /// 电影仓库接口
 ///

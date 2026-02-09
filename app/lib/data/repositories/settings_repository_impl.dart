@@ -1,8 +1,8 @@
-import '../../../core/arch/errors/failures.dart';
-import '../../../core/arch/errors/result.dart';
-import '../../domain/entities/settings.dart';
-import '../../domain/repositories/settings_repository.dart';
-import '../datasources/local_datasource.dart';
+import 'package:sjgtv/core/arch/errors/failures.dart';
+import 'package:sjgtv/core/arch/errors/result.dart';
+import 'package:sjgtv/domain/entities/settings.dart';
+import 'package:sjgtv/domain/repositories/settings_repository.dart';
+import 'package:sjgtv/data/datasources/local_datasource.dart';
 
 /// 设置仓库实现
 ///

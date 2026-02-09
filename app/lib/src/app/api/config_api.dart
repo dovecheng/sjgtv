@@ -1,4 +1,4 @@
-import '../../../core/api/api.dart';
+import 'package:sjgtv/core/api/api.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 

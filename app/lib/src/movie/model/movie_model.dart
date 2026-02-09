@@ -1,5 +1,5 @@
-import '../../../core/converter/converter.dart';
-import '../../../domain/entities/movie.dart';
+import 'package:sjgtv/core/converter/converter.dart';
+import 'package:sjgtv/domain/entities/movie.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'movie_model.g.dart';

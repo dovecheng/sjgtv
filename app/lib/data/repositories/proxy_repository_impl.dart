@@ -1,8 +1,8 @@
-import '../../../core/arch/errors/failures.dart';
-import '../../../core/arch/errors/result.dart';
-import '../../domain/entities/proxy.dart';
-import '../../domain/repositories/proxy_repository.dart';
-import '../datasources/local_datasource.dart';
+import 'package:sjgtv/core/arch/errors/failures.dart';
+import 'package:sjgtv/core/arch/errors/result.dart';
+import 'package:sjgtv/domain/entities/proxy.dart';
+import 'package:sjgtv/domain/repositories/proxy_repository.dart';
+import 'package:sjgtv/data/datasources/local_datasource.dart';
 
 /// 代理仓库实现
 ///

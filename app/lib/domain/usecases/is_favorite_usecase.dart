@@ -1,6 +1,6 @@
-import '../../../core/arch/errors/failures.dart';
-import '../../../core/arch/errors/result.dart';
-import '../repositories/favorite_repository.dart';
+import 'package:sjgtv/core/arch/errors/failures.dart';
+import 'package:sjgtv/core/arch/errors/result.dart';
+import 'package:sjgtv/domain/repositories/favorite_repository.dart';
 
 /// 检查是否已收藏 Use Case
 class IsFavoriteUseCase {

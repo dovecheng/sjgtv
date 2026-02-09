@@ -1,6 +1,6 @@
 import 'package:isar_community/isar.dart';
 import 'package:json_annotation/json_annotation.dart';
-import '../../../domain/entities/watch_history.dart';
+import 'package:sjgtv/domain/entities/watch_history.dart';
 
 part 'watch_history_model.g.dart';
 

@@ -1,7 +1,7 @@
-import '../../../core/arch/errors/failures.dart';
-import '../../../core/arch/errors/result.dart';
-import '../entities/settings.dart';
-import '../repositories/settings_repository.dart';
+import 'package:sjgtv/core/arch/errors/failures.dart';
+import 'package:sjgtv/core/arch/errors/result.dart';
+import 'package:sjgtv/domain/entities/settings.dart';
+import 'package:sjgtv/domain/repositories/settings_repository.dart';
 
 /// 保存设置 Use Case
 class SaveSettingsUseCase {

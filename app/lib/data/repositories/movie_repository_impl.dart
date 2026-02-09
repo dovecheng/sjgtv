@@ -1,14 +1,12 @@
 import 'dart:convert';
-
 import 'package:dio/dio.dart';
-
-import '../../../core/arch/errors/failures.dart';
-import '../../../core/arch/errors/result.dart';
-import '../../domain/repositories/proxy_repository.dart';
-import '../../domain/repositories/source_repository.dart';
-import '../../domain/entities/movie.dart';
-import '../../domain/repositories/movie_repository.dart';
-import '../../../src/movie/model/movie_model.dart';
+import 'package:sjgtv/core/arch/errors/failures.dart';
+import 'package:sjgtv/core/arch/errors/result.dart';
+import 'package:sjgtv/domain/repositories/proxy_repository.dart';
+import 'package:sjgtv/domain/repositories/source_repository.dart';
+import 'package:sjgtv/domain/entities/movie.dart';
+import 'package:sjgtv/domain/repositories/movie_repository.dart';
+import 'package:sjgtv/src/movie/model/movie_model.dart';
 
 /// 电影仓库实现
 ///

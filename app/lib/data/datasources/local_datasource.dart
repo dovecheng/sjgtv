@@ -1,11 +1,11 @@
-import '../../../core/arch/errors/failures.dart';
-import '../../../core/arch/errors/result.dart';
-import '../../domain/entities/source.dart';
-import '../../domain/entities/proxy.dart';
-import '../../domain/entities/tag.dart';
-import '../../domain/entities/watch_history.dart';
-import '../../domain/entities/favorite.dart';
-import '../../domain/entities/settings.dart';
+import 'package:sjgtv/core/arch/errors/failures.dart';
+import 'package:sjgtv/core/arch/errors/result.dart';
+import 'package:sjgtv/domain/entities/source.dart';
+import 'package:sjgtv/domain/entities/proxy.dart';
+import 'package:sjgtv/domain/entities/tag.dart';
+import 'package:sjgtv/domain/entities/watch_history.dart';
+import 'package:sjgtv/domain/entities/favorite.dart';
+import 'package:sjgtv/domain/entities/settings.dart';
 
 /// 本地数据源接口
 ///

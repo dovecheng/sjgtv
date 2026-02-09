@@ -1,4 +1,4 @@
-import '../../../core/log/log.dart';
+import 'package:sjgtv/core/log/log.dart';
 import 'package:http/http.dart' as http;
 
 /// M3U8 广告移除器配置

@@ -1,7 +1,7 @@
-import '../../../core/arch/errors/failures.dart';
-import '../../../core/arch/errors/result.dart';
-import '../entities/source.dart';
-import '../repositories/source_repository.dart';
+import 'package:sjgtv/core/arch/errors/failures.dart';
+import 'package:sjgtv/core/arch/errors/result.dart';
+import 'package:sjgtv/domain/entities/source.dart';
+import 'package:sjgtv/domain/repositories/source_repository.dart';
 
 /// 获取所有视频源 Use Case
 ///

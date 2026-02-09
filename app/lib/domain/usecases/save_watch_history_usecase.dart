@@ -1,7 +1,7 @@
-import '../../../core/arch/errors/failures.dart';
-import '../../../core/arch/errors/result.dart';
-import '../entities/watch_history.dart';
-import '../repositories/watch_history_repository.dart';
+import 'package:sjgtv/core/arch/errors/failures.dart';
+import 'package:sjgtv/core/arch/errors/result.dart';
+import 'package:sjgtv/domain/entities/watch_history.dart';
+import 'package:sjgtv/domain/repositories/watch_history_repository.dart';
 
 /// 保存观看历史参数
 class SaveWatchHistoryParams {

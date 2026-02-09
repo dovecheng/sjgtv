@@ -2,23 +2,22 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:uuid/uuid.dart';
 import 'package:isar_community/isar.dart';
-
-import '../../../core/arch/errors/failures.dart';
-import '../../../core/arch/errors/result.dart';
-import '../../domain/entities/source.dart';
-import '../../domain/entities/proxy.dart';
-import '../../domain/entities/tag.dart';
-import '../../domain/entities/watch_history.dart';
-import '../../domain/entities/favorite.dart';
-import '../../domain/entities/settings.dart';
-import '../datasources/local_datasource.dart';
-import '../../../core/isar/isar.dart';
-import '../../../src/source/model/source_model.dart';
-import '../../../src/proxy/model/proxy_model.dart';
-import '../../../src/tag/model/tag_model.dart';
-import '../../../src/watch_history/model/watch_history_model.dart';
-import '../../../src/favorite/model/favorite_model.dart';
-import '../../../src/settings/model/settings_model.dart';
+import 'package:sjgtv/core/arch/errors/failures.dart';
+import 'package:sjgtv/core/arch/errors/result.dart';
+import 'package:sjgtv/domain/entities/source.dart';
+import 'package:sjgtv/domain/entities/proxy.dart';
+import 'package:sjgtv/domain/entities/tag.dart';
+import 'package:sjgtv/domain/entities/watch_history.dart';
+import 'package:sjgtv/domain/entities/favorite.dart';
+import 'package:sjgtv/domain/entities/settings.dart';
+import 'package:sjgtv/data/datasources/local_datasource.dart';
+import 'package:sjgtv/core/isar/isar.dart';
+import 'package:sjgtv/src/source/model/source_model.dart';
+import 'package:sjgtv/src/proxy/model/proxy_model.dart';
+import 'package:sjgtv/src/tag/model/tag_model.dart';
+import 'package:sjgtv/src/watch_history/model/watch_history_model.dart';
+import 'package:sjgtv/src/favorite/model/favorite_model.dart';
+import 'package:sjgtv/src/settings/model/settings_model.dart';
 
 part 'local_datasource_impl.g.dart';
 

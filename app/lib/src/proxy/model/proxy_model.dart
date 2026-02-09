@@ -1,6 +1,6 @@
 import 'package:isar_community/isar.dart';
 import 'package:json_annotation/json_annotation.dart';
-import '../../../domain/entities/proxy.dart';
+import 'package:sjgtv/domain/entities/proxy.dart';
 
 part 'proxy_model.g.dart';
 
