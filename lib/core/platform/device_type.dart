@@ -32,6 +32,9 @@ extension DeviceInfoExtension on BuildContext {
   /// 判断是否是手机设备
   bool get isPhone => deviceType == DeviceType.phone;
 
+  /// 判断是否是桌面设备（Windows、macOS、Linux）
+  bool get isDesktop => deviceType == DeviceType.desktop;
+
   /// 判断是否是横屏
   bool get isLandscape => orientation == ScreenOrientation.landscape;
 
