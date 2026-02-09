@@ -55,17 +55,21 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage>
   @override
   void initState() {
     super.initState();
+    _scrollController.addListener(_onScroll);
+    _loadInitialData();
+    // 恢复焦点记忆
+    restoreSavedFocus(_focusMemoryKey);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     // 初始化 TV 模式
     TVModeConfig.init(context);
     // 根据 TV 模式调整网格列数
     _gridCrossAxisCount = TVModeLayout.getRecommendedGridColumns(
       screenWidth: context.mediaQuery.size.width,
     );
-    
-    _scrollController.addListener(_onScroll);
-    _loadInitialData();
-    // 恢复焦点记忆
-    restoreSavedFocus(_focusMemoryKey);
   }
 
   @override

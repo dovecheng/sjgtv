@@ -44,18 +44,22 @@ class _SearchPageState extends ConsumerState<SearchPage>
   @override
   void initState() {
     super.initState();
-    // 初始化 TV 模式
-    TVModeConfig.init(context);
-
     if (widget.initialQuery != null) {
       _searchController.text = widget.initialQuery!;
       _searchMovies(widget.initialQuery!);
     }
     _searchFocusNode.addListener(_onFocusChange);
     _searchController.addListener(_onSearchTextChange);
-    
+
     // 恢复焦点记忆
     restoreSavedFocus(_focusMemoryKey);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // 初始化 TV 模式
+    TVModeConfig.init(context);
   }
 
   void _onFocusChange() {

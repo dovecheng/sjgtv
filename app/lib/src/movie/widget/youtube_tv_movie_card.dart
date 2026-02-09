@@ -259,8 +259,8 @@ class _YouTubeTVMovieCardState extends State<YouTubeTVMovieCard>
 
   Widget _buildInfo(ColorScheme colorScheme) {
     return Container(
-      height: 70,
-      padding: const EdgeInsets.all(8),
+      height: 80,
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
@@ -274,11 +274,12 @@ class _YouTubeTVMovieCardState extends State<YouTubeTVMovieCard>
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Text(
             widget.movie.title,
             style: const TextStyle(
-              fontSize: 16,
+              fontSize: 15,
               fontWeight: FontWeight.w500,
               color: Colors.white,
             ),
@@ -291,7 +292,7 @@ class _YouTubeTVMovieCardState extends State<YouTubeTVMovieCard>
               Text(
                 '${widget.movie.year}',
                 style: const TextStyle(
-                  fontSize: 14,
+                  fontSize: 13,
                   color: Colors.grey,
                 ),
               ),
@@ -299,14 +300,14 @@ class _YouTubeTVMovieCardState extends State<YouTubeTVMovieCard>
                 children: [
                   const Icon(
                     Icons.star,
-                    size: 14,
+                    size: 13,
                     color: Colors.amber,
                   ),
-                  const SizedBox(width: 4),
+                  const SizedBox(width: 3),
                   Text(
                     '${widget.movie.rating}',
                     style: const TextStyle(
-                      fontSize: 14,
+                      fontSize: 13,
                       color: Colors.amber,
                       fontWeight: FontWeight.bold,
                     ),
