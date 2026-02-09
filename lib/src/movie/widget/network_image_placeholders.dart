@@ -6,9 +6,7 @@ Widget networkImagePlaceholder(BuildContext context) {
   final Color color = context.theme.colorScheme.surfaceContainerLow;
   return ColoredBox(
     color: color,
-    child: const Center(
-      child: CircularProgressIndicator(strokeWidth: 3.0),
-    ),
+    child: const Center(child: CircularProgressIndicator(strokeWidth: 3.0)),
   );
 }
 
@@ -18,11 +16,7 @@ Widget networkImageErrorWidget(BuildContext context) {
   return ColoredBox(
     color: color,
     child: const Center(
-      child: Icon(
-        Icons.broken_image,
-        color: Colors.grey,
-        size: 36,
-      ),
+      child: Icon(Icons.broken_image, color: Colors.grey, size: 36),
     ),
   );
 }

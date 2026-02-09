@@ -8,9 +8,7 @@ import 'package:sjgtv/data/datasources/local_datasource.dart';
 ///
 /// 实现 TagRepository 接口，提供标签数据的访问功能
 class TagRepositoryImpl implements TagRepository {
-  TagRepositoryImpl({
-    required this.localDataSource,
-  });
+  TagRepositoryImpl({required this.localDataSource});
 
   final LocalDataSource localDataSource;
 

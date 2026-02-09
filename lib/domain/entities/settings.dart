@@ -62,8 +62,4 @@ class Settings {
 }
 
 /// 主题模式枚举
-enum AppThemeMode {
-  system,
-  light,
-  dark,
-}
+enum AppThemeMode { system, light, dark }

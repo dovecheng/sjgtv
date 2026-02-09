@@ -62,10 +62,7 @@ class InputSanitizer {
     }
 
     // 移除 JavaScript 伪协议
-    final jsPattern = RegExp(
-      r'javascript:\s*',
-      caseSensitive: false,
-    );
+    final jsPattern = RegExp(r'javascript:\s*', caseSensitive: false);
     sanitized = sanitized.replaceAll(jsPattern, '');
 
     return sanitized.trim();
@@ -76,10 +73,7 @@ class InputSanitizer {
     if (query.isEmpty) return '';
 
     // 移除特殊字符
-    final cleaned = query.replaceAll(
-      RegExp(r'[<>"]'),
-      '',
-    );
+    final cleaned = query.replaceAll(RegExp(r'[<>"]'), '');
 
     // 限制长度
     const maxLength = 100;
@@ -136,7 +130,9 @@ class InputSanitizer {
     if (filename.isEmpty) return false;
 
     // 检查路径遍历攻击
-    if (filename.contains('..') || filename.contains('/') || filename.contains('\\')) {
+    if (filename.contains('..') ||
+        filename.contains('/') ||
+        filename.contains('\\')) {
       return false;
     }
 
@@ -154,9 +150,6 @@ class InputSanitizer {
     if (!isValidFileName(filename)) return '';
 
     // 移除特殊字符
-    return filename.replaceAll(
-      RegExp(r'[<>:"|?*\x00-\x1F]'),
-      '_',
-    );
+    return filename.replaceAll(RegExp(r'[<>:"|?*\x00-\x1F]'), '_');
   }
 }

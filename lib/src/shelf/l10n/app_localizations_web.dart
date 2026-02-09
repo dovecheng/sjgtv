@@ -104,12 +104,17 @@ Locale parseLocaleFromAcceptLanguage(String? acceptLanguage) {
   if (acceptLanguage == null || acceptLanguage.isEmpty) {
     return const Locale('zh', 'CN');
   }
-  final List<String> parts = acceptLanguage.split(',').map((String s) => s.split(';').first.trim()).toList();
+  final List<String> parts = acceptLanguage
+      .split(',')
+      .map((String s) => s.split(';').first.trim())
+      .toList();
   for (final String tag in parts) {
     if (tag.startsWith('zh-HK') || tag.startsWith('zh_HK')) {
       return const Locale('zh', 'HK');
     }
-    if (tag.startsWith('zh') || tag.startsWith('zh-CN') || tag.startsWith('zh_CN')) {
+    if (tag.startsWith('zh') ||
+        tag.startsWith('zh-CN') ||
+        tag.startsWith('zh_CN')) {
       return const Locale('zh', 'CN');
     }
     if (tag.startsWith('en')) {

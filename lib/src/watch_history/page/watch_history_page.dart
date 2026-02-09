@@ -36,50 +36,52 @@ class _WatchHistoryPageState extends ConsumerState<WatchHistoryPage> {
           ),
         ],
       ),
-      body: ref.watch(watchHistoriesProvider).when(
-        data: (histories) {
-          if (histories.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.history,
-                    size: 80,
-                    color: theme.colorScheme.onSurface.withValues(alpha: 0.3),
+      body: ref
+          .watch(watchHistoriesProvider)
+          .when(
+            data: (histories) {
+              if (histories.isEmpty) {
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.history,
+                        size: 80,
+                        color: theme.colorScheme.onSurface.withValues(
+                          alpha: 0.3,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        l10n.noWatchHistory,
+                        style: theme.textTheme.titleLarge?.copyWith(
+                          color: theme.colorScheme.onSurface.withValues(
+                            alpha: 0.5,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 16),
-                  Text(
-                    l10n.noWatchHistory,
-                    style: theme.textTheme.titleLarge?.copyWith(
-                      color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
-                    ),
-                  ),
-                ],
-              ),
-            );
-          }
+                );
+              }
 
-          return ListView.builder(
-            controller: _scrollController,
-            padding: const EdgeInsets.all(16),
-            itemCount: histories.length,
-            itemBuilder: (context, index) {
-              final history = histories[index];
-              return _HistoryItem(
-                history: history,
-                onDelete: () => _deleteHistory(history.id),
+              return ListView.builder(
+                controller: _scrollController,
+                padding: const EdgeInsets.all(16),
+                itemCount: histories.length,
+                itemBuilder: (context, index) {
+                  final history = histories[index];
+                  return _HistoryItem(
+                    history: history,
+                    onDelete: () => _deleteHistory(history.id),
+                  );
+                },
               );
             },
-          );
-        },
-        loading: () => const Center(
-          child: CircularProgressIndicator(),
-        ),
-        error: (error, stack) => Center(
-          child: Text('错误: $error'),
-        ),
-      ),
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (error, stack) => Center(child: Text('错误: $error')),
+          ),
     );
   }
 
@@ -114,10 +116,7 @@ class _WatchHistoryPageState extends ConsumerState<WatchHistoryPage> {
 
 /// 观看历史项
 class _HistoryItem extends StatelessWidget {
-  const _HistoryItem({
-    required this.history,
-    required this.onDelete,
-  });
+  const _HistoryItem({required this.history, required this.onDelete});
 
   final dynamic history;
   final VoidCallback onDelete;
@@ -152,7 +151,9 @@ class _HistoryItem extends StatelessWidget {
                       color: theme.colorScheme.surfaceContainerHighest,
                       child: Icon(
                         Icons.movie,
-                        color: theme.colorScheme.onSurface.withValues(alpha: 0.3),
+                        color: theme.colorScheme.onSurface.withValues(
+                          alpha: 0.3,
+                        ),
                       ),
                     );
                   },
@@ -174,7 +175,9 @@ class _HistoryItem extends StatelessWidget {
                     Text(
                       '${history.episodeName} · ${history.sourceName}',
                       style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+                        color: theme.colorScheme.onSurface.withValues(
+                          alpha: 0.7,
+                        ),
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -186,7 +189,8 @@ class _HistoryItem extends StatelessWidget {
                         Expanded(
                           child: LinearProgressIndicator(
                             value: history.progressPercent / 100,
-                            backgroundColor: theme.colorScheme.surfaceContainerHighest,
+                            backgroundColor:
+                                theme.colorScheme.surfaceContainerHighest,
                             valueColor: AlwaysStoppedAnimation(
                               theme.colorScheme.primary,
                             ),
@@ -196,7 +200,9 @@ class _HistoryItem extends StatelessWidget {
                         Text(
                           '${history.progressPercent.toStringAsFixed(0)}%',
                           style: theme.textTheme.bodySmall?.copyWith(
-                            color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+                            color: theme.colorScheme.onSurface.withValues(
+                              alpha: 0.7,
+                            ),
                           ),
                         ),
                       ],

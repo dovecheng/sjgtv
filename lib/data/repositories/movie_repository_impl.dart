@@ -16,10 +16,14 @@ class MovieRepositoryImpl implements MovieRepository {
     required this.sourceRepository,
     required this.proxyRepository,
     Dio? dio,
-  }) : _dio = dio ?? Dio(BaseOptions(
-          connectTimeout: const Duration(seconds: 15),
-          receiveTimeout: const Duration(seconds: 15),
-        ));
+  }) : _dio =
+           dio ??
+           Dio(
+             BaseOptions(
+               connectTimeout: const Duration(seconds: 15),
+               receiveTimeout: const Duration(seconds: 15),
+             ),
+           );
 
   final SourceRepository sourceRepository;
   final ProxyRepository proxyRepository;
@@ -95,7 +99,13 @@ class MovieRepositoryImpl implements MovieRepository {
       final proxies = proxiesResult.value!;
       final activeProxy = proxies.isEmpty ? null : proxies.first;
 
-      final results = await _executeCategoryQuery(activeSources, activeProxy, categoryId, page: page, pageSize: pageSize);
+      final results = await _executeCategoryQuery(
+        activeSources,
+        activeProxy,
+        categoryId,
+        page: page,
+        pageSize: pageSize,
+      );
       final merged = _mergeResults(results, activeSources);
 
       return Result.success(merged);
@@ -127,7 +137,11 @@ class MovieRepositoryImpl implements MovieRepository {
       final proxies = proxiesResult.value!;
       final activeProxy = proxies.isEmpty ? null : proxies.first;
 
-      final movie = await _executeDetailQuery(activeSources, activeProxy, movieId);
+      final movie = await _executeDetailQuery(
+        activeSources,
+        activeProxy,
+        movieId,
+      );
       if (movie != null) {
         return Result.success(movie);
       }
@@ -173,19 +187,18 @@ class MovieRepositoryImpl implements MovieRepository {
     );
 
     return results
-        .where((r) =>
-            r != null &&
-            (r['code'] == 1 || r['code'] == '1') &&
-            r['list'] != null &&
-            (r['list'] as List<dynamic>).isNotEmpty)
+        .where(
+          (r) =>
+              r != null &&
+              (r['code'] == 1 || r['code'] == '1') &&
+              r['list'] != null &&
+              (r['list'] as List<dynamic>).isNotEmpty,
+        )
         .toList();
   }
 
   /// 合并搜索结果
-  List<Movie> _mergeResults(
-    List<dynamic> results,
-    List<dynamic> sources,
-  ) {
+  List<Movie> _mergeResults(List<dynamic> results, List<dynamic> sources) {
     final groups = <String, List<Map<String, dynamic>>>{};
 
     for (int i = 0; i < results.length; i++) {
@@ -238,9 +251,13 @@ class MovieRepositoryImpl implements MovieRepository {
   Movie? _parseToMovie(Map<String, dynamic> data) {
     try {
       return MovieModel(
-        id: data['vod_id']?.toString() ?? DateTime.now().millisecondsSinceEpoch.toString(),
+        id:
+            data['vod_id']?.toString() ??
+            DateTime.now().millisecondsSinceEpoch.toString(),
         title: data['vod_name']?.toString() ?? '',
-        year: int.tryParse(data['vod_year']?.toString() ?? '') ?? DateTime.now().year,
+        year:
+            int.tryParse(data['vod_year']?.toString() ?? '') ??
+            DateTime.now().year,
         rating: double.tryParse(data['vod_score']?.toString() ?? '0') ?? 0.0,
         coverUrl: data['vod_pic']?.toString() ?? '',
         playable: true,
@@ -332,11 +349,13 @@ class MovieRepositoryImpl implements MovieRepository {
     );
 
     return results
-        .where((r) =>
-            r != null &&
-            (r['code'] == 1 || r['code'] == '1') &&
-            r['list'] != null &&
-            (r['list'] as List<dynamic>).isNotEmpty)
+        .where(
+          (r) =>
+              r != null &&
+              (r['code'] == 1 || r['code'] == '1') &&
+              r['list'] != null &&
+              (r['list'] as List<dynamic>).isNotEmpty,
+        )
         .toList();
   }
 
@@ -351,10 +370,7 @@ class MovieRepositoryImpl implements MovieRepository {
       try {
         final response = await _dio.get<dynamic>(
           baseUrl,
-          queryParameters: {
-            'ac': 'detail',
-            'ids': movieId,
-          },
+          queryParameters: {'ac': 'detail', 'ids': movieId},
           options: Options(
             headers: {
               'User-Agent':

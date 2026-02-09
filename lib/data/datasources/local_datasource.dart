@@ -52,14 +52,16 @@ abstract class LocalDataSource {
 
   /// 添加或更新观看历史
   Future<Result<WatchHistory, Failure>> addOrUpdateWatchHistory(
-      WatchHistory history);
+    WatchHistory history,
+  );
 
   /// 获取所有观看历史
   Future<Result<List<WatchHistory>, Failure>> getAllWatchHistories();
 
   /// 获取指定电影的观看历史
   Future<Result<List<WatchHistory>, Failure>> getWatchHistoriesByMovie(
-      String movieId);
+    String movieId,
+  );
 
   /// 删除观看历史
   Future<Result<void, Failure>> deleteWatchHistory(String id);

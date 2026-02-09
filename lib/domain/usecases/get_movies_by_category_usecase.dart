@@ -27,7 +27,9 @@ class GetMoviesByCategoryUseCase {
   /// 执行获取
   ///
   /// [params] 参数
-  Future<Result<List<Movie>, Failure>> call(GetMoviesByCategoryParams params) async {
+  Future<Result<List<Movie>, Failure>> call(
+    GetMoviesByCategoryParams params,
+  ) async {
     return repository.getMoviesByCategory(
       params.categoryId,
       page: params.page,

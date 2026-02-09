@@ -55,7 +55,9 @@ class _MovieDetailPageState extends ConsumerState<MovieDetailPage> {
 
   void _checkFavoriteStatus() async {
     final movieId = widget.movie['vod_id']?.toString() ?? '';
-    final isFav = await ref.read(favoritesProvider.notifier).isFavorite(movieId);
+    final isFav = await ref
+        .read(favoritesProvider.notifier)
+        .isFavorite(movieId);
     if (mounted) {
       setState(() {
         _isFavorite = isFav;
@@ -188,9 +190,12 @@ class _MovieDetailPageState extends ConsumerState<MovieDetailPage> {
                                   fit: BoxFit.cover,
                                   placeholder: (BuildContext ctx, String url) =>
                                       networkImagePlaceholder(ctx),
-                                  errorWidget: (BuildContext ctx,
-                                          String url, Object error) =>
-                                      networkImageErrorWidget(ctx),
+                                  errorWidget:
+                                      (
+                                        BuildContext ctx,
+                                        String url,
+                                        Object error,
+                                      ) => networkImageErrorWidget(ctx),
                                 ),
                               ),
                             ),
@@ -209,8 +214,12 @@ class _MovieDetailPageState extends ConsumerState<MovieDetailPage> {
                                       ),
                                       IconButton(
                                         icon: Icon(
-                                          _isFavorite ? Icons.favorite : Icons.favorite_border,
-                                          color: _isFavorite ? Colors.red : null,
+                                          _isFavorite
+                                              ? Icons.favorite
+                                              : Icons.favorite_border,
+                                          color: _isFavorite
+                                              ? Colors.red
+                                              : null,
                                         ),
                                         onPressed: _toggleFavorite,
                                         iconSize: 32,
@@ -269,10 +278,7 @@ class _MovieDetailPageState extends ConsumerState<MovieDetailPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            '剧情简介',
-                            style: textTheme.headlineMedium,
-                          ),
+                          Text('剧情简介', style: textTheme.headlineMedium),
                           const SizedBox(height: 8),
                           Text(
                             widget.movie['vod_content'] ??
@@ -297,10 +303,7 @@ class _MovieDetailPageState extends ConsumerState<MovieDetailPage> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Text(
-                        '选集',
-                        style: textTheme.headlineMedium,
-                      ),
+                      child: Text('选集', style: textTheme.headlineMedium),
                     ),
                     const SizedBox(height: 12),
                     SizedBox(
@@ -321,8 +324,9 @@ class _MovieDetailPageState extends ConsumerState<MovieDetailPage> {
                                   WidgetsBinding.instance.addPostFrameCallback((
                                     _,
                                   ) {
-                                    final BuildContext? context = _episodeKeys[_focusedIndex]
-                                        .currentContext;
+                                    final BuildContext? context =
+                                        _episodeKeys[_focusedIndex]
+                                            .currentContext;
                                     if (context != null) {
                                       Scrollable.ensureVisible(
                                         context,
@@ -344,8 +348,9 @@ class _MovieDetailPageState extends ConsumerState<MovieDetailPage> {
                                   WidgetsBinding.instance.addPostFrameCallback((
                                     _,
                                   ) {
-                                    final BuildContext? context = _episodeKeys[_focusedIndex]
-                                        .currentContext;
+                                    final BuildContext? context =
+                                        _episodeKeys[_focusedIndex]
+                                            .currentContext;
                                     if (context != null) {
                                       Scrollable.ensureVisible(
                                         context,
@@ -429,14 +434,12 @@ class _MovieDetailPageState extends ConsumerState<MovieDetailPage> {
                                       onPressed: () => _playEpisode(index),
                                       child: Text(
                                         _episodes[index]['title']!,
-                                        style: textTheme
-                                            .bodyLarge!
-                                            .copyWith(
-                                              fontWeight: isFocused
-                                                  ? FontWeight.bold
-                                                  : FontWeight.normal,
-                                              fontSize: isFocused ? 18 : 16,
-                                            ),
+                                        style: textTheme.bodyLarge!.copyWith(
+                                          fontWeight: isFocused
+                                              ? FontWeight.bold
+                                              : FontWeight.normal,
+                                          fontSize: isFocused ? 18 : 16,
+                                        ),
                                       ),
                                     ),
                                   ),

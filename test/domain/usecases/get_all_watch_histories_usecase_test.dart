@@ -53,50 +53,44 @@ void main() {
 
     test('应该成功获取所有观看历史', () async {
       // arrange
-      when(mockRepository.getAllHistories())
-          .thenAnswer((_) async => Result.success(testHistories));
+      when(
+        mockRepository.getAllHistories(),
+      ).thenAnswer((_) async => Result.success(testHistories));
 
       // act
       final result = await useCase();
 
       // assert
       expect(result.isSuccess, true);
-      result.when(
-        (_) => fail('应该返回成功结果'),
-        (histories) {
-          expect(histories.length, 2);
-          expect(histories[0].movieTitle, '电影1');
-          expect(histories[1].movieTitle, '电影2');
-        },
-      );
+      result.when((_) => fail('应该返回成功结果'), (histories) {
+        expect(histories.length, 2);
+        expect(histories[0].movieTitle, '电影1');
+        expect(histories[1].movieTitle, '电影2');
+      });
       verify(mockRepository.getAllHistories());
     });
 
     test('应该返回空列表当没有观看历史时', () async {
       // arrange
-      when(mockRepository.getAllHistories())
-          .thenAnswer((_) async => Result.success([]));
+      when(
+        mockRepository.getAllHistories(),
+      ).thenAnswer((_) async => Result.success([]));
 
       // act
       final result = await useCase();
 
       // assert
       expect(result.isSuccess, true);
-      result.when(
-        (_) => fail('应该返回成功结果'),
-        (histories) {
-          expect(histories, isEmpty);
-        },
-      );
+      result.when((_) => fail('应该返回成功结果'), (histories) {
+        expect(histories, isEmpty);
+      });
       verify(mockRepository.getAllHistories());
     });
 
     test('应该返回失败当数据库出错时', () async {
       // arrange
       when(mockRepository.getAllHistories()).thenAnswer(
-        (_) async => Result.failure(
-          CacheFailure('获取观看历史失败: Database error'),
-        ),
+        (_) async => Result.failure(CacheFailure('获取观看历史失败: Database error')),
       );
 
       // act
@@ -104,13 +98,10 @@ void main() {
 
       // assert
       expect(result.isFailure, true);
-      result.when(
-        (failure) {
-          expect(failure, isA<CacheFailure>());
-          expect(failure.message, contains('获取观看历史失败'));
-        },
-        (_) => fail('应该返回失败结果'),
-      );
+      result.when((failure) {
+        expect(failure, isA<CacheFailure>());
+        expect(failure.message, contains('获取观看历史失败'));
+      }, (_) => fail('应该返回失败结果'));
       verify(mockRepository.getAllHistories());
     });
 
@@ -147,20 +138,18 @@ void main() {
         ),
       ];
 
-      when(mockRepository.getAllHistories())
-          .thenAnswer((_) async => Result.success(histories));
+      when(
+        mockRepository.getAllHistories(),
+      ).thenAnswer((_) async => Result.success(histories));
 
       // act
       final result = await useCase();
 
       // assert
-      result.when(
-        (_) {},
-        (historyList) {
-          expect(historyList[0].watchedAt, DateTime(2024, 1, 2));
-          expect(historyList[1].watchedAt, DateTime(2024, 1, 1));
-        },
-      );
+      result.when((_) {}, (historyList) {
+        expect(historyList[0].watchedAt, DateTime(2024, 1, 2));
+        expect(historyList[1].watchedAt, DateTime(2024, 1, 1));
+      });
     });
   });
 }

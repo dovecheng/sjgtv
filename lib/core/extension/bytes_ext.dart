@@ -18,8 +18,9 @@ String formatBytesSize(int bytes, [int decimals = 2]) {
   if (bytes <= 0) {
     return '0 B';
   }
-  final int i = (math.log(bytes) / math.log(1024))
-      .floor()
-      .clamp(0, _sizeSuffixes.length - 1);
+  final int i = (math.log(bytes) / math.log(1024)).floor().clamp(
+    0,
+    _sizeSuffixes.length - 1,
+  );
   return '${(bytes / math.pow(1024, i)).toStringAsFixed(decimals)} ${_sizeSuffixes[i]}';
 }

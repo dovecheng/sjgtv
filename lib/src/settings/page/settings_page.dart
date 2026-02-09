@@ -18,9 +18,7 @@ class SettingsPage extends ConsumerWidget {
     final settingsAsync = ref.watch(settingsProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.settings),
-      ),
+      appBar: AppBar(title: Text(l10n.settings)),
       body: settingsAsync.when(
         data: (settings) {
           return ListView(
@@ -31,9 +29,9 @@ class SettingsPage extends ConsumerWidget {
               _buildVolumeTile(context, ref, settings, l10n),
               _buildPlaybackSpeedTile(context, ref, settings, l10n),
               _buildAutoPlayNextTile(context, ref, settings, l10n),
-              
+
               const SizedBox(height: 24),
-              
+
               // 显示设置
               _buildSectionHeader(l10n.displaySettings),
               _buildThemeModeTile(context, ref, settings, l10n),
@@ -48,10 +46,7 @@ class SettingsPage extends ConsumerWidget {
             children: [
               const Icon(Icons.error_outline, size: 64),
               const SizedBox(height: 16),
-              Text(
-                '加载失败',
-                style: textTheme.titleLarge,
-              ),
+              Text('加载失败', style: textTheme.titleLarge),
             ],
           ),
         ),
@@ -219,9 +214,7 @@ class SettingsPage extends ConsumerWidget {
               children: AppThemeMode.values.map((mode) {
                 return ListTile(
                   title: Text(_getThemeModeText(mode, l10n)),
-                  leading: Radio<AppThemeMode>(
-                    value: mode,
-                  ),
+                  leading: Radio<AppThemeMode>(value: mode),
                   onTap: () {
                     ref.read(settingsProvider.notifier).updateThemeMode(mode);
                     Navigator.pop(context);
@@ -270,11 +263,11 @@ class SettingsPage extends ConsumerWidget {
               children: languages.map((lang) {
                 return ListTile(
                   title: Text(lang['name']!),
-                  leading: Radio<String>(
-                    value: lang['code']!,
-                  ),
+                  leading: Radio<String>(value: lang['code']!),
                   onTap: () {
-                    ref.read(settingsProvider.notifier).updateLanguage(lang['code']!);
+                    ref
+                        .read(settingsProvider.notifier)
+                        .updateLanguage(lang['code']!);
                     Navigator.pop(context);
                   },
                 );

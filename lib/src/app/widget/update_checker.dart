@@ -44,7 +44,9 @@ class AppUpdater {
           ? '${packageInfo.version}+${packageInfo.buildNumber}'
           : packageInfo.version;
 
-      final Response<dynamic> response = await _dio.get<dynamic>(_githubReleasesUrl);
+      final Response<dynamic> response = await _dio.get<dynamic>(
+        _githubReleasesUrl,
+      );
       final dynamic latestRelease = response.data;
 
       // 检查响应是否有效
@@ -95,8 +97,9 @@ class AppUpdater {
     final String raw = version.replaceAll('v', '').trim();
     final List<String> mainAndBuild = raw.split('+');
     final String mainPart = mainAndBuild[0].trim();
-    final String buildPart =
-        mainAndBuild.length > 1 ? mainAndBuild[1].trim() : '0';
+    final String buildPart = mainAndBuild.length > 1
+        ? mainAndBuild[1].trim()
+        : '0';
     final List<int> mainParts = mainPart
         .split('.')
         .map((String e) => IntConverter.toIntOrZero(e))
@@ -118,7 +121,7 @@ class AppUpdater {
 
       if (currentPart < latestPart) return -1;
       if (currentPart > latestPart) return 1;
-  }
+    }
     return 0;
   }
 
@@ -148,7 +151,10 @@ class AppUpdater {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text(l10n.updateCheckerUpdateContent, style: textTheme.titleSmall),
+                  Text(
+                    l10n.updateCheckerUpdateContent,
+                    style: textTheme.titleSmall,
+                  ),
                   const SizedBox(height: 8),
                   Text(
                     notes.isNotEmpty ? notes : l10n.updateCheckerNoNotes,
@@ -159,7 +165,9 @@ class AppUpdater {
                     LinearProgressIndicator(
                       value: _downloadProgress,
                       backgroundColor: colorScheme.surfaceContainerHighest,
-                      valueColor: AlwaysStoppedAnimation<Color>(colorScheme.primary),
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        colorScheme.primary,
+                      ),
                     ),
                     const SizedBox(height: 8),
                     Text(
@@ -196,7 +204,8 @@ class AppUpdater {
                 ),
               ] else ...[
                 TextButton(
-                  onPressed: () => _cancelDownload(l10n.updateCheckerUserCancelDownload),
+                  onPressed: () =>
+                      _cancelDownload(l10n.updateCheckerUserCancelDownload),
                   child: Text(l10n.updateCheckerCancelDownload),
                 ),
               ],
@@ -218,10 +227,12 @@ class AppUpdater {
       final PermissionStatus status = await Permission.storage.request();
       if (!status.isGranted) {
         if (context.mounted) {
-          final String msg = AppLocalizations.of(context).updateCheckerStorageRequired;
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(msg)),
-          );
+          final String msg = AppLocalizations.of(
+            context,
+          ).updateCheckerStorageRequired;
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(msg)));
         }
         return;
       }
@@ -275,10 +286,12 @@ class AppUpdater {
       });
 
       if (context.mounted) {
-        final String msg = AppLocalizations.of(context).updateCheckerDownloadFail;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('$msg: ${e.toString()}')),
-        );
+        final String msg = AppLocalizations.of(
+          context,
+        ).updateCheckerDownloadFail;
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('$msg: ${e.toString()}')));
       }
     }
   }

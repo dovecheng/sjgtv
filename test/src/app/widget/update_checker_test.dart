@@ -120,21 +120,21 @@ void main() {
     test('应该正确判断版本更新', () {
       // 当前版本 26.02.02+12，最新版本 26.02.03+15
       final result = _compareVersionsPublic('26.02.02+12', '26.02.03+15');
-      
+
       // assert
       expect(result, equals(-1));
     });
 
     test('应该判断无需更新（版本相同）', () {
       final result = _compareVersionsPublic('26.02.03+12', '26.02.03+12');
-      
+
       // assert
       expect(result, equals(0));
     });
 
     test('应该判断无需更新（当前版本更新）', () {
       final result = _compareVersionsPublic('26.02.03+15', '26.02.03+12');
-      
+
       // assert
       expect(result, equals(1));
     });
@@ -144,9 +144,18 @@ void main() {
     test('应该找到 APK 下载 URL', () {
       // arrange
       final assets = [
-        {'name': 'README.md', 'browser_download_url': 'https://example.com/README.md'},
-        {'name': 'sjgtv-v26.02.03.apk', 'browser_download_url': 'https://example.com/sjgtv-v26.02.03.apk'},
-        {'name': 'sjgtv-v26.02.03.zip', 'browser_download_url': 'https://example.com/sjgtv-v26.02.03.zip'},
+        {
+          'name': 'README.md',
+          'browser_download_url': 'https://example.com/README.md',
+        },
+        {
+          'name': 'sjgtv-v26.02.03.apk',
+          'browser_download_url': 'https://example.com/sjgtv-v26.02.03.apk',
+        },
+        {
+          'name': 'sjgtv-v26.02.03.zip',
+          'browser_download_url': 'https://example.com/sjgtv-v26.02.03.zip',
+        },
       ];
 
       // act
@@ -159,8 +168,14 @@ void main() {
     test('应该返回 null 当没有 APK 文件时', () {
       // arrange
       final assets = [
-        {'name': 'README.md', 'browser_download_url': 'https://example.com/README.md'},
-        {'name': 'sjgtv-v26.02.03.zip', 'browser_download_url': 'https://example.com/sjgtv-v26.02.03.zip'},
+        {
+          'name': 'README.md',
+          'browser_download_url': 'https://example.com/README.md',
+        },
+        {
+          'name': 'sjgtv-v26.02.03.zip',
+          'browser_download_url': 'https://example.com/sjgtv-v26.02.03.zip',
+        },
       ];
 
       // act
@@ -181,8 +196,15 @@ void main() {
     test('应该找到第一个 APK 文件', () {
       // arrange
       final assets = [
-        {'name': 'sjgtv-v26.02.03.apk', 'browser_download_url': 'https://example.com/sjgtv-v26.02.03.apk'},
-        {'name': 'sjgtv-v26.02.03-arm64-v8a.apk', 'browser_download_url': 'https://example.com/sjgtv-v26.02.03-arm64-v8a.apk'},
+        {
+          'name': 'sjgtv-v26.02.03.apk',
+          'browser_download_url': 'https://example.com/sjgtv-v26.02.03.apk',
+        },
+        {
+          'name': 'sjgtv-v26.02.03-arm64-v8a.apk',
+          'browser_download_url':
+              'https://example.com/sjgtv-v26.02.03-arm64-v8a.apk',
+        },
       ];
 
       // act
@@ -199,8 +221,9 @@ List<int> _parseVersionPublic(String version) {
   final String raw = version.replaceAll('v', '').trim();
   final List<String> mainAndBuild = raw.split('+');
   final String mainPart = mainAndBuild[0].trim();
-  final String buildPart =
-      mainAndBuild.length > 1 ? mainAndBuild[1].trim() : '0';
+  final String buildPart = mainAndBuild.length > 1
+      ? mainAndBuild[1].trim()
+      : '0';
   final List<int> mainParts = mainPart
       .split('.')
       .map((String e) => int.tryParse(e) ?? 0)

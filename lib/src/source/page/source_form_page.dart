@@ -88,8 +88,7 @@ class _SourceFormPageState extends ConsumerState<SourceFormPage> {
     try {
       final SourceModel? edit = widget.sourceToEdit;
       final String normalizedUrl = _normalizeUrl(url);
-      final SourcesProvider notifier =
-          ref.read(sourcesProvider.notifier);
+      final SourcesProvider notifier = ref.read(sourcesProvider.notifier);
 
       if (edit != null) {
         final SourceModel updated = SourceModel(
@@ -104,21 +103,19 @@ class _SourceFormPageState extends ConsumerState<SourceFormPage> {
         );
         await notifier.updateSource(updated);
       } else {
-        await notifier.addSource(SourceModel(
-          uuid: const Uuid().v4(),
-          name: name,
-          url: normalizedUrl,
-          tagIds: const [],
-        ));
+        await notifier.addSource(
+          SourceModel(
+            uuid: const Uuid().v4(),
+            name: name,
+            url: normalizedUrl,
+            tagIds: const [],
+          ),
+        );
       }
       if (!mounted) return;
       Navigator.of(context).pop(true);
     } catch (e, s) {
-      _log.e(
-        () => widget.sourceToEdit != null ? '更新源失败' : '添加源失败',
-        e,
-        s,
-      );
+      _log.e(() => widget.sourceToEdit != null ? '更新源失败' : '添加源失败', e, s);
       if (!mounted) return;
       setState(() {
         _errorText = e.toString();
@@ -135,7 +132,9 @@ class _SourceFormPageState extends ConsumerState<SourceFormPage> {
       backgroundColor: colorScheme.surface,
       appBar: AppBar(
         title: Text(
-          widget.sourceToEdit != null ? l10n.sourceEditTitle : l10n.sourceAddTitle,
+          widget.sourceToEdit != null
+              ? l10n.sourceEditTitle
+              : l10n.sourceAddTitle,
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -151,60 +150,60 @@ class _SourceFormPageState extends ConsumerState<SourceFormPage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             TextField(
-                controller: _nameController,
-                focusNode: _nameFocus,
-                enabled: !_isSubmitting,
-                style: const TextStyle(color: Colors.white, fontSize: 18),
-                decoration: InputDecoration(
-                  labelText: l10n.sourceName,
-                  labelStyle: TextStyle(color: colorScheme.onSurfaceVariant),
-                  filled: true,
-                  fillColor: colorScheme.surfaceContainerHighest,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: Colors.white24),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: colorScheme.primary, width: 2),
-                  ),
+              controller: _nameController,
+              focusNode: _nameFocus,
+              enabled: !_isSubmitting,
+              style: const TextStyle(color: Colors.white, fontSize: 18),
+              decoration: InputDecoration(
+                labelText: l10n.sourceName,
+                labelStyle: TextStyle(color: colorScheme.onSurfaceVariant),
+                filled: true,
+                fillColor: colorScheme.surfaceContainerHighest,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                onSubmitted: (_) =>
-                    FocusScope.of(context).requestFocus(_urlFocus),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: const BorderSide(color: Colors.white24),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: colorScheme.primary, width: 2),
+                ),
               ),
+              onSubmitted: (_) =>
+                  FocusScope.of(context).requestFocus(_urlFocus),
+            ),
             const SizedBox(height: 24),
             TextField(
-                controller: _urlController,
-                focusNode: _urlFocus,
-                enabled: !_isSubmitting,
-                keyboardType: TextInputType.url,
-                autocorrect: false,
-                style: const TextStyle(color: Colors.white, fontSize: 18),
-                decoration: InputDecoration(
-                  labelText: l10n.sourceUrlHint,
-                  labelStyle: TextStyle(color: colorScheme.onSurfaceVariant),
-                  hintText: 'https://example.com/',
-                  hintStyle: TextStyle(color: colorScheme.onSurfaceVariant),
-                  filled: true,
-                  fillColor: colorScheme.surfaceContainerHighest,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: Colors.white24),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: colorScheme.primary, width: 2),
-                  ),
+              controller: _urlController,
+              focusNode: _urlFocus,
+              enabled: !_isSubmitting,
+              keyboardType: TextInputType.url,
+              autocorrect: false,
+              style: const TextStyle(color: Colors.white, fontSize: 18),
+              decoration: InputDecoration(
+                labelText: l10n.sourceUrlHint,
+                labelStyle: TextStyle(color: colorScheme.onSurfaceVariant),
+                hintText: 'https://example.com/',
+                hintStyle: TextStyle(color: colorScheme.onSurfaceVariant),
+                filled: true,
+                fillColor: colorScheme.surfaceContainerHighest,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                onSubmitted: (_) =>
-                    FocusScope.of(context).requestFocus(_saveFocus),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: const BorderSide(color: Colors.white24),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: colorScheme.primary, width: 2),
+                ),
               ),
+              onSubmitted: (_) =>
+                  FocusScope.of(context).requestFocus(_saveFocus),
+            ),
             if (_errorText != null) ...<Widget>[
               const SizedBox(height: 16),
               Text(

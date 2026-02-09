@@ -45,51 +45,45 @@ void main() {
 
     test('应该成功获取所有视频源', () async {
       // arrange
-      when(mockRepository.getAllSources())
-          .thenAnswer((_) async => Result.success(testSources));
+      when(
+        mockRepository.getAllSources(),
+      ).thenAnswer((_) async => Result.success(testSources));
 
       // act
       final result = await useCase();
 
       // assert
       expect(result.isSuccess, true);
-      result.when(
-        (_) => fail('应该返回成功结果'),
-        (sources) {
-          expect(sources.length, 2);
-          expect(sources[0].name, '测试源1');
-          expect(sources[1].name, '测试源2');
-        },
-      );
+      result.when((_) => fail('应该返回成功结果'), (sources) {
+        expect(sources.length, 2);
+        expect(sources[0].name, '测试源1');
+        expect(sources[1].name, '测试源2');
+      });
       verify(mockRepository.getAllSources());
       verifyNoMoreInteractions(mockRepository);
     });
 
     test('应该返回空列表当没有源时', () async {
       // arrange
-      when(mockRepository.getAllSources())
-          .thenAnswer((_) async => Result.success([]));
+      when(
+        mockRepository.getAllSources(),
+      ).thenAnswer((_) async => Result.success([]));
 
       // act
       final result = await useCase();
 
       // assert
       expect(result.isSuccess, true);
-      result.when(
-        (_) => fail('应该返回成功结果'),
-        (sources) {
-          expect(sources, isEmpty);
-        },
-      );
+      result.when((_) => fail('应该返回成功结果'), (sources) {
+        expect(sources, isEmpty);
+      });
       verify(mockRepository.getAllSources());
     });
 
     test('应该返回失败当数据库出错时', () async {
       // arrange
       when(mockRepository.getAllSources()).thenAnswer(
-        (_) async => Result.failure(
-          CacheFailure('获取视频源失败: Database error'),
-        ),
+        (_) async => Result.failure(CacheFailure('获取视频源失败: Database error')),
       );
 
       // act
@@ -97,13 +91,10 @@ void main() {
 
       // assert
       expect(result.isFailure, true);
-      result.when(
-        (failure) {
-          expect(failure, isA<CacheFailure>());
-          expect(failure.message, contains('获取视频源失败'));
-        },
-        (_) => fail('应该返回失败结果'),
-      );
+      result.when((failure) {
+        expect(failure, isA<CacheFailure>());
+        expect(failure.message, contains('获取视频源失败'));
+      }, (_) => fail('应该返回失败结果'));
       verify(mockRepository.getAllSources());
     });
   });

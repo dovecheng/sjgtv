@@ -16,16 +16,16 @@ class Log {
     Logger.root.level = kReleaseMode ? LogLevel.info.value : LogLevel.all.value;
 
     void listenOnRecord() => Logger.root.onRecord.listen(
-          (LogRecord log) => consoleLog(
-            log.message,
-            time: log.time,
-            name: log.loggerName,
-            error: log.error,
-            stackTrace: log.stackTrace,
-            level: log.level,
-          ),
-          onDone: listenOnRecord,
-        );
+      (LogRecord log) => consoleLog(
+        log.message,
+        time: log.time,
+        name: log.loggerName,
+        error: log.error,
+        stackTrace: log.stackTrace,
+        level: log.level,
+      ),
+      onDone: listenOnRecord,
+    );
     listenOnRecord();
     return <String, Log>{};
   }();
@@ -83,42 +83,36 @@ class Log {
     Object? message, [
     Object? error,
     StackTrace? stackTrace,
-  ]) async =>
-      _log(LogLevel.verbose, message, error, stackTrace);
+  ]) async => _log(LogLevel.verbose, message, error, stackTrace);
 
   Future<void> d(
     Object? message, [
     Object? error,
     StackTrace? stackTrace,
-  ]) async =>
-      _log(LogLevel.debug, message, error, stackTrace);
+  ]) async => _log(LogLevel.debug, message, error, stackTrace);
 
   Future<void> i(
     Object? message, [
     Object? error,
     StackTrace? stackTrace,
-  ]) async =>
-      _log(LogLevel.info, message, error, stackTrace);
+  ]) async => _log(LogLevel.info, message, error, stackTrace);
 
   Future<void> w(
     Object? message, [
     Object? error,
     StackTrace? stackTrace,
-  ]) async =>
-      _log(LogLevel.warn, message, error, stackTrace);
+  ]) async => _log(LogLevel.warn, message, error, stackTrace);
 
   Future<void> e(
     Object? message, [
     Object? error,
     StackTrace? stackTrace,
-  ]) async =>
-      _log(LogLevel.error, message, error, stackTrace);
+  ]) async => _log(LogLevel.error, message, error, stackTrace);
 
   Future<void> log(
     LogLevel level,
     Object? message, [
     Object? error,
     StackTrace? stackTrace,
-  ]) async =>
-      _log(level, message, error, stackTrace);
+  ]) async => _log(level, message, error, stackTrace);
 }

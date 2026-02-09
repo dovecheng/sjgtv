@@ -45,7 +45,14 @@ final class SjgtvRunner extends AppRunner {
   /// 使用 base 同一 Isar 实例，并注册 app 的 sources/proxies/tags/favorites/watchHistories/settings schema
   @override
   IsarProvider? get isar => IsarProvider(
-    schemas: [SourceModelSchema, ProxyModelSchema, TagModelSchema, FavoriteModelSchema, WatchHistoryModelSchema, SettingsModelSchema],
+    schemas: [
+      SourceModelSchema,
+      ProxyModelSchema,
+      TagModelSchema,
+      FavoriteModelSchema,
+      WatchHistoryModelSchema,
+      SettingsModelSchema,
+    ],
   );
 
   @override
@@ -104,8 +111,7 @@ class _AppWithUpdateCheckState extends ConsumerState<_AppWithUpdateCheck> {
   Widget build(BuildContext context) {
     final Locale systemLocale =
         WidgetsBinding.instance.platformDispatcher.locale;
-    final String title =
-        lookupAppLocalizations(systemLocale).appTitle;
+    final String title = lookupAppLocalizations(systemLocale).appTitle;
 
     return MaterialApp.router(
       title: title,
@@ -211,9 +217,7 @@ class _ConfigLoader {
             weight: IntConverter.toIntOrNull(source['weight']) ?? 5,
             tagIds: List<String>.from(source['tagIds'] ?? []),
           );
-          await $ref
-              .read(sourcesProvider.notifier)
-              .addSource(newSourceModel);
+          await $ref.read(sourcesProvider.notifier).addSource(newSourceModel);
           savedCount++;
           log.d(() => '成功保存源: ${source['name']}');
         } catch (e, s) {

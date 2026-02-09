@@ -5,10 +5,7 @@ import 'package:sjgtv/domain/repositories/movie_repository.dart';
 
 /// 搜索电影参数
 class SearchMoviesParams {
-  const SearchMoviesParams({
-    required this.keyword,
-    this.limit,
-  });
+  const SearchMoviesParams({required this.keyword, this.limit});
 
   final String keyword;
   final int? limit;
@@ -30,9 +27,6 @@ class SearchMoviesUseCase {
       return Result.success([]);
     }
 
-    return repository.searchMovies(
-      params.keyword,
-      limit: params.limit,
-    );
+    return repository.searchMovies(params.keyword, limit: params.limit);
   }
 }

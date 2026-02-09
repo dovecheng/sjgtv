@@ -10,10 +10,7 @@ class UrlValidator {
   static const List<String> _allowedSchemes = ['http', 'https'];
 
   /// URL 黑名单
-  static const List<String> _blacklist = [
-    'malicious.com',
-    'phishing.net',
-  ];
+  static const List<String> _blacklist = ['malicious.com', 'phishing.net'];
 
   /// 验证 URL 格式
   static bool isValidUrl(String url) {
@@ -75,9 +72,7 @@ class UrlValidator {
   }
 
   /// 清理查询参数
-  static Map<String, String> _sanitizeQueryParams(
-    Map<String, String> params,
-  ) {
+  static Map<String, String> _sanitizeQueryParams(Map<String, String> params) {
     final sanitized = <String, String>{};
 
     // 允许的查询参数白名单
@@ -101,7 +96,14 @@ class UrlValidator {
       final path = uri.path.toLowerCase();
 
       // 检查是否是常见的图片格式
-      const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg'];
+      const imageExtensions = [
+        '.jpg',
+        '.jpeg',
+        '.png',
+        '.gif',
+        '.webp',
+        '.svg',
+      ];
       return imageExtensions.any((ext) => path.endsWith(ext));
     } catch (e) {
       return false;

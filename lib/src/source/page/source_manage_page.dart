@@ -165,7 +165,10 @@ class _SourceManagePageState extends ConsumerState<SourceManagePage> {
                 child: Card(
                   margin: const EdgeInsets.only(bottom: 16),
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
                     child: Row(
                       children: <Widget>[
                         Expanded(
@@ -175,7 +178,9 @@ class _SourceManagePageState extends ConsumerState<SourceManagePage> {
                               Text(
                                 source.name,
                                 style: TextStyle(
-                                  color: source.disabled ? Colors.white54 : Colors.white,
+                                  color: source.disabled
+                                      ? Colors.white54
+                                      : Colors.white,
                                   fontSize: 18,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -228,7 +233,9 @@ class _SourceManagePageState extends ConsumerState<SourceManagePage> {
                         GestureDetector(
                           onTap: () => _toggleSource(source),
                           child: Icon(
-                            source.disabled ? Icons.toggle_off : Icons.toggle_on,
+                            source.disabled
+                                ? Icons.toggle_off
+                                : Icons.toggle_on,
                             color: source.disabled
                                 ? Colors.white38
                                 : colorScheme.primary,

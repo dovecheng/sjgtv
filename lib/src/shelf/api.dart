@@ -39,8 +39,9 @@ class ShelfApi {
 
   static ShelfApi get instance => _instance ??= ShelfApi._();
 
-  AppLocalizations _l10n(Request request) =>
-      lookupAppLocalizations(parseLocaleFromAcceptLanguage(request.headers['Accept-Language']));
+  AppLocalizations _l10n(Request request) => lookupAppLocalizations(
+    parseLocaleFromAcceptLanguage(request.headers['Accept-Language']),
+  );
 
   /// 复制 assets 到文档目录
   Future<Directory> _copyAssetsToDocuments() async {
@@ -111,9 +112,10 @@ class ShelfApi {
   Future<Response> handleGetSourceModels(Request request) async {
     final AppLocalizations l10n = _l10n(request);
     try {
-      final List<SourceModel> sources =
-          await $ref.read(sourcesProvider.future);
-      return createSuccessResponse(sources.map((SourceModel s) => s.toJson()).toList());
+      final List<SourceModel> sources = await $ref.read(sourcesProvider.future);
+      return createSuccessResponse(
+        sources.map((SourceModel s) => s.toJson()).toList(),
+      );
     } catch (e) {
       return createErrorResponse(l10n.shelfApiGetSourceListFail, 500, e);
     }
@@ -148,10 +150,14 @@ class ShelfApi {
         tagIds: List<String>.from(data['tagIds'] ?? []),
       );
 
-      final SourceModel newSourceModel =
-          await $ref.read(sourcesProvider.notifier).addSource(source);
+      final SourceModel newSourceModel = await $ref
+          .read(sourcesProvider.notifier)
+          .addSource(source);
 
-      return createSuccessResponse(newSourceModel.toJson(), msg: l10n.shelfApiSourceAddSuccess);
+      return createSuccessResponse(
+        newSourceModel.toJson(),
+        msg: l10n.shelfApiSourceAddSuccess,
+      );
     } catch (e) {
       return createErrorResponse(e.toString(), 400, e);
     }
@@ -179,8 +185,9 @@ class ShelfApi {
         url += 'api.php/provide/vod';
       }
 
-      final List<SourceModel> existing =
-          await $ref.read(sourcesProvider.future);
+      final List<SourceModel> existing = await $ref.read(
+        sourcesProvider.future,
+      );
       SourceModel? src;
       for (final SourceModel s in existing) {
         if (s.uuid == data['id']) {
@@ -201,9 +208,13 @@ class ShelfApi {
         updatedAt: DateTime.now(),
       );
 
-      final SourceModel result =
-          await $ref.read(sourcesProvider.notifier).updateSource(updated);
-      return createSuccessResponse(result.toJson(), msg: l10n.shelfApiSourceUpdateSuccess);
+      final SourceModel result = await $ref
+          .read(sourcesProvider.notifier)
+          .updateSource(updated);
+      return createSuccessResponse(
+        result.toJson(),
+        msg: l10n.shelfApiSourceUpdateSuccess,
+      );
     } catch (e) {
       return createErrorResponse(e.toString(), 400, e);
     }
@@ -215,8 +226,9 @@ class ShelfApi {
       final String? id = request.url.queryParameters['id'];
       if (id == null) throw Exception(l10n.shelfApiIdRequired);
 
-      final SourceModel updatedSourceModel =
-          await $ref.read(sourcesProvider.notifier).toggleSource(id);
+      final SourceModel updatedSourceModel = await $ref
+          .read(sourcesProvider.notifier)
+          .toggleSource(id);
       return createSuccessResponse(updatedSourceModel.toJson());
     } catch (e) {
       return createErrorResponse(e.toString(), 400, e);
@@ -243,9 +255,12 @@ class ShelfApi {
   Future<Response> handleGetProxies(Request request) async {
     final AppLocalizations l10n = _l10n(request);
     try {
-      final List<ProxyModel> proxies =
-          await $ref.read(proxiesStorageProvider.future);
-      return createSuccessResponse(proxies.map((ProxyModel p) => p.toJson()).toList());
+      final List<ProxyModel> proxies = await $ref.read(
+        proxiesStorageProvider.future,
+      );
+      return createSuccessResponse(
+        proxies.map((ProxyModel p) => p.toJson()).toList(),
+      );
     } catch (e) {
       return createErrorResponse(l10n.shelfApiGetProxyListFail, 500, e);
     }
@@ -276,10 +291,14 @@ class ShelfApi {
         name: (data['name']?.toString() ?? '').trim(),
       );
 
-      final ProxyModel newProxyModel =
-          await $ref.read(proxiesStorageProvider.notifier).addProxyModel(proxy);
+      final ProxyModel newProxyModel = await $ref
+          .read(proxiesStorageProvider.notifier)
+          .addProxyModel(proxy);
 
-      return createSuccessResponse(newProxyModel.toJson(), msg: l10n.shelfApiProxyAddSuccess);
+      return createSuccessResponse(
+        newProxyModel.toJson(),
+        msg: l10n.shelfApiProxyAddSuccess,
+      );
     } catch (e) {
       return createErrorResponse(e.toString(), 400, e);
     }
@@ -291,8 +310,9 @@ class ShelfApi {
       final String? id = request.url.queryParameters['id'];
       if (id == null) throw Exception(l10n.shelfApiIdRequired);
 
-      final ProxyModel updatedProxyModel =
-          await $ref.read(proxiesStorageProvider.notifier).toggleProxyModel(id);
+      final ProxyModel updatedProxyModel = await $ref
+          .read(proxiesStorageProvider.notifier)
+          .toggleProxyModel(id);
       return createSuccessResponse(updatedProxyModel.toJson());
     } catch (e) {
       return createErrorResponse(e.toString(), 400, e);
@@ -320,7 +340,9 @@ class ShelfApi {
     final AppLocalizations l10n = _l10n(request);
     try {
       final List<TagModel> tags = await $ref.read(tagsStorageProvider.future);
-      return createSuccessResponse(tags.map((TagModel t) => t.toJson()).toList());
+      return createSuccessResponse(
+        tags.map((TagModel t) => t.toJson()).toList(),
+      );
     } catch (e) {
       return createErrorResponse(l10n.shelfApiGetTagListFail, 500, e);
     }
@@ -339,7 +361,9 @@ class ShelfApi {
       final List<TagModel> tags = await $ref.read(tagsStorageProvider.future);
       final int maxOrder = tags.isEmpty
           ? 0
-          : tags.map((TagModel t) => t.order).reduce((int a, int b) => a > b ? a : b);
+          : tags
+                .map((TagModel t) => t.order)
+                .reduce((int a, int b) => a > b ? a : b);
 
       final TagModel tag = TagModel(
         uuid: const Uuid().v4(),
@@ -348,10 +372,14 @@ class ShelfApi {
         order: maxOrder + 1,
       );
 
-      final TagModel newTagModel =
-          await $ref.read(tagsStorageProvider.notifier).addTagModel(tag);
+      final TagModel newTagModel = await $ref
+          .read(tagsStorageProvider.notifier)
+          .addTagModel(tag);
 
-      return createSuccessResponse(newTagModel.toJson(), msg: l10n.shelfApiTagAddSuccess);
+      return createSuccessResponse(
+        newTagModel.toJson(),
+        msg: l10n.shelfApiTagAddSuccess,
+      );
     } catch (e) {
       return createErrorResponse(e.toString(), 400, e);
     }
@@ -382,9 +410,14 @@ class ShelfApi {
         updatedAt: DateTime.now(),
       );
 
-      await $ref.read(tagsStorageProvider.notifier).updateTagModel(updatedTagModel);
+      await $ref
+          .read(tagsStorageProvider.notifier)
+          .updateTagModel(updatedTagModel);
 
-      return createSuccessResponse(updatedTagModel.toJson(), msg: l10n.shelfApiTagUpdateSuccess);
+      return createSuccessResponse(
+        updatedTagModel.toJson(),
+        msg: l10n.shelfApiTagUpdateSuccess,
+      );
     } catch (e) {
       return createErrorResponse(e.toString(), 400, e);
     }
@@ -403,7 +436,10 @@ class ShelfApi {
       final List<String> tagIds = List<String>.from(data['tagIds']);
       await $ref.read(tagsStorageProvider.notifier).updateTagModelOrder(tagIds);
 
-      return createSuccessResponse(null, msg: l10n.shelfApiTagOrderUpdateSuccess);
+      return createSuccessResponse(
+        null,
+        msg: l10n.shelfApiTagOrderUpdateSuccess,
+      );
     } catch (e) {
       return createErrorResponse(e.toString(), 400, e);
     }
@@ -432,21 +468,26 @@ class ShelfApi {
     Dio? dio;
 
     try {
-      final List<SourceModel> sources =
-          await $ref.read(sourcesProvider.future);
-      final List<SourceModel> activeSourceModels =
-          sources.where((SourceModel s) => !s.disabled).toList();
+      final List<SourceModel> sources = await $ref.read(sourcesProvider.future);
+      final List<SourceModel> activeSourceModels = sources
+          .where((SourceModel s) => !s.disabled)
+          .toList();
 
       if (activeSourceModels.isEmpty) {
-        return createSuccessResponse({'list': <dynamic>[]}, msg: l10n.shelfApiNoAvailableSources);
+        return createSuccessResponse({
+          'list': <dynamic>[],
+        }, msg: l10n.shelfApiNoAvailableSources);
       }
 
-      final List<ProxyModel> proxies =
-          await $ref.read(proxiesStorageProvider.future);
-      final List<ProxyModel> enabledProxies =
-          proxies.where((ProxyModel p) => p.enabled).toList();
-      final ProxyModel? activeProxyModel =
-          enabledProxies.isEmpty ? null : enabledProxies.first;
+      final List<ProxyModel> proxies = await $ref.read(
+        proxiesStorageProvider.future,
+      );
+      final List<ProxyModel> enabledProxies = proxies
+          .where((ProxyModel p) => p.enabled)
+          .toList();
+      final ProxyModel? activeProxyModel = enabledProxies.isEmpty
+          ? null
+          : enabledProxies.first;
 
       dio = Dio();
       dio.options.connectTimeout = const Duration(seconds: 5);
@@ -454,8 +495,10 @@ class ShelfApi {
 
       final List<dynamic> results = await Future.wait<dynamic>(
         activeSourceModels.map((SourceModel source) async {
-          final String baseUrl =
-              resolveSourceBaseUrl(activeProxyModel, source.url);
+          final String baseUrl = resolveSourceBaseUrl(
+            activeProxyModel,
+            source.url,
+          );
           final Map<String, String> queryParams = {'ac': 'videolist', 'wd': wd};
 
           try {
@@ -496,15 +539,20 @@ class ShelfApi {
           .toList();
 
       if (validResults.isEmpty) {
-        return createSuccessResponse({'list': <dynamic>[]}, msg: l10n.shelfApiNoSearchResults);
+        return createSuccessResponse({
+          'list': <dynamic>[],
+        }, msg: l10n.shelfApiNoSearchResults);
       }
 
-      final List<dynamic> mergedList = _mergeResults(validResults, activeSourceModels);
-
-      return createSuccessResponse(
-        {'total': mergedList.length, 'list': mergedList},
-        msg: l10n.shelfApiDataList,
+      final List<dynamic> mergedList = _mergeResults(
+        validResults,
+        activeSourceModels,
       );
+
+      return createSuccessResponse({
+        'total': mergedList.length,
+        'list': mergedList,
+      }, msg: l10n.shelfApiDataList);
     } catch (e) {
       return createErrorResponse('${l10n.shelfApiSearchFail}: $e', 500, e);
     } finally {
@@ -512,7 +560,10 @@ class ShelfApi {
     }
   }
 
-  List<dynamic> _mergeResults(List<dynamic> results, List<SourceModel> sources) {
+  List<dynamic> _mergeResults(
+    List<dynamic> results,
+    List<SourceModel> sources,
+  ) {
     final List<dynamic> mergedList = <dynamic>[];
     final Set<String> seenIds = <String>{};
 
@@ -525,11 +576,12 @@ class ShelfApi {
         if (!seenIds.contains(vodId)) {
           seenIds.add(vodId);
 
-          final Map<String, dynamic> weightedItem =
-              Map<String, dynamic>.from(item);
+          final Map<String, dynamic> weightedItem = Map<String, dynamic>.from(
+            item,
+          );
           if (weightedItem['vod_hits'] != null) {
-            weightedItem['vod_hits'] =
-                (weightedItem['vod_hits'] * sourceWeight).round();
+            weightedItem['vod_hits'] = (weightedItem['vod_hits'] * sourceWeight)
+                .round();
           }
 
           weightedItem['source'] = {
@@ -543,8 +595,9 @@ class ShelfApi {
     }
 
     mergedList.sort(
-        (dynamic a, dynamic b) =>
-            (b['vod_hits'] ?? 0).compareTo(a['vod_hits'] ?? 0));
+      (dynamic a, dynamic b) =>
+          (b['vod_hits'] ?? 0).compareTo(a['vod_hits'] ?? 0),
+    );
 
     return mergedList;
   }
@@ -556,7 +609,9 @@ class ShelfApi {
   Future<Response> handleGetL10n(Request request) async {
     final AppLocalizations l10n = _l10n(request);
     try {
-      final Locale locale = parseLocaleFromAcceptLanguage(request.headers['Accept-Language']);
+      final Locale locale = parseLocaleFromAcceptLanguage(
+        request.headers['Accept-Language'],
+      );
       final Map<String, String> map = appLocalizationsToWebMap(locale);
       return Response(
         200,

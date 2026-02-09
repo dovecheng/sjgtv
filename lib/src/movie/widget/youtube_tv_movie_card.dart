@@ -57,29 +57,25 @@ class _YouTubeTVMovieCardState extends State<YouTubeTVMovieCard>
       vsync: this,
     );
 
-    _scaleAnimation = Tween<double>(
-      begin: 1.0,
-      end: AppConstants.focusScaleFactor,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeOutBack,
-    ));
+    _scaleAnimation =
+        Tween<double>(begin: 1.0, end: AppConstants.focusScaleFactor).animate(
+          CurvedAnimation(
+            parent: _animationController,
+            curve: Curves.easeOutBack,
+          ),
+        );
 
-    _borderAnimation = Tween<double>(
-      begin: 0.0,
-      end: AppConstants.focusBorderWidth,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeOutCubic,
-    ));
+    _borderAnimation =
+        Tween<double>(begin: 0.0, end: AppConstants.focusBorderWidth).animate(
+          CurvedAnimation(
+            parent: _animationController,
+            curve: Curves.easeOutCubic,
+          ),
+        );
 
-    _glowAnimation = Tween<double>(
-      begin: 0.0,
-      end: 0.6,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeOutCubic,
-    ));
+    _glowAnimation = Tween<double>(begin: 0.0, end: 0.6).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeOutCubic),
+    );
   }
 
   @override
@@ -108,7 +104,8 @@ class _YouTubeTVMovieCardState extends State<YouTubeTVMovieCard>
   @override
   Widget build(BuildContext context) {
     final ColorScheme colorScheme = context.theme.colorScheme;
-    final bool canMoveInGrid = widget.gridIndex != null &&
+    final bool canMoveInGrid =
+        widget.gridIndex != null &&
         widget.crossAxisCount != null &&
         widget.itemCount != null &&
         widget.onMoveFocus != null;
@@ -146,40 +143,43 @@ class _YouTubeTVMovieCardState extends State<YouTubeTVMovieCard>
         return KeyEventResult.ignored;
       },
       onFocusChange: _handleFocusChange,
-      child: AnimatedBuilder(
-        animation: _animationController,
-        builder: (context, child) {
-          return Transform.scale(
-            scale: _scaleAnimation.value,
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppTheme.focusGlow,
-                    blurRadius: 8.0 * _glowAnimation.value,
-                    spreadRadius: 0,
-                  ),
-                ],
-                border: Border.all(
-                  color: AppTheme.focus.withValues(alpha: _borderAnimation.value / 2),
-                  width: _borderAnimation.value,
-                ),
+      child:
+          AnimatedBuilder(
+                animation: _animationController,
+                builder: (context, child) {
+                  return Transform.scale(
+                    scale: _scaleAnimation.value,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppTheme.focusGlow,
+                            blurRadius: 8.0 * _glowAnimation.value,
+                            spreadRadius: 0,
+                          ),
+                        ],
+                        border: Border.all(
+                          color: AppTheme.focus.withValues(
+                            alpha: _borderAnimation.value / 2,
+                          ),
+                          width: _borderAnimation.value,
+                        ),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: _buildCardContent(colorScheme),
+                      ),
+                    ),
+                  );
+                },
+              )
+              .animate(target: _isFocused ? 1 : 0)
+              .shimmer(
+                duration: 1500.ms,
+                color: AppTheme.focus.withValues(alpha: 0.1),
+                angle: 45,
               ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: _buildCardContent(colorScheme),
-              ),
-            ),
-          );
-        },
-      )
-          .animate(target: _isFocused ? 1 : 0)
-          .shimmer(
-            duration: 1500.ms,
-            color: AppTheme.focus.withValues(alpha: 0.1),
-            angle: 45,
-          ),
     );
   }
 
@@ -279,18 +279,11 @@ class _YouTubeTVMovieCardState extends State<YouTubeTVMovieCard>
             children: [
               Text(
                 '${widget.movie.year}',
-                style: const TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey,
-                ),
+                style: const TextStyle(fontSize: 12, color: Colors.grey),
               ),
               Row(
                 children: [
-                  const Icon(
-                    Icons.star,
-                    size: 12,
-                    color: Colors.amber,
-                  ),
+                  const Icon(Icons.star, size: 12, color: Colors.amber),
                   const SizedBox(width: 2),
                   Text(
                     '${widget.movie.rating}',

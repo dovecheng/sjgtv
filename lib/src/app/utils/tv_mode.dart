@@ -132,7 +132,8 @@ class TVModeConfig {
   static Curve get pageTransitionCurve => Curves.easeInOutCubic;
 
   /// TV 模式下的推荐页面过渡时长
-  static Duration get pageTransitionDuration => const Duration(milliseconds: 300);
+  static Duration get pageTransitionDuration =>
+      const Duration(milliseconds: 300);
 
   /// 是否支持语音输入
   static bool get supportsVoiceInput =>
@@ -151,7 +152,9 @@ class TVModeConfig {
 
   /// 是否为移动设备
   static bool isMobileDevice(BuildContext context) {
-    return _deviceType == DeviceType.phone || _deviceType == DeviceType.tablet || !_isEnabled;
+    return _deviceType == DeviceType.phone ||
+        _deviceType == DeviceType.tablet ||
+        !_isEnabled;
   }
 
   /// 获取 TV 模式下的建议文字大小
@@ -199,11 +202,7 @@ class TVModeConfig {
 ///
 /// 根据 TV 模式自动调整 UI
 class TVModeBuilder extends StatelessWidget {
-  const TVModeBuilder({
-    super.key,
-    required this.builder,
-    this.fallbackBuilder,
-  });
+  const TVModeBuilder({super.key, required this.builder, this.fallbackBuilder});
 
   final Widget Function(BuildContext context, bool isTVMode) builder;
   final Widget Function(BuildContext context)? fallbackBuilder;
@@ -243,11 +242,7 @@ class TVModeFocusDecoration {
   static List<BoxShadow> getRecommendedShadow() {
     if (TVModeConfig.isEnabled) {
       return [
-        BoxShadow(
-          color: AppTheme.focusGlow,
-          blurRadius: 8.0,
-          spreadRadius: 0,
-        ),
+        BoxShadow(color: AppTheme.focusGlow, blurRadius: 8.0, spreadRadius: 0),
       ];
     }
     return [];

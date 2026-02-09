@@ -34,10 +34,7 @@ class MovieSearchService {
       },
       (movies) {
         _log.d(() => '搜索成功: 总数=${movies.length}');
-        return {
-          'total': movies.length,
-          'list': movies,
-        };
+        return {'total': movies.length, 'list': movies};
       },
     );
   }

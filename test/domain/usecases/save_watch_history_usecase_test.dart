@@ -39,22 +39,20 @@ void main() {
       // arrange
       final params = SaveWatchHistoryParams(history: testHistory);
 
-      when(mockRepository.addOrUpdateHistory(testHistory))
-          .thenAnswer((_) async => Result.success(testHistory));
+      when(
+        mockRepository.addOrUpdateHistory(testHistory),
+      ).thenAnswer((_) async => Result.success(testHistory));
 
       // act
       final result = await useCase(params);
 
       // assert
       expect(result.isSuccess, true);
-      result.when(
-        (_) => fail('应该返回成功结果'),
-        (history) {
-          expect(history.movieId, 'movie-1');
-          expect(history.movieTitle, '测试电影');
-          expect(history.progress, Duration(minutes: 10));
-        },
-      );
+      result.when((_) => fail('应该返回成功结果'), (history) {
+        expect(history.movieId, 'movie-1');
+        expect(history.movieTitle, '测试电影');
+        expect(history.progress, Duration(minutes: 10));
+      });
       verify(mockRepository.addOrUpdateHistory(testHistory));
     });
 
@@ -67,21 +65,19 @@ void main() {
 
       final params = SaveWatchHistoryParams(history: updatedHistory);
 
-      when(mockRepository.addOrUpdateHistory(updatedHistory))
-          .thenAnswer((_) async => Result.success(updatedHistory));
+      when(
+        mockRepository.addOrUpdateHistory(updatedHistory),
+      ).thenAnswer((_) async => Result.success(updatedHistory));
 
       // act
       final result = await useCase(params);
 
       // assert
       expect(result.isSuccess, true);
-      result.when(
-        (_) => fail('应该返回成功结果'),
-        (history) {
-          expect(history.progress, Duration(minutes: 20));
-          expect(history.watchedAt, DateTime(2024, 1, 2));
-        },
-      );
+      result.when((_) => fail('应该返回成功结果'), (history) {
+        expect(history.progress, Duration(minutes: 20));
+        expect(history.watchedAt, DateTime(2024, 1, 2));
+      });
       verify(mockRepository.addOrUpdateHistory(updatedHistory));
     });
 
@@ -90,9 +86,7 @@ void main() {
       final params = SaveWatchHistoryParams(history: testHistory);
 
       when(mockRepository.addOrUpdateHistory(testHistory)).thenAnswer(
-        (_) async => Result.failure(
-          CacheFailure('保存观看历史失败: Database error'),
-        ),
+        (_) async => Result.failure(CacheFailure('保存观看历史失败: Database error')),
       );
 
       // act
@@ -100,13 +94,10 @@ void main() {
 
       // assert
       expect(result.isFailure, true);
-      result.when(
-        (failure) {
-          expect(failure, isA<CacheFailure>());
-          expect(failure.message, contains('保存观看历史失败'));
-        },
-        (_) => fail('应该返回失败结果'),
-      );
+      result.when((failure) {
+        expect(failure, isA<CacheFailure>());
+        expect(failure.message, contains('保存观看历史失败'));
+      }, (_) => fail('应该返回失败结果'));
       verify(mockRepository.addOrUpdateHistory(testHistory));
     });
 
@@ -129,23 +120,21 @@ void main() {
 
       final params = SaveWatchHistoryParams(history: completeHistory);
 
-      when(mockRepository.addOrUpdateHistory(completeHistory))
-          .thenAnswer((_) async => Result.success(completeHistory));
+      when(
+        mockRepository.addOrUpdateHistory(completeHistory),
+      ).thenAnswer((_) async => Result.success(completeHistory));
 
       // act
       final result = await useCase(params);
 
       // assert
       expect(result.isSuccess, true);
-      result.when(
-        (_) => fail('应该返回成功结果'),
-        (history) {
-          expect(history.episodeIndex, 5);
-          expect(history.episodeName, '第6集');
-          expect(history.progress, Duration(minutes: 45, seconds: 30));
-          expect(history.duration, Duration(hours: 2, minutes: 15));
-        },
-      );
+      result.when((_) => fail('应该返回成功结果'), (history) {
+        expect(history.episodeIndex, 5);
+        expect(history.episodeName, '第6集');
+        expect(history.progress, Duration(minutes: 45, seconds: 30));
+        expect(history.duration, Duration(hours: 2, minutes: 15));
+      });
     });
   });
 }

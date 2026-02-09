@@ -8,9 +8,7 @@ import 'package:sjgtv/data/datasources/local_datasource.dart';
 ///
 /// 实现 FavoriteRepository 接口
 class FavoriteRepositoryImpl implements FavoriteRepository {
-  FavoriteRepositoryImpl({
-    required this.localDataSource,
-  });
+  FavoriteRepositoryImpl({required this.localDataSource});
 
   final LocalDataSource localDataSource;
 

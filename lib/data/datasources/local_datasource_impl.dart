@@ -1,4 +1,3 @@
-
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:uuid/uuid.dart';
 import 'package:isar_community/isar.dart';
@@ -279,7 +278,8 @@ class LocalDataSourceImpl extends _$LocalDataSourceImpl
 
   @override
   Future<Result<WatchHistory, Failure>> addOrUpdateWatchHistory(
-      WatchHistory history) async {
+    WatchHistory history,
+  ) async {
     try {
       final model = WatchHistoryModel.fromEntity(history);
       await $isar.writeTxn(() async => $isar.watchHistories.put(model));
@@ -304,7 +304,8 @@ class LocalDataSourceImpl extends _$LocalDataSourceImpl
 
   @override
   Future<Result<List<WatchHistory>, Failure>> getWatchHistoriesByMovie(
-      String movieId) async {
+    String movieId,
+  ) async {
     try {
       final List<WatchHistoryModel> list = await $isar.watchHistories
           .where()

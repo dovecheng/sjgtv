@@ -30,8 +30,7 @@ void main() {
         tagIds: ['tag1', 'tag2'],
       );
 
-      when(mockRepository.addSource(any))
-          .thenAnswer((realInvocation) async {
+      when(mockRepository.addSource(any)).thenAnswer((realInvocation) async {
         final source = realInvocation.positionalArguments[0] as Source;
         return Result.success(source);
       });
@@ -41,32 +40,29 @@ void main() {
 
       // assert
       expect(result.isSuccess, true);
-      result.when(
-        (_) => fail('应该返回成功结果'),
-        (source) {
-          expect(source.name, '新视频源');
-          expect(source.url, 'http://new-source.com');
-          expect(source.weight, 5);
-          expect(source.disabled, false);
-          expect(source.tagIds, ['tag1', 'tag2']);
-        },
+      result.when((_) => fail('应该返回成功结果'), (source) {
+        expect(source.name, '新视频源');
+        expect(source.url, 'http://new-source.com');
+        expect(source.weight, 5);
+        expect(source.disabled, false);
+        expect(source.tagIds, ['tag1', 'tag2']);
+      });
+      verify(
+        mockRepository.addSource(
+          argThat(
+            isA<Source>()
+                .having((s) => s.name, 'name', '新视频源')
+                .having((s) => s.url, 'url', 'http://new-source.com'),
+          ),
+        ),
       );
-      verify(mockRepository.addSource(argThat(
-        isA<Source>()
-            .having((s) => s.name, 'name', '新视频源')
-            .having((s) => s.url, 'url', 'http://new-source.com'),
-      )));
     });
 
     test('应该使用默认参数', () async {
       // arrange
-      const params = AddSourceParams(
-        name: '默认源',
-        url: 'http://default.com',
-      );
+      const params = AddSourceParams(name: '默认源', url: 'http://default.com');
 
-      when(mockRepository.addSource(any))
-          .thenAnswer((realInvocation) async {
+      when(mockRepository.addSource(any)).thenAnswer((realInvocation) async {
         final source = realInvocation.positionalArguments[0] as Source;
         return Result.success(source);
       });
@@ -75,25 +71,24 @@ void main() {
       await useCase(params);
 
       // assert
-      verify(mockRepository.addSource(argThat(
-        isA<Source>()
-            .having((s) => s.weight, 'weight', 5)
-            .having((s) => s.disabled, 'disabled', false)
-            .having((s) => s.tagIds, 'tagIds', []),
-      )));
+      verify(
+        mockRepository.addSource(
+          argThat(
+            isA<Source>()
+                .having((s) => s.weight, 'weight', 5)
+                .having((s) => s.disabled, 'disabled', false)
+                .having((s) => s.tagIds, 'tagIds', []),
+          ),
+        ),
+      );
     });
 
     test('应该返回失败当添加失败时', () async {
       // arrange
-      const params = AddSourceParams(
-        name: '重复源',
-        url: 'http://duplicate.com',
-      );
+      const params = AddSourceParams(name: '重复源', url: 'http://duplicate.com');
 
       when(mockRepository.addSource(any)).thenAnswer(
-        (_) async => Result.failure(
-          CacheFailure('添加视频源失败: Duplicate key'),
-        ),
+        (_) async => Result.failure(CacheFailure('添加视频源失败: Duplicate key')),
       );
 
       // act
@@ -101,13 +96,10 @@ void main() {
 
       // assert
       expect(result.isFailure, true);
-      result.when(
-        (failure) {
-          expect(failure, isA<CacheFailure>());
-          expect(failure.message, contains('添加视频源失败'));
-        },
-        (_) => fail('应该返回失败结果'),
-      );
+      result.when((failure) {
+        expect(failure, isA<CacheFailure>());
+        expect(failure.message, contains('添加视频源失败'));
+      }, (_) => fail('应该返回失败结果'));
       verify(mockRepository.addSource(any));
     });
 
@@ -116,8 +108,7 @@ void main() {
       const params1 = AddSourceParams(name: '源1', url: 'http://1.com');
       const params2 = AddSourceParams(name: '源2', url: 'http://2.com');
 
-      when(mockRepository.addSource(any))
-          .thenAnswer((realInvocation) async {
+      when(mockRepository.addSource(any)).thenAnswer((realInvocation) async {
         final source = realInvocation.positionalArguments[0] as Source;
         return Result.success(source);
       });
@@ -129,17 +120,11 @@ void main() {
       final result2 = await useCase(params2);
 
       // assert
-      result1.when(
-        (_) {},
-        (source1) {
-          result2.when(
-            (_) {},
-            (source2) {
-              expect(source1.uuid, isNot(equals(source2.uuid)));
-            },
-          );
-        },
-      );
+      result1.when((_) {}, (source1) {
+        result2.when((_) {}, (source2) {
+          expect(source1.uuid, isNot(equals(source2.uuid)));
+        });
+      });
     });
   });
 }

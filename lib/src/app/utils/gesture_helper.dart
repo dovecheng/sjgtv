@@ -3,12 +3,7 @@ import 'package:sjgtv/core/core.dart';
 import 'package:sjgtv/src/app/utils/tv_mode.dart';
 
 /// 手势方向枚举
-enum SwipeDirection {
-  left,
-  right,
-  up,
-  down,
-}
+enum SwipeDirection { left, right, up, down }
 
 /// 手势辅助工具类
 ///
@@ -326,10 +321,7 @@ class GestureHelper {
     }
 
     // TV 设备上使用更大的边框
-    return Border.all(
-      color: context.theme.colorScheme.primary,
-      width: 3.0,
-    );
+    return Border.all(color: context.theme.colorScheme.primary, width: 3.0);
   }
 
   /// 创建触摸感知的阴影

@@ -33,30 +33,26 @@ void main() {
 
     test('应该成功添加收藏', () async {
       // arrange
-      when(mockRepository.addFavorite(testFavorite))
-          .thenAnswer((_) async => Result.success(testFavorite));
+      when(
+        mockRepository.addFavorite(testFavorite),
+      ).thenAnswer((_) async => Result.success(testFavorite));
 
       // act
       final result = await useCase(testFavorite);
 
       // assert
       expect(result.isSuccess, true);
-      result.when(
-        (_) => fail('应该返回成功结果'),
-        (favorite) {
-          expect(favorite.movieId, 'movie-1');
-          expect(favorite.movieTitle, '测试电影');
-        },
-      );
+      result.when((_) => fail('应该返回成功结果'), (favorite) {
+        expect(favorite.movieId, 'movie-1');
+        expect(favorite.movieTitle, '测试电影');
+      });
       verify(mockRepository.addFavorite(testFavorite));
     });
 
     test('应该返回失败当添加失败时', () async {
       // arrange
       when(mockRepository.addFavorite(testFavorite)).thenAnswer(
-        (_) async => Result.failure(
-          CacheFailure('添加收藏失败: Duplicate key'),
-        ),
+        (_) async => Result.failure(CacheFailure('添加收藏失败: Duplicate key')),
       );
 
       // act
@@ -64,13 +60,10 @@ void main() {
 
       // assert
       expect(result.isFailure, true);
-      result.when(
-        (failure) {
-          expect(failure, isA<CacheFailure>());
-          expect(failure.message, contains('添加收藏失败'));
-        },
-        (_) => fail('应该返回失败结果'),
-      );
+      result.when((failure) {
+        expect(failure, isA<CacheFailure>());
+        expect(failure.message, contains('添加收藏失败'));
+      }, (_) => fail('应该返回失败结果'));
       verify(mockRepository.addFavorite(testFavorite));
     });
 
@@ -87,21 +80,19 @@ void main() {
         createdAt: DateTime(2024, 2, 9, 10, 30),
       );
 
-      when(mockRepository.addFavorite(completeFavorite))
-          .thenAnswer((_) async => Result.success(completeFavorite));
+      when(
+        mockRepository.addFavorite(completeFavorite),
+      ).thenAnswer((_) async => Result.success(completeFavorite));
 
       // act
       final result = await useCase(completeFavorite);
 
       // assert
       expect(result.isSuccess, true);
-      result.when(
-        (_) => fail('应该返回成功结果'),
-        (favorite) {
-          expect(favorite.movieId, 'movie-123');
-          expect(favorite.movieCoverUrl, 'http://complete.jpg');
-        },
-      );
+      result.when((_) => fail('应该返回成功结果'), (favorite) {
+        expect(favorite.movieId, 'movie-123');
+        expect(favorite.movieCoverUrl, 'http://complete.jpg');
+      });
     });
   });
 }

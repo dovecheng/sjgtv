@@ -15,10 +15,7 @@ class WatchHistoriesProvider extends _$WatchHistoriesProvider {
   Future<List<WatchHistory>> build() async {
     final useCase = ref.watch(getAllWatchHistoriesUseCaseProvider);
     final result = await useCase();
-    return result.fold(
-      (failure) => [],
-      (histories) => histories,
-    );
+    return result.fold((failure) => [], (histories) => histories);
   }
 
   /// 添加或更新观看历史
@@ -27,10 +24,7 @@ class WatchHistoriesProvider extends _$WatchHistoriesProvider {
       ref.watch(watchHistoryRepositoryProvider),
     );
     final result = await useCase(SaveWatchHistoryParams(history: history));
-    result.fold(
-      (failure) => null,
-      (_) => ref.invalidateSelf(),
-    );
+    result.fold((failure) => null, (_) => ref.invalidateSelf());
   }
 
   /// 删除观看历史
@@ -39,19 +33,13 @@ class WatchHistoriesProvider extends _$WatchHistoriesProvider {
       ref.watch(watchHistoryRepositoryProvider),
     );
     final result = await useCase(DeleteWatchHistoryParams(id: id));
-    result.fold(
-      (failure) => null,
-      (_) => ref.invalidateSelf(),
-    );
+    result.fold((failure) => null, (_) => ref.invalidateSelf());
   }
 
   /// 清除所有观看历史
   Future<void> clearAll() async {
     final repository = ref.watch(watchHistoryRepositoryProvider);
     final result = await repository.clearAllHistories();
-    result.fold(
-      (failure) => null,
-      (_) => ref.invalidateSelf(),
-    );
+    result.fold((failure) => null, (_) => ref.invalidateSelf());
   }
 }

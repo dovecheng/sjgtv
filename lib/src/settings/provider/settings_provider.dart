@@ -34,14 +34,16 @@ class SettingsProvider extends _$SettingsProvider {
 
   /// 更新默认音量
   Future<void> updateDefaultVolume(double volume) async {
-    final currentSettings = state.value ?? Settings(
-      uuid: 'default',
-      defaultVolume: 100.0,
-      defaultPlaybackSpeed: 1.0,
-      autoPlayNext: true,
-      themeMode: AppThemeMode.system,
-      language: 'zh_CN',
-    );
+    final currentSettings =
+        state.value ??
+        Settings(
+          uuid: 'default',
+          defaultVolume: 100.0,
+          defaultPlaybackSpeed: 1.0,
+          autoPlayNext: true,
+          themeMode: AppThemeMode.system,
+          language: 'zh_CN',
+        );
     final updated = currentSettings.copyWith(
       defaultVolume: volume.clamp(0.0, 100.0),
     );
@@ -50,14 +52,16 @@ class SettingsProvider extends _$SettingsProvider {
 
   /// 更新默认播放速度
   Future<void> updateDefaultPlaybackSpeed(double speed) async {
-    final currentSettings = state.value ?? Settings(
-      uuid: 'default',
-      defaultVolume: 100.0,
-      defaultPlaybackSpeed: 1.0,
-      autoPlayNext: true,
-      themeMode: AppThemeMode.system,
-      language: 'zh_CN',
-    );
+    final currentSettings =
+        state.value ??
+        Settings(
+          uuid: 'default',
+          defaultVolume: 100.0,
+          defaultPlaybackSpeed: 1.0,
+          autoPlayNext: true,
+          themeMode: AppThemeMode.system,
+          language: 'zh_CN',
+        );
     final updated = currentSettings.copyWith(
       defaultPlaybackSpeed: speed.clamp(0.5, 2.0),
     );
@@ -66,14 +70,16 @@ class SettingsProvider extends _$SettingsProvider {
 
   /// 切换自动播放下一集
   Future<void> toggleAutoPlayNext() async {
-    final currentSettings = state.value ?? Settings(
-      uuid: 'default',
-      defaultVolume: 100.0,
-      defaultPlaybackSpeed: 1.0,
-      autoPlayNext: true,
-      themeMode: AppThemeMode.system,
-      language: 'zh_CN',
-    );
+    final currentSettings =
+        state.value ??
+        Settings(
+          uuid: 'default',
+          defaultVolume: 100.0,
+          defaultPlaybackSpeed: 1.0,
+          autoPlayNext: true,
+          themeMode: AppThemeMode.system,
+          language: 'zh_CN',
+        );
     final updated = currentSettings.copyWith(
       autoPlayNext: !currentSettings.autoPlayNext,
     );
@@ -82,33 +88,33 @@ class SettingsProvider extends _$SettingsProvider {
 
   /// 更新主题模式
   Future<void> updateThemeMode(AppThemeMode mode) async {
-    final currentSettings = state.value ?? Settings(
-      uuid: 'default',
-      defaultVolume: 100.0,
-      defaultPlaybackSpeed: 1.0,
-      autoPlayNext: true,
-      themeMode: AppThemeMode.system,
-      language: 'zh_CN',
-    );
-    final updated = currentSettings.copyWith(
-      themeMode: mode,
-    );
+    final currentSettings =
+        state.value ??
+        Settings(
+          uuid: 'default',
+          defaultVolume: 100.0,
+          defaultPlaybackSpeed: 1.0,
+          autoPlayNext: true,
+          themeMode: AppThemeMode.system,
+          language: 'zh_CN',
+        );
+    final updated = currentSettings.copyWith(themeMode: mode);
     await saveSettings(updated);
   }
 
   /// 更新语言
   Future<void> updateLanguage(String language) async {
-    final currentSettings = state.value ?? Settings(
-      uuid: 'default',
-      defaultVolume: 100.0,
-      defaultPlaybackSpeed: 1.0,
-      autoPlayNext: true,
-      themeMode: AppThemeMode.system,
-      language: 'zh_CN',
-    );
-    final updated = currentSettings.copyWith(
-      language: language,
-    );
+    final currentSettings =
+        state.value ??
+        Settings(
+          uuid: 'default',
+          defaultVolume: 100.0,
+          defaultPlaybackSpeed: 1.0,
+          autoPlayNext: true,
+          themeMode: AppThemeMode.system,
+          language: 'zh_CN',
+        );
+    final updated = currentSettings.copyWith(language: language);
     await saveSettings(updated);
   }
 }

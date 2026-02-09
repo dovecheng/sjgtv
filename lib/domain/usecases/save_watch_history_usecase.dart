@@ -5,9 +5,7 @@ import 'package:sjgtv/domain/repositories/watch_history_repository.dart';
 
 /// 保存观看历史参数
 class SaveWatchHistoryParams {
-  const SaveWatchHistoryParams({
-    required this.history,
-  });
+  const SaveWatchHistoryParams({required this.history});
 
   final WatchHistory history;
 }
@@ -19,7 +17,9 @@ class SaveWatchHistoryUseCase {
   final WatchHistoryRepository repository;
 
   /// 保存观看历史
-  Future<Result<WatchHistory, Failure>> call(SaveWatchHistoryParams params) async {
+  Future<Result<WatchHistory, Failure>> call(
+    SaveWatchHistoryParams params,
+  ) async {
     return repository.addOrUpdateHistory(params.history);
   }
 }

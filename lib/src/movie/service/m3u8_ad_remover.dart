@@ -213,7 +213,8 @@ abstract final class M3U8AdRemover {
         contentSegments,
       );
 
-      final int processingTime = DateTime.now().millisecondsSinceEpoch - startTime;
+      final int processingTime =
+          DateTime.now().millisecondsSinceEpoch - startTime;
 
       final M3U8AdRemoverResult result = M3U8AdRemoverResult(
         originalUrl: m3u8Url,
@@ -235,9 +236,12 @@ abstract final class M3U8AdRemover {
         );
       }
 
-      _log.d(() => '处理完成: 总片段=${segments.length}, '
-          '广告=${adSegments.length}, 正片=${contentSegments.length}, '
-          '耗时=${processingTime}ms');
+      _log.d(
+        () =>
+            '处理完成: 总片段=${segments.length}, '
+            '广告=${adSegments.length}, 正片=${contentSegments.length}, '
+            '耗时=${processingTime}ms',
+      );
 
       return result;
     } catch (e, s) {
@@ -270,10 +274,7 @@ abstract final class M3U8AdRemover {
 
   /// 获取缓存统计
   static Map<String, dynamic> getCacheStats() {
-    return {
-      'size': _cache.length,
-      'entries': _cache.keys.toList(),
-    };
+    return {'size': _cache.length, 'entries': _cache.keys.toList()};
   }
 
   // 私有方法
@@ -282,8 +283,10 @@ abstract final class M3U8AdRemover {
     String url,
     Map<String, String> headers,
   ) async {
-    final http.Response response =
-        await http.get(Uri.parse(url), headers: headers);
+    final http.Response response = await http.get(
+      Uri.parse(url),
+      headers: headers,
+    );
     if (response.statusCode == 200) {
       return response.body.trim();
     }
@@ -292,7 +295,10 @@ abstract final class M3U8AdRemover {
 
   static bool _hasNestedM3u8(String content) {
     return content.contains('.m3u8') &&
-        content.split('\n').where((line) => line.trim().endsWith('.m3u8')).length <
+        content
+                .split('\n')
+                .where((line) => line.trim().endsWith('.m3u8'))
+                .length <
             10;
   }
 
@@ -318,8 +324,9 @@ abstract final class M3U8AdRemover {
       }
       if (fromPath.isEmpty) return nowPath;
 
-      final String separator =
-          fromPath.endsWith('/') || nowPath.startsWith('/') ? '' : '/';
+      final String separator = fromPath.endsWith('/') || nowPath.startsWith('/')
+          ? ''
+          : '/';
       return '$fromPath$separator$nowPath';
     }
   }
@@ -343,17 +350,19 @@ abstract final class M3U8AdRemover {
         currentByteRange = line.split(':')[1];
       } else if (!line.startsWith('#') && line.isNotEmpty) {
         final String segmentUrl = _resolveUrl(baseUrl, line);
-        
+
         // 获取片段大小（如果启用大小检测）
         int? segmentSize;
         // 这里可以添加获取片段大小的逻辑
 
-        segments.add(M3U8Segment(
-          url: segmentUrl,
-          duration: currentDuration,
-          size: segmentSize,
-          byterange: currentByteRange,
-        ));
+        segments.add(
+          M3U8Segment(
+            url: segmentUrl,
+            duration: currentDuration,
+            size: segmentSize,
+            byterange: currentByteRange,
+          ),
+        );
 
         currentDuration = null;
         currentByteRange = null;
@@ -387,7 +396,9 @@ abstract final class M3U8AdRemover {
       for (int i = 0; i < segments.length; i++) {
         segments[i] = segments[i].copyWith(
           isAd: !_matchesWhitelist(segments[i].url, config.whitelist),
-          confidence: _matchesWhitelist(segments[i].url, config.whitelist) ? 1.0 : 0.0,
+          confidence: _matchesWhitelist(segments[i].url, config.whitelist)
+              ? 1.0
+              : 0.0,
         );
       }
     }
@@ -396,10 +407,7 @@ abstract final class M3U8AdRemover {
     if (config.enableBlacklist) {
       for (int i = 0; i < segments.length; i++) {
         if (_matchesBlacklist(segments[i].url, config.blacklist)) {
-          segments[i] = segments[i].copyWith(
-            isAd: true,
-            confidence: 1.0,
-          );
+          segments[i] = segments[i].copyWith(isAd: true, confidence: 1.0);
         }
       }
     }
@@ -474,13 +482,10 @@ abstract final class M3U8AdRemover {
         primaryFeature,
         segments[i].url,
       );
-      
+
       if (similarity < threshold) {
         final double confidence = 1.0 - (similarity / maxSimilarity);
-        segments[i] = segments[i].copyWith(
-          isAd: true,
-          confidence: confidence,
-        );
+        segments[i] = segments[i].copyWith(isAd: true, confidence: confidence);
       }
     }
 
@@ -510,17 +515,15 @@ abstract final class M3U8AdRemover {
 
     if (durations.isEmpty) return segments;
 
-    final double avgDuration = durations.reduce((a, b) => a + b) / durations.length;
+    final double avgDuration =
+        durations.reduce((a, b) => a + b) / durations.length;
 
     for (int i = 0; i < segments.length; i++) {
       final double? duration = segments[i].duration;
       if (duration != null) {
         // 短片段可能是广告
         if (duration < maxAdDuration && duration < avgDuration * 0.5) {
-          segments[i] = segments[i].copyWith(
-            isAd: true,
-            confidence: 0.7,
-          );
+          segments[i] = segments[i].copyWith(isAd: true, confidence: 0.7);
         }
       }
     }

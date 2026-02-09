@@ -166,44 +166,30 @@ class _FocusIndicatorState extends State<FocusIndicator>
         widget.decoration.animationDuration ?? AppConstants.normalAnimation;
     final Curve curve = widget.decoration.animationCurve ?? Curves.easeOutCubic;
 
-    _animationController = AnimationController(
-      duration: duration,
-      vsync: this,
-    );
+    _animationController = AnimationController(duration: duration, vsync: this);
 
     _scaleAnimation = Tween<double>(
       begin: 1.0,
       end: widget.decoration.scaleFactor ?? AppConstants.focusScaleFactor,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: curve,
-    ));
+    ).animate(CurvedAnimation(parent: _animationController, curve: curve));
 
     _borderAnimation = Tween<double>(
       begin: 0.0,
       end: widget.decoration.borderWidth ?? AppConstants.focusBorderWidth,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: curve,
-    ));
+    ).animate(CurvedAnimation(parent: _animationController, curve: curve));
 
     _shadowAnimation = Tween<double>(
       begin: 0.0,
       end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: curve,
-    ));
+    ).animate(CurvedAnimation(parent: _animationController, curve: curve));
 
     if (widget.decoration.hasBackgroundColor) {
       _backgroundColorAnimation = ColorTween(
         begin: Colors.transparent,
-        end: widget.decoration.backgroundColor ??
+        end:
+            widget.decoration.backgroundColor ??
             AppTheme.focus.withValues(alpha: 0.1),
-      ).animate(CurvedAnimation(
-        parent: _animationController,
-        curve: curve,
-      ));
+      ).animate(CurvedAnimation(parent: _animationController, curve: curve));
     }
   }
 
@@ -270,10 +256,7 @@ class _FocusIndicatorState extends State<FocusIndicator>
             final Color borderColor =
                 widget.decoration.borderColor ?? AppTheme.focus;
             final double borderWidth = _borderAnimation.value;
-            border = Border.all(
-              color: borderColor,
-              width: borderWidth,
-            );
+            border = Border.all(color: borderColor, width: borderWidth);
           } else {
             border = null;
           }
@@ -290,7 +273,8 @@ class _FocusIndicatorState extends State<FocusIndicator>
             child: Container(
               decoration: BoxDecoration(
                 border: border,
-                borderRadius: widget.decoration.borderRadius ??
+                borderRadius:
+                    widget.decoration.borderRadius ??
                     BorderRadius.circular(AppConstants.cardBorderRadius),
                 boxShadow: shadows.isNotEmpty ? shadows : null,
                 color: backgroundColor,
@@ -306,19 +290,19 @@ class _FocusIndicatorState extends State<FocusIndicator>
                 color: Colors.transparent,
                 child: InkWell(
                   onTap: widget.onTap,
-                  borderRadius: widget.decoration.borderRadius ??
+                  borderRadius:
+                      widget.decoration.borderRadius ??
                       BorderRadius.circular(AppConstants.cardBorderRadius),
                   splashColor: GestureHelper.getRecommendedRippleColor(context),
-                  highlightColor: GestureHelper.getRecommendedHighlightColor(context),
+                  highlightColor: GestureHelper.getRecommendedHighlightColor(
+                    context,
+                  ),
                   child: result,
                 ),
               );
             } else {
               // TV 设备上使用 GestureDetector
-              result = GestureDetector(
-                onTap: widget.onTap,
-                child: result,
-              );
+              result = GestureDetector(onTap: widget.onTap, child: result);
             }
           }
 
@@ -336,7 +320,8 @@ class _FocusIndicatorState extends State<FocusIndicator>
 Widget withFocusIndicator(
   Widget child, {
   FocusNode? focusNode,
-  FocusIndicatorDecoration decoration = FocusIndicatorDecoration.defaultIndicator,
+  FocusIndicatorDecoration decoration =
+      FocusIndicatorDecoration.defaultIndicator,
   bool autofocus = false,
   ValueChanged<bool>? onFocusChange,
   VoidCallback? onTap,
@@ -453,13 +438,13 @@ class _SlideFocusIndicatorState extends State<SlideFocusIndicator>
       vsync: this,
     );
 
-    _slideAnimation = Tween<Offset>(
-      begin: Offset.zero,
-      end: widget.slideOffset,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeOutCubic,
-    ));
+    _slideAnimation = Tween<Offset>(begin: Offset.zero, end: widget.slideOffset)
+        .animate(
+          CurvedAnimation(
+            parent: _animationController,
+            curve: Curves.easeOutCubic,
+          ),
+        );
   }
 
   @override

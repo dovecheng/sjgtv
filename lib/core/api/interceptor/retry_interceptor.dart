@@ -43,7 +43,10 @@ class RetryInterceptor extends Interceptor {
     // 计算退避时间（指数退避）
     final delay = _calculateBackoff(retryCount);
 
-    log.i(() => '请求失败，将在 ${delay}ms 后进行第 ${retryCount + 1} 次重试: ${err.requestOptions.uri}');
+    log.i(
+      () =>
+          '请求失败，将在 ${delay}ms 后进行第 ${retryCount + 1} 次重试: ${err.requestOptions.uri}',
+    );
 
     // 等待退避时间
     await Future.delayed(Duration(milliseconds: delay));
@@ -90,6 +93,7 @@ class RetryInterceptor extends Interceptor {
     // 添加随机抖动避免惊群效应
     final baseDelay = retryInterval * (1 << retryCount);
     final jitter = (baseDelay * 0.1).toInt(); // 10% 随机抖动
-    return baseDelay + (jitter * (DateTime.now().millisecond % 2 == 0 ? 1 : -1));
+    return baseDelay +
+        (jitter * (DateTime.now().millisecond % 2 == 0 ? 1 : -1));
   }
 }

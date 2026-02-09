@@ -85,10 +85,7 @@ class FavoritesPage extends ConsumerWidget {
             children: [
               const Icon(Icons.error_outline, size: 64),
               const SizedBox(height: 16),
-              Text(
-                '加载失败',
-                style: textTheme.titleLarge,
-              ),
+              Text('加载失败', style: textTheme.titleLarge),
             ],
           ),
         ),
@@ -120,7 +117,11 @@ class FavoritesPage extends ConsumerWidget {
     );
   }
 
-  void _showDeleteDialog(BuildContext context, WidgetRef ref, dynamic favorite) {
+  void _showDeleteDialog(
+    BuildContext context,
+    WidgetRef ref,
+    dynamic favorite,
+  ) {
     final l10n = AppLocalizations.of(context);
     showDialog(
       context: context,
@@ -134,7 +135,9 @@ class FavoritesPage extends ConsumerWidget {
           ),
           TextButton(
             onPressed: () async {
-              await ref.read(favoritesProvider.notifier).deleteFavorite(favorite.uuid);
+              await ref
+                  .read(favoritesProvider.notifier)
+                  .deleteFavorite(favorite.uuid);
               if (context.mounted) Navigator.pop(context);
             },
             child: Text(l10n.confirm),
@@ -149,10 +152,7 @@ class _FavoriteCard extends StatelessWidget {
   final dynamic favorite;
   final VoidCallback onTap;
 
-  const _FavoriteCard({
-    required this.favorite,
-    required this.onTap,
-  });
+  const _FavoriteCard({required this.favorite, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -170,10 +170,7 @@ class _FavoriteCard extends StatelessWidget {
           decoration: BoxDecoration(
             color: colorScheme.surfaceContainerHighest,
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(
-              color: colorScheme.outlineVariant,
-              width: 1,
-            ),
+            border: Border.all(color: colorScheme.outlineVariant, width: 1),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -187,8 +184,10 @@ class _FavoriteCard extends StatelessWidget {
                       ? CachedImage(
                           imageUrl: favorite.movieCoverUrl,
                           fit: BoxFit.cover,
-                          placeholder: (ctx, url) => networkImagePlaceholder(ctx),
-                          errorWidget: (ctx, url, error) => networkImageErrorWidget(ctx),
+                          placeholder: (ctx, url) =>
+                              networkImagePlaceholder(ctx),
+                          errorWidget: (ctx, url, error) =>
+                              networkImageErrorWidget(ctx),
                         )
                       : Container(
                           color: colorScheme.surfaceContainer,
@@ -214,11 +213,7 @@ class _FavoriteCard extends StatelessWidget {
                     const SizedBox(height: 4),
                     Row(
                       children: [
-                        Icon(
-                          Icons.star,
-                          size: 14,
-                          color: Colors.amber,
-                        ),
+                        Icon(Icons.star, size: 14, color: Colors.amber),
                         const SizedBox(width: 4),
                         Text(
                           favorite.movieRating.toStringAsFixed(1),

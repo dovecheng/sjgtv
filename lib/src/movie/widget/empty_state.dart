@@ -31,11 +31,7 @@ class EmptyState extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             if (icon != null)
-              Icon(
-                icon,
-                size: 80,
-                color: colorScheme.surfaceContainerHighest,
-              )
+              Icon(icon, size: 80, color: colorScheme.surfaceContainerHighest)
             else
               Container(
                 width: 120,
@@ -63,10 +59,7 @@ class EmptyState extends StatelessWidget {
             const SizedBox(height: 12),
             Text(
               message,
-              style: TextStyle(
-                color: Colors.white70,
-                fontSize: 16,
-              ),
+              style: TextStyle(color: Colors.white70, fontSize: 16),
               textAlign: TextAlign.center,
             ),
             if (actionLabel != null && onAction != null) ...[

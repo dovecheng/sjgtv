@@ -6,15 +6,14 @@ import 'package:sjgtv/data/datasources/local_datasource.dart';
 
 /// 观看历史仓库实现
 class WatchHistoryRepositoryImpl implements WatchHistoryRepository {
-  WatchHistoryRepositoryImpl({
-    required this.localDataSource,
-  });
+  WatchHistoryRepositoryImpl({required this.localDataSource});
 
   final LocalDataSource localDataSource;
 
   @override
   Future<Result<WatchHistory, Failure>> addOrUpdateHistory(
-      WatchHistory history) async {
+    WatchHistory history,
+  ) async {
     return localDataSource.addOrUpdateWatchHistory(history);
   }
 
@@ -25,7 +24,8 @@ class WatchHistoryRepositoryImpl implements WatchHistoryRepository {
 
   @override
   Future<Result<List<WatchHistory>, Failure>> getHistoriesByMovie(
-      String movieId) async {
+    String movieId,
+  ) async {
     return localDataSource.getWatchHistoriesByMovie(movieId);
   }
 

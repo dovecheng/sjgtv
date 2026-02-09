@@ -21,10 +21,7 @@ extension L10nDateTimeFormatExt on DateTime {
   ///
   /// [useLocale] 为 true 时使用系统 locale 的 languageTag
   String format({String style = 'yyyy/MM/dd HH:mm', bool useLocale = false}) =>
-      DateFormat(
-        style,
-        useLocale ? _systemLocaleTag : null,
-      ).format(this);
+      DateFormat(style, useLocale ? _systemLocaleTag : null).format(this);
 
   /// 日期格式化
   ///

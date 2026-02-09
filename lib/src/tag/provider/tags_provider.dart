@@ -71,13 +71,17 @@ class TagsStorageProvider extends _$TagsStorageProvider {
   ) async {
     if (tagsFromConfig.isEmpty) return;
     await $isar.writeTxn(() async {
-      final List<TagModel> existing =
-          await $isar.tags.where().anyId().findAll();
+      final List<TagModel> existing = await $isar.tags
+          .where()
+          .anyId()
+          .findAll();
       for (final TagModel t in existing) {
         if (t.id != null) await $isar.tags.delete(t.id!);
       }
-      final List<SourceModel> sources =
-          await $isar.sources.where().anyId().findAll();
+      final List<SourceModel> sources = await $isar.sources
+          .where()
+          .anyId()
+          .findAll();
       for (final SourceModel s in sources) {
         s.tagIds = <String>[];
         s.updatedAt = DateTime.now();

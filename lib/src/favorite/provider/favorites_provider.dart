@@ -13,10 +13,7 @@ class FavoritesProvider extends _$FavoritesProvider {
   @override
   Future<List<dynamic>> build() async {
     final result = await ref.read(getAllFavoritesUseCaseProvider).call();
-    return result.fold(
-      (failure) => [],
-      (favorites) => favorites,
-    );
+    return result.fold((failure) => [], (favorites) => favorites);
   }
 
   /// 添加收藏
@@ -26,9 +23,15 @@ class FavoritesProvider extends _$FavoritesProvider {
       movieId: movie['vod_id']?.toString() ?? '',
       movieTitle: movie['vod_name']?.toString() ?? '',
       movieCoverUrl: movie['vod_pic']?.toString() ?? '',
-      movieYear: int.tryParse(movie['vod_year']?.toString() ?? '') ?? DateTime.now().year,
-      movieRating: double.tryParse(movie['vod_score']?.toString() ?? '0') ?? 0.0,
-      sourceName: (movie['source']?.toString() ?? movie['vod_name']?.toString() ?? '默认'),
+      movieYear:
+          int.tryParse(movie['vod_year']?.toString() ?? '') ??
+          DateTime.now().year,
+      movieRating:
+          double.tryParse(movie['vod_score']?.toString() ?? '0') ?? 0.0,
+      sourceName:
+          (movie['source']?.toString() ??
+          movie['vod_name']?.toString() ??
+          '默认'),
       createdAt: DateTime.now(),
     );
 
@@ -45,10 +48,7 @@ class FavoritesProvider extends _$FavoritesProvider {
   /// 检查是否已收藏
   Future<bool> isFavorite(String movieId) async {
     final result = await ref.read(isFavoriteUseCaseProvider).call(movieId);
-    return result.fold(
-      (failure) => false,
-      (isFav) => isFav,
-    );
+    return result.fold((failure) => false, (isFav) => isFav);
   }
 
   /// 切换收藏状态
@@ -72,14 +72,11 @@ class FavoritesProvider extends _$FavoritesProvider {
   /// 清空所有收藏
   Future<void> clearAll() async {
     final result = await ref.read(getAllFavoritesUseCaseProvider).call();
-    result.fold(
-      (failure) {},
-      (favorites) async {
-        for (final favorite in favorites) {
-          await ref.read(deleteFavoriteUseCaseProvider).call(favorite.uuid);
-        }
-      },
-    );
+    result.fold((failure) {}, (favorites) async {
+      for (final favorite in favorites) {
+        await ref.read(deleteFavoriteUseCaseProvider).call(favorite.uuid);
+      }
+    });
     ref.invalidateSelf();
   }
 }

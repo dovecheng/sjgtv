@@ -70,14 +70,12 @@ class _YouTubeTVCategoryBarState extends State<YouTubeTVCategoryBar>
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!_scrollController.hasClients) return;
 
-      final RenderBox? renderBox =
-          context.findRenderObject() as RenderBox?;
+      final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
       if (renderBox == null) return;
 
       final double screenWidth = renderBox.size.width;
       const double estimatedItemWidth = 120.0;
-      final double targetPosition =
-          widget.selectedIndex * estimatedItemWidth;
+      final double targetPosition = widget.selectedIndex * estimatedItemWidth;
 
       _scrollController.animateTo(
         targetPosition - screenWidth / 2 + estimatedItemWidth / 2,
@@ -140,12 +138,8 @@ class _CategoryItemState extends State<_CategoryItem>
       vsync: this,
     );
 
-    _scaleAnimation =
-        Tween<double>(begin: 1.0, end: 1.05).animate(
-      CurvedAnimation(
-        parent: _animationController,
-        curve: Curves.easeOutCubic,
-      ),
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 1.05).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeOutCubic),
     );
   }
 
@@ -187,14 +181,13 @@ class _CategoryItemState extends State<_CategoryItem>
             scale: _scaleAnimation.value,
             child: Container(
               height: 40,
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
                 color: widget.isSelected
                     ? AppTheme.accent
                     : (_isFocused
-                        ? AppTheme.surfaceVariant
-                        : Colors.transparent),
+                          ? AppTheme.surfaceVariant
+                          : Colors.transparent),
                 borderRadius: BorderRadius.circular(20),
                 border: _isFocused
                     ? Border.all(color: AppTheme.focus, width: 2)
@@ -204,11 +197,11 @@ class _CategoryItemState extends State<_CategoryItem>
                 child: Text(
                   widget.categoryName,
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        color: widget.isSelected ? Colors.white : null,
-                        fontWeight: widget.isSelected
-                            ? FontWeight.w500
-                            : FontWeight.w500,
-                      ),
+                    color: widget.isSelected ? Colors.white : null,
+                    fontWeight: widget.isSelected
+                        ? FontWeight.w500
+                        : FontWeight.w500,
+                  ),
                 ),
               ),
             ),

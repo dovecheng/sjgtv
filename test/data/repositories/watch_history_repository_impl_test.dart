@@ -54,30 +54,26 @@ void main() {
     group('getAllHistories', () {
       test('应该成功获取所有观看历史', () async {
         // arrange
-        when(mockDataSource.getAllWatchHistories())
-            .thenAnswer((_) async => Result.success(testHistories));
+        when(
+          mockDataSource.getAllWatchHistories(),
+        ).thenAnswer((_) async => Result.success(testHistories));
 
         // act
         final result = await repository.getAllHistories();
 
         // assert
         expect(result.isSuccess, true);
-        result.when(
-          (_) => fail('应该返回成功结果'),
-          (histories) {
-            expect(histories.length, 2);
-          },
-        );
+        result.when((_) => fail('应该返回成功结果'), (histories) {
+          expect(histories.length, 2);
+        });
         verify(mockDataSource.getAllWatchHistories());
       });
 
       test('应该返回失败当数据源出错时', () async {
         // arrange
-        when(mockDataSource.getAllWatchHistories()).thenAnswer(
-          (_) async => Result.failure(
-            CacheFailure('获取观看历史失败'),
-          ),
-        );
+        when(
+          mockDataSource.getAllWatchHistories(),
+        ).thenAnswer((_) async => Result.failure(CacheFailure('获取观看历史失败')));
 
         // act
         final result = await repository.getAllHistories();
@@ -92,8 +88,9 @@ void main() {
       test('应该成功添加观看历史', () async {
         // arrange
         final newHistory = testHistories[0];
-        when(mockDataSource.addOrUpdateWatchHistory(newHistory))
-            .thenAnswer((_) async => Result.success(newHistory));
+        when(
+          mockDataSource.addOrUpdateWatchHistory(newHistory),
+        ).thenAnswer((_) async => Result.success(newHistory));
 
         // act
         final result = await repository.addOrUpdateHistory(newHistory);
@@ -106,11 +103,9 @@ void main() {
       test('应该返回失败当保存失败时', () async {
         // arrange
         final newHistory = testHistories[0];
-        when(mockDataSource.addOrUpdateWatchHistory(newHistory)).thenAnswer(
-          (_) async => Result.failure(
-            CacheFailure('保存观看历史失败'),
-          ),
-        );
+        when(
+          mockDataSource.addOrUpdateWatchHistory(newHistory),
+        ).thenAnswer((_) async => Result.failure(CacheFailure('保存观看历史失败')));
 
         // act
         final result = await repository.addOrUpdateHistory(newHistory);
@@ -124,8 +119,9 @@ void main() {
     group('deleteHistory', () {
       test('应该成功删除观看历史', () async {
         // arrange
-        when(mockDataSource.deleteWatchHistory('1'))
-            .thenAnswer((_) async => Result.success(null));
+        when(
+          mockDataSource.deleteWatchHistory('1'),
+        ).thenAnswer((_) async => Result.success(null));
 
         // act
         final result = await repository.deleteHistory('1');
@@ -137,11 +133,9 @@ void main() {
 
       test('应该返回失败当删除失败时', () async {
         // arrange
-        when(mockDataSource.deleteWatchHistory('1')).thenAnswer(
-          (_) async => Result.failure(
-            CacheFailure('删除观看历史失败'),
-          ),
-        );
+        when(
+          mockDataSource.deleteWatchHistory('1'),
+        ).thenAnswer((_) async => Result.failure(CacheFailure('删除观看历史失败')));
 
         // act
         final result = await repository.deleteHistory('1');
@@ -155,47 +149,44 @@ void main() {
     group('getHistoriesByMovie', () {
       test('应该成功获取指定电影的观看历史', () async {
         // arrange
-        when(mockDataSource.getWatchHistoriesByMovie('movie-1'))
-            .thenAnswer((_) async => Result.success([testHistories[0]]));
+        when(
+          mockDataSource.getWatchHistoriesByMovie('movie-1'),
+        ).thenAnswer((_) async => Result.success([testHistories[0]]));
 
         // act
         final result = await repository.getHistoriesByMovie('movie-1');
 
         // assert
         expect(result.isSuccess, true);
-        result.when(
-          (_) => fail('应该返回成功结果'),
-          (histories) {
-            expect(histories.length, 1);
-            expect(histories[0].movieId, 'movie-1');
-          },
-        );
+        result.when((_) => fail('应该返回成功结果'), (histories) {
+          expect(histories.length, 1);
+          expect(histories[0].movieId, 'movie-1');
+        });
       });
 
       test('应该返回空列表当电影没有观看历史时', () async {
         // arrange
-        when(mockDataSource.getWatchHistoriesByMovie('movie-999'))
-            .thenAnswer((_) async => Result.success([]));
+        when(
+          mockDataSource.getWatchHistoriesByMovie('movie-999'),
+        ).thenAnswer((_) async => Result.success([]));
 
         // act
         final result = await repository.getHistoriesByMovie('movie-999');
 
         // assert
         expect(result.isSuccess, true);
-        result.when(
-          (_) => fail('应该返回成功结果'),
-          (histories) {
-            expect(histories, isEmpty);
-          },
-        );
+        result.when((_) => fail('应该返回成功结果'), (histories) {
+          expect(histories, isEmpty);
+        });
       });
     });
 
     group('clearAllHistories', () {
       test('应该成功清除所有观看历史', () async {
         // arrange
-        when(mockDataSource.clearAllWatchHistories())
-            .thenAnswer((_) async => Result.success(null));
+        when(
+          mockDataSource.clearAllWatchHistories(),
+        ).thenAnswer((_) async => Result.success(null));
 
         // act
         final result = await repository.clearAllHistories();

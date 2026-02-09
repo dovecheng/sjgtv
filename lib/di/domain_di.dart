@@ -44,9 +44,7 @@ final proxyRepositoryProvider = Provider<ProxyRepository>((ref) {
 
 /// 标签仓库 Provider
 final tagRepositoryProvider = Provider<TagRepository>((ref) {
-  return TagRepositoryImpl(
-    localDataSource: ref.watch(localDataSourceProvider),
-  );
+  return TagRepositoryImpl(localDataSource: ref.watch(localDataSourceProvider));
 });
 
 /// 视频源仓库 Provider
@@ -66,31 +64,25 @@ final movieRepositoryProvider = Provider<MovieRepository>((ref) {
 
 /// 获取所有视频源 Use Case Provider
 final getAllSourcesUseCaseProvider = Provider<GetAllSourcesUseCase>((ref) {
-  return GetAllSourcesUseCase(
-    ref.watch(sourceRepositoryProvider),
-  );
+  return GetAllSourcesUseCase(ref.watch(sourceRepositoryProvider));
 });
 
 /// 添加视频源 Use Case Provider
 final addSourceUseCaseProvider = Provider<AddSourceUseCase>((ref) {
-  return AddSourceUseCase(
-    ref.watch(sourceRepositoryProvider),
-  );
+  return AddSourceUseCase(ref.watch(sourceRepositoryProvider));
 });
 
 /// 搜索电影 Use Case Provider
 final searchMoviesUseCaseProvider = Provider<SearchMoviesUseCase>((ref) {
-  return SearchMoviesUseCase(
-    ref.watch(movieRepositoryProvider),
-  );
+  return SearchMoviesUseCase(ref.watch(movieRepositoryProvider));
 });
 
 /// 获取分类电影 Use Case Provider
-final getMoviesByCategoryUseCaseProvider = Provider<GetMoviesByCategoryUseCase>((ref) {
-  return GetMoviesByCategoryUseCase(
-    ref.watch(movieRepositoryProvider),
-  );
-});
+final getMoviesByCategoryUseCaseProvider = Provider<GetMoviesByCategoryUseCase>(
+  (ref) {
+    return GetMoviesByCategoryUseCase(ref.watch(movieRepositoryProvider));
+  },
+);
 
 /// 观看历史仓库 Provider
 final watchHistoryRepositoryProvider = Provider<WatchHistoryRepository>((ref) {
@@ -100,24 +92,25 @@ final watchHistoryRepositoryProvider = Provider<WatchHistoryRepository>((ref) {
 });
 
 /// 获取所有观看历史 Use Case Provider
-final getAllWatchHistoriesUseCaseProvider = Provider<GetAllWatchHistoriesUseCase>((ref) {
-  return GetAllWatchHistoriesUseCase(
-    ref.watch(watchHistoryRepositoryProvider),
-  );
-});
+final getAllWatchHistoriesUseCaseProvider =
+    Provider<GetAllWatchHistoriesUseCase>((ref) {
+      return GetAllWatchHistoriesUseCase(
+        ref.watch(watchHistoryRepositoryProvider),
+      );
+    });
 
 /// 保存观看历史 Use Case Provider
-final saveWatchHistoryUseCaseProvider = Provider<SaveWatchHistoryUseCase>((ref) {
-  return SaveWatchHistoryUseCase(
-    ref.watch(watchHistoryRepositoryProvider),
-  );
+final saveWatchHistoryUseCaseProvider = Provider<SaveWatchHistoryUseCase>((
+  ref,
+) {
+  return SaveWatchHistoryUseCase(ref.watch(watchHistoryRepositoryProvider));
 });
 
 /// 删除观看历史 Use Case Provider
-final deleteWatchHistoryUseCaseProvider = Provider<DeleteWatchHistoryUseCase>((ref) {
-  return DeleteWatchHistoryUseCase(
-    ref.watch(watchHistoryRepositoryProvider),
-  );
+final deleteWatchHistoryUseCaseProvider = Provider<DeleteWatchHistoryUseCase>((
+  ref,
+) {
+  return DeleteWatchHistoryUseCase(ref.watch(watchHistoryRepositoryProvider));
 });
 
 /// 收藏仓库 Provider
@@ -129,37 +122,27 @@ final favoriteRepositoryProvider = Provider<FavoriteRepository>((ref) {
 
 /// 添加收藏 Use Case Provider
 final addFavoriteUseCaseProvider = Provider<AddFavoriteUseCase>((ref) {
-  return AddFavoriteUseCase(
-    ref.watch(favoriteRepositoryProvider),
-  );
+  return AddFavoriteUseCase(ref.watch(favoriteRepositoryProvider));
 });
 
 /// 获取所有收藏 Use Case Provider
 final getAllFavoritesUseCaseProvider = Provider<GetAllFavoritesUseCase>((ref) {
-  return GetAllFavoritesUseCase(
-    ref.watch(favoriteRepositoryProvider),
-  );
+  return GetAllFavoritesUseCase(ref.watch(favoriteRepositoryProvider));
 });
 
 /// 删除收藏 Use Case Provider
 final deleteFavoriteUseCaseProvider = Provider<DeleteFavoriteUseCase>((ref) {
-  return DeleteFavoriteUseCase(
-    ref.watch(favoriteRepositoryProvider),
-  );
+  return DeleteFavoriteUseCase(ref.watch(favoriteRepositoryProvider));
 });
 
 /// 检查是否已收藏 Use Case Provider
 final isFavoriteUseCaseProvider = Provider<IsFavoriteUseCase>((ref) {
-  return IsFavoriteUseCase(
-    ref.watch(favoriteRepositoryProvider),
-  );
+  return IsFavoriteUseCase(ref.watch(favoriteRepositoryProvider));
 });
 
 /// 取消收藏 Use Case Provider
 final unfavoriteUseCaseProvider = Provider<UnfavoriteUseCase>((ref) {
-  return UnfavoriteUseCase(
-    ref.watch(favoriteRepositoryProvider),
-  );
+  return UnfavoriteUseCase(ref.watch(favoriteRepositoryProvider));
 });
 
 /// 设置仓库 Provider
@@ -171,14 +154,10 @@ final settingsRepositoryProvider = Provider<SettingsRepository>((ref) {
 
 /// 获取设置 Use Case Provider
 final getSettingsUseCaseProvider = Provider<GetSettingsUseCase>((ref) {
-  return GetSettingsUseCase(
-    ref.watch(settingsRepositoryProvider),
-  );
+  return GetSettingsUseCase(ref.watch(settingsRepositoryProvider));
 });
 
 /// 保存设置 Use Case Provider
 final saveSettingsUseCaseProvider = Provider<SaveSettingsUseCase>((ref) {
-  return SaveSettingsUseCase(
-    ref.watch(settingsRepositoryProvider),
-  );
+  return SaveSettingsUseCase(ref.watch(settingsRepositoryProvider));
 });

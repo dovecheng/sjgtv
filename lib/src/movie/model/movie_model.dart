@@ -21,10 +21,7 @@ class MovieModel {
   final bool playable;
   @JsonKey(name: 'is_new', fromJson: BoolConverter.toBoolOrFalse)
   final bool isNew;
-  @JsonKey(
-    name: 'url',
-    fromJson: _urlFromJson,
-  )
+  @JsonKey(name: 'url', fromJson: _urlFromJson)
   final String url;
 
   MovieModel({
@@ -84,6 +81,6 @@ class MovieModel {
 
   static String _urlFromJson(Object? v) =>
       (v != null && v.toString().isNotEmpty)
-          ? v.toString()
-          : 'https://img3.doubanio.com/view/photo/s_ratio_poster/public/p2897743122.jpg';
+      ? v.toString()
+      : 'https://img3.doubanio.com/view/photo/s_ratio_poster/public/p2897743122.jpg';
 }

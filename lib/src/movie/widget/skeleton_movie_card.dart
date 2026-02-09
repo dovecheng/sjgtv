@@ -6,10 +6,7 @@ import 'package:shimmer/shimmer.dart';
 ///
 /// 用于加载占位符，提供更好的加载体验
 class SkeletonMovieCard extends StatelessWidget {
-  const SkeletonMovieCard({
-    super.key,
-    this.aspectRatio = 2.0 / 3.0,
-  });
+  const SkeletonMovieCard({super.key, this.aspectRatio = 2.0 / 3.0});
 
   final double aspectRatio;
 
@@ -30,9 +27,7 @@ class SkeletonMovieCard extends StatelessWidget {
           children: [
             AspectRatio(
               aspectRatio: aspectRatio,
-              child: Container(
-                color: colorScheme.surfaceContainerHighest,
-              ),
+              child: Container(color: colorScheme.surfaceContainerHighest),
             ),
             const SizedBox(height: 8),
             Padding(

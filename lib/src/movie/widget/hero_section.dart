@@ -10,11 +10,7 @@ import 'package:sjgtv/src/app/router/app_router.dart';
 ///
 /// 展示热门推荐内容，带有焦点交互
 class HeroSection extends StatefulWidget {
-  const HeroSection({
-    super.key,
-    required this.movie,
-    this.onTap,
-  });
+  const HeroSection({super.key, required this.movie, this.onTap});
 
   final MovieModel movie;
   final VoidCallback? onTap;
@@ -41,18 +37,12 @@ class _HeroSectionState extends State<HeroSection>
     _scaleAnimation = Tween<double>(
       begin: 1.0,
       end: 1.02,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOutCubic,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
 
     _borderAnimation = Tween<double>(
       begin: 0.0,
       end: 3.0,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOutCubic,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
   }
 
   @override
@@ -97,10 +87,7 @@ class _HeroSectionState extends State<HeroSection>
           return Transform.scale(
             scale: _scaleAnimation.value,
             child: Container(
-              margin: const EdgeInsets.symmetric(
-                horizontal: 24,
-                vertical: 12,
-              ),
+              margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               height: 280,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
@@ -143,8 +130,7 @@ class _HeroSectionState extends State<HeroSection>
             httpHeaders: const {
               'User-Agent':
                   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-              'Accept':
-                  'image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8',
+              'Accept': 'image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8',
               'Referer': 'https://movie.douban.com/',
             },
             fit: BoxFit.cover,
@@ -196,10 +182,7 @@ class _HeroSectionState extends State<HeroSection>
         children: [
           // 热门标签
           Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 6,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
               color: AppTheme.accent,
               borderRadius: BorderRadius.circular(12),
@@ -229,11 +212,7 @@ class _HeroSectionState extends State<HeroSection>
           // 评分和年份
           Row(
             children: [
-              const Icon(
-                Icons.star,
-                size: 20,
-                color: Colors.amber,
-              ),
+              const Icon(Icons.star, size: 20, color: Colors.amber),
               const SizedBox(width: 4),
               Text(
                 '${widget.movie.rating}',
@@ -246,27 +225,18 @@ class _HeroSectionState extends State<HeroSection>
               const SizedBox(width: 16),
               Text(
                 '${widget.movie.year}',
-                style: const TextStyle(
-                  color: Colors.white70,
-                  fontSize: 14,
-                ),
+                style: const TextStyle(color: Colors.white70, fontSize: 14),
               ),
               const SizedBox(width: 16),
               Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 8,
-                  vertical: 4,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
                   color: Colors.white.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: const Text(
                   '按 Enter 查看详情',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
-                  ),
+                  style: TextStyle(color: Colors.white, fontSize: 12),
                 ),
               ),
             ],

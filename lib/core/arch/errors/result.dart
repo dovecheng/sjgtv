@@ -7,11 +7,7 @@ import 'failures.dart';
 /// - 类型安全的错误处理
 /// - 支持函数式编程
 class Result<T, E extends Failure> {
-  const Result._({
-    required this.isSuccess,
-    this.value,
-    this.error,
-  });
+  const Result._({required this.isSuccess, this.value, this.error});
 
   /// 创建成功结果
   factory Result.success(T value) {
@@ -86,7 +82,10 @@ class Result<T, E extends Failure> {
   }
 
   /// when 方法，类似 fold 但不返回值（副作用处理）
-  void when(void Function(E error) onFailure, void Function(T value) onSuccess) {
+  void when(
+    void Function(E error) onFailure,
+    void Function(T value) onSuccess,
+  ) {
     if (isSuccess && value != null) {
       onSuccess(value as T);
     } else if (error != null) {
@@ -127,9 +126,6 @@ typedef FutureResult<T, E extends Failure> = Future<Result<T, E>>;
 extension ResultExtensions<T, E extends Failure> on Result<T, E> {
   /// 链式调用
   Result<R, E> then<R>(Result<R, E> Function(T value) fn) {
-    return fold(
-      (error) => Result.failure(error),
-      (value) => fn(value),
-    );
+    return fold((error) => Result.failure(error), (value) => fn(value));
   }
 }

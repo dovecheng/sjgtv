@@ -430,11 +430,7 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage>
       itemBuilder: (BuildContext context, int index) {
         return const SkeletonMovieCard();
       },
-      padding: EdgeInsets.only(
-        left: padding,
-        top: padding,
-        right: padding,
-      ),
+      padding: EdgeInsets.only(left: padding, top: padding, right: padding),
     );
   }
 

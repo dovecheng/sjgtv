@@ -8,9 +8,7 @@ import 'package:sjgtv/data/datasources/local_datasource.dart';
 ///
 /// 实现 SettingsRepository 接口
 class SettingsRepositoryImpl implements SettingsRepository {
-  SettingsRepositoryImpl({
-    required this.localDataSource,
-  });
+  SettingsRepositoryImpl({required this.localDataSource});
 
   final LocalDataSource localDataSource;
 

@@ -48,7 +48,8 @@ class _FocusableMovieCardState extends State<FocusableMovieCard> {
   @override
   Widget build(BuildContext context) {
     final ColorScheme colorScheme = context.theme.colorScheme;
-    final bool canMoveInGrid = widget.gridIndex != null &&
+    final bool canMoveInGrid =
+        widget.gridIndex != null &&
         widget.crossAxisCount != null &&
         widget.itemCount != null &&
         widget.onMoveFocus != null;
@@ -74,7 +75,9 @@ class _FocusableMovieCardState extends State<FocusableMovieCard> {
         if (event is KeyDownEvent) {
           if (event.logicalKey == LogicalKeyboardKey.select ||
               event.logicalKey == LogicalKeyboardKey.enter) {
-            GoRouter.of(context).push('${AppRoutes.search}?q=${widget.movie.title}');
+            GoRouter.of(
+              context,
+            ).push('${AppRoutes.search}?q=${widget.movie.title}');
             return KeyEventResult.handled;
           }
           if (canMoveInGrid) {
@@ -107,7 +110,9 @@ class _FocusableMovieCardState extends State<FocusableMovieCard> {
         onTap: () {
           // 非TV设备支持点击
           if (!isTV) {
-            GoRouter.of(context).push('${AppRoutes.search}?q=${widget.movie.title}');
+            GoRouter.of(
+              context,
+            ).push('${AppRoutes.search}?q=${widget.movie.title}');
           }
         },
         child: AnimatedScale(
@@ -132,7 +137,9 @@ class _FocusableMovieCardState extends State<FocusableMovieCard> {
                       topRight: Radius.circular(12),
                     ),
                     child: Container(
-                      decoration: BoxDecoration(color: colorScheme.surfaceContainer),
+                      decoration: BoxDecoration(
+                        color: colorScheme.surfaceContainer,
+                      ),
                       child: widget.movie.coverUrl != null
                           ? CachedImage(
                               imageUrl: widget.movie.coverUrl!,
@@ -147,9 +154,12 @@ class _FocusableMovieCardState extends State<FocusableMovieCard> {
                               width: double.infinity,
                               placeholder: (BuildContext ctx, String url) =>
                                   networkImagePlaceholder(ctx),
-                              errorWidget: (BuildContext ctx, String url,
-                                      Object error) =>
-                                  networkImageErrorWidget(ctx),
+                              errorWidget:
+                                  (
+                                    BuildContext ctx,
+                                    String url,
+                                    Object error,
+                                  ) => networkImageErrorWidget(ctx),
                             )
                           : Container(
                               color: colorScheme.surfaceContainerLow,
@@ -170,7 +180,10 @@ class _FocusableMovieCardState extends State<FocusableMovieCard> {
                 ),
                 Container(
                   height: infoHeight,
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
                   decoration: BoxDecoration(
                     color: colorScheme.surfaceContainer,
                     borderRadius: const BorderRadius.vertical(
@@ -196,11 +209,18 @@ class _FocusableMovieCardState extends State<FocusableMovieCard> {
                         children: [
                           Text(
                             '${widget.movie.year}',
-                            style: TextStyle(fontSize: metaFontSize, color: Colors.grey),
+                            style: TextStyle(
+                              fontSize: metaFontSize,
+                              color: Colors.grey,
+                            ),
                           ),
                           Row(
                             children: [
-                              Icon(Icons.star, size: iconSize, color: Colors.amber),
+                              Icon(
+                                Icons.star,
+                                size: iconSize,
+                                color: Colors.amber,
+                              ),
                               const SizedBox(width: 4),
                               Text(
                                 '${widget.movie.rating}',

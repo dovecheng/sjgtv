@@ -17,115 +17,113 @@ class AppRouter {
   AppRouter._();
 
   static GoRouter get router => GoRouter(
-        initialLocation: AppRoutes.home,
-        debugLogDiagnostics: true,
+    initialLocation: AppRoutes.home,
+    debugLogDiagnostics: true,
+    routes: [
+      // 首页
+      GoRoute(
+        path: AppRoutes.home,
+        name: 'home',
+        pageBuilder: (context, state) => const MaterialPage<void>(
+          key: ValueKey('home'),
+          child: MovieHomePage(),
+        ),
+      ),
+
+      // 搜索页面
+      GoRoute(
+        path: AppRoutes.search,
+        name: 'search',
+        pageBuilder: (context, state) {
+          final String? initialQuery = state.uri.queryParameters['q'];
+          return TVPageTransition(
+            key: state.pageKey,
+            child: SearchPage(initialQuery: initialQuery ?? ''),
+          );
+        },
+      ),
+
+      // 电影详情页面
+      GoRoute(
+        path: AppRoutes.movieDetail,
+        name: 'movieDetail',
+        pageBuilder: (context, state) {
+          final Map<String, dynamic> movie =
+              state.extra as Map<String, dynamic>? ?? {};
+          return TVPageTransition(
+            key: state.pageKey,
+            child: MovieDetailPage(movie: movie),
+          );
+        },
+      ),
+
+      // 播放器页面
+      GoRoute(
+        path: AppRoutes.player,
+        name: 'player',
+        pageBuilder: (context, state) {
+          final Map<String, dynamic> extra =
+              state.extra as Map<String, dynamic>? ?? {};
+          final Map<String, dynamic> movie =
+              extra['movie'] as Map<String, dynamic>? ?? {};
+          final int initialIndex = extra['initialIndex'] as int? ?? 0;
+          final List<Map<String, String>> episodes =
+              extra['episodes'] as List<Map<String, String>>? ?? [];
+          final List<Map<String, dynamic>>? sources =
+              extra['sources'] as List<Map<String, dynamic>>?;
+          final int currentSourceIndex =
+              extra['currentSourceIndex'] as int? ?? 0;
+          return PlayerPageTransition(
+            key: state.pageKey,
+            child: FullScreenPlayerPage(
+              movie: movie,
+              episodes: episodes,
+              initialIndex: initialIndex,
+              sources: sources,
+              currentSourceIndex: currentSourceIndex,
+            ),
+          );
+        },
+      ),
+
+      // 源管理页面
+      GoRoute(
+        path: AppRoutes.sourceManage,
+        name: 'sourceManage',
+        pageBuilder: (context, state) => TVPageTransition(
+          key: state.pageKey,
+          child: const SourceManagePage(),
+        ),
         routes: [
-          // 首页
+          // 源表单页面（添加/编辑）
           GoRoute(
-            path: AppRoutes.home,
-            name: 'home',
-            pageBuilder: (context, state) => const MaterialPage<void>(
-              key: ValueKey('home'),
-              child: MovieHomePage(),
-            ),
-          ),
-
-          // 搜索页面
-          GoRoute(
-            path: AppRoutes.search,
-            name: 'search',
+            path: 'form',
+            name: 'sourceForm',
             pageBuilder: (context, state) {
-              final String? initialQuery =
-                  state.uri.queryParameters['q'];
-              return TVPageTransition(
+              final SourceModel? sourceToEdit = state.extra as SourceModel?;
+              return ScalePageTransition(
                 key: state.pageKey,
-                child: SearchPage(
-                  initialQuery: initialQuery ?? '',
-                ),
+                child: SourceFormPage(sourceToEdit: sourceToEdit),
               );
             },
-          ),
-
-          // 电影详情页面
-          GoRoute(
-            path: AppRoutes.movieDetail,
-            name: 'movieDetail',
-            pageBuilder: (context, state) {
-              final Map<String, dynamic> movie =
-                  state.extra as Map<String, dynamic>? ?? {};
-              return TVPageTransition(
-                key: state.pageKey,
-                child: MovieDetailPage(movie: movie),
-              );
-            },
-          ),
-
-          // 播放器页面
-          GoRoute(
-            path: AppRoutes.player,
-            name: 'player',
-            pageBuilder: (context, state) {
-              final Map<String, dynamic> extra =
-                  state.extra as Map<String, dynamic>? ?? {};
-              final Map<String, dynamic> movie = extra['movie'] as Map<String, dynamic>? ?? {};
-              final int initialIndex = extra['initialIndex'] as int? ?? 0;
-              final List<Map<String, String>> episodes =
-                  extra['episodes'] as List<Map<String, String>>? ?? [];
-              final List<Map<String, dynamic>>? sources =
-                  extra['sources'] as List<Map<String, dynamic>>?;
-              final int currentSourceIndex = extra['currentSourceIndex'] as int? ?? 0;
-              return PlayerPageTransition(
-                key: state.pageKey,
-                child: FullScreenPlayerPage(
-                  movie: movie,
-                  episodes: episodes,
-                  initialIndex: initialIndex,
-                  sources: sources,
-                  currentSourceIndex: currentSourceIndex,
-                ),
-              );
-            },
-          ),
-
-          // 源管理页面
-          GoRoute(
-            path: AppRoutes.sourceManage,
-            name: 'sourceManage',
-            pageBuilder: (context, state) => TVPageTransition(
-              key: state.pageKey,
-              child: const SourceManagePage(),
-            ),
-            routes: [
-              // 源表单页面（添加/编辑）
-              GoRoute(
-                path: 'form',
-                name: 'sourceForm',
-                pageBuilder: (context, state) {
-                  final SourceModel? sourceToEdit =
-                      state.extra as SourceModel?;
-                  return ScalePageTransition(
-                    key: state.pageKey,
-                    child: SourceFormPage(sourceToEdit: sourceToEdit),
-                  );
-                },
-              ),
-            ],
-          ),
-
-          // 设置页面（预留）
-          GoRoute(
-            path: AppRoutes.settings,
-            name: 'settings',
-            pageBuilder: (context, state) => TVPageTransition(
-              key: state.pageKey,
-              child: Scaffold(
-                appBar: AppBar(title: const Text('设置')),
-                body: const Center(child: Text('设置功能开发中')),
-              ),
-            ),
           ),
         ],
-      );
+      ),
+
+      // 设置页面（预留）
+      GoRoute(
+        path: AppRoutes.settings,
+        name: 'settings',
+        pageBuilder: (context, state) => TVPageTransition(
+          key: state.pageKey,
+          child: Scaffold(
+            appBar: AppBar(title: const Text('设置')),
+            body: const Center(child: Text('设置功能开发中')),
+          ),
+        ),
+      ),
+    ],
+  );
 }
 
 /// 路由扩展方法

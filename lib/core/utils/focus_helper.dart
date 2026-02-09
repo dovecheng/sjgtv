@@ -4,12 +4,7 @@ import 'package:sjgtv/core/core.dart';
 final Log _log = Log('FocusHelper');
 
 /// 焦点移动方向
-enum FocusMoveDirection {
-  up,
-  down,
-  left,
-  right,
-}
+enum FocusMoveDirection { up, down, left, right }
 
 /// 焦点管理工具类
 ///
@@ -192,8 +187,7 @@ class FocusHelper {
     DateTime? lastRequestTime;
     void request() {
       final DateTime now = DateTime.now();
-      if (lastRequestTime != null &&
-          now.difference(lastRequestTime!) < delay) {
+      if (lastRequestTime != null && now.difference(lastRequestTime!) < delay) {
         return;
       }
       lastRequestTime = now;
@@ -244,7 +238,8 @@ class FocusHelper {
     if (renderBox == null) return;
 
     final RenderBox? scrollRenderBox =
-        scrollController.position.context.storageContext.findRenderObject() as RenderBox?;
+        scrollController.position.context.storageContext.findRenderObject()
+            as RenderBox?;
     if (scrollRenderBox == null) return;
 
     final Offset position = renderBox.localToGlobal(Offset.zero);
@@ -269,7 +264,8 @@ class FocusHelper {
       targetOffset = scrollOffset + itemTop - viewportTop - padding;
     } else {
       // 默认居中显示
-      targetOffset = scrollOffset +
+      targetOffset =
+          scrollOffset +
           itemTop -
           viewportTop -
           (viewportHeight / 2) +
@@ -348,11 +344,7 @@ class FocusHelper {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final BuildContext? ctx = keys[targetIndex].currentContext;
       if (ctx != null) {
-        scrollToFocus(
-          scrollController,
-          ctx,
-          moveDirection: direction,
-        );
+        scrollToFocus(scrollController, ctx, moveDirection: direction);
       }
     });
   }
@@ -369,10 +361,7 @@ class FocusHelper {
     Color color = const Color(0xFF3EA6FF),
     double width = 3.0,
   }) {
-    return Border.all(
-      color: color,
-      width: width,
-    );
+    return Border.all(color: color, width: width);
   }
 
   /// 获取焦点阴影

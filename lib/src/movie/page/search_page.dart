@@ -27,8 +27,7 @@ class SearchPage extends ConsumerStatefulWidget {
   ConsumerState<SearchPage> createState() => _SearchPageState();
 }
 
-class _SearchPageState extends ConsumerState<SearchPage>
-    with FocusHelperMixin {
+class _SearchPageState extends ConsumerState<SearchPage> with FocusHelperMixin {
   MovieSearchService get _searchService => ref.read(movieSearchProvider);
   final CancelToken _cancelToken = CancelToken();
   final TextEditingController _searchController = TextEditingController();
@@ -74,14 +73,11 @@ class _SearchPageState extends ConsumerState<SearchPage>
     // 防抖搜索
     if (TVModeConfig.enableDebounce) {
       _searchDebounceTimer?.cancel();
-      _searchDebounceTimer = Timer(
-        TVModeConfig.debounceDuration,
-        () {
-          if (_searchController.text.isNotEmpty) {
-            _searchMovies(_searchController.text.trim());
-          }
-        },
-      );
+      _searchDebounceTimer = Timer(TVModeConfig.debounceDuration, () {
+        if (_searchController.text.isNotEmpty) {
+          _searchMovies(_searchController.text.trim());
+        }
+      });
     }
   }
 
@@ -107,8 +103,10 @@ class _SearchPageState extends ConsumerState<SearchPage>
     });
 
     try {
-      final Map<String, dynamic> result =
-          await _searchService.search(keyword, limit: 100);
+      final Map<String, dynamic> result = await _searchService.search(
+        keyword,
+        limit: 100,
+      );
 
       if (mounted) {
         setState(() {
@@ -188,7 +186,10 @@ class _SearchPageState extends ConsumerState<SearchPage>
                     ),
                     decoration: InputDecoration(
                       hintText: '搜索电影、电视剧...',
-                      hintStyle: TextStyle(fontSize: 22, color: colorScheme.onSurfaceVariant),
+                      hintStyle: TextStyle(
+                        fontSize: 22,
+                        color: colorScheme.onSurfaceVariant,
+                      ),
                       border: InputBorder.none,
                     ),
                     onSubmitted: (value) {
@@ -230,10 +231,7 @@ class _SearchPageState extends ConsumerState<SearchPage>
             borderRadius: BorderRadius.circular(24),
           ),
           child: Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 24,
-              vertical: 16,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
             child: Row(
               children: [
                 const Icon(Icons.search, size: 32, color: Colors.white),
@@ -289,7 +287,9 @@ class _SearchPageState extends ConsumerState<SearchPage>
                     Icon(
                       Icons.movie_creation,
                       size: 120,
-                      color: colorScheme.onSurfaceVariant.withAlpha((255 * 0.3).toInt()),
+                      color: colorScheme.onSurfaceVariant.withAlpha(
+                        (255 * 0.3).toInt(),
+                      ),
                     ),
                     const SizedBox(height: 32),
                     Text(
@@ -305,7 +305,9 @@ class _SearchPageState extends ConsumerState<SearchPage>
                       '使用遥控器方向键导航，确认键选择',
                       style: TextStyle(
                         fontSize: 20,
-                        color: colorScheme.onSurfaceVariant.withAlpha((255 * 0.7).toInt()),
+                        color: colorScheme.onSurfaceVariant.withAlpha(
+                          (255 * 0.7).toInt(),
+                        ),
                       ),
                     ),
                   ],
@@ -321,7 +323,9 @@ class _SearchPageState extends ConsumerState<SearchPage>
                     Icon(
                       Icons.search_off,
                       size: 120,
-                      color: colorScheme.onSurfaceVariant.withAlpha((255 * 0.3).toInt()),
+                      color: colorScheme.onSurfaceVariant.withAlpha(
+                        (255 * 0.3).toInt(),
+                      ),
                     ),
                     const SizedBox(height: 32),
                     Text(
@@ -337,7 +341,9 @@ class _SearchPageState extends ConsumerState<SearchPage>
                       '尝试其他关键词',
                       style: TextStyle(
                         fontSize: 20,
-                        color: colorScheme.onSurfaceVariant.withAlpha((255 * 0.7).toInt()),
+                        color: colorScheme.onSurfaceVariant.withAlpha(
+                          (255 * 0.7).toInt(),
+                        ),
                       ),
                     ),
                   ],
@@ -385,7 +391,8 @@ class _SearchPageState extends ConsumerState<SearchPage>
                 ),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: crossAxisCount,
-                  childAspectRatio: TVModeLayout.getRecommendedCardAspectRatio(),
+                  childAspectRatio:
+                      TVModeLayout.getRecommendedCardAspectRatio(),
                   crossAxisSpacing: TVModeLayout.getRecommendedCardSpacing(),
                   mainAxisSpacing: TVModeLayout.getRecommendedCardSpacing(),
                 ),

@@ -9,7 +9,9 @@ abstract class WatchHistoryRepository {
   /// 添加或更新观看历史
   ///
   /// [history] 观看历史实体
-  Future<Result<WatchHistory, Failure>> addOrUpdateHistory(WatchHistory history);
+  Future<Result<WatchHistory, Failure>> addOrUpdateHistory(
+    WatchHistory history,
+  );
 
   /// 获取所有观看历史（按观看时间降序）
   Future<Result<List<WatchHistory>, Failure>> getAllHistories();
@@ -17,7 +19,9 @@ abstract class WatchHistoryRepository {
   /// 获取指定电影的观看历史
   ///
   /// [movieId] 电影 ID
-  Future<Result<List<WatchHistory>, Failure>> getHistoriesByMovie(String movieId);
+  Future<Result<List<WatchHistory>, Failure>> getHistoriesByMovie(
+    String movieId,
+  );
 
   /// 删除观看历史
   ///

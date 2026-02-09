@@ -138,7 +138,8 @@ class ApiResultModel<T extends Object> {
         code: code,
         data: code == null || code == successfulCode
             ? ApiDiagnosisModel.unwrap(
-                converter(ApiDiagnosisModel.unwrap(node['data'])))
+                converter(ApiDiagnosisModel.unwrap(node['data'])),
+              )
             : null,
         errorType: errorType,
         message: message,

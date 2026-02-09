@@ -18,11 +18,7 @@ void main() async {
     overrides: [
       isarProvider.overrideWith(
         () => IsarProvider(
-          schemas: [
-            SourceModelSchema,
-            ProxyModelSchema,
-            TagModelSchema,
-          ],
+          schemas: [SourceModelSchema, ProxyModelSchema, TagModelSchema],
         ),
       ),
     ],

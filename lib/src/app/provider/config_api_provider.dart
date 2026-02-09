@@ -19,8 +19,7 @@ class ConfigApiProvider extends _$ConfigApiProvider {
     _log.d(() => '开始请求 config: $_configUrl');
     final Dio dio = ref.read(apiClientProvider);
     try {
-      final Response<dynamic> response =
-          await dio.get<dynamic>(_configUrl);
+      final Response<dynamic> response = await dio.get<dynamic>(_configUrl);
       final dynamic body = response.data;
       if (body is! Map<String, dynamic>) {
         _log.d(() => '直连 config 响应非 Map');
@@ -30,13 +29,17 @@ class ConfigApiProvider extends _$ConfigApiProvider {
       if (body.containsKey('data') && body['data'] is Map<String, dynamic>) {
         config = body['data'] as Map<String, dynamic>;
         final Map<String, dynamic> c = config;
-        _log.d(() =>
-            '直连 config 成功(拦截器包装), sources=${c['sources']?.length}, tags=${c['tags']?.length}');
+        _log.d(
+          () =>
+              '直连 config 成功(拦截器包装), sources=${c['sources']?.length}, tags=${c['tags']?.length}',
+        );
       } else if (body.containsKey('sources') || body.containsKey('tags')) {
         config = body;
         final Map<String, dynamic> c = config;
-        _log.d(() =>
-            '直连 config 成功(裸格式), sources=${c['sources']?.length}, tags=${c['tags']?.length}');
+        _log.d(
+          () =>
+              '直连 config 成功(裸格式), sources=${c['sources']?.length}, tags=${c['tags']?.length}',
+        );
       }
       if (config != null) return config;
       _log.d(() => '直连 config 无 sources/tags');

@@ -9,13 +9,15 @@ import 'package:sjgtv/data/datasources/local_datasource.dart';
 ///
 /// 实现 SourceRepository 接口，提供视频源数据的访问功能
 class SourceRepositoryImpl implements SourceRepository {
-  SourceRepositoryImpl({
-    required this.localDataSource,
-    Dio? dio,
-  }) : _dio = dio ?? Dio(BaseOptions(
-          connectTimeout: const Duration(seconds: 10),
-          receiveTimeout: const Duration(seconds: 10),
-        ));
+  SourceRepositoryImpl({required this.localDataSource, Dio? dio})
+    : _dio =
+          dio ??
+          Dio(
+            BaseOptions(
+              connectTimeout: const Duration(seconds: 10),
+              receiveTimeout: const Duration(seconds: 10),
+            ),
+          );
 
   final LocalDataSource localDataSource;
   final Dio _dio;
@@ -32,7 +34,9 @@ class SourceRepositoryImpl implements SourceRepository {
       return Result.failure(result.error!);
     }
 
-    final sources = result.value!.where((s) => s.tagIds.contains(tagId)).toList();
+    final sources = result.value!
+        .where((s) => s.tagIds.contains(tagId))
+        .toList();
     return Result.success(sources);
   }
 
@@ -60,7 +64,10 @@ class SourceRepositoryImpl implements SourceRepository {
     }
 
     final sources = sourcesResult.value!;
-    final source = sources.cast<Source?>().firstWhere((s) => s?.uuid == uuid, orElse: () => null);
+    final source = sources.cast<Source?>().firstWhere(
+      (s) => s?.uuid == uuid,
+      orElse: () => null,
+    );
 
     if (source == null) {
       return Result.failure(const NotFoundFailure('视频源不存在'));
@@ -80,7 +87,10 @@ class SourceRepositoryImpl implements SourceRepository {
       }
 
       final sources = sourcesResult.value!;
-      final source = sources.cast<Source?>().firstWhere((s) => s?.uuid == uuid, orElse: () => null);
+      final source = sources.cast<Source?>().firstWhere(
+        (s) => s?.uuid == uuid,
+        orElse: () => null,
+      );
 
       if (source == null) {
         return Result.failure(const NotFoundFailure('视频源不存在'));
@@ -92,7 +102,8 @@ class SourceRepositoryImpl implements SourceRepository {
         queryParameters: {'ac': 'list'},
         options: Options(
           headers: {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+            'User-Agent':
+                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
             'Accept': 'application/json, text/plain, */*',
           },
         ),

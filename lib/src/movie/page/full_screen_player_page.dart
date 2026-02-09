@@ -36,6 +36,7 @@ class FullScreenPlayerPage extends ConsumerStatefulWidget {
   final dynamic movie;
   final List<Map<String, String>> episodes;
   final int initialIndex;
+
   /// 多播放源列表，每项需含 vod_play_url，可选 vod_pic、vod_name、source
   final List<Map<String, dynamic>>? sources;
   final int currentSourceIndex;
@@ -50,15 +51,18 @@ class FullScreenPlayerPage extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<FullScreenPlayerPage> createState() => _FullScreenPlayerPageState();
+  ConsumerState<FullScreenPlayerPage> createState() =>
+      _FullScreenPlayerPageState();
 }
 
 class _FullScreenPlayerPageState extends ConsumerState<FullScreenPlayerPage> {
   late final Player _player;
   late final VideoController _videoController;
+
   /// 当前使用的播放源列表（sources ?? [movie]）
   late final List<Map<String, dynamic>> _sources;
   int _currentSourceIndex;
+
   /// 当前源的剧集列表（从当前源的 vod_play_url 解析，换源时更新）
   late List<Map<String, String>> _episodes;
   int _currentEpisodeIndex;
@@ -92,31 +96,42 @@ class _FullScreenPlayerPageState extends ConsumerState<FullScreenPlayerPage> {
   final FocusNode _sourcePanelFocusNode = FocusNode();
   final ScrollController _sourcePanelScrollController = ScrollController();
   int _sourcePanelFocusedIndex = 0;
+
   /// 每项一个 GlobalKey，用于 Scrollable.ensureVisible 按真实高度滚动
   late final List<GlobalKey> _sourceItemKeys;
+
   /// 项未构建时的估算高度，用于先滚到可见区域再 ensureVisible
   static const double _sourceListItemHeightFallback = 120.0;
+
   /// 源测试结果：延迟(ms)、m3u8 是否可用
   final Map<int, _SourceTestResult> _sourceTestResults = {};
+
   /// 正在测试的源下标
   final Set<int> _sourceTestingIndices = {};
+
   /// 进度条节流：每 1s 更新，减少 UI 重建对播放帧率的影响
-  final ValueNotifier<Duration> _progressPosition = ValueNotifier(Duration.zero);
+  final ValueNotifier<Duration> _progressPosition = ValueNotifier(
+    Duration.zero,
+  );
   Timer? _progressTimer;
+
   /// 观看历史保存定时器（每 30 秒保存一次）
   Timer? _historySaveTimer;
 
   _FullScreenPlayerPageState()
-      : _currentSourceIndex = 0,
-        _currentEpisodeIndex = 0;
+    : _currentSourceIndex = 0,
+      _currentEpisodeIndex = 0;
 
   /// 仅保留可播放的源（vod_play_url 非空且能解析出剧集）
   List<Map<String, dynamic>> _filterPlayableSources(
-      List<Map<String, dynamic>> list) {
+    List<Map<String, dynamic>> list,
+  ) {
     return list
-        .where((Map<String, dynamic> s) =>
-            (s['vod_play_url']?.toString() ?? '').trim().isNotEmpty &&
-            _parseEpisodesFromPlayUrl(s).isNotEmpty)
+        .where(
+          (Map<String, dynamic> s) =>
+              (s['vod_play_url']?.toString() ?? '').trim().isNotEmpty &&
+              _parseEpisodesFromPlayUrl(s).isNotEmpty,
+        )
         .toList();
   }
 
@@ -126,23 +141,25 @@ class _FullScreenPlayerPageState extends ConsumerState<FullScreenPlayerPage> {
     MediaKit.ensureInitialized();
     List<Map<String, dynamic>> raw =
         widget.sources != null && widget.sources!.isNotEmpty
-            ? List<Map<String, dynamic>>.from(widget.sources!)
-            : <Map<String, dynamic>>[widget.movie as Map<String, dynamic>];
+        ? List<Map<String, dynamic>>.from(widget.sources!)
+        : <Map<String, dynamic>>[widget.movie as Map<String, dynamic>];
     _sources = _filterPlayableSources(raw);
     if (_sources.isEmpty) {
       _sources = raw;
     }
-    _currentSourceIndex =
-        widget.currentSourceIndex.clamp(0, _sources.length - 1);
+    _currentSourceIndex = widget.currentSourceIndex.clamp(
+      0,
+      _sources.length - 1,
+    );
     _episodes = _parseEpisodesFromPlayUrl(_sources[_currentSourceIndex]);
-    _currentEpisodeIndex =
-        widget.initialIndex.clamp(0, _episodes.isEmpty ? 0 : _episodes.length - 1);
+    _currentEpisodeIndex = widget.initialIndex.clamp(
+      0,
+      _episodes.isEmpty ? 0 : _episodes.length - 1,
+    );
     _sourcePanelFocusedIndex = _currentSourceIndex;
     _sourceItemKeys = List.generate(_sources.length, (_) => GlobalKey());
     _player = Player(
-      configuration: const PlayerConfiguration(
-        bufferSize: 64 * 1024 * 1024,
-      ),
+      configuration: const PlayerConfiguration(bufferSize: 64 * 1024 * 1024),
     );
     _videoController = VideoController(
       _player,
@@ -174,7 +191,8 @@ class _FullScreenPlayerPageState extends ConsumerState<FullScreenPlayerPage> {
 
   /// 从源的 vod_play_url 解析剧集列表
   List<Map<String, String>> _parseEpisodesFromPlayUrl(
-      Map<String, dynamic> source) {
+    Map<String, dynamic> source,
+  ) {
     final List<Map<String, String>> list = <Map<String, String>>[];
     final String? playUrl = source['vod_play_url'] as String?;
     if (playUrl == null || playUrl.isEmpty) return list;
@@ -241,20 +259,29 @@ class _FullScreenPlayerPageState extends ConsumerState<FullScreenPlayerPage> {
 
       final history = WatchHistory(
         id: const Uuid().v4(),
-        movieId: (movie['vod_id']?.toString() ?? DateTime.now().millisecondsSinceEpoch.toString()),
+        movieId:
+            (movie['vod_id']?.toString() ??
+            DateTime.now().millisecondsSinceEpoch.toString()),
         movieTitle: (movie['vod_name']?.toString() ?? '').trim(),
         movieCoverUrl: (movie['vod_pic']?.toString() ?? '').trim(),
-        movieYear: int.tryParse(movie['vod_year']?.toString() ?? '') ?? DateTime.now().year,
+        movieYear:
+            int.tryParse(movie['vod_year']?.toString() ?? '') ??
+            DateTime.now().year,
         episodeIndex: _currentEpisodeIndex,
         episodeName: currentEpisode['title']?.toString() ?? '',
         playUrl: currentEpisode['url']?.toString() ?? '',
         progress: _player.state.position,
         duration: _player.state.duration,
         watchedAt: DateTime.now(),
-        sourceName: (source['source']?.toString() ?? source['vod_name']?.toString() ?? '默认'),
+        sourceName:
+            (source['source']?.toString() ??
+            source['vod_name']?.toString() ??
+            '默认'),
       );
 
-      await ref.read(watchHistoriesProvider.notifier).addOrUpdateHistory(history);
+      await ref
+          .read(watchHistoriesProvider.notifier)
+          .addOrUpdateHistory(history);
       _log.d(() => '保存观看历史: ${history.movieTitle} - ${history.episodeName}');
     } catch (e) {
       _log.e(() => '保存观看历史失败', e);
@@ -270,7 +297,9 @@ class _FullScreenPlayerPageState extends ConsumerState<FullScreenPlayerPage> {
       _controlWakelock(isPlaying);
     });
 
-    _bufferingSubscription = _player.stream.buffering.listen((bool isBuffering) {
+    _bufferingSubscription = _player.stream.buffering.listen((
+      bool isBuffering,
+    ) {
       if (_isBuffering.value != isBuffering) {
         _isBuffering.value = isBuffering;
       }
@@ -449,9 +478,7 @@ class _FullScreenPlayerPageState extends ConsumerState<FullScreenPlayerPage> {
 
   /// 切换到指定播放源，保留当前播放进度
   Future<void> _switchToSource(int index) async {
-    if (index < 0 ||
-        index >= _sources.length ||
-        index == _currentSourceIndex) {
+    if (index < 0 || index >= _sources.length || index == _currentSourceIndex) {
       return;
     }
     final Duration savedPosition = _player.state.position;
@@ -459,8 +486,10 @@ class _FullScreenPlayerPageState extends ConsumerState<FullScreenPlayerPage> {
       _showSourcePanel = false;
       _currentSourceIndex = index;
       _episodes = _parseEpisodesFromPlayUrl(_sources[index]);
-      _currentEpisodeIndex =
-          _currentEpisodeIndex.clamp(0, _episodes.isEmpty ? 0 : _episodes.length - 1);
+      _currentEpisodeIndex = _currentEpisodeIndex.clamp(
+        0,
+        _episodes.isEmpty ? 0 : _episodes.length - 1,
+      );
       _controlsVisibility.value = true;
       _isLoading = true;
       _errorMessage = null;
@@ -485,7 +514,9 @@ class _FullScreenPlayerPageState extends ConsumerState<FullScreenPlayerPage> {
       final String processM3u8Url = await _processM3u8Url(url);
       await _player.open(Media(processM3u8Url));
       _player.setVolume(_volume);
-      await _player.seek(savedPosition.clamp(Duration.zero, _player.state.duration));
+      await _player.seek(
+        savedPosition.clamp(Duration.zero, _player.state.duration),
+      );
       if (mounted) {
         setState(() => _isLoading = false);
       }
@@ -731,7 +762,8 @@ class _FullScreenPlayerPageState extends ConsumerState<FullScreenPlayerPage> {
                 const RightIntent(),
             const SingleActivator(LogicalKeyboardKey.mediaPlayPause):
                 const PlayPauseIntent(),
-            const SingleActivator(LogicalKeyboardKey.escape): const BackIntent(),
+            const SingleActivator(LogicalKeyboardKey.escape):
+                const BackIntent(),
           },
           child: Actions(
             actions: {
@@ -745,75 +777,75 @@ class _FullScreenPlayerPageState extends ConsumerState<FullScreenPlayerPage> {
                   return null;
                 },
               ),
-            PlayPauseIntent: CallbackAction<PlayPauseIntent>(
-              onInvoke: (intent) {
-                _togglePlayPause();
-                return null;
-              },
-            ),
-          },
-          child: Stack(
-            children: [
-              _buildPlayerWidget(),
-              ValueListenableBuilder<bool>(
-                valueListenable: _isBuffering,
-                builder: (context, buffering, child) {
-                  return Visibility(
-                    visible: buffering,
-                    child: Center(
-                      child: Container(
-                        padding: const EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                          color: Colors.black54,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const CircularProgressIndicator(
-                              strokeWidth: 3,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                Colors.white,
+              PlayPauseIntent: CallbackAction<PlayPauseIntent>(
+                onInvoke: (intent) {
+                  _togglePlayPause();
+                  return null;
+                },
+              ),
+            },
+            child: Stack(
+              children: [
+                _buildPlayerWidget(),
+                ValueListenableBuilder<bool>(
+                  valueListenable: _isBuffering,
+                  builder: (context, buffering, child) {
+                    return Visibility(
+                      visible: buffering,
+                      child: Center(
+                        child: Container(
+                          padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                            color: Colors.black54,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const CircularProgressIndicator(
+                                strokeWidth: 3,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  Colors.white,
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: 10),
-                            const Text(
-                              '正在缓冲...',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ],
+                              const SizedBox(height: 10),
+                              const Text(
+                                '正在缓冲...',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  );
-                },
-              ),
-              ValueListenableBuilder<bool>(
-                valueListenable: _controlsVisibility,
-                builder: (context, visible, child) {
-                  return Visibility(
-                    visible: visible,
-                    child: _buildTopGradient(),
-                  );
-                },
-              ),
-              ValueListenableBuilder<bool>(
-                valueListenable: _controlsVisibility,
-                builder: (context, visible, child) {
-                  return Visibility(
-                    visible: visible,
-                    child: _buildBottomControls(),
-                  );
-                },
-              ),
-              _buildSeekIndicator(),
-              if (_showVolumeHUD) _buildVolumeHUD(),
-              if (_showSourcePanel) _buildSourcePanel(),
-            ],
+                    );
+                  },
+                ),
+                ValueListenableBuilder<bool>(
+                  valueListenable: _controlsVisibility,
+                  builder: (context, visible, child) {
+                    return Visibility(
+                      visible: visible,
+                      child: _buildTopGradient(),
+                    );
+                  },
+                ),
+                ValueListenableBuilder<bool>(
+                  valueListenable: _controlsVisibility,
+                  builder: (context, visible, child) {
+                    return Visibility(
+                      visible: visible,
+                      child: _buildBottomControls(),
+                    );
+                  },
+                ),
+                _buildSeekIndicator(),
+                if (_showVolumeHUD) _buildVolumeHUD(),
+                if (_showSourcePanel) _buildSourcePanel(),
+              ],
+            ),
           ),
         ),
       ),
-    ),
     );
   }
 
@@ -832,10 +864,10 @@ class _FullScreenPlayerPageState extends ConsumerState<FullScreenPlayerPage> {
     int? speedMs;
     bool m3u8Ok = false;
     try {
-      final List<Map<String, String>> eps =
-          _parseEpisodesFromPlayUrl(_sources[index]);
-      final String? url =
-          eps.isNotEmpty ? eps[0]['url'] : null;
+      final List<Map<String, String>> eps = _parseEpisodesFromPlayUrl(
+        _sources[index],
+      );
+      final String? url = eps.isNotEmpty ? eps[0]['url'] : null;
       if (url == null || url.isEmpty) {
         if (mounted) {
           setState(() {
@@ -902,7 +934,8 @@ class _FullScreenPlayerPageState extends ConsumerState<FullScreenPlayerPage> {
     const Duration duration = Duration(milliseconds: 200);
     const Curve curve = Curves.easeInOut;
     void doEnsureVisible() {
-      if (!mounted || _sourcePanelFocusedIndex >= _sourceItemKeys.length) return;
+      if (!mounted || _sourcePanelFocusedIndex >= _sourceItemKeys.length)
+        return;
       final BuildContext? itemContext =
           _sourceItemKeys[_sourcePanelFocusedIndex].currentContext;
       if (itemContext != null) {
@@ -917,16 +950,21 @@ class _FullScreenPlayerPageState extends ConsumerState<FullScreenPlayerPage> {
       if (!_sourcePanelScrollController.hasClients) return;
       final double maxExtent =
           _sourcePanelScrollController.position.maxScrollExtent;
-      final double estimatedOffset = (_sourcePanelFocusedIndex *
-              _sourceListItemHeightFallback)
-          .clamp(0.0, maxExtent);
+      final double estimatedOffset =
+          (_sourcePanelFocusedIndex * _sourceListItemHeightFallback).clamp(
+            0.0,
+            maxExtent,
+          );
       _sourcePanelScrollController
           .animateTo(estimatedOffset, duration: duration, curve: curve)
           .then((_) {
-        if (!mounted) return;
-        WidgetsBinding.instance.addPostFrameCallback((_) => doEnsureVisible());
-      });
+            if (!mounted) return;
+            WidgetsBinding.instance.addPostFrameCallback(
+              (_) => doEnsureVisible(),
+            );
+          });
     }
+
     WidgetsBinding.instance.addPostFrameCallback((_) => doEnsureVisible());
   }
 
@@ -944,15 +982,19 @@ class _FullScreenPlayerPageState extends ConsumerState<FullScreenPlayerPage> {
           switch (event.logicalKey) {
             case LogicalKeyboardKey.arrowUp:
               setState(() {
-                _sourcePanelFocusedIndex =
-                    (_sourcePanelFocusedIndex - 1).clamp(0, _sources.length - 1);
+                _sourcePanelFocusedIndex = (_sourcePanelFocusedIndex - 1).clamp(
+                  0,
+                  _sources.length - 1,
+                );
               });
               _scrollSourcePanelToFocusedIndex();
               return KeyEventResult.handled;
             case LogicalKeyboardKey.arrowDown:
               setState(() {
-                _sourcePanelFocusedIndex =
-                    (_sourcePanelFocusedIndex + 1).clamp(0, _sources.length - 1);
+                _sourcePanelFocusedIndex = (_sourcePanelFocusedIndex + 1).clamp(
+                  0,
+                  _sources.length - 1,
+                );
               });
               _scrollSourcePanelToFocusedIndex();
               return KeyEventResult.handled;
@@ -1007,100 +1049,106 @@ class _FullScreenPlayerPageState extends ConsumerState<FullScreenPlayerPage> {
                     ),
                     itemCount: _sources.length,
                     itemBuilder: (BuildContext context, int index) {
-                    final Map<String, dynamic> source = _sources[index];
-                    final String name = _getSourceName(source);
-                    final List<Map<String, String>> eps =
-                        _parseEpisodesFromPlayUrl(source);
-                    final bool isCurrent = index == _currentSourceIndex;
-                    final bool isFocused = index == _sourcePanelFocusedIndex;
-                    final String pic = source['vod_pic'] as String? ?? '';
-                    final String title =
-                        source['vod_name'] as String? ?? '未知';
-                    return KeyedSubtree(
-                      key: _sourceItemKeys[index],
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 12.0),
-                        child: Material(
-                        color: isFocused
-                            ? Colors.white24
-                            : (isCurrent ? Colors.white12 : Colors.transparent),
-                        borderRadius: BorderRadius.circular(8),
-                        child: InkWell(
-                          onTap: () => _switchToSource(index),
-                          borderRadius: BorderRadius.circular(8),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(6),
-                                  child: Image.network(
-                                    pic,
-                                    width: 64,
-                                    height: 88,
-                                    fit: BoxFit.cover,
-                                    errorBuilder: (_, _, _) => Container(
-                                      width: 64,
-                                      height: 88,
-                                      color: Colors.grey[800],
-                                      child: const Icon(
-                                        Icons.movie_outlined,
-                                        color: Colors.white54,
-                                        size: 32,
+                      final Map<String, dynamic> source = _sources[index];
+                      final String name = _getSourceName(source);
+                      final List<Map<String, String>> eps =
+                          _parseEpisodesFromPlayUrl(source);
+                      final bool isCurrent = index == _currentSourceIndex;
+                      final bool isFocused = index == _sourcePanelFocusedIndex;
+                      final String pic = source['vod_pic'] as String? ?? '';
+                      final String title =
+                          source['vod_name'] as String? ?? '未知';
+                      return KeyedSubtree(
+                        key: _sourceItemKeys[index],
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 12.0),
+                          child: Material(
+                            color: isFocused
+                                ? Colors.white24
+                                : (isCurrent
+                                      ? Colors.white12
+                                      : Colors.transparent),
+                            borderRadius: BorderRadius.circular(8),
+                            child: InkWell(
+                              onTap: () => _switchToSource(index),
+                              borderRadius: BorderRadius.circular(8),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(6),
+                                      child: Image.network(
+                                        pic,
+                                        width: 64,
+                                        height: 88,
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (_, _, _) => Container(
+                                          width: 64,
+                                          height: 88,
+                                          color: Colors.grey[800],
+                                          child: const Icon(
+                                            Icons.movie_outlined,
+                                            color: Colors.white54,
+                                            size: 32,
+                                          ),
+                                        ),
                                       ),
                                     ),
-                                  ),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            title,
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          const SizedBox(height: 6),
+                                          Chip(
+                                            label: Text(
+                                              name,
+                                              style: const TextStyle(
+                                                fontSize: 12,
+                                              ),
+                                            ),
+                                            visualDensity:
+                                                VisualDensity.compact,
+                                            backgroundColor: Colors.white24,
+                                            padding: EdgeInsets.zero,
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            '共${eps.length}集',
+                                            style: TextStyle(
+                                              color: Colors.white70,
+                                              fontSize: 12,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          _buildSourceTestStatus(index),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                const SizedBox(width: 12),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text(
-                                        title,
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      const SizedBox(height: 6),
-                                      Chip(
-                                        label: Text(
-                                          name,
-                                          style: const TextStyle(fontSize: 12),
-                                        ),
-                                        visualDensity: VisualDensity.compact,
-                                        backgroundColor: Colors.white24,
-                                        padding: EdgeInsets.zero,
-                                      ),
-                                      const SizedBox(height: 4),
-                                      Text(
-                                        '共${eps.length}集',
-                                        style: TextStyle(
-                                          color: Colors.white70,
-                                          fontSize: 12,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 4),
-                                      _buildSourceTestStatus(index),
-                                    ],
-                                  ),
-                                ),
-                              ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 ),
-              ),
-            ],
+              ],
             ),
           ),
         ),
@@ -1123,10 +1171,7 @@ class _FullScreenPlayerPageState extends ConsumerState<FullScreenPlayerPage> {
             ),
           ),
           const SizedBox(width: 6),
-          Text(
-            '测试中...',
-            style: TextStyle(color: Colors.white70, fontSize: 11),
-          ),
+          Text('测试中...', style: TextStyle(color: Colors.white70, fontSize: 11)),
         ],
       );
     }
@@ -1259,19 +1304,20 @@ class _FullScreenPlayerPageState extends ConsumerState<FullScreenPlayerPage> {
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: ValueListenableBuilder<Duration>(
                 valueListenable: _progressPosition,
-                builder: (BuildContext context, Duration position, Widget? child) {
-                  final Duration duration = _player.state.duration;
-                  return LinearProgressIndicator(
-                    value: duration.inMilliseconds > 0
-                        ? position.inMilliseconds / duration.inMilliseconds
-                        : 0,
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                      context.theme.colorScheme.secondary,
-                    ),
-                    backgroundColor: Colors.grey[600],
-                    minHeight: 4,
-                  );
-                },
+                builder:
+                    (BuildContext context, Duration position, Widget? child) {
+                      final Duration duration = _player.state.duration;
+                      return LinearProgressIndicator(
+                        value: duration.inMilliseconds > 0
+                            ? position.inMilliseconds / duration.inMilliseconds
+                            : 0,
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          context.theme.colorScheme.secondary,
+                        ),
+                        backgroundColor: Colors.grey[600],
+                        minHeight: 4,
+                      );
+                    },
               ),
             ),
             const SizedBox(height: 4),
@@ -1463,8 +1509,10 @@ class _SourceTestResult {
     required this.speedKbps,
     required this.m3u8Ok,
   });
+
   /// 延迟（毫秒）
   final int? speedMs;
+
   /// 下载速度（KB/s）
   final double? speedKbps;
   final bool m3u8Ok;
@@ -1475,7 +1523,7 @@ Future<String> _processM3u8Url(String url) async {
 
   try {
     final M3U8AdRemoverResult result = await M3U8AdRemover.removeAds(url);
-    
+
     if (result.error != null) {
       _log.e(() => 'M3U8处理失败: ${result.error}');
       return url;
@@ -1497,12 +1545,14 @@ Future<String> _processM3u8Url(String url) async {
       throw Exception('Invalid M3U8: Missing #EXTM3U');
     }
 
-    _log.d(() => 'Cleaned M3U8 saved to: ${file.path}, '
-        'ads=${result.adCount}, content=${result.contentCount}');
+    _log.d(
+      () =>
+          'Cleaned M3U8 saved to: ${file.path}, '
+          'ads=${result.adCount}, content=${result.contentCount}',
+    );
     return file.uri.toString();
   } catch (e) {
     _log.e(() => 'M3U8处理失败，使用原始URL', e);
     return url;
   }
 }
-

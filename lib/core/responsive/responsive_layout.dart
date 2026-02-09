@@ -34,7 +34,8 @@ extension ResponsiveLayoutExtension on BuildContext {
   double get contentPadding => ResponsiveGrid.getContentPadding(screenWidth);
 
   /// 获取 Hero Banner 高度
-  double get heroBannerHeight => ResponsiveGrid.getHeroBannerHeight(screenWidth);
+  double get heroBannerHeight =>
+      ResponsiveGrid.getHeroBannerHeight(screenWidth);
 
   /// 判断是否应该使用底部导航（TV 使用顶部导航，desktop 使用底部导航）
   bool get useBottomNavigation => !isTV;

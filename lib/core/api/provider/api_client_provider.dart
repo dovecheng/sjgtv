@@ -57,10 +57,7 @@ class ApiClientProvider extends _$ApiClientProvider {
     dio.interceptors.addAll([
       ApiLogInterceptor(),
       ApiResultInterceptor(),
-      RetryInterceptor(
-        maxRetries: 3,
-        retryInterval: 1000,
-      ),
+      RetryInterceptor(maxRetries: 3, retryInterval: 1000),
       ...?_interceptors,
     ]);
 

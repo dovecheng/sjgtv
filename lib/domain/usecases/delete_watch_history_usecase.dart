@@ -4,9 +4,7 @@ import 'package:sjgtv/domain/repositories/watch_history_repository.dart';
 
 /// 删除观看历史参数
 class DeleteWatchHistoryParams {
-  const DeleteWatchHistoryParams({
-    required this.id,
-  });
+  const DeleteWatchHistoryParams({required this.id});
 
   final String id;
 }

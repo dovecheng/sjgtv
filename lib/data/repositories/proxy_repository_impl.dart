@@ -8,9 +8,7 @@ import 'package:sjgtv/data/datasources/local_datasource.dart';
 ///
 /// 实现 ProxyRepository 接口，提供代理数据的访问功能
 class ProxyRepositoryImpl implements ProxyRepository {
-  ProxyRepositoryImpl({
-    required this.localDataSource,
-  });
+  ProxyRepositoryImpl({required this.localDataSource});
 
   final LocalDataSource localDataSource;
 
@@ -54,7 +52,10 @@ class ProxyRepositoryImpl implements ProxyRepository {
     }
 
     final proxies = proxiesResult.value!;
-    final proxy = proxies.cast<Proxy?>().firstWhere((p) => p?.uuid == uuid, orElse: () => null);
+    final proxy = proxies.cast<Proxy?>().firstWhere(
+      (p) => p?.uuid == uuid,
+      orElse: () => null,
+    );
 
     if (proxy == null) {
       return Result.failure(const NotFoundFailure('代理不存在'));
