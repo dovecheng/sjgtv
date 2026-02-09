@@ -29,7 +29,6 @@ class _HeroSectionState extends State<HeroSection>
   late Animation<double> _scaleAnimation;
   late Animation<double> _borderAnimation;
   final FocusNode _focusNode = FocusNode();
-  bool _isFocused = false;
 
   @override
   void initState() {
@@ -64,9 +63,6 @@ class _HeroSectionState extends State<HeroSection>
   }
 
   void _handleFocusChange(bool hasFocus) {
-    setState(() {
-      _isFocused = hasFocus;
-    });
     if (hasFocus) {
       _controller.forward();
     } else {

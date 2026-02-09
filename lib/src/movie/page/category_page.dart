@@ -447,20 +447,32 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage>
             _buildAppBar(),
             _buildTabBar(),
             if (_isLoading && _tabs.isEmpty)
-              const Expanded(child: _buildSkeletonGrid())
+              Expanded(child: _buildSkeletonGrid())
             else if (_tabs.isNotEmpty && _tabs[0] == '获取标签失败')
               const Expanded(
-                child: EmptyStates.networkError,
+                child: EmptyState(
+                  title: '网络连接失败',
+                  message: '请检查您的网络连接后重试',
+                  icon: Icons.cloud_off,
+                ),
               )
             else if (_tabs.isEmpty)
               const Expanded(
-                child: EmptyStates.noTags,
+                child: EmptyState(
+                  title: '暂无标签',
+                  message: '请先添加标签分类',
+                  icon: Icons.label,
+                ),
               )
             else if (_isLoading && _currentMovies.isEmpty)
-              const Expanded(child: _buildSkeletonGrid())
+              Expanded(child: _buildSkeletonGrid())
             else if (_currentMovies.isEmpty)
               const Expanded(
-                child: EmptyStates.noMovies,
+                child: EmptyState(
+                  title: '没有找到电影',
+                  message: '当前分类下没有电影数据，尝试切换其他分类',
+                  icon: Icons.movie_filter,
+                ),
               )
             else
               Expanded(

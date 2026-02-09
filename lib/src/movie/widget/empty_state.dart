@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:sjgtv/core/core.dart';
-import 'package:sjgtv/src/app/router/app_router.dart';
 
 /// 空状态组件
 ///
@@ -107,34 +106,34 @@ class EmptyStates {
   static const Widget noData = EmptyState(
     title: '暂无数据',
     message: '当前没有找到任何内容，请稍后再试',
-    icon: Icons.inbox_outlined,
+    icon: Icons.inbox,
   );
 
   /// 无电影数据空状态
   static const Widget noMovies = EmptyState(
     title: '没有找到电影',
     message: '当前分类下没有电影数据，尝试切换其他分类',
-    icon: Icons.movie_filter_outlined,
+    icon: Icons.movie_filter,
   );
 
   /// 无标签空状态
   static const Widget noTags = EmptyState(
     title: '暂无标签',
     message: '请先添加标签分类',
-    icon: Icons.label_outlined,
+    icon: Icons.label,
   );
 
   /// 网络错误空状态
   static const Widget networkError = EmptyState(
     title: '网络连接失败',
     message: '请检查您的网络连接后重试',
-    icon: Icons.cloud_off_outlined,
+    icon: Icons.cloud_off,
   );
 
   /// 无搜索结果空状态
   static const Widget noSearchResults = EmptyState(
     title: '未找到结果',
     message: '尝试使用其他关键词搜索',
-    icon: Icons.search_off_outlined,
+    icon: Icons.search_off,
   );
 }

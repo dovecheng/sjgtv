@@ -45,7 +45,6 @@ class _YouTubeTVMovieCardState extends State<YouTubeTVMovieCard>
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
   late Animation<double> _borderAnimation;
-  late Animation<double> _elevationAnimation;
   late Animation<double> _glowAnimation;
 
   bool _isFocused = false;
@@ -69,14 +68,6 @@ class _YouTubeTVMovieCardState extends State<YouTubeTVMovieCard>
     _borderAnimation = Tween<double>(
       begin: 0.0,
       end: AppConstants.focusBorderWidth,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeOutCubic,
-    ));
-
-    _elevationAnimation = Tween<double>(
-      begin: 2.0,
-      end: 12.0,
     ).animate(CurvedAnimation(
       parent: _animationController,
       curve: Curves.easeOutCubic,
@@ -281,29 +272,6 @@ class _YouTubeTVMovieCardState extends State<YouTubeTVMovieCard>
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
-          // 焦点状态下显示更多信息
-          if (_isFocused) ...[
-            const SizedBox(height: 4),
-            Text(
-              widget.movie.directors ?? '',
-              style: const TextStyle(
-                fontSize: 11,
-                color: Colors.white70,
-              ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-            const SizedBox(height: 2),
-            Text(
-              widget.movie.casts ?? '',
-              style: const TextStyle(
-                fontSize: 11,
-                color: Colors.white60,
-              ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
           const SizedBox(height: 4),
           // 年份和评分
           Row(
