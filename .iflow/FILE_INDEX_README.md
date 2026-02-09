@@ -43,7 +43,7 @@
 ### 1. 查看统计信息
 
 ```bash
-/tmp/query_file_index.sh
+script/query_file_index.sh
 ```
 
 输出示例:
@@ -62,7 +62,7 @@
 
 📄 总计: 207 个文件
 
-用法: /tmp/query_file_index.sh [关键词]
+用法: script/query_file_index.sh [关键词]
   - 搜索包含关键词的文件
   - 关键词可以是文件名、类型或路径
 ```
@@ -71,21 +71,21 @@
 
 按类型搜索:
 ```bash
-/tmp/query_file_index.sh widget    # 搜索 widget 类型
-/tmp/query_file_index.sh provider  # 搜索 provider 类型
-/tmp/query_file_index.sh model     # 搜索 model 类型
+script/query_file_index.sh widget    # 搜索 widget 类型
+script/query_file_index.sh provider  # 搜索 provider 类型
+script/query_file_index.sh model     # 搜索 model 类型
 ```
 
 按文件名搜索:
 ```bash
-/tmp/query_file_index.sh card      # 搜索包含 "card" 的文件
-/tmp/query_file_index.sh page      # 搜索包含 "page" 的文件
+script/query_file_index.sh card      # 搜索包含 "card" 的文件
+script/query_file_index.sh page      # 搜索包含 "page" 的文件
 ```
 
 按路径搜索:
 ```bash
-/tmp/query_file_index.sh src/movie  # 搜索 src/movie 路径下的文件
-/tmp/query_file_index.sh core/api  # 搜索 core/api 路径下的文件
+script/query_file_index.sh src/movie  # 搜索 src/movie 路径下的文件
+script/query_file_index.sh core/api  # 搜索 core/api 路径下的文件
 ```
 
 输出示例:
@@ -119,30 +119,30 @@
 当项目文件发生变化时，需要重新生成索引:
 
 ```bash
-python3 /tmp/generate_file_index.py
+python3 script/generate_file_index.py
 ```
 
 ## 💡 使用场景
 
 ### 快速查找组件
 ```bash
-/tmp/query_file_index.sh widget
+script/query_file_index.sh widget
 ```
 
 ### 查找数据模型
 ```bash
-/tmp/query_file_index.sh model
+script/query_file_index.sh model
 ```
 
 ### 查找页面文件
 ```bash
-/tmp/query_file_index.sh page
+script/query_file_index.sh page
 ```
 
 ### 查找特定功能文件
 ```bash
-/tmp/query_file_index.sh cache
-/tmp/query_file_index.sh navigation
+script/query_file_index.sh cache
+script/query_file_index.sh navigation
 ```
 
 ## 🎯 最佳实践
