@@ -2,6 +2,7 @@ import 'dart:io';
 
 import '../../../core/api/api.dart';
 import '../../../core/log/log.dart';
+import '../../../core/api/interceptor/retry_interceptor.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:dio/io.dart';
@@ -56,6 +57,10 @@ class ApiClientProvider extends _$ApiClientProvider {
     dio.interceptors.addAll([
       ApiLogInterceptor(),
       ApiResultInterceptor(),
+      RetryInterceptor(
+        maxRetries: 3,
+        retryInterval: 1000,
+      ),
       ...?_interceptors,
     ]);
 
