@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sjgtv/domain/entities/movie.dart';
 import 'package:sjgtv/src/app/router/app_routes.dart';
 import 'package:sjgtv/src/movie/provider/search_provider.dart';
 import 'package:sjgtv/src/movie/widget/network_image_placeholders.dart';
@@ -34,7 +35,7 @@ class _SearchPageState extends ConsumerState<SearchPage> with FocusHelperMixin {
   final FocusNode _searchFocusNode = FocusNode();
   final FocusNode _searchButtonFocusNode = FocusNode();
   final ScrollController _gridScrollController = ScrollController();
-  List<dynamic> _movies = [];
+  List<Movie> _movies = [];
   bool _isLoading = false;
   bool _showSearchHint = true;
   Timer? _searchDebounceTimer;
@@ -110,7 +111,7 @@ class _SearchPageState extends ConsumerState<SearchPage> with FocusHelperMixin {
 
       if (mounted) {
         setState(() {
-          _movies = result['list'] as List<dynamic>? ?? [];
+          _movies = result['list'] as List<Movie>? ?? [];
         });
       }
     } catch (e) {
@@ -398,7 +399,7 @@ class _SearchPageState extends ConsumerState<SearchPage> with FocusHelperMixin {
                 ),
                 itemCount: _movies.length,
                 itemBuilder: (BuildContext ctx, int index) {
-                  final dynamic movie = _movies[index];
+                  final Movie movie = _movies[index];
                   return _buildMovieCard(ctx, movie);
                 },
               ),
@@ -409,7 +410,7 @@ class _SearchPageState extends ConsumerState<SearchPage> with FocusHelperMixin {
     );
   }
 
-  Widget _buildMovieCard(BuildContext context, Map<String, dynamic> movie) {
+  Widget _buildMovieCard(BuildContext context, Movie movie) {
     return Focus(
       onKeyEvent: (FocusNode node, KeyEvent event) {
         if (event is KeyDownEvent &&
@@ -435,7 +436,7 @@ class _SearchPageState extends ConsumerState<SearchPage> with FocusHelperMixin {
           children: [
             Expanded(
               child: CachedImage(
-                imageUrl: movie['vod_pic'] ?? '',
+                imageUrl: movie.coverUrl,
                 fit: BoxFit.cover,
                 width: double.infinity,
                 placeholder: (BuildContext ctx, _) =>
@@ -449,7 +450,7 @@ class _SearchPageState extends ConsumerState<SearchPage> with FocusHelperMixin {
             Padding(
               padding: const EdgeInsets.all(8),
               child: Text(
-                movie['vod_name'] ?? '未知标题',
+                movie.title,
                 style: const TextStyle(
                   fontSize: 16,
                   color: Colors.white,
