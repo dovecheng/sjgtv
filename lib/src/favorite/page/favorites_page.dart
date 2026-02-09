@@ -73,7 +73,10 @@ class FavoritesPage extends ConsumerWidget {
               final favorite = favorites[index];
               return _FavoriteCard(
                 favorite: favorite,
-                onTap: () => _showDeleteDialog(context, ref, favorite),
+                onTap: () {
+                  log.d(() => '用户点击删除收藏: ${favorite.movieTitle}');
+                  _showDeleteDialog(context, ref, favorite);
+                },
               );
             },
           );

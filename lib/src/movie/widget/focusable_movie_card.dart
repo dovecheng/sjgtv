@@ -75,6 +75,7 @@ class _FocusableMovieCardState extends State<FocusableMovieCard> {
         if (event is KeyDownEvent) {
           if (event.logicalKey == LogicalKeyboardKey.select ||
               event.logicalKey == LogicalKeyboardKey.enter) {
+            log.v(() => '用户按键选择电影: ${widget.movie.title}');
             GoRouter.of(
               context,
             ).push('${AppRoutes.search}?q=${widget.movie.title}');
@@ -110,6 +111,7 @@ class _FocusableMovieCardState extends State<FocusableMovieCard> {
         onTap: () {
           // 非TV设备支持点击
           if (!isTV) {
+            log.v(() => '用户点击电影卡片: ${widget.movie.title}');
             GoRouter.of(
               context,
             ).push('${AppRoutes.search}?q=${widget.movie.title}');

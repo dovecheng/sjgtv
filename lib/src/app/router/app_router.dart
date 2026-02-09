@@ -9,6 +9,7 @@ import 'package:sjgtv/src/movie/page/full_screen_player_page.dart';
 import 'package:sjgtv/src/source/page/source_manage_page.dart';
 import 'package:sjgtv/src/source/page/source_form_page.dart';
 import 'package:sjgtv/src/source/model/source_model.dart';
+import 'package:sjgtv/core/debug/router_observer.dart';
 
 /// 应用路由配置
 ///
@@ -19,6 +20,7 @@ class AppRouter {
   static GoRouter get router => GoRouter(
     initialLocation: AppRoutes.home,
     debugLogDiagnostics: true,
+    observers: [RouterObserver()],
     routes: [
       // 首页
       GoRoute(

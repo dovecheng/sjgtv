@@ -61,6 +61,7 @@ class _HeroSectionState extends State<HeroSection>
   }
 
   void _onTap() {
+    log.d(() => '用户点击 Hero 电影: ${widget.movie.title}');
     widget.onTap?.call();
     context.goToSearch(widget.movie.title);
   }

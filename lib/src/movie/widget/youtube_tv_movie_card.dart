@@ -98,6 +98,7 @@ class _YouTubeTVMovieCardState extends State<YouTubeTVMovieCard>
   }
 
   void _onCardTap() {
+    log.v(() => '用户点击电影卡片: ${widget.movie.title}');
     context.goToSearch(widget.movie.title);
   }
 

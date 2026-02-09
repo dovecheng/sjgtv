@@ -42,6 +42,7 @@ class _MovieDetailPageState extends ConsumerState<MovieDetailPage> {
     _mainContentFocusNode.requestFocus();
 
     _episodesFocusNode.addListener(() {
+      log.v(() => '剧集列表焦点变化: hasFocus=${_episodesFocusNode.hasFocus}');
       if (mounted) {
         setState(() {
           _isEpisodesFocused = _episodesFocusNode.hasFocus;
@@ -142,11 +143,13 @@ class _MovieDetailPageState extends ConsumerState<MovieDetailPage> {
             if (event.logicalKey == LogicalKeyboardKey.arrowDown &&
                 !_isEpisodesFocused &&
                 _episodes.isNotEmpty) {
+              log.v(() => '用户按键切换焦点到剧集列表');
               _episodesFocusNode.requestFocus();
               return KeyEventResult.handled;
             }
             if (event.logicalKey == LogicalKeyboardKey.arrowUp &&
                 _isEpisodesFocused) {
+              log.v(() => '用户按键切换焦点到主内容');
               _mainContentFocusNode.requestFocus();
               return KeyEventResult.handled;
             }
@@ -318,6 +321,7 @@ class _MovieDetailPageState extends ConsumerState<MovieDetailPage> {
                               if (event.logicalKey ==
                                   LogicalKeyboardKey.arrowLeft) {
                                 if (_focusedIndex > 0) {
+                                  log.v(() => '用户按键选择上一集: $_focusedIndex -> ${_focusedIndex - 1}');
                                   setState(() {
                                     _focusedIndex--;
                                   });
@@ -342,6 +346,7 @@ class _MovieDetailPageState extends ConsumerState<MovieDetailPage> {
                               } else if (event.logicalKey ==
                                   LogicalKeyboardKey.arrowRight) {
                                 if (_focusedIndex < _episodes.length - 1) {
+                                  log.v(() => '用户按键选择下一集: $_focusedIndex -> ${_focusedIndex + 1}');
                                   setState(() {
                                     _focusedIndex++;
                                   });

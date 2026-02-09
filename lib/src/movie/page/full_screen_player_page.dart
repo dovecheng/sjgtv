@@ -181,6 +181,7 @@ class _FullScreenPlayerPageState extends ConsumerState<FullScreenPlayerPage> {
       });
     }
     _playerFocusNode.addListener(() {
+      log.v(() => '播放器焦点变化: hasFocus=${_playerFocusNode.hasFocus}');
       if (_playerFocusNode.hasFocus) {
         _toggleControlsVisibility(true);
       }
@@ -481,6 +482,7 @@ class _FullScreenPlayerPageState extends ConsumerState<FullScreenPlayerPage> {
     if (index < 0 || index >= _sources.length || index == _currentSourceIndex) {
       return;
     }
+    log.d(() => '切换播放源: $index/${_sources.length}');
     final Duration savedPosition = _player.state.position;
     setState(() {
       _showSourcePanel = false;

@@ -67,6 +67,7 @@ class _SourceFormPageState extends ConsumerState<SourceFormPage> {
   }
 
   Future<void> _submit() async {
+    log.i(() => '用户提交源表单: ${widget.sourceToEdit != null ? "编辑" : "新增"}');
     final String name = _nameController.text.trim();
     final String url = _urlController.text.trim();
 

@@ -84,6 +84,7 @@ class SettingsPage extends ConsumerWidget {
         divisions: 10,
         label: '${settings.defaultVolume.toInt()}%',
         onChanged: (value) {
+          log.d(() => '设置默认音量: ${value.toInt()}%');
           ref.read(settingsProvider.notifier).updateDefaultVolume(value);
         },
       ),
@@ -110,6 +111,7 @@ class SettingsPage extends ConsumerWidget {
         divisions: 3,
         label: '${settings.defaultPlaybackSpeed}x',
         onChanged: (value) {
+          log.d(() => '设置默认播放速度: ${value}x');
           ref.read(settingsProvider.notifier).updateDefaultPlaybackSpeed(value);
         },
       ),
@@ -132,6 +134,7 @@ class SettingsPage extends ConsumerWidget {
       subtitle: Text(l10n.autoPlayNextDescription),
       value: settings.autoPlayNext,
       onChanged: (value) {
+        log.d(() => '切换自动播放下一集: $value');
         ref.read(settingsProvider.notifier).toggleAutoPlayNext();
       },
     );

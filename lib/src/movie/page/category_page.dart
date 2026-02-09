@@ -507,6 +507,7 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage>
                     onKeyEvent: (FocusNode node, KeyEvent event) {
                       if (event is KeyDownEvent &&
                           event.logicalKey == LogicalKeyboardKey.pageUp) {
+                        _log.d(() => '用户按键触发刷新');
                         _handleRefresh();
                         return KeyEventResult.handled;
                       }
@@ -521,6 +522,7 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage>
                             HeroSection(
                               movie: _currentMovies.first,
                               onTap: () {
+                                _log.d(() => '用户点击 Hero 电影: ${_currentMovies.first.title}');
                                 context.goToSearch(_currentMovies.first.title);
                               },
                             ),

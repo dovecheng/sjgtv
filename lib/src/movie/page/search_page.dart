@@ -63,6 +63,7 @@ class _SearchPageState extends ConsumerState<SearchPage> with FocusHelperMixin {
   }
 
   void _onFocusChange() {
+    log.v(() => '搜索框焦点变化: hasFocus=${_searchFocusNode.hasFocus}');
     setState(() {});
   }
 
@@ -98,6 +99,7 @@ class _SearchPageState extends ConsumerState<SearchPage> with FocusHelperMixin {
   Future<void> _searchMovies(String keyword) async {
     if (keyword.isEmpty) return;
 
+    log.i(() => '开始搜索电影: keyword="$keyword"');
     setState(() {
       _isLoading = true;
       _movies = [];
@@ -113,12 +115,15 @@ class _SearchPageState extends ConsumerState<SearchPage> with FocusHelperMixin {
         setState(() {
           _movies = result['list'] as List<Movie>? ?? [];
         });
+        log.v(() => '搜索完成: 找到 ${_movies.length} 个结果');
       }
     } catch (e) {
       if (e is DioException && e.type == DioExceptionType.cancel) {
+        log.v(() => '搜索已取消');
         return;
       }
       if (mounted) {
+        log.e(() => '搜索失败: ${e.toString()}');
         _showError(context, '搜索失败: ${e.toString()}');
       }
     } finally {
@@ -214,6 +219,7 @@ class _SearchPageState extends ConsumerState<SearchPage> with FocusHelperMixin {
       onKeyEvent: (node, event) {
         if (event is KeyDownEvent &&
             event.logicalKey == LogicalKeyboardKey.select) {
+          log.d(() => '用户按键触发搜索: keyword="${_searchController.text.trim()}"');
           _searchMovies(_searchController.text.trim());
           return KeyEventResult.handled;
         }
@@ -224,7 +230,10 @@ class _SearchPageState extends ConsumerState<SearchPage> with FocusHelperMixin {
           hasScale: true,
           scaleFactor: 1.05,
         ),
-        onTap: () => _searchMovies(_searchController.text.trim()),
+        onTap: () {
+          log.d(() => '用户点击搜索按钮: keyword="${_searchController.text.trim()}"');
+          _searchMovies(_searchController.text.trim());
+        },
         child: Container(
           margin: const EdgeInsets.all(8),
           decoration: BoxDecoration(
@@ -416,6 +425,7 @@ class _SearchPageState extends ConsumerState<SearchPage> with FocusHelperMixin {
         if (event is KeyDownEvent &&
             (event.logicalKey == LogicalKeyboardKey.select ||
                 event.logicalKey == LogicalKeyboardKey.enter)) {
+          log.v(() => '用户按键选择电影: ${movie.title}');
           GoRouter.of(context).push(AppRoutes.movieDetail, extra: movie);
           return KeyEventResult.handled;
         }
@@ -429,6 +439,7 @@ class _SearchPageState extends ConsumerState<SearchPage> with FocusHelperMixin {
           scaleFactor: 1.08,
         ),
         onTap: () {
+          log.v(() => '用户点击电影卡片: ${movie.title}');
           GoRouter.of(context).push(AppRoutes.movieDetail, extra: movie);
         },
         child: Column(

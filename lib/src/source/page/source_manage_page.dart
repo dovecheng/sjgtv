@@ -21,6 +21,7 @@ class SourceManagePage extends ConsumerStatefulWidget {
 
 class _SourceManagePageState extends ConsumerState<SourceManagePage> {
   Future<void> _toggleSource(SourceModel source) async {
+    log.d(() => '切换源状态: ${source.name} -> ${source.disabled ? "启用" : "禁用"}');
     try {
       await ref.read(sourcesProvider.notifier).toggleSource(source.uuid);
       if (mounted) ref.invalidate(sourcesProvider);
@@ -157,6 +158,7 @@ class _SourceManagePageState extends ConsumerState<SourceManagePage> {
                 onKeyEvent: (FocusNode node, KeyEvent event) {
                   if (event is KeyDownEvent &&
                       event.logicalKey.keyLabel == 'Select') {
+                    log.d(() => '用户按键选择源: ${source.name}');
                     _toggleSource(source);
                     return KeyEventResult.handled;
                   }
