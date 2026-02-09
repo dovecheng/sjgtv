@@ -12,15 +12,20 @@ class FavoriteModel {
   @JsonKey(includeFromJson: false, includeToJson: false)
   Id? id;
 
+  @Index()
   @JsonKey(name: 'id')
   String uuid;
 
+  @Index()
   String movieId;
+
   String movieTitle;
   String movieCoverUrl;
   int movieYear;
   double movieRating;
   String sourceName;
+
+  @Index()
   DateTime? createdAt;
 
   FavoriteModel({

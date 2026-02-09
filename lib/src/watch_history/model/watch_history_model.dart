@@ -12,10 +12,12 @@ class WatchHistoryModel {
   @JsonKey(includeFromJson: false, includeToJson: false)
   Id? id;
 
+  @Index()
   @JsonKey(name: 'id')
   String uuid;
 
   /// 电影 ID
+  @Index()
   String movieId;
 
   /// 电影标题
@@ -43,6 +45,7 @@ class WatchHistoryModel {
   int durationSeconds;
 
   /// 观看时间
+  @Index()
   DateTime watchedAt;
 
   /// 视频源名称
