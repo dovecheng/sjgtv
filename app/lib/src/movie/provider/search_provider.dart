@@ -1,4 +1,4 @@
-import 'package:base/log.dart';
+import '../../../core/log.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sjgtv/src/movie/usecase/movie_usecase_factory.dart';
 import 'package:sjgtv/src/movie/usecase/search_movies_usecase.dart';

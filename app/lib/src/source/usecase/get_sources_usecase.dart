@@ -1,4 +1,4 @@
-import 'package:base/base.dart';
+import '../../../core/base.dart';
 import 'package:sjgtv/src/source/model/source_model.dart';
 
 /// 获取源列表结果

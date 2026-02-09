@@ -1,4 +1,4 @@
-import 'package:base/log.dart';
+import '../../../core/log.dart';
 import 'package:http/http.dart' as http;
 
 /// M3U8 广告移除器配置

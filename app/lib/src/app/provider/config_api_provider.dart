@@ -1,5 +1,5 @@
-import 'package:base/api.dart';
-import 'package:base/log.dart';
+import '../../../core/api.dart';
+import '../../../core/log.dart';
 import 'package:dio/dio.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'config_api_provider.g.dart';

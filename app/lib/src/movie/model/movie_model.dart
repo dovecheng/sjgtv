@@ -1,4 +1,4 @@
-import 'package:base/converter.dart';
+import '../../../core/converter.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'movie_model.g.dart';

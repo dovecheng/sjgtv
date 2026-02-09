@@ -2,9 +2,9 @@ import 'dart:io';
 
 import 'package:android_intent_plus/android_intent.dart';
 import 'package:android_intent_plus/flag.dart';
-import 'package:base/converter.dart';
-import 'package:base/extension.dart';
-import 'package:base/log.dart';
+import '../../../core/converter.dart';
+import '../../../core/extension.dart';
+import '../../../core/log.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';

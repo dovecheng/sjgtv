@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:base/base.dart';
+import '../../../core/base.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
