@@ -205,12 +205,15 @@ class _YouTubeTVMovieCardState extends State<YouTubeTVMovieCard>
       color: Colors.transparent,
       child: InkWell(
         onTap: _onCardTap,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
+        child: Stack(
           children: [
             _buildImage(colorScheme),
-            _buildInfo(colorScheme),
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: _buildInfo(colorScheme),
+            ),
           ],
         ),
       ),
@@ -259,8 +262,7 @@ class _YouTubeTVMovieCardState extends State<YouTubeTVMovieCard>
 
   Widget _buildInfo(ColorScheme colorScheme) {
     return Container(
-      height: 80,
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
@@ -279,7 +281,7 @@ class _YouTubeTVMovieCardState extends State<YouTubeTVMovieCard>
           Text(
             widget.movie.title,
             style: const TextStyle(
-              fontSize: 15,
+              fontSize: 14,
               fontWeight: FontWeight.w500,
               color: Colors.white,
             ),
@@ -292,7 +294,7 @@ class _YouTubeTVMovieCardState extends State<YouTubeTVMovieCard>
               Text(
                 '${widget.movie.year}',
                 style: const TextStyle(
-                  fontSize: 13,
+                  fontSize: 12,
                   color: Colors.grey,
                 ),
               ),
@@ -300,14 +302,14 @@ class _YouTubeTVMovieCardState extends State<YouTubeTVMovieCard>
                 children: [
                   const Icon(
                     Icons.star,
-                    size: 13,
+                    size: 12,
                     color: Colors.amber,
                   ),
-                  const SizedBox(width: 3),
+                  const SizedBox(width: 2),
                   Text(
                     '${widget.movie.rating}',
                     style: const TextStyle(
-                      fontSize: 13,
+                      fontSize: 12,
                       color: Colors.amber,
                       fontWeight: FontWeight.bold,
                     ),
