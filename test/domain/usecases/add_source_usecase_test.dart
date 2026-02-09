@@ -31,7 +31,10 @@ void main() {
       );
 
       when(mockRepository.addSource(any))
-          .thenAnswer((_) async => Result.success(any));
+          .thenAnswer((realInvocation) async {
+        final source = realInvocation.positionalArguments[0] as Source;
+        return Result.success(source);
+      });
 
       // act
       final result = await useCase(params);
@@ -63,7 +66,10 @@ void main() {
       );
 
       when(mockRepository.addSource(any))
-          .thenAnswer((_) async => Result.success(any));
+          .thenAnswer((realInvocation) async {
+        final source = realInvocation.positionalArguments[0] as Source;
+        return Result.success(source);
+      });
 
       // act
       await useCase(params);
@@ -118,6 +124,8 @@ void main() {
 
       // act
       final result1 = await useCase(params1);
+      // 添加延迟以确保时间戳不同
+      await Future.delayed(const Duration(milliseconds: 2));
       final result2 = await useCase(params2);
 
       // assert
