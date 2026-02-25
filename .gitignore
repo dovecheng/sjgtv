@@ -7,6 +7,7 @@
 .pub-cache/
 .pub/
 /build/
+app/build/
 **/doc/api/
 **/ios/Flutter/.last_build_id
 
@@ -47,3 +48,18 @@ Thumbs.db
 
 # Snap 打包未使用，忽略避免误提交
 /snap/
+
+# app 模块：Gradle 缓存、本地配置、生成文件
+app/android/.gradle/
+app/android/local.properties
+app/android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java
+**/GeneratedPluginRegistrant.*
+**/Flutter/ephemeral/
+**/Flutter/Generated*.xcconfig
+**/Flutter/flutter_export_environment.sh
+**/flutter/ephemeral/
+app/your-keystore.jks
+*.jks
+
+# base 模块 lockfile（子包可选忽略）
+base/pubspec.lock
