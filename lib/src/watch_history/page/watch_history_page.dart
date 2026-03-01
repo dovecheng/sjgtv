@@ -129,6 +129,7 @@ class _HistoryItem extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       child: InkWell(
+        key: ValueKey('history_${history.id}'),
         onTap: () {
           // TODO: 跳转到播放器继续播放
         },
@@ -220,6 +221,7 @@ class _HistoryItem extends StatelessWidget {
               const SizedBox(width: 8),
               // 删除按钮
               IconButton(
+                key: const ValueKey('history_delete'),
                 icon: Icon(
                   Icons.delete_outline,
                   color: theme.colorScheme.onSurface.withValues(alpha: 0.5),

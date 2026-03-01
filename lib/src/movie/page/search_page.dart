@@ -424,12 +424,21 @@ class _SearchPageState extends ConsumerState<SearchPage> with FocusHelperMixin {
 
   Widget _buildMovieCard(BuildContext context, Movie movie) {
     return Focus(
+      key: ValueKey('search_result_${movie.id}'),
       onKeyEvent: (FocusNode node, KeyEvent event) {
         if (event is KeyDownEvent &&
             (event.logicalKey == LogicalKeyboardKey.select ||
                 event.logicalKey == LogicalKeyboardKey.enter)) {
           log.v(() => '用户按键选择电影: ${movie.title}');
-          GoRouter.of(context).push(AppRoutes.movieDetail, extra: movie);
+          // 将 Movie 对象转换为 Map，避免类型转换错误
+          final movieMap = {
+            'vod_id': movie.id,
+            'vod_name': movie.title,
+            'vod_pic': movie.coverUrl,
+            'vod_year': movie.year.toString(),
+            'url': movie.url,
+          };
+          GoRouter.of(context).push(AppRoutes.movieDetail, extra: movieMap);
           return KeyEventResult.handled;
         }
         return KeyEventResult.ignored;
@@ -443,7 +452,15 @@ class _SearchPageState extends ConsumerState<SearchPage> with FocusHelperMixin {
         ),
         onTap: () {
           log.v(() => '用户点击电影卡片: ${movie.title}');
-          GoRouter.of(context).push(AppRoutes.movieDetail, extra: movie);
+          // 将 Movie 对象转换为 Map，避免类型转换错误
+          final movieMap = {
+            'vod_id': movie.id,
+            'vod_name': movie.title,
+            'vod_pic': movie.coverUrl,
+            'vod_year': movie.year.toString(),
+            'url': movie.url,
+          };
+          GoRouter.of(context).push(AppRoutes.movieDetail, extra: movieMap);
         },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
