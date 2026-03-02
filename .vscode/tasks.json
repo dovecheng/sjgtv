@@ -473,6 +473,40 @@
             "problemMatcher": []
         },
         {
+            "label": "it: tv quick",
+            "command": "/bin/bash",
+            "args": [
+                "-lc",
+                "chmod +x '${workspaceFolder}/script/run_it_tv.sh'; /bin/bash '${workspaceFolder}/script/run_it_tv.sh' quick --device '192.168.145.55:5555'"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "it: tv full",
+            "command": "/bin/bash",
+            "args": [
+                "-lc",
+                "chmod +x '${workspaceFolder}/script/run_it_tv.sh'; /bin/bash '${workspaceFolder}/script/run_it_tv.sh' full --device '192.168.145.55:5555'"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
             "label": "python3: -m http server 8023",
             "command": "/bin/bash",
             "args": [

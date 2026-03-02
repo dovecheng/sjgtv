@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -10,6 +12,12 @@ final class IntegrationHarness {
   IntegrationHarness._();
 
   static final Log log = Log('integration_harness');
+  static final String _runId =
+      Platform.environment['IT_RUN_ID'] ??
+      DateTime.now().toIso8601String().replaceAll(RegExp(r'[:.]'), '-');
+  static final bool _enableStepScreenshot =
+      (Platform.environment['IT_ENABLE_SCREENSHOT'] ?? '1') == '1';
+  static bool _isSurfaceConverted = false;
 
   static void init() {
     IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -130,6 +138,49 @@ final class IntegrationHarness {
   static Future<void> back(WidgetTester tester) async {
     await sendKey(tester, LogicalKeyboardKey.escape);
     await settle(tester, const Duration(milliseconds: 800));
+  }
+
+  static String _sanitizeLabel(String input) {
+    return input
+        .replaceAll(RegExp(r'[^\w\u4e00-\u9fa5-]+'), '_')
+        .replaceAll(RegExp(r'_+'), '_')
+        .replaceAll(RegExp(r'^_|_$'), '');
+  }
+
+  static Future<void> takeStepScreenshot(
+    WidgetTester tester, {
+    required String testName,
+    required int step,
+    required String stepName,
+  }) async {
+    if (!_enableStepScreenshot) {
+      return;
+    }
+    final IntegrationTestWidgetsFlutterBinding binding =
+        IntegrationTestWidgetsFlutterBinding.instance;
+    if (!_isSurfaceConverted) {
+      try {
+        await binding
+            .convertFlutterSurfaceToImage()
+            .timeout(const Duration(seconds: 3));
+        _isSurfaceConverted = true;
+      } catch (error, stackTrace) {
+        log.w(() => '初始化截图环境失败，跳过截图: $error', stackTrace);
+        return;
+      }
+    }
+    final String safeTestName = _sanitizeLabel(testName);
+    final String safeStepName = _sanitizeLabel(stepName);
+    final String screenshotName =
+        '$_runId'
+        '__${safeTestName}__${step.toString().padLeft(2, '0')}_$safeStepName';
+    try {
+      await binding
+          .takeScreenshot(screenshotName)
+          .timeout(const Duration(seconds: 5));
+    } catch (error, stackTrace) {
+      log.w(() => '步骤截图失败，已忽略: $error', stackTrace);
+    }
   }
 
   static String uniqueName(String prefix) {

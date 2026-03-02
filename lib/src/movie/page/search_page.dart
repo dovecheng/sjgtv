@@ -582,107 +582,107 @@ class _SearchPageState extends ConsumerState<SearchPage> with FocusHelperMixin {
     final bool isFocused = _focusedResultIndex == index;
     return KeyedSubtree(
       key: _resultItemKeys[index],
-      child: Focus(
-        key: ValueKey('search_result_${movie.id}'),
-        canRequestFocus: false,
-        onKeyEvent: (FocusNode node, KeyEvent event) {
-          return _handleResultNavigationKey(
-            event,
-            index,
-            crossAxisCount,
-            movie,
-          );
-        },
-        child:
-            FocusIndicator(
-                  focusNode: _resultFocusNodes[index],
-                  decoration: const FocusIndicatorDecoration(
-                    hasBorder: false,
-                    hasShadow: false,
-                    hasScale: false,
-                  ),
-                  onFocusChange: (bool hasFocus) {
-                    if (!mounted) return;
-                    setState(() {
-                      _focusedResultIndex = hasFocus
-                          ? index
-                          : _focusedResultIndex;
-                    });
-                  },
-                  onTap: () {
-                    log.v(() => '用户点击电影卡片: ${movie.title}');
-                    _openMovieDetail(movie);
-                  },
-                  child: AnimatedScale(
+      child:
+          FocusIndicator(
+                key: ValueKey('search_result_${movie.id}'),
+                focusNode: _resultFocusNodes[index],
+                onKeyEvent: (FocusNode node, KeyEvent event) {
+                  return _handleResultNavigationKey(
+                    event,
+                    index,
+                    crossAxisCount,
+                    movie,
+                  );
+                },
+                decoration: const FocusIndicatorDecoration(
+                  hasBorder: true,
+                  hasShadow: true,
+                  hasScale: false,
+                  borderWidth: 2.5,
+                  shadowBlurRadius: 12,
+                  shadowSpreadRadius: 1.5,
+                ),
+                onFocusChange: (bool hasFocus) {
+                  if (!mounted) return;
+                  setState(() {
+                    _focusedResultIndex = hasFocus
+                        ? index
+                        : _focusedResultIndex;
+                  });
+                },
+                onTap: () {
+                  log.v(() => '用户点击电影卡片: ${movie.title}');
+                  _openMovieDetail(movie);
+                },
+                child: AnimatedScale(
+                  duration: AppConstants.normalAnimation,
+                  curve: Curves.easeOutBack,
+                  scale: isFocused ? AppConstants.focusScaleFactor : 1.0,
+                  child: AnimatedContainer(
                     duration: AppConstants.normalAnimation,
-                    curve: Curves.easeOutBack,
-                    scale: isFocused ? AppConstants.focusScaleFactor : 1.0,
-                    child: AnimatedContainer(
-                      duration: AppConstants.normalAnimation,
-                      curve: Curves.easeOutCubic,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        boxShadow: [
-                          BoxShadow(
-                            color: isFocused
-                                ? AppTheme.focusGlow
-                                : Colors.transparent,
-                            blurRadius: isFocused ? 8.0 : 0.0,
-                            spreadRadius: 0,
-                          ),
-                        ],
-                        border: Border.all(
+                    curve: Curves.easeOutCubic,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      boxShadow: [
+                        BoxShadow(
                           color: isFocused
-                              ? AppTheme.focus.withValues(alpha: 0.6)
+                              ? AppTheme.focusGlow.withValues(alpha: 0.9)
                               : Colors.transparent,
-                          width: isFocused ? AppConstants.focusBorderWidth : 0,
+                          blurRadius: isFocused ? 10.0 : 0.0,
+                          spreadRadius: isFocused ? 1.0 : 0.0,
                         ),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Expanded(
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(8),
-                              child: CachedImage(
-                                imageUrl: movie.coverUrl,
-                                fit: BoxFit.cover,
-                                width: double.infinity,
-                                placeholder: (BuildContext ctx, _) =>
-                                    networkImagePlaceholder(ctx),
-                                errorWidget: (BuildContext ctx, _, _) =>
-                                    networkImageErrorWidget(ctx),
-                                memCacheWidth: 200,
-                                memCacheHeight: 300,
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: Text(
-                              movie.title,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                color: Colors.white,
-                                fontWeight: FontWeight.w500,
-                              ),
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ],
+                      ],
+                      border: Border.all(
+                        color: isFocused
+                            ? AppTheme.focus.withValues(alpha: 0.8)
+                            : Colors.transparent,
+                        width: isFocused ? AppConstants.focusBorderWidth : 0,
                       ),
                     ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Expanded(
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: CachedImage(
+                              imageUrl: movie.coverUrl,
+                              fit: BoxFit.cover,
+                              width: double.infinity,
+                              placeholder: (BuildContext ctx, _) =>
+                                  networkImagePlaceholder(ctx),
+                              errorWidget: (BuildContext ctx, _, _) =>
+                                  networkImageErrorWidget(ctx),
+                              memCacheWidth: 200,
+                              memCacheHeight: 300,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8),
+                          child: Text(
+                            movie.title,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                )
-                .animate(target: isFocused ? 1 : 0)
-                .shimmer(
-                  duration: 1400.ms,
-                  color: AppTheme.focus.withValues(alpha: 0.1),
-                  angle: 45,
                 ),
-      ),
+              )
+              .animate(target: isFocused ? 1 : 0)
+              .shimmer(
+                duration: 1400.ms,
+                color: AppTheme.focus.withValues(alpha: 0.1),
+                angle: 45,
+              ),
     );
   }
 

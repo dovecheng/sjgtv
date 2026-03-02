@@ -25,7 +25,17 @@
 - P0 稳定性：`bash script/run_p0_stability.sh 3`
 - 全量回归：`flutter test integration_test --reporter expanded`
 
-## 6. CI 建议
+## 6. TV 慢网提速规范（默认）
+- 默认入口：`bash script/run_it_tv.sh quick --device 192.168.145.55:5555`。
+- 全量入口：`bash script/run_it_tv.sh full --device 192.168.145.55:5555`。
+- 默认禁止连续 `--name` 拆分执行；仅在失败定位时允许：
+  - `bash script/run_it_tv.sh quick --allow-name --name "<用例名>" --device 192.168.145.55:5555`
+- 在 VSCode 中优先使用任务：
+  - `it: tv quick`
+  - `it: tv full`
+- 若日志出现 `google_fonts` 握手失败等网络异常，归类为环境失败，不计入业务回归失败；需要严格失败时加 `--strict-env`。
+
+## 7. CI 建议
 - PR 阶段至少执行 P0 集合。
 - 合并前执行全量 integration_test。
 - 失败自动重跑 1 次，若仍失败则标记不通过并附失败用例清单。
