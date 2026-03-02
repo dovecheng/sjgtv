@@ -120,6 +120,7 @@ dependency_overrides:
       url: https://github.com/justkawal/excel
       ref: 751dfc597c893a0b34eccfe6921f126e03a5c683
   archive: ^4.0.7 # excel
+  analyzer: 7.6.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
