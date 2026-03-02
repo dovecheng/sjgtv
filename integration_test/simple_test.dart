@@ -11,12 +11,12 @@ void main() {
     // 启动应用
     app.main();
     await tester.pumpAndSettle();
-    
+
     log.d('✅ 应用启动成功');
-    
+
     // 等待 3 秒
     await tester.pumpAndSettle(const Duration(seconds: 3));
-    
+
     log.d('✅ 测试完成');
   });
 }

@@ -105,6 +105,176 @@
             "problemMatcher": []
         },
         {
+            "label": "script: flutter build apk --debug",
+            "command": "/bin/bash",
+            "args": [
+                "-lc",
+                "chmod +x '${workspaceFolder}/script/flutter build apk --debug.sh'; /bin/bash '${workspaceFolder}/script/flutter build apk --debug.sh'"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/script"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "script: flutter build apk --profile",
+            "command": "/bin/bash",
+            "args": [
+                "-lc",
+                "chmod +x '${workspaceFolder}/script/flutter build apk --profile.sh'; /bin/bash '${workspaceFolder}/script/flutter build apk --profile.sh'"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/script"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "script: flutter build apk --release",
+            "command": "/bin/bash",
+            "args": [
+                "-lc",
+                "chmod +x '${workspaceFolder}/script/flutter build apk --release.sh'; /bin/bash '${workspaceFolder}/script/flutter build apk --release.sh'"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/script"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "script: flutter build appbundle --debug",
+            "command": "/bin/bash",
+            "args": [
+                "-lc",
+                "chmod +x '${workspaceFolder}/script/flutter build appbundle --debug.sh'; /bin/bash '${workspaceFolder}/script/flutter build appbundle --debug.sh'"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/script"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "script: flutter build appbundle --profile",
+            "command": "/bin/bash",
+            "args": [
+                "-lc",
+                "chmod +x '${workspaceFolder}/script/flutter build appbundle --profile.sh'; /bin/bash '${workspaceFolder}/script/flutter build appbundle --profile.sh'"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/script"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "script: flutter build appbundle --release",
+            "command": "/bin/bash",
+            "args": [
+                "-lc",
+                "chmod +x '${workspaceFolder}/script/flutter build appbundle --release.sh'; /bin/bash '${workspaceFolder}/script/flutter build appbundle --release.sh'"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/script"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "script: flutter build ipa --debug",
+            "command": "/bin/bash",
+            "args": [
+                "-lc",
+                "chmod +x '${workspaceFolder}/script/flutter build ipa --debug.sh'; /bin/bash '${workspaceFolder}/script/flutter build ipa --debug.sh'"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/script"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "script: flutter build ipa --profile",
+            "command": "/bin/bash",
+            "args": [
+                "-lc",
+                "chmod +x '${workspaceFolder}/script/flutter build ipa --profile.sh'; /bin/bash '${workspaceFolder}/script/flutter build ipa --profile.sh'"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/script"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "script: flutter build ipa --release",
+            "command": "/bin/bash",
+            "args": [
+                "-lc",
+                "chmod +x '${workspaceFolder}/script/flutter build ipa --release.sh'; /bin/bash '${workspaceFolder}/script/flutter build ipa --release.sh'"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/script"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "script: flutter build web",
+            "command": "/bin/bash",
+            "args": [
+                "-lc",
+                "chmod +x '${workspaceFolder}/script/flutter build web.sh'; /bin/bash '${workspaceFolder}/script/flutter build web.sh'"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/script"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
             "label": "git: submodule push to dev",
             "command": "git",
             "args": [

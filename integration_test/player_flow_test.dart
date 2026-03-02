@@ -30,12 +30,12 @@ void main() {
       // 验证首页有 Hero 区域
       log.d('\n步骤 3: 验证 Hero 区域');
       final heroButton = find.byType(HeroSection);
-      
+
       // 等待 Hero 区域出现
       for (int i = 0; i < 10 && heroButton.evaluate().isEmpty; i++) {
         await tester.pumpAndSettle(const Duration(seconds: 1));
       }
-      
+
       expect(heroButton, findsOneWidget, reason: '应该找到 HeroSection');
       log.d('✅ Hero 区域存在');
 
@@ -50,12 +50,18 @@ void main() {
       // 尝试多种方式查找搜索结果
       final searchResultImage = find.byType(CachedNetworkImage);
       final searchResultColumn = find.byType(Column);
-      
+
       // 等待搜索结果出现（增加到 20 秒）
-      for (int i = 0; i < 20 && searchResultImage.evaluate().isEmpty && searchResultColumn.evaluate().isEmpty; i++) {
+      for (
+        int i = 0;
+        i < 20 &&
+            searchResultImage.evaluate().isEmpty &&
+            searchResultColumn.evaluate().isEmpty;
+        i++
+      ) {
         await tester.pumpAndSettle(const Duration(seconds: 1));
       }
-      
+
       if (searchResultImage.evaluate().isNotEmpty) {
         expect(searchResultImage, findsWidgets, reason: '应该找到搜索结果图片');
         await tester.tap(searchResultImage.first);
@@ -74,12 +80,12 @@ void main() {
       // 验证详情页有"正片"按钮
       log.d('\n步骤 6: 验证"正片"按钮');
       final playButton = find.text('正片');
-      
+
       // 等待"正片"按钮出现
       for (int i = 0; i < 10 && playButton.evaluate().isEmpty; i++) {
         await tester.pumpAndSettle(const Duration(seconds: 1));
       }
-      
+
       expect(playButton, findsOneWidget, reason: '应该找到"正片"按钮');
       log.d('✅ "正片"按钮存在');
 
@@ -92,10 +98,10 @@ void main() {
       // 验证是否进入播放器页面
       log.d('\n步骤 8: 验证播放器页面');
       final errorMessage = find.text('当前源无有效剧集');
-      
+
       // 等待页面加载
       await tester.pumpAndSettle(const Duration(seconds: 3));
-      
+
       // 两种情况都是成功的：
       // 1. 有播放器界面
       // 2. 显示错误提示（数据问题，不是代码问题）
@@ -125,18 +131,18 @@ void main() {
       await tester.pumpAndSettle(const Duration(seconds: 3));
 
       final heroButton = find.byType(HeroSection);
-      
+
       // 等待 Hero 区域出现
       for (int i = 0; i < 10 && heroButton.evaluate().isEmpty; i++) {
         await tester.pumpAndSettle(const Duration(seconds: 1));
       }
-      
+
       expect(heroButton, findsOneWidget);
-      
+
       // 验证按钮可点击
       await tester.tap(heroButton);
       await tester.pumpAndSettle(const Duration(seconds: 2));
-      
+
       log.d('✅ Hero 区域可点击');
     });
 
@@ -161,7 +167,7 @@ void main() {
         await tester.pumpAndSettle(const Duration(seconds: 1));
       }
       expect(searchResult, findsWidgets, reason: '应该找到搜索结果');
-      
+
       log.d('✅ 搜索结果卡片正常');
     });
 
@@ -194,7 +200,7 @@ void main() {
         await tester.pumpAndSettle(const Duration(seconds: 1));
       }
       expect(playButton, findsOneWidget, reason: '应该找到"正片"按钮');
-      
+
       log.d('✅ 详情页"正片"按钮正常');
     });
   });

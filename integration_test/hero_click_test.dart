@@ -28,12 +28,12 @@ void main() {
     // 验证首页有 Hero 区域
     log.d('\n步骤 3: 验证 Hero 区域');
     final heroButton = find.byType(HeroSection);
-    
+
     // 等待 Hero 区域出现
     for (int i = 0; i < 10 && heroButton.evaluate().isEmpty; i++) {
       await tester.pumpAndSettle(const Duration(seconds: 1));
     }
-    
+
     expect(heroButton, findsOneWidget, reason: '应该找到 Hero 区域');
     log.d('✅ Hero 区域存在');
 
@@ -47,12 +47,12 @@ void main() {
     log.d('\n步骤 5: 验证搜索结果页面');
     // 检查页面是否有变化（通过查找搜索页面的特征元素）
     final searchElements = find.byType(CachedNetworkImage);
-    
+
     // 等待搜索结果加载
     for (int i = 0; i < 15 && searchElements.evaluate().isEmpty; i++) {
       await tester.pumpAndSettle(const Duration(seconds: 1));
     }
-    
+
     if (searchElements.evaluate().isNotEmpty) {
       log.d('✅ 成功进入搜索结果页面');
       log.d('   找到 ${searchElements.evaluate().length} 个图片元素');
