@@ -7,11 +7,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sjgtv/domain/entities/movie.dart';
+import 'package:sjgtv/src/app/constants/app_constants.dart';
 import 'package:sjgtv/src/app/router/app_routes.dart';
 import 'package:sjgtv/src/movie/provider/search_provider.dart';
 import 'package:sjgtv/src/movie/widget/network_image_placeholders.dart';
 import 'package:sjgtv/src/app/utils/tv_mode.dart';
 import 'package:sjgtv/src/app/widget/focus_indicator.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 /// 电影搜索页
 ///
@@ -35,24 +37,40 @@ class _SearchPageState extends ConsumerState<SearchPage> with FocusHelperMixin {
   final FocusNode _searchFocusNode = FocusNode();
   final FocusNode _searchButtonFocusNode = FocusNode();
   final ScrollController _gridScrollController = ScrollController();
+  final List<FocusNode> _resultFocusNodes = <FocusNode>[];
+  final List<GlobalKey> _resultItemKeys = <GlobalKey>[];
   List<Movie> _movies = [];
+  int? _focusedResultIndex;
   bool _isLoading = false;
   bool _showSearchHint = true;
   Timer? _searchDebounceTimer;
   static const String _focusMemoryKey = 'search_page_focus';
+  bool get _isHeroEntry =>
+      widget.initialQuery != null && widget.initialQuery!.isNotEmpty;
+  bool get _isSearchBarFocused =>
+      _searchFocusNode.hasFocus || _searchButtonFocusNode.hasFocus;
 
   @override
   void initState() {
     super.initState();
-    if (widget.initialQuery != null) {
+    if (_isHeroEntry) {
       _searchController.text = widget.initialQuery!;
       _searchMovies(widget.initialQuery!);
+      // 从首页 Hero 进入搜索时默认不弹出软键盘
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        _searchFocusNode.unfocus();
+        _searchButtonFocusNode.requestFocus();
+      });
     }
     _searchFocusNode.addListener(_onFocusChange);
+    _searchButtonFocusNode.addListener(_onFocusChange);
     _searchController.addListener(_onSearchTextChange);
 
-    // 恢复焦点记忆
-    restoreSavedFocus(_focusMemoryKey);
+    // 仅在非 Hero 导航场景恢复焦点记忆
+    if (!_isHeroEntry) {
+      restoreSavedFocus(_focusMemoryKey);
+    }
   }
 
   @override
@@ -87,13 +105,126 @@ class _SearchPageState extends ConsumerState<SearchPage> with FocusHelperMixin {
   void dispose() {
     // 保存当前焦点
     saveCurrentFocus(_focusMemoryKey);
+    _searchFocusNode.removeListener(_onFocusChange);
+    _searchButtonFocusNode.removeListener(_onFocusChange);
     _searchController.dispose();
     _searchFocusNode.dispose();
     _searchButtonFocusNode.dispose();
     _gridScrollController.dispose();
+    for (final FocusNode node in _resultFocusNodes) {
+      node.dispose();
+    }
+    _resultFocusNodes.clear();
+    _resultItemKeys.clear();
     _cancelToken.cancel();
     _searchDebounceTimer?.cancel();
     super.dispose();
+  }
+
+  void _ensureResultFocusData(int count) {
+    while (_resultFocusNodes.length < count) {
+      _resultFocusNodes.add(FocusNode());
+    }
+    while (_resultItemKeys.length < count) {
+      _resultItemKeys.add(GlobalKey());
+    }
+    if (_resultFocusNodes.length > count) {
+      for (int i = count; i < _resultFocusNodes.length; i++) {
+        _resultFocusNodes[i].dispose();
+      }
+      _resultFocusNodes.removeRange(count, _resultFocusNodes.length);
+    }
+    if (_resultItemKeys.length > count) {
+      _resultItemKeys.removeRange(count, _resultItemKeys.length);
+    }
+    if (_focusedResultIndex != null && _focusedResultIndex! >= count) {
+      _focusedResultIndex = null;
+    }
+  }
+
+  void _focusResultAt(int targetIndex) {
+    if (targetIndex < 0 || targetIndex >= _resultFocusNodes.length) return;
+    final FocusNode node = _resultFocusNodes[targetIndex];
+    node.requestFocus();
+    if (mounted) {
+      setState(() {
+        _focusedResultIndex = targetIndex;
+      });
+    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final BuildContext? ctx = _resultItemKeys[targetIndex].currentContext;
+      if (ctx != null) {
+        Scrollable.ensureVisible(
+          ctx,
+          duration: const Duration(milliseconds: 220),
+          curve: Curves.easeInOut,
+          alignment: 0.2,
+        );
+      }
+    });
+  }
+
+  void _openMovieDetail(Movie movie) {
+    final Map<String, dynamic> movieMap = <String, dynamic>{
+      'vod_id': movie.id,
+      'vod_name': movie.title,
+      'vod_pic': movie.coverUrl,
+      'vod_year': movie.year.toString(),
+      'url': movie.url,
+    };
+    GoRouter.of(context).push(AppRoutes.movieDetail, extra: movieMap);
+  }
+
+  KeyEventResult _handleResultNavigationKey(
+    KeyEvent event,
+    int index,
+    int crossAxisCount,
+    Movie movie,
+  ) {
+    if (event is! KeyDownEvent) {
+      return KeyEventResult.ignored;
+    }
+    final int column = index % crossAxisCount;
+
+    if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+      if (column > 0) {
+        _focusResultAt(index - 1);
+      }
+      return KeyEventResult.handled;
+    }
+    if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
+      final int rightIndex = index + 1;
+      final bool isSameRow =
+          rightIndex < _movies.length && rightIndex % crossAxisCount != 0;
+      if (isSameRow) {
+        _focusResultAt(rightIndex);
+      }
+      return KeyEventResult.handled;
+    }
+    if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
+      final int upIndex = index - crossAxisCount;
+      if (upIndex >= 0) {
+        _focusResultAt(upIndex);
+      } else {
+        _searchButtonFocusNode.requestFocus();
+      }
+      return KeyEventResult.handled;
+    }
+    if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
+      final int downIndex = index + crossAxisCount;
+      if (downIndex < _movies.length) {
+        _focusResultAt(downIndex);
+      }
+      return KeyEventResult.handled;
+    }
+    if (event.logicalKey == LogicalKeyboardKey.select ||
+        event.logicalKey == LogicalKeyboardKey.enter) {
+      log.v(() => '用户按键选择电影: ${movie.title}');
+      _openMovieDetail(movie);
+      return KeyEventResult.handled;
+    }
+
+    return KeyEventResult.ignored;
   }
 
   Future<void> _searchMovies(String keyword) async {
@@ -167,10 +298,10 @@ class _SearchPageState extends ConsumerState<SearchPage> with FocusHelperMixin {
           duration: const Duration(milliseconds: 200),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(32),
-            border: _searchFocusNode.hasFocus
+            border: _isSearchBarFocused
                 ? Border.all(color: colorScheme.primary, width: 3)
                 : null,
-            boxShadow: _searchFocusNode.hasFocus
+            boxShadow: _isSearchBarFocused
                 ? [
                     BoxShadow(
                       color: colorScheme.primary.withAlpha((255 * 0.3).toInt()),
@@ -185,25 +316,41 @@ class _SearchPageState extends ConsumerState<SearchPage> with FocusHelperMixin {
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.only(left: 24),
-                  child: TextField(
+                  child: Focus(
                     focusNode: _searchFocusNode,
-                    controller: _searchController,
-                    style: const TextStyle(
-                      fontSize: 24,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    decoration: InputDecoration(
-                      hintText: '搜索电影、电视剧...',
-                      hintStyle: TextStyle(
-                        fontSize: 22,
-                        color: colorScheme.onSurfaceVariant,
-                      ),
-                      border: InputBorder.none,
-                    ),
-                    onSubmitted: (value) {
-                      _searchMovies(value.trim());
+                    onKeyEvent: (FocusNode node, KeyEvent event) {
+                      if (event is KeyDownEvent &&
+                          event.logicalKey == LogicalKeyboardKey.arrowDown &&
+                          _movies.isNotEmpty) {
+                        _focusResultAt(0);
+                        return KeyEventResult.handled;
+                      }
+                      return KeyEventResult.ignored;
                     },
+                    child: TextField(
+                      controller: _searchController,
+                      style: const TextStyle(
+                        fontSize: 24,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      decoration: InputDecoration(
+                        hintText: '搜索电影、电视剧...',
+                        hintStyle: TextStyle(
+                          fontSize: 22,
+                          color: colorScheme.onSurfaceVariant,
+                        ),
+                        border: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        disabledBorder: InputBorder.none,
+                        errorBorder: InputBorder.none,
+                        focusedErrorBorder: InputBorder.none,
+                      ),
+                      onSubmitted: (value) {
+                        _searchMovies(value.trim());
+                      },
+                    ),
                   ),
                 ),
               ),
@@ -216,10 +363,15 @@ class _SearchPageState extends ConsumerState<SearchPage> with FocusHelperMixin {
   }
 
   Widget _buildSearchButton(BuildContext context) {
-    final ColorScheme colorScheme = context.theme.colorScheme;
     return Focus(
       focusNode: _searchButtonFocusNode,
       onKeyEvent: (node, event) {
+        if (event is KeyDownEvent &&
+            event.logicalKey == LogicalKeyboardKey.arrowDown &&
+            _movies.isNotEmpty) {
+          _focusResultAt(0);
+          return KeyEventResult.handled;
+        }
         if (event is KeyDownEvent &&
             event.logicalKey == LogicalKeyboardKey.select) {
           log.d(() => '用户按键触发搜索: keyword="${_searchController.text.trim()}"');
@@ -230,6 +382,8 @@ class _SearchPageState extends ConsumerState<SearchPage> with FocusHelperMixin {
       },
       child: FocusIndicator(
         decoration: const FocusIndicatorDecoration(
+          hasBorder: false,
+          hasShadow: false,
           hasScale: true,
           scaleFactor: 1.05,
         ),
@@ -238,27 +392,20 @@ class _SearchPageState extends ConsumerState<SearchPage> with FocusHelperMixin {
           _searchMovies(_searchController.text.trim());
         },
         child: Container(
-          margin: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: colorScheme.surfaceContainerLow,
-            borderRadius: BorderRadius.circular(24),
-          ),
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-            child: Row(
-              children: [
-                const Icon(Icons.search, size: 32, color: Colors.white),
-                const SizedBox(width: 8),
-                const Text(
-                  '搜索',
-                  style: TextStyle(
-                    fontSize: 22,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          child: Row(
+            children: [
+              const Icon(Icons.search, size: 32, color: Colors.white),
+              const SizedBox(width: 8),
+              const Text(
+                '搜索',
+                style: TextStyle(
+                  fontSize: 22,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
@@ -375,6 +522,7 @@ class _SearchPageState extends ConsumerState<SearchPage> with FocusHelperMixin {
         final int crossAxisCount = TVModeLayout.getRecommendedGridColumns(
           screenWidth: constraints.maxWidth,
         );
+        _ensureResultFocusData(_movies.length);
 
         return Column(
           children: [
@@ -396,24 +544,27 @@ class _SearchPageState extends ConsumerState<SearchPage> with FocusHelperMixin {
               ),
             ),
             Expanded(
-              child: GridView.builder(
-                controller: _gridScrollController,
-                padding: EdgeInsets.symmetric(
-                  horizontal: TVModeLayout.getRecommendedPagePadding(),
-                  vertical: 8,
+              child: FocusTraversalGroup(
+                policy: OrderedTraversalPolicy(),
+                child: GridView.builder(
+                  controller: _gridScrollController,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: TVModeLayout.getRecommendedPagePadding(),
+                    vertical: 8,
+                  ),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: crossAxisCount,
+                    childAspectRatio:
+                        TVModeLayout.getRecommendedCardAspectRatio(),
+                    crossAxisSpacing: TVModeLayout.getRecommendedCardSpacing(),
+                    mainAxisSpacing: TVModeLayout.getRecommendedCardSpacing(),
+                  ),
+                  itemCount: _movies.length,
+                  itemBuilder: (BuildContext ctx, int index) {
+                    final Movie movie = _movies[index];
+                    return _buildMovieCard(ctx, movie, index, crossAxisCount);
+                  },
                 ),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: crossAxisCount,
-                  childAspectRatio:
-                      TVModeLayout.getRecommendedCardAspectRatio(),
-                  crossAxisSpacing: TVModeLayout.getRecommendedCardSpacing(),
-                  mainAxisSpacing: TVModeLayout.getRecommendedCardSpacing(),
-                ),
-                itemCount: _movies.length,
-                itemBuilder: (BuildContext ctx, int index) {
-                  final Movie movie = _movies[index];
-                  return _buildMovieCard(ctx, movie);
-                },
               ),
             ),
           ],
@@ -422,78 +573,115 @@ class _SearchPageState extends ConsumerState<SearchPage> with FocusHelperMixin {
     );
   }
 
-  Widget _buildMovieCard(BuildContext context, Movie movie) {
-    return Focus(
-      key: ValueKey('search_result_${movie.id}'),
-      onKeyEvent: (FocusNode node, KeyEvent event) {
-        if (event is KeyDownEvent &&
-            (event.logicalKey == LogicalKeyboardKey.select ||
-                event.logicalKey == LogicalKeyboardKey.enter)) {
-          log.v(() => '用户按键选择电影: ${movie.title}');
-          // 将 Movie 对象转换为 Map，避免类型转换错误
-          final movieMap = {
-            'vod_id': movie.id,
-            'vod_name': movie.title,
-            'vod_pic': movie.coverUrl,
-            'vod_year': movie.year.toString(),
-            'url': movie.url,
-          };
-          GoRouter.of(context).push(AppRoutes.movieDetail, extra: movieMap);
-          return KeyEventResult.handled;
-        }
-        return KeyEventResult.ignored;
-      },
-      child: FocusIndicator(
-        decoration: const FocusIndicatorDecoration(
-          hasBorder: true,
-          hasShadow: true,
-          hasScale: true,
-          scaleFactor: 1.08,
-        ),
-        onTap: () {
-          log.v(() => '用户点击电影卡片: ${movie.title}');
-          // 将 Movie 对象转换为 Map，避免类型转换错误
-          final movieMap = {
-            'vod_id': movie.id,
-            'vod_name': movie.title,
-            'vod_pic': movie.coverUrl,
-            'vod_year': movie.year.toString(),
-            'url': movie.url,
-          };
-          GoRouter.of(context).push(AppRoutes.movieDetail, extra: movieMap);
+  Widget _buildMovieCard(
+    BuildContext context,
+    Movie movie,
+    int index,
+    int crossAxisCount,
+  ) {
+    final bool isFocused = _focusedResultIndex == index;
+    return KeyedSubtree(
+      key: _resultItemKeys[index],
+      child: Focus(
+        key: ValueKey('search_result_${movie.id}'),
+        canRequestFocus: false,
+        onKeyEvent: (FocusNode node, KeyEvent event) {
+          return _handleResultNavigationKey(
+            event,
+            index,
+            crossAxisCount,
+            movie,
+          );
         },
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Expanded(
-              child: CachedImage(
-                imageUrl: movie.coverUrl,
-                fit: BoxFit.cover,
-                width: double.infinity,
-                placeholder: (BuildContext ctx, _) =>
-                    networkImagePlaceholder(ctx),
-                errorWidget: (BuildContext ctx, _, _) =>
-                    networkImageErrorWidget(ctx),
-                memCacheWidth: 200,
-                memCacheHeight: 300,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8),
-              child: Text(
-                movie.title,
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w500,
+        child:
+            FocusIndicator(
+                  focusNode: _resultFocusNodes[index],
+                  decoration: const FocusIndicatorDecoration(
+                    hasBorder: false,
+                    hasShadow: false,
+                    hasScale: false,
+                  ),
+                  onFocusChange: (bool hasFocus) {
+                    if (!mounted) return;
+                    setState(() {
+                      _focusedResultIndex = hasFocus
+                          ? index
+                          : _focusedResultIndex;
+                    });
+                  },
+                  onTap: () {
+                    log.v(() => '用户点击电影卡片: ${movie.title}');
+                    _openMovieDetail(movie);
+                  },
+                  child: AnimatedScale(
+                    duration: AppConstants.normalAnimation,
+                    curve: Curves.easeOutBack,
+                    scale: isFocused ? AppConstants.focusScaleFactor : 1.0,
+                    child: AnimatedContainer(
+                      duration: AppConstants.normalAnimation,
+                      curve: Curves.easeOutCubic,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        boxShadow: [
+                          BoxShadow(
+                            color: isFocused
+                                ? AppTheme.focusGlow
+                                : Colors.transparent,
+                            blurRadius: isFocused ? 8.0 : 0.0,
+                            spreadRadius: 0,
+                          ),
+                        ],
+                        border: Border.all(
+                          color: isFocused
+                              ? AppTheme.focus.withValues(alpha: 0.6)
+                              : Colors.transparent,
+                          width: isFocused ? AppConstants.focusBorderWidth : 0,
+                        ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Expanded(
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: CachedImage(
+                                imageUrl: movie.coverUrl,
+                                fit: BoxFit.cover,
+                                width: double.infinity,
+                                placeholder: (BuildContext ctx, _) =>
+                                    networkImagePlaceholder(ctx),
+                                errorWidget: (BuildContext ctx, _, _) =>
+                                    networkImageErrorWidget(ctx),
+                                memCacheWidth: 200,
+                                memCacheHeight: 300,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: Text(
+                              movie.title,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500,
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                )
+                .animate(target: isFocused ? 1 : 0)
+                .shimmer(
+                  duration: 1400.ms,
+                  color: AppTheme.focus.withValues(alpha: 0.1),
+                  angle: 45,
                 ),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -501,29 +689,49 @@ class _SearchPageState extends ConsumerState<SearchPage> with FocusHelperMixin {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop: !_searchFocusNode.hasFocus && _searchController.text.isEmpty,
+      canPop:
+          _isHeroEntry ||
+          (!_searchFocusNode.hasFocus && _searchController.text.isEmpty),
       onPopInvokedWithResult: (bool didPop, dynamic result) {
         if (!didPop) {
           _cancelToken.cancel();
-          if (_searchFocusNode.hasFocus) {
-            _searchFocusNode.unfocus();
-          } else if (_searchController.text.isNotEmpty && mounted) {
+          if (_isHeroEntry) {
+            return;
+          }
+          if (_searchController.text.isNotEmpty && mounted) {
             setState(() {
               _movies.clear();
               _searchController.clear();
             });
+            return;
+          }
+          if (_searchFocusNode.hasFocus) {
+            _searchFocusNode.unfocus();
           }
         }
       },
-      child: FocusScope(
+      child: Focus(
         autofocus: true,
-        child: Scaffold(
-          appBar: PreferredSize(
-            preferredSize: const Size(double.infinity, 200),
-            child: _buildSearchField(context),
+        onKeyEvent: (FocusNode node, KeyEvent event) {
+          if (event is KeyDownEvent &&
+              event.logicalKey == LogicalKeyboardKey.arrowDown &&
+              _movies.isNotEmpty &&
+              (_searchFocusNode.hasFocus || _searchButtonFocusNode.hasFocus)) {
+            _focusResultAt(0);
+            return KeyEventResult.handled;
+          }
+          return KeyEventResult.ignored;
+        },
+        child: FocusScope(
+          autofocus: true,
+          child: Scaffold(
+            appBar: PreferredSize(
+              preferredSize: const Size(double.infinity, 200),
+              child: _buildSearchField(context),
+            ),
+            backgroundColor: context.theme.colorScheme.surface,
+            body: _buildContent(context),
           ),
-          backgroundColor: context.theme.colorScheme.surface,
-          body: _buildContent(context),
         ),
       ),
     );

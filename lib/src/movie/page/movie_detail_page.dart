@@ -51,7 +51,10 @@ class MovieDetailPage extends ConsumerStatefulWidget {
         'vod_remarks': '',
       };
     } else {
-      log.w(() => 'movie is unknown type: ${movie.runtimeType}, returning empty Map');
+      log.w(
+        () =>
+            'movie is unknown type: ${movie.runtimeType}, returning empty Map',
+      );
       return {};
     }
   }
@@ -128,21 +131,53 @@ class _MovieDetailPageState extends ConsumerState<MovieDetailPage> {
 
   void _parseEpisodes() {
     _episodes.clear();
-    final String? playUrl = widget.movieMap['url'] as String?;
-    if (playUrl != null) {
-      final List<String> parts = playUrl.split('#');
-      for (var part in parts) {
-        final List<String> episodeParts = part.split('\$');
-        if (episodeParts.length == 2) {
-          _episodes.add({'title': episodeParts[0], 'url': episodeParts[1]});
-        }
-      }
+    final String? playUrl =
+        (widget.movieMap['url'] as String?) ??
+        (widget.movieMap['vod_play_url'] as String?);
+    if (playUrl != null && playUrl.trim().isNotEmpty) {
+      _episodes.addAll(_parseEpisodesFromPlayUrl(playUrl));
     }
     _episodeKeys.clear();
     _episodeKeys.addAll(
       List.generate(_episodes.length, (index) => GlobalKey()),
     );
     setState(() {});
+  }
+
+  List<Map<String, String>> _parseEpisodesFromPlayUrl(String playUrlRaw) {
+    final List<Map<String, String>> episodes = <Map<String, String>>[];
+    final String playUrl = playUrlRaw.trim();
+    if (playUrl.isEmpty) {
+      return episodes;
+    }
+
+    // 苹果 CMS 常见格式：
+    // 1) 单线路：第1集$u1#第2集$u2
+    // 2) 多线路：线路A$u1#线路A2$u2$$$线路B$u3#线路B2$u4
+    // 这里默认取第一条线路，避免把其它线路内容混进当前剧集列表
+    final String firstRoute = playUrl.split(r'$$$').first.trim();
+    if (firstRoute.isEmpty) {
+      return episodes;
+    }
+
+    final List<String> episodeChunks = firstRoute.split('#');
+    for (final String chunk in episodeChunks) {
+      final String normalizedChunk = chunk.trim();
+      if (normalizedChunk.isEmpty) {
+        continue;
+      }
+      final int separatorIndex = normalizedChunk.indexOf('\$');
+      if (separatorIndex <= 0 || separatorIndex >= normalizedChunk.length - 1) {
+        continue;
+      }
+      final String title = normalizedChunk.substring(0, separatorIndex).trim();
+      final String url = normalizedChunk.substring(separatorIndex + 1).trim();
+      if (title.isEmpty || url.isEmpty) {
+        continue;
+      }
+      episodes.add(<String, String>{'title': title, 'url': url});
+    }
+    return episodes;
   }
 
   void _playEpisode(int index) {
@@ -280,7 +315,8 @@ class _MovieDetailPageState extends ConsumerState<MovieDetailPage> {
                                           ),
                                           visualDensity: VisualDensity.compact,
                                         ),
-                                      if (widget.movieMap['vod_remarks'] != null)
+                                      if (widget.movieMap['vod_remarks'] !=
+                                          null)
                                         Chip(
                                           label: Text(
                                             widget.movieMap['vod_remarks']!,
@@ -353,7 +389,10 @@ class _MovieDetailPageState extends ConsumerState<MovieDetailPage> {
                               if (event.logicalKey ==
                                   LogicalKeyboardKey.arrowLeft) {
                                 if (_focusedIndex > 0) {
-                                  log.v(() => '用户按键选择上一集: $_focusedIndex -> ${_focusedIndex - 1}');
+                                  log.v(
+                                    () =>
+                                        '用户按键选择上一集: $_focusedIndex -> ${_focusedIndex - 1}',
+                                  );
                                   setState(() {
                                     _focusedIndex--;
                                   });
@@ -378,7 +417,10 @@ class _MovieDetailPageState extends ConsumerState<MovieDetailPage> {
                               } else if (event.logicalKey ==
                                   LogicalKeyboardKey.arrowRight) {
                                 if (_focusedIndex < _episodes.length - 1) {
-                                  log.v(() => '用户按键选择下一集: $_focusedIndex -> ${_focusedIndex + 1}');
+                                  log.v(
+                                    () =>
+                                        '用户按键选择下一集: $_focusedIndex -> ${_focusedIndex + 1}',
+                                  );
                                   setState(() {
                                     _focusedIndex++;
                                   });

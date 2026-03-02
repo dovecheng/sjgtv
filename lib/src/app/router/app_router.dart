@@ -136,7 +136,7 @@ extension AppRouterContext on BuildContext {
     if (query != null && query.isNotEmpty) {
       location += '?q=$query';
     }
-    go(location);
+    push(location);
   }
 
   /// 导航到电影详情页面
@@ -157,13 +157,13 @@ extension AppRouterContext on BuildContext {
 
   /// 导航到源管理页面
   void goToSourceManage() {
-    go(AppRoutes.sourceManage);
+    push(AppRoutes.sourceManage);
   }
 
   /// 导航到源表单页面
   void goToSourceForm([Map<String, dynamic>? source]) {
     final String location = '${AppRoutes.sourceManage}/form';
-    go(location, extra: source);
+    push(location, extra: source);
   }
 
   /// 返回上一页

@@ -78,7 +78,7 @@ class _FocusableMovieCardState extends State<FocusableMovieCard> {
               event.logicalKey == LogicalKeyboardKey.enter) {
             log.v(() => '用户按键选择电影: ${widget.movie.title}');
             GoRouter.of(
-                context,
+              context,
             ).push('${AppRoutes.search}?q=${widget.movie.title}');
             return KeyEventResult.handled;
           }

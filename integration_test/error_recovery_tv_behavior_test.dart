@@ -9,8 +9,18 @@ import 'test_helpers.dart';
 void main() {
   IntegrationHarness.init();
 
-  group('P2 异常与韧性（8条）', () {
-    testWidgets('P2_01_搜索随机词_进入空结果态', (WidgetTester tester) async {
+  // 旧编号 -> 新场景名（仅保留一次映射，正文统一使用中文可读名）
+  // P2_01 -> 搜索页_关键词搜索_空结果提示可见
+  // P2_02 -> 搜索页_返回键处理_有输入先清空再回首页
+  // P2_03 -> 路由页_设置入口_占位页可达
+  // P2_04 -> 播放页_空剧集数据_提示当前源无有效剧集
+  // P2_05 -> 播放页_播放错误态_可见重试按钮
+  // P2_06 -> 播放页_返回键处理_可退出到首页
+  // P2_07 -> 播放页_菜单键处理_可打开换源面板
+  // P2_08 -> 播放页_方向键交互_可触发控制层提示
+  // P2_09 -> 搜索页_结果焦点下移_首个卡片出现焦点放大
+  group('异常与韧性场景', () {
+    testWidgets('搜索页_关键词搜索_空结果提示可见', (WidgetTester tester) async {
       await IntegrationHarness.launchApp(tester);
       await IntegrationHarness.openSearchPage(tester);
 
@@ -24,24 +34,65 @@ void main() {
       expect(find.text('没有找到相关内容'), findsOneWidget);
     });
 
-    testWidgets('P2_02_搜索页返回键_优先清空输入', (WidgetTester tester) async {
+    testWidgets('搜索页_返回键处理_有输入先清空再回首页', (WidgetTester tester) async {
       await IntegrationHarness.launchApp(tester);
       await IntegrationHarness.openSearchPage(tester);
 
       final Finder input = find.byType(TextField).first;
-      await IntegrationHarness.enterText(tester, input, '测试返回行为');
-      expect(find.text('测试返回行为'), findsOneWidget);
+      await IntegrationHarness.enterText(tester, input, '流浪地球');
+      expect(find.text('流浪地球'), findsOneWidget);
 
       await IntegrationHarness.sendKey(tester, LogicalKeyboardKey.escape);
       await IntegrationHarness.settle(
         tester,
         const Duration(milliseconds: 500),
       );
-      expect(find.text('测试返回行为'), findsNothing);
+      expect(find.text('流浪地球'), findsNothing);
       expect(find.text('输入电影或电视剧名称'), findsOneWidget);
+
+      await IntegrationHarness.sendKey(tester, LogicalKeyboardKey.escape);
+      await IntegrationHarness.settle(
+        tester,
+        const Duration(milliseconds: 500),
+      );
+      expect(
+        find.byKey(const ValueKey<String>('app_bar_search')),
+        findsOneWidget,
+      );
     });
 
-    testWidgets('P2_03_路由设置页_占位页面可达', (WidgetTester tester) async {
+    testWidgets('搜索页_结果焦点下移_首个卡片出现焦点放大', (WidgetTester tester) async {
+      await IntegrationHarness.launchApp(tester);
+      await IntegrationHarness.openSearchPage(tester);
+
+      final Finder input = find.byType(TextField).first;
+      await IntegrationHarness.enterText(tester, input, '流浪地球');
+      await IntegrationHarness.sendKey(tester, LogicalKeyboardKey.enter);
+      await IntegrationHarness.settle(tester, const Duration(seconds: 4));
+
+      if (find.text('没有找到相关内容').evaluate().isNotEmpty) {
+        IntegrationHarness.log.w(() => '当前环境未返回搜索结果，跳过焦点放大断言');
+        return;
+      }
+
+      await IntegrationHarness.sendKey(tester, LogicalKeyboardKey.arrowDown);
+      await IntegrationHarness.settle(
+        tester,
+        const Duration(milliseconds: 600),
+      );
+
+      final Iterable<AnimatedScale> animatedScales = find
+          .byType(AnimatedScale)
+          .evaluate()
+          .map((Element element) => element.widget)
+          .whereType<AnimatedScale>();
+      final bool hasFocusedScale = animatedScales.any(
+        (AnimatedScale scaleWidget) => scaleWidget.scale > 1.001,
+      );
+      expect(hasFocusedScale, isTrue, reason: '有结果时按下方向键后应有焦点放大效果');
+    });
+
+    testWidgets('路由页_设置入口_占位页可达', (WidgetTester tester) async {
       await IntegrationHarness.launchApp(tester);
       await IntegrationHarness.openRouteByGoRouter(tester, AppRoutes.settings);
 
@@ -49,7 +100,7 @@ void main() {
       expect(find.text('设置功能开发中'), findsOneWidget);
     });
 
-    testWidgets('P2_04_播放器空剧集_显示无有效剧集', (WidgetTester tester) async {
+    testWidgets('播放页_空剧集数据_提示当前源无有效剧集', (WidgetTester tester) async {
       await IntegrationHarness.launchApp(tester);
       final Map<String, dynamic> movie = IntegrationHarness.fakeMovie(
         playUrl: '',
@@ -71,7 +122,7 @@ void main() {
       expect(find.text('当前源无有效剧集'), findsOneWidget);
     });
 
-    testWidgets('P2_05_播放器错误态_展示重试按钮', (WidgetTester tester) async {
+    testWidgets('播放页_播放错误态_可见重试按钮', (WidgetTester tester) async {
       await IntegrationHarness.launchApp(tester);
       final Map<String, dynamic> movie = IntegrationHarness.fakeMovie(
         playUrl: '正片\$invalid://broken-url',
@@ -95,7 +146,7 @@ void main() {
       expect(find.text('重试'), findsOneWidget);
     });
 
-    testWidgets('P2_06_播放器返回键_可以退出播放页', (WidgetTester tester) async {
+    testWidgets('播放页_返回键处理_可退出到首页', (WidgetTester tester) async {
       await IntegrationHarness.launchApp(tester);
       final Map<String, dynamic> movie = IntegrationHarness.fakeMovie(
         playUrl: '',
@@ -122,7 +173,7 @@ void main() {
       );
     });
 
-    testWidgets('P2_07_播放器菜单键_可打开换源面板', (WidgetTester tester) async {
+    testWidgets('播放页_菜单键处理_可打开换源面板', (WidgetTester tester) async {
       await IntegrationHarness.launchApp(tester);
       final Map<String, dynamic> movie = IntegrationHarness.fakeMovie(
         playUrl: '正片\$invalid://broken-url',
@@ -160,7 +211,7 @@ void main() {
       expect(find.text('源B'), findsOneWidget);
     });
 
-    testWidgets('P2_08_播放器方向键_可触发控制层提示', (WidgetTester tester) async {
+    testWidgets('播放页_方向键交互_可触发控制层提示', (WidgetTester tester) async {
       await IntegrationHarness.launchApp(tester);
       final Map<String, dynamic> movie = IntegrationHarness.fakeMovie(
         playUrl: '正片\$invalid://broken-url',

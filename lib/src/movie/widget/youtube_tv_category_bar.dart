@@ -16,7 +16,7 @@ class YouTubeTVCategoryBar extends StatefulWidget {
     required this.categories,
     required this.selectedIndex,
     required this.onCategorySelected,
-    this.padding = const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+    this.padding = const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
   });
 
   final List<String> categories;
@@ -87,23 +87,26 @@ class _YouTubeTVCategoryBarState extends State<YouTubeTVCategoryBar>
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 60,
+    return Padding(
       padding: widget.padding,
-      child: ListView.builder(
-        controller: _scrollController,
-        scrollDirection: Axis.horizontal,
-        itemCount: widget.categories.length,
-        itemBuilder: (context, index) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: _CategoryItem(
-              categoryName: widget.categories[index],
-              isSelected: index == widget.selectedIndex,
-              onTap: () => widget.onCategorySelected(index),
-            ),
-          );
-        },
+      child: SizedBox(
+        height: 44,
+        child: ListView.builder(
+          controller: _scrollController,
+          scrollDirection: Axis.horizontal,
+          itemCount: widget.categories.length,
+          itemBuilder: (context, index) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: _CategoryItem(
+                categoryName: widget.categories[index],
+                isSelected: index == widget.selectedIndex,
+                onFocused: () => widget.onCategorySelected(index),
+                onTap: () => widget.onCategorySelected(index),
+              ),
+            );
+          },
+        ),
       ),
     );
   }
@@ -113,11 +116,13 @@ class _CategoryItem extends StatefulWidget {
   const _CategoryItem({
     required this.categoryName,
     required this.isSelected,
+    required this.onFocused,
     required this.onTap,
   });
 
   final String categoryName;
   final bool isSelected;
+  final VoidCallback onFocused;
   final VoidCallback onTap;
 
   @override
@@ -153,6 +158,9 @@ class _CategoryItemState extends State<_CategoryItem>
     setState(() {
       _isFocused = hasFocus;
     });
+    if (hasFocus && !widget.isSelected) {
+      widget.onFocused();
+    }
     if (hasFocus) {
       _animationController.forward();
     } else {
@@ -182,7 +190,8 @@ class _CategoryItemState extends State<_CategoryItem>
             scale: _scaleAnimation.value,
             child: Container(
               height: 40,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              constraints: const BoxConstraints(minWidth: 88),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               decoration: BoxDecoration(
                 color: widget.isSelected
                     ? AppTheme.accent
@@ -197,11 +206,12 @@ class _CategoryItemState extends State<_CategoryItem>
               child: Center(
                 child: Text(
                   widget.categoryName,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
                     color: widget.isSelected ? Colors.white : null,
-                    fontWeight: widget.isSelected
-                        ? FontWeight.w500
-                        : FontWeight.w500,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ),

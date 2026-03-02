@@ -194,20 +194,35 @@ class _FullScreenPlayerPageState extends ConsumerState<FullScreenPlayerPage> {
   List<Map<String, String>> _parseEpisodesFromPlayUrl(
     Map<String, dynamic> source,
   ) {
-    final List<Map<String, String>> list = <Map<String, String>>[];
+    final List<Map<String, String>> episodes = <Map<String, String>>[];
     final String? playUrl = source['vod_play_url'] as String?;
-    if (playUrl == null || playUrl.isEmpty) return list;
-    final List<String> parts = playUrl.split('#');
-    for (final String part in parts) {
-      final List<String> episodeParts = part.split('\$');
-      if (episodeParts.length == 2) {
-        list.add(<String, String>{
-          'title': episodeParts[0],
-          'url': episodeParts[1],
-        });
-      }
+    if (playUrl == null || playUrl.trim().isEmpty) {
+      return episodes;
     }
-    return list;
+
+    final String firstRoute = playUrl.split(r'$$$').first.trim();
+    if (firstRoute.isEmpty) {
+      return episodes;
+    }
+
+    final List<String> chunks = firstRoute.split('#');
+    for (final String chunkRaw in chunks) {
+      final String chunk = chunkRaw.trim();
+      if (chunk.isEmpty) {
+        continue;
+      }
+      final int separatorIndex = chunk.indexOf('\$');
+      if (separatorIndex <= 0 || separatorIndex >= chunk.length - 1) {
+        continue;
+      }
+      final String title = chunk.substring(0, separatorIndex).trim();
+      final String url = chunk.substring(separatorIndex + 1).trim();
+      if (title.isEmpty || url.isEmpty) {
+        continue;
+      }
+      episodes.add(<String, String>{'title': title, 'url': url});
+    }
+    return episodes;
   }
 
   void _toggleControlsVisibility(bool visible) {

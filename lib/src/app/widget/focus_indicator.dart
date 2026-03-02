@@ -123,6 +123,7 @@ class FocusIndicator extends StatefulWidget {
     this.autofocus = false,
     this.onFocusChange,
     this.onTap,
+    this.onKeyEvent,
   });
 
   final Widget child;
@@ -131,6 +132,7 @@ class FocusIndicator extends StatefulWidget {
   final bool autofocus;
   final ValueChanged<bool>? onFocusChange;
   final VoidCallback? onTap;
+  final FocusOnKeyEventCallback? onKeyEvent;
 
   @override
   State<FocusIndicator> createState() => _FocusIndicatorState();
@@ -224,6 +226,7 @@ class _FocusIndicatorState extends State<FocusIndicator>
   Widget build(BuildContext context) {
     return Focus(
       focusNode: _focusNode,
+      onKeyEvent: widget.onKeyEvent,
       child: AnimatedBuilder(
         animation: _animationController,
         builder: (context, child) {

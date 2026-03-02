@@ -97,7 +97,10 @@ class _HeroSectionState extends State<HeroSection>
             return Transform.scale(
               scale: _scaleAnimation.value,
               child: Container(
-                margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                margin: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 12,
+                ),
                 height: 280,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8),

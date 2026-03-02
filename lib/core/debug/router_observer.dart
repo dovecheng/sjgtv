@@ -29,7 +29,10 @@ class RouterObserver extends NavigatorObserver {
   }
 
   @override
-  void didStartUserGesture(Route<dynamic> route, Route<dynamic>? previousRoute) {
+  void didStartUserGesture(
+    Route<dynamic> route,
+    Route<dynamic>? previousRoute,
+  ) {
     log.d(() => '用户手势开始: ${route.settings.name}');
   }
 
