@@ -61,9 +61,14 @@ class _HeroSectionState extends State<HeroSection>
   }
 
   void _onTap() {
+    log.d(() => '========== Hero 区域被点击 ==========');
     log.d(() => '用户点击 Hero 电影: ${widget.movie.title}');
+    log.d(() => 'Hero 电影 ID: ${widget.movie.id}');
+    log.d(() => 'Hero 电影 URL: ${widget.movie.url}');
     widget.onTap?.call();
+    log.d(() => '准备调用 goToSearch: ${widget.movie.title}');
     context.goToSearch(widget.movie.title);
+    log.d(() => 'goToSearch 调用完成');
   }
 
   @override
@@ -71,6 +76,7 @@ class _HeroSectionState extends State<HeroSection>
     final ColorScheme colorScheme = context.theme.colorScheme;
 
     return Focus(
+      key: ValueKey('hero_${widget.movie.id}'),
       focusNode: _focusNode,
       onFocusChange: _handleFocusChange,
       onKeyEvent: (FocusNode node, KeyEvent event) {
@@ -82,44 +88,48 @@ class _HeroSectionState extends State<HeroSection>
         }
         return KeyEventResult.ignored;
       },
-      child: AnimatedBuilder(
-        animation: _controller,
-        builder: (context, child) {
-          return Transform.scale(
-            scale: _scaleAnimation.value,
-            child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              height: 280,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                  color: AppTheme.focus.withValues(
-                    alpha: 0.2 + _borderAnimation.value / 5,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: _onTap,
+        child: AnimatedBuilder(
+          animation: _controller,
+          builder: (context, child) {
+            return Transform.scale(
+              scale: _scaleAnimation.value,
+              child: Container(
+                margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                height: 280,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: AppTheme.focus.withValues(
+                      alpha: 0.2 + _borderAnimation.value / 5,
+                    ),
+                    width: _borderAnimation.value,
                   ),
-                  width: _borderAnimation.value,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppTheme.focusGlow,
-                    blurRadius: 12 * _scaleAnimation.value,
-                    spreadRadius: 0,
-                  ),
-                ],
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    _buildBackgroundImage(colorScheme),
-                    _buildGradientOverlay(),
-                    _buildContent(colorScheme),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppTheme.focusGlow,
+                      blurRadius: 12 * _scaleAnimation.value,
+                      spreadRadius: 0,
+                    ),
                   ],
                 ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      _buildBackgroundImage(colorScheme),
+                      _buildGradientOverlay(),
+                      _buildContent(colorScheme),
+                    ],
+                  ),
+                ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }

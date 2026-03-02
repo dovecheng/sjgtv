@@ -163,6 +163,7 @@ class _CategoryItemState extends State<_CategoryItem>
   @override
   Widget build(BuildContext context) {
     return Focus(
+      key: ValueKey('category_${widget.categoryName}'),
       autofocus: widget.isSelected,
       onFocusChange: _handleFocusChange,
       onKeyEvent: (FocusNode node, KeyEvent event) {

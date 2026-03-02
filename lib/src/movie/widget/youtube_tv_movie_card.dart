@@ -112,6 +112,7 @@ class _YouTubeTVMovieCardState extends State<YouTubeTVMovieCard>
         widget.onMoveFocus != null;
 
     return Focus(
+      key: ValueKey('youtube_movie_card_${widget.movie.id}'),
       focusNode: widget.focusNode,
       onKeyEvent: (FocusNode node, KeyEvent event) {
         if (event is KeyDownEvent) {

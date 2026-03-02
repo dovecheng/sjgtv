@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:sjgtv/src/app/router/app_routes.dart';
 import 'package:sjgtv/src/movie/widget/network_image_placeholders.dart';
 import 'package:sjgtv/src/favorite/provider/favorites_provider.dart';
+import 'package:sjgtv/domain/entities/movie.dart';
 
 /// 电影详情页
 ///
@@ -23,6 +24,37 @@ class MovieDetailPage extends ConsumerStatefulWidget {
 
   @override
   ConsumerState<MovieDetailPage> createState() => _MovieDetailPageState();
+
+  /// 判断 movie 是否为 Map 类型
+  bool get isMovieMap => movie is Map<String, dynamic>;
+
+  /// 获取 movie 的 Map 表示
+  Map<String, dynamic> get movieMap {
+    log.d(() => 'movieMap called: movie type = ${movie.runtimeType}');
+    if (isMovieMap) {
+      log.d(() => 'movie is Map, returning directly');
+      return movie as Map<String, dynamic>;
+    } else if (movie is Movie) {
+      log.d(() => 'movie is Movie, converting to Map');
+      final Movie m = movie as Movie;
+      return {
+        'vod_id': m.id,
+        'vod_name': m.title,
+        'vod_pic': m.coverUrl,
+        'vod_year': m.year,
+        'url': m.url,
+        // 其他字段设为默认值
+        'vod_actor': '',
+        'vod_director': '',
+        'vod_content': '',
+        'vod_blurb': '',
+        'vod_remarks': '',
+      };
+    } else {
+      log.w(() => 'movie is unknown type: ${movie.runtimeType}, returning empty Map');
+      return {};
+    }
+  }
 }
 
 class _MovieDetailPageState extends ConsumerState<MovieDetailPage> {
@@ -55,7 +87,7 @@ class _MovieDetailPageState extends ConsumerState<MovieDetailPage> {
   }
 
   void _checkFavoriteStatus() async {
-    final movieId = widget.movie['vod_id']?.toString() ?? '';
+    final movieId = widget.movieMap['vod_id']?.toString() ?? '';
     final isFav = await ref
         .read(favoritesProvider.notifier)
         .isFavorite(movieId);
@@ -67,7 +99,7 @@ class _MovieDetailPageState extends ConsumerState<MovieDetailPage> {
   }
 
   void _toggleFavorite() async {
-    await ref.read(favoritesProvider.notifier).toggleFavorite(widget.movie);
+    await ref.read(favoritesProvider.notifier).toggleFavorite(widget.movieMap);
     if (mounted) {
       setState(() {
         _isFavorite = !_isFavorite;
@@ -96,7 +128,7 @@ class _MovieDetailPageState extends ConsumerState<MovieDetailPage> {
 
   void _parseEpisodes() {
     _episodes.clear();
-    final String? playUrl = widget.movie['vod_play_url'] as String?;
+    final String? playUrl = widget.movieMap['url'] as String?;
     if (playUrl != null) {
       final List<String> parts = playUrl.split('#');
       for (var part in parts) {
@@ -115,11 +147,11 @@ class _MovieDetailPageState extends ConsumerState<MovieDetailPage> {
 
   void _playEpisode(int index) {
     final List<Map<String, dynamic>>? sources =
-        widget.movie['sources'] as List<Map<String, dynamic>>?;
+        widget.movieMap['sources'] as List<Map<String, dynamic>>?;
     GoRouter.of(context).push(
       AppRoutes.player,
       extra: {
-        'movie': widget.movie,
+        'movie': widget.movieMap,
         'episodes': _episodes,
         'initialIndex': index,
         'sources': sources,
@@ -183,11 +215,11 @@ class _MovieDetailPageState extends ConsumerState<MovieDetailPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Hero(
-                              tag: 'poster-${widget.movie['vod_id']}',
+                              tag: 'poster-${widget.movieMap['vod_id']}',
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(12),
                                 child: CachedImage(
-                                  imageUrl: widget.movie['vod_pic'] ?? '',
+                                  imageUrl: widget.movieMap['vod_pic'] ?? '',
                                   width: 120,
                                   height: 180,
                                   fit: BoxFit.cover,
@@ -211,7 +243,7 @@ class _MovieDetailPageState extends ConsumerState<MovieDetailPage> {
                                     children: [
                                       Expanded(
                                         child: Text(
-                                          widget.movie['vod_name'] ?? '未知标题',
+                                          widget.movieMap['vod_name'] ?? '未知标题',
                                           style: textTheme.displayMedium,
                                         ),
                                       ),
@@ -234,24 +266,24 @@ class _MovieDetailPageState extends ConsumerState<MovieDetailPage> {
                                     spacing: 8,
                                     runSpacing: 4,
                                     children: [
-                                      if (widget.movie['vod_year'] != null)
+                                      if (widget.movieMap['vod_year'] != null)
                                         Chip(
                                           label: Text(
-                                            widget.movie['vod_year']!,
+                                            widget.movieMap['vod_year']!,
                                           ),
                                           visualDensity: VisualDensity.compact,
                                         ),
-                                      if (widget.movie['type_name'] != null)
+                                      if (widget.movieMap['type_name'] != null)
                                         Chip(
                                           label: Text(
-                                            widget.movie['type_name']!,
+                                            widget.movieMap['type_name']!,
                                           ),
                                           visualDensity: VisualDensity.compact,
                                         ),
-                                      if (widget.movie['vod_remarks'] != null)
+                                      if (widget.movieMap['vod_remarks'] != null)
                                         Chip(
                                           label: Text(
-                                            widget.movie['vod_remarks']!,
+                                            widget.movieMap['vod_remarks']!,
                                           ),
                                           visualDensity: VisualDensity.compact,
                                         ),
@@ -259,12 +291,12 @@ class _MovieDetailPageState extends ConsumerState<MovieDetailPage> {
                                   ),
                                   const SizedBox(height: 8),
                                   Text(
-                                    '主演: ${widget.movie['vod_actor'] ?? '未知'}',
+                                    '主演: ${widget.movieMap['vod_actor'] ?? '未知'}',
                                     style: textTheme.bodyLarge,
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
-                                    '导演: ${widget.movie['vod_director'] ?? '未知'}',
+                                    '导演: ${widget.movieMap['vod_director'] ?? '未知'}',
                                     style: textTheme.bodyLarge,
                                   ),
                                 ],
@@ -284,8 +316,8 @@ class _MovieDetailPageState extends ConsumerState<MovieDetailPage> {
                           Text('剧情简介', style: textTheme.headlineMedium),
                           const SizedBox(height: 8),
                           Text(
-                            widget.movie['vod_content'] ??
-                                widget.movie['vod_blurb'] ??
+                            widget.movieMap['vod_content'] ??
+                                widget.movieMap['vod_blurb'] ??
                                 '暂无简介',
                             style: textTheme.bodyLarge,
                           ),

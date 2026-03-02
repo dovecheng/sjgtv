@@ -312,12 +312,14 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage>
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           IconButton(
+            key: const ValueKey('app_bar_search'),
             icon: const Icon(Icons.search, size: 20),
             onPressed: () => context.goToSearch(),
             focusColor: Colors.red,
           ),
           const SizedBox(width: 10),
           IconButton(
+            key: const ValueKey('app_bar_source'),
             icon: const Icon(Icons.source, size: 20),
             onPressed: () => context.goToSourceManage(),
             focusColor: Colors.red,
@@ -327,6 +329,7 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage>
           //     context.mediaQuery.deviceType == DeviceType.tv) ...[
           const SizedBox(width: 10),
           IconButton(
+            key: const ValueKey('app_bar_settings'),
             icon: const Icon(Icons.settings, size: 20),
             onPressed: _showQRCodeDialog,
             focusColor: Colors.red,
@@ -525,7 +528,10 @@ class _MovieHomePageState extends ConsumerState<MovieHomePage>
                             HeroSection(
                               movie: _currentMovies.first,
                               onTap: () {
-                                _log.d(() => '用户点击 Hero 电影: ${_currentMovies.first.title}');
+                                _log.d(
+                                  () =>
+                                      '用户点击 Hero 电影: ${_currentMovies.first.title}',
+                                );
                                 context.goToSearch(_currentMovies.first.title);
                               },
                             ),

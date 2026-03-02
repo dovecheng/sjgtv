@@ -24,16 +24,20 @@ class SkeletonMovieCard extends StatelessWidget {
         highlightColor: colorScheme.surfaceContainerHigh,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            AspectRatio(
-              aspectRatio: aspectRatio,
-              child: Container(color: colorScheme.surfaceContainerHighest),
+            Flexible(
+              child: AspectRatio(
+                aspectRatio: aspectRatio,
+                child: Container(color: colorScheme.surfaceContainerHighest),
+              ),
             ),
             const SizedBox(height: 8),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 6),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Container(
                     height: 14,
@@ -46,6 +50,7 @@ class SkeletonMovieCard extends StatelessWidget {
                   const SizedBox(height: 4),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       Container(
                         height: 12,
@@ -56,6 +61,7 @@ class SkeletonMovieCard extends StatelessWidget {
                         ),
                       ),
                       Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           Container(
                             height: 12,

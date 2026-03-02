@@ -106,7 +106,11 @@ dev_dependencies:
   icons_launcher: ^3.0.3
   flutter_test:
     sdk: flutter
+  flutter_driver:
+    sdk: flutter
   mockito: ^5.5.0
+  integration_test:
+    sdk: flutter
 
 dependency_overrides:
   # 与 base 一致，避免 retrofit 与 generator 版本冲突

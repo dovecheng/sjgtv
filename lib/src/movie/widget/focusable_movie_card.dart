@@ -70,6 +70,7 @@ class _FocusableMovieCardState extends State<FocusableMovieCard> {
     final double placeholderFontSize = 24 * context.fontScale;
 
     return Focus(
+      key: ValueKey('movie_card_${widget.movie.id}'),
       focusNode: widget.focusNode,
       onKeyEvent: (FocusNode node, KeyEvent event) {
         if (event is KeyDownEvent) {
@@ -77,7 +78,7 @@ class _FocusableMovieCardState extends State<FocusableMovieCard> {
               event.logicalKey == LogicalKeyboardKey.enter) {
             log.v(() => '用户按键选择电影: ${widget.movie.title}');
             GoRouter.of(
-              context,
+                context,
             ).push('${AppRoutes.search}?q=${widget.movie.title}');
             return KeyEventResult.handled;
           }

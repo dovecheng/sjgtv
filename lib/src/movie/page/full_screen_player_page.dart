@@ -60,7 +60,7 @@ class _FullScreenPlayerPageState extends ConsumerState<FullScreenPlayerPage> {
   late final VideoController _videoController;
 
   /// 当前使用的播放源列表（sources ?? [movie]）
-  late final List<Map<String, dynamic>> _sources;
+  late List<Map<String, dynamic>> _sources;
   int _currentSourceIndex;
 
   /// 当前源的剧集列表（从当前源的 vod_play_url 解析，换源时更新）

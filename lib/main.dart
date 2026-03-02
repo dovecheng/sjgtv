@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter_driver/driver_extension.dart';
 import 'package:sjgtv/src/app/runner/sjgtv_runner.dart';
 
 /// 应用入口
@@ -7,4 +9,10 @@ import 'package:sjgtv/src/app/runner/sjgtv_runner.dart';
 /// - 初始配置加载
 /// - shelf 本地服务启动
 /// - Riverpod 提供者配置
-void main() => SjgtvRunner().launchApp();
+void main() {
+  // 仅在 debug 模式下启用 Flutter Driver 扩展（用于 Appium 自动化测试）
+  if (kDebugMode) {
+    enableFlutterDriverExtension();
+  }
+  SjgtvRunner().launchApp();
+}
